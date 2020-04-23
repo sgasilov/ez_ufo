@@ -2,8 +2,8 @@
 
 Ezufo is a GUI to data reconstruction tools of 
 ufo-kit software package (https://github.com/ufo-kit). 
-It can be used to find the center of rotation and quickly preview 
-the X-ray uCT slices, to optimize reconstruction parameters, 
+It can be used to find the center of rotation and reconstruct 
+X-ray uCT slices, to optimize reconstruction parameters, 
 and to batch process multiple data sets after experiment.
 
 Distributed without warranty of any kind.
@@ -14,14 +14,14 @@ Distributed without warranty of any kind.
 1. Working istallation of ufo-core, ufo-python-tools, ufo-filters, 
 tofu, and concert is required. This version was tested with
 ufo-core:  
-(https://github.com/ufo-kit/ufo-core/commit/ab39783930ccbe3fa06e0f50427e01376f431256). 
+https://github.com/ufo-kit/ufo-core/commit/ab39783930ccbe3fa06e0f50427e01376f431256
 ufo-filters:
 https://github.com/ufo-kit/ufo-filters/commit/2f2dbf96c3075de062e73c655708af516773110c
 tofu:
 https://github.com/ufo-kit/tofu/commit/6d7c27328bf9397d7f8c7e99ce7520ac90007afa
 concert:
 https://github.com/ufo-kit/concert/commit/6bb7b3436702adaa2e6df1e0c0e68de6837dd582
-2. tkinter
+2. tkinter.
 
 
 *** How it works ***
