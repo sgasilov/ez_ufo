@@ -65,6 +65,7 @@ class ufo_cmds(object):
 
     def get_pr_ufo_cmd(self, ctset, args, tmpdir, nviews, WH):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2] )
+        cmds=[]
         cmd = 'ufo-launch read path={} height={} number={}'.format(in_proj_dir, WH[0], nviews)
         cmd +=' ! fft dimensions=2 ! retrieve-phase'
         cmd += ' energy={} distance={} pixel-size={} regularization-rate={:0.2f}'\
@@ -73,7 +74,10 @@ class ufo_cmds(object):
                 .format(WH[1],WH[0])
         cmd += ' ! opencl kernel=\'absorptivity\' ! opencl kernel=\'fix_nan_and_inf\' !'
         cmd += ' write filename={}'.format(enquote(out_pattern))
-        return cmd
+        cmds.append(cmd)
+        if not args.keep_tmp:
+            cmds.append( 'rm -rf {}'.format(in_proj_dir) )
+        return cmds
 
     def get_filter_sinos_cmd(self, ctset, tmpdir,RR, nviews, w):
         sin_in = os.path.join(tmpdir,'sinos')
@@ -127,6 +131,12 @@ class ufo_cmds(object):
         if not args.PR:
             cmd += ' --absorptivity'
         cmds.append(cmd)
+        if not args.keep_tmp and args.pre:
+            cmds.append( 'rm -rf {}'.format(indir[0]) )
+            cmds.append( 'rm -rf {}'.format(indir[1]) )
+            cmds.append( 'rm -rf {}'.format(in_proj_dir) )
+            if len(indir)>3:
+                cmds.append( 'rm -rf {}'.format(indir[3]) )
         ######### INPAINT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
         cmd = 'ufo-launch [read path={} height={} number={}'.format(in_proj_dir, N, nviews)
@@ -134,6 +144,8 @@ class ufo_cmds(object):
         cmd +=' ! horizontal-interpolate ! '
         cmd += 'write filename={}'.format(enquote(out_pattern))
         cmds.append(cmd)
+        if not args.keep_tmp:
+            cmds.append( 'rm -rf {}'.format(in_proj_dir) )
         return cmds
 
     def get_crop_sli(self, out_pattern, args):

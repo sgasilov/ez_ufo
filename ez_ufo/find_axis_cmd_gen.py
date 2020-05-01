@@ -29,7 +29,7 @@ class findCOR_cmds(object):
             indir.append( os.path.join(lvl0, self._fdt_names[3]) )
         return indir
 
-    def find_axis_std(self, ctset, tmpdir,ax_range, p_width,search_row):
+    def find_axis_std(self, ctset, tmpdir,ax_range, p_width,search_row,nviews):
         indir = self.make_inpaths(ctset[0], ctset[1])
         print indir[2]
         image = read_image(get_filenames(indir[2])[0])
@@ -37,6 +37,8 @@ class findCOR_cmds(object):
                ' --lamino-angle 90 --height 2'
         cmd += ' --darks {} --flats {} --projections {}'.\
                     format(indir[0], indir[1], enquote(indir[2]))
+        cmd += ' --number {}'.format(nviews)
+        cmd += ' --angle {:0.5f}'.format( np.radians(180.0/float(nviews)) )
         if ctset[1]==4:
             cmd += ' --flats2 {}'.format(indir[3])
         out_pattern = os.path.join(tmpdir,"axis-search/slice")

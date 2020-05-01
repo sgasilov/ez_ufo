@@ -5,7 +5,6 @@ Created on Apr 5, 2018
 @author: gasilos
 '''
 
-from Tkinter import *
 import argparse
 import glob
 import os
@@ -19,8 +18,7 @@ from ez_ufo.ctdir_walker import WalkCTdirs
 from ez_ufo.tofu_cmd_gen import tofu_cmds
 from ez_ufo.ufo_cmd_gen import ufo_cmds
 from ez_ufo.find_axis_cmd_gen import findCOR_cmds
-from ez_ufo.util import enquote
-
+from ez_ufo.util import *
 
 #    '''Tested combinations
 #    ** w/o RingRemoval
@@ -45,39 +43,29 @@ def get_CTdirs_list(inpath,dirtype):
     W.SortBadGoodSets()
     return W.ctsets, W.lvl0
 
-def get_dims(pth):
+def get_dims(pth, args): #must be changed if multipage tiff input!!!
     # get number of projections and projections dimensions
-    tomos = get_filenames(pth)
-    image = read_image(tomos[0])
-    return len(tomos), image.shape
+    if not args.bigtif_inp:
+        tomos = get_filenames(pth)
+        image = read_image(tomos[0])
+        return len(tomos), image.shape
+    else:
+        return args.nviews, [args.H, args.W]
 
 def clean_tmp_proj_dirs(tmpdir):
-    '''Pre-creates a number of directories with projections
-    in temporary directory according to number of pre-processing steps'''
-    tmp_pattern =  ['proj','sino','mask','flat','dark']
-    #clean temporary directory
+    tmp_pattern =  ['axis','proj','sino','mask','flat','dark','radi']
+    #clean directories in tmpdir if their names match pattern
     if os.path.exists(tmpdir):
         for filename in os.listdir(tmpdir):
             if filename[:4] in tmp_pattern:
-                file_path = os.path.join(tmpdir, filename)
-    #            print '{} found in tmpdir and will be removed'.format(file_path)
-                try:
-                    if os.path.isfile(file_path) or os.path.islink(file_path):
-                        os.unlink(file_path)
-                    elif os.path.isdir(file_path):
-                        rmtree(file_path)
-                except Exception as e:
-                    print('Failed to clean temporary directory {}. Reason: {}'.format (file_path, e))
+                os.system('rm -rf {}'.format(os.path.join(tmpdir, filename)))
 
-
-def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR):
+def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews, WH):
     '''formats list of processing commands for a CT set'''
-    # determine initial number of projections and their shape
-    nviews, WH = get_dims( os.path.join(ctset[0],Tofu._fdt_names[2],'*.tif') )
-    tmp="Number of projections: {}, dimensions: {}". format(nviews, WH)
-    cmds.append("echo \"{}\"".format(tmp))
     ############ Preprocessing commands: working on projections
-    any_flat = get_filenames(os.path.join(ctset[0],Tofu._fdt_names[1]))[1]
+    #must be made compatible with multipage tiffs
+    #any_flat = get_filenames(os.path.join(ctset[0],Tofu._fdt_names[1]))[1]
+    any_flat = get_filenames(os.path.join(ctset[0],Tofu._fdt_names[1]))[0]
     # make a copy of original flat-field file in case if inp is enabled
     if args.inp and args.pre:
         any_flat_copy = os.path.join(args.tmpdir,'flat.tif')
@@ -104,7 +92,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR):
             cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, False, False))
         elif args.inp and args.PR:
             cmds.append("echo \" - Phase retrieval from inpainted projections\"")
-            cmds.append(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
+            cmds.extend(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
             cmds.append("echo \" - CT with axis {}; no ffc, no PR\"".format(ax))
             cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, False, False))
         elif (not args.inp) and args.PR:
@@ -119,7 +107,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR):
         if args.PR: # we need to do phase retrieval
             if args.inp: # if inp was requested flat field correction has been done already
                 cmds.append("echo \" - Phase retrieval from inpainted projections\"")
-                cmds.append(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
+                cmds.extend(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
             else:
                 cmds.append("echo \" - Phase retrieval with flat-correction\"")
                 cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
@@ -148,6 +136,8 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR):
                 cmds.append(cmdtmp)
             else:
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")
+        if not args.keep_tmp:
+            cmds.append( 'rm -rf {}'.format(os.path.join(args.tmpdir,'sinos')) )
         # Preparation for final CT command
         cmds.append("echo \" - Generating proj from filtered sinograms\"")
         cmds.append(Tofu.get_sinos2proj_cmd(args, WH[0]))
@@ -156,6 +146,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR):
         #Finally tofu reco without ffc and PR
         cmds.append("echo \" - CT with axis {}\"".format(ax))
         cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, False, False))
+    return nviews, WH
 
 def main_tk(args,fdt_names):
     # rm files in temporary directory first of all to avoid problems
@@ -181,27 +172,30 @@ def main_tk(args,fdt_names):
             os.makedirs(args.tmpdir)
     for i, ctset in enumerate(W):
         if not already_recd(ctset[0], lvl0, recd_sets ):
+            # determine initial number of projections and their shape
+            nviews, WH = get_dims( os.path.join(ctset[0],Tofu._fdt_names[2],'*.tif'),args )
+            tmp="Number of projections: {}, dimensions: {}". format(nviews, WH)
+            cmds.append("echo \"{}\"".format(tmp))
             if args.ax==1:
                 ax=FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight)
-                print ax
             elif args.ax==2:
                 ax=FindCOR.find_axis_std(ctset,args.tmpdir,\
-                                args.ax_range, args.ax_p_size,args.ax_row)
+                                args.ax_range, args.ax_p_size,args.ax_row,nviews)
             else:
                 ax=args.ax_fix+i*args.dax
             setid = ctset[0][len(lvl0)+1:]
-            out_pattern=os.path.join(args.outdir, setid, 'sli')
+            out_pattern=os.path.join(args.outdir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))
             clean_tmp_proj_dirs(args.tmpdir)
-            frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR)
+            nviews, WH = frmt_ufo_cmds(cmds, ctset, out_pattern, \
+                            ax, args, Tofu, Ufo, FindCOR, nviews, WH)
+            save_params(args, setid, ax, nviews, WH)
             print '*********** AXIS INFO ************'
             print '{:>30}\t{}'.format('CTset','Axis')
             print '{:>30}\t{}'.format(ctset[0], ax)
         else:
             print '{} has been already reconstructed'.format(ctset[0])
     #execute commands = start reconstruction
-    if not os.path.exists(args.outdir):
-        os.makedirs(args.outdir)
     start = time.time()
     for cmd in cmds:
         if not args.dryrun:

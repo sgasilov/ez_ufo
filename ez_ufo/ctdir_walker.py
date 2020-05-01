@@ -89,11 +89,14 @@ class WalkCTdirs():
             print '{:>20}\t{}'.format("Path to CT set", "Typ: 0 bad, 3 no flats2, 4 with flats2")
             for ctdir in self.ctsets:
                 msg1=ctdir[0][tmp:]
+                if msg1=='':
+                    msg1='.'
                 print '{:>20}\t{}'.format(msg1, ctdir[1])
 
         #keep pathes to directories with good ct data only:
         self.ctsets = [q for q in self.ctsets if int(q[1]>0)]
-    
+
+
     def Getlvl0(self):
         return self.lvl0
     

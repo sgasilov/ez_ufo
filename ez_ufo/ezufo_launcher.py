@@ -6,6 +6,7 @@ Created on Apr 5, 2018
 '''
 
 import Tkinter as tk
+import tkMessageBox
 from tkFont import Font
 from ez_ufo.main import main_tk, clean_tmp_proj_dirs
 import tkFileDialog as filedialog
@@ -17,7 +18,8 @@ import getpass
 E=tk.E; W=tk.W
 
 class tk_args():
-    def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif, \
+    def __init__(self, e_indir, e_bigtifinput, e_nviews, e_H, e_W, \
+                e_tmpdir, e_outdir, e_bigtif, \
                 e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, \
                 e_inp, e_inp_thr, e_inp_sig, \
                 e_RR, e_RR_par, \
@@ -25,13 +27,21 @@ class tk_args():
                 e_vcrop, e_y, e_yheight, e_ystep,\
                 e_gray256, e_bit, e_hmin, e_hmax, \
                 e_pre, e_pre_cmd, \
-                e_step, e_a0, \
+                e_a0, \
                 e_crop, e_x0, e_dx, e_y0, e_dy, \
-                e_dryrun):
+                e_dryrun, e_parfile, e_keep_tmp):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir.get())
         setattr(self,'indir',self.args['indir'])
+        self.args['bigtif_inp']=bool(e_bigtifinput.get())
+        setattr(self,'bigtif_inp',self.args['bigtif_inp'])
+        self.args['nviews']=int(e_nviews.get())
+        setattr(self,'nviews',self.args['nviews'])
+        self.args['H']=int(e_H.get())
+        setattr(self,'H',self.args['H'])
+        self.args['W']=int(e_W.get())
+        setattr(self,'W',self.args['W'])
         self.args['outdir']=str(e_outdir.get())
         setattr(self,'outdir',self.args['outdir'])
         self.args['tmpdir']=str(e_tmpdir.get())
@@ -96,11 +106,7 @@ class tk_args():
         setattr(self,'pre',self.args['pre'])
         self.args['pre_cmd']=e_pre_cmd.get()
         setattr(self,'pre_cmd',self.args['pre_cmd'])
-        # postprocessing attributes
-        self.args['step']=float(e_step.get())
-        setattr(self,'step',self.args['step'])
-        self.args['a0']=float(e_a0.get())
-        setattr(self,'a0',self.args['a0'])
+        # ROI in slice
         self.args['crop']=bool(int(e_crop.get()))
         setattr(self,'crop',self.args['crop'])
         self.args['x0']=int(e_x0.get())
@@ -111,9 +117,16 @@ class tk_args():
         setattr(self,'y0',self.args['y0'])
         self.args['dy']=int(e_dy.get())
         setattr(self,'dy',self.args['dy'])
+        # Optional FBP params
+        self.args['a0']= float(e_a0.get())
+        setattr(self,'a0',self.args['a0'])
         # misc settings
         self.args['dryrun']=bool(e_dryrun.get())
         setattr(self,'dryrun',self.args['dryrun'])
+        self.args['parfile']=bool(e_parfile.get())
+        setattr(self,'parfile',self.args['parfile'])
+        self.args['keep_tmp']=bool(e_keep_tmp.get())
+        setattr(self,'keep_tmp',self.args['keep_tmp'])
 
 class GUI:
     def __init__(self, A):
@@ -134,6 +147,35 @@ class GUI:
         v = tk.StringVar(A, value=self.indir)
         self.e_indir = tk.Entry(A,textvariable=v, width=70)
         self.e_indir.grid(row=r, column=0, columnspan=2, sticky=E)
+        r+=1
+        #handling of multipage tiffs
+        f_mtif = tk.Frame(A)
+        f_mtif.grid(row=r, column=0, columnspan=2)
+        self.e_bigtifinput = tk.BooleanVar(A, value=False)
+        tmp="Frames stored in multipage tifs."
+        f_mtif_b0 = tk.Checkbutton(f_mtif, text=tmp, variable=self.e_bigtifinput)
+        f_mtif_b0.pack(side="left")
+        tmp="For input in multipage tifs define explicitly:"
+        f_mtif_l0 = tk.Label(f_mtif, text=tmp)
+        f_mtif_l0.pack(side="left")
+        r+=1
+        f_mtif_par = tk.Frame(A)
+        f_mtif_par.grid(row=r, column=0, columnspan=2)
+        f_mtif_l1 = tk.Label(f_mtif_par, text="Number of projections")
+        f_mtif_l1.pack(side="left")
+        v = tk.IntVar(A, value=0)
+        self.e_nviews = tk.Entry(f_mtif_par,textvariable=v,width=10);
+        self.e_nviews.pack(side="left")
+        f_mtif_l2 = tk.Label(f_mtif_par, text="  Frames height")
+        f_mtif_l2.pack(side="left")
+        v = tk.IntVar(A, value=0)
+        self.e_H = tk.Entry(f_mtif_par,textvariable=v,width=10);
+        self.e_H.pack(side="left")
+        f_mtif_l3 = tk.Label(f_mtif_par, text="  width")
+        f_mtif_l3.pack(side="left")
+        v = tk.IntVar(A, value=0)
+        self.e_W = tk.Entry(f_mtif_par,textvariable=v,width=10);
+        self.e_W.pack(side="left")
         r+=1
 
         #Select output directory
@@ -177,14 +219,14 @@ class GUI:
         self.e_ax_range.grid(row=r, column=1, sticky=E)
         r+=1
 
-        tk.Label(A, text="Use row No"\
+        tk.Label(A, text="Search in slice from row number"\
                     ,fg="darkgreen").grid(row=r);
         v = tk.IntVar(A, value=100)
         self.e_ax_row = tk.Entry(A,textvariable=v);
         self.e_ax_row.grid(row=r, column=1, sticky=E);
         r+=1
 
-        tk.Label(A, text="Patch size"\
+        tk.Label(A, text="Side of reconstructed patch [pixel]"\
                     ,fg="darkgreen").grid(row=r);
         v = tk.IntVar(A, value=256)
         self.e_ax_p_size = tk.Entry(A,textvariable=v);
@@ -214,13 +256,13 @@ class GUI:
                         variable=self.e_inp).grid(row=r, column=0)
         r+=1
 
-        tmp="Spot threshold"
+        tmp="Threshold (prominence of the spot) [counts]"
         tk.Label(A, text=tmp, fg="darkorange3").grid(row=r);
         v = tk.IntVar(A, value=1000)
         self.e_inp_thr = tk.Entry(A,textvariable=v);
         self.e_inp_thr.grid(row=r, column=1, sticky=E); r+=1
 
-        tmp="Spot blur"
+        tmp="Spot blur, sigma [pixels]"
         tk.Label(A, text=tmp, fg="darkorange3").grid(row=r);
         v = tk.IntVar(A, value=2)
         self.e_inp_sig = tk.Entry(A,textvariable=v);
@@ -266,7 +308,7 @@ class GUI:
 
         tk.Label(A, text="Delta/beta ratio; (try default if unsure)"\
                         ,fg="blue").grid(row=r);
-        v = tk.DoubleVar(A, value=300)
+        v = tk.DoubleVar(A, value=200)
         self.e_log10db = tk.Entry(A,textvariable=v);
         self.e_log10db.grid(row=r, column=1, sticky=E); r+=1
 
@@ -328,7 +370,7 @@ class GUI:
         tk.Checkbutton(A, text=tmp, font=bold_font, fg="sienna4", \
                         variable=self.e_pre).grid(row=r, column=0)
         r+=1
-        #tmp='crop x=500 y=100 width=1000 height=50 ! bin size=2'
+        #tmp='crop x=500 y=10args0 width=1000 height=50 ! bin size=2'
         tmp = 'remove_outliers size=3 threshold=500 sign=1'
         v = tk.StringVar(A, value=tmp)
         self.e_pre_cmd = tk.Entry(A,textvariable=v, width=70)
@@ -336,20 +378,11 @@ class GUI:
         r+=1
 
         ##### Optional FBP parameters
-        tk.Label(A, text="Optional FBP parameters", \
-                font=bold_font, fg="sienna4").grid(row=r);
-        r+=1
-        tk.Label(A, text="Angular step, rad (define explicitly for multipage tif input)"\
-                ,fg="sienna4").grid(row=r);
-        v = tk.DoubleVar(A, value=0.0)
-        self.e_step = tk.Entry(A,textvariable=v);
-        self.e_step.grid(row=r, column=1, sticky=E); r+=1
+        #tk.Label(A, text="Optional FBP parameters", \
+        #        font=bold_font, fg="sienna4").grid(row=r);
+        #r+=1
 
-        tk.Label(A, text="Starting angle for FBP, rad [0..2pi], clockwise rotation"\
-                ,fg="sienna4").grid(row=r);
-        v = tk.DoubleVar(A, value=0.0)
-        self.e_a0 = tk.Entry(A,textvariable=v);
-        self.e_a0.grid(row=r, column=1, sticky=E); r+=1
+        #self.e_step.grid(row=r, column=1, sticky=E); r+=1
 
         ###### Crop in the reconstruction plane
         self.e_crop = tk.BooleanVar(A, value=False)
@@ -378,6 +411,12 @@ class GUI:
         bdy.pack(side="left")
         self.e_dy.pack(side="left")
         r+=1
+        # optinal - rotate
+        tk.Label(A, text="Optional: rotate volume clockwise by [deg]"\
+                ,fg="sienna4").grid(row=r);
+        v = tk.DoubleVar(A, value=0.0)
+        self.e_a0 = tk.Entry(A,textvariable=v);
+        self.e_a0.grid(row=r, column=1, sticky=E); r+=1
 
         ##### names of directories with flats/darks/projections frames
         tmp="Name of flats/darks/tomo subdirectories in each CT data set"
@@ -393,14 +432,39 @@ class GUI:
             self.e_DIRTYP[i].pack(side="left")
         r+=1
 
+#        #Select temporary directory
+#        self.tmpdir = os.getcwd()
+#        self.tmpdir = os.path.join("/data", 'tmp-ezufo')
+#        self.tmpdir_b = tk.Button(A,\
+#            text="Directory for temporary data", \
+#            command=self.select_tmpdir)
+#        #self.tmpdir_b.configure(state=tk.DISABLED)
+#        self.tmpdir_b.grid(row=r, column=0, columnspan=2)
+#        r+=1
+
+#        v = tk.StringVar(A, value=self.tmpdir)
+#        self.e_tmpdir = tk.Entry(A,textvariable=v, width=70)
+#        #self.e_tmpdir.configure(state=tk.DISABLED)
+#        self.e_tmpdir.grid(row=r, column=0, columnspan=2, sticky=E)
+#        r+=1
+
         #Select temporary directory
+        f_tmpdata = tk.Frame(A)
         self.tmpdir = os.getcwd()
         self.tmpdir = os.path.join("/data", 'tmp-ezufo')
-        self.tmpdir_b = tk.Button(A,\
-            text="Directory for temporary data", \
+        b_tmpdata_0 = tk.Button(f_tmpdata,\
+            text="Select temporary directory", \
             command=self.select_tmpdir)
-        #self.tmpdir_b.configure(state=tk.DISABLED)
-        self.tmpdir_b.grid(row=r, column=0, columnspan=2)
+        #Save in separate files of in one huge tiff file
+        self.e_keep_tmp = tk.BooleanVar(A, value=False)
+        tmp="Keep all tmp data till the end of reconstruction"
+        b_tmpdata_1 = tk.Checkbutton(f_tmpdata, \
+                        text=tmp, variable=self.e_keep_tmp)
+        f_tmpdata.grid(row=r, column=0, columnspan=2)
+        b_tmpdata_0.pack(side="left")
+        b_tmpdata_1.pack(side="right")
+        #b_tmpdata_0.configure(state=tk.DISABLED)
+        #b_tmpdata_1.configure(state=tk.DISABLED)
         r+=1
 
         v = tk.StringVar(A, value=self.tmpdir)
@@ -418,12 +482,17 @@ class GUI:
         self.e_dryrun = tk.BooleanVar(A, value=False)
         b4 = tk.Button(f1, text='Dry run', \
                     command=self.dry_run)
+        self.e_parfile = tk.BooleanVar(A, value=True)
+        tmp="Save args"
+        b6 = tk.Checkbutton(f1, \
+                        text=tmp, variable=self.e_parfile)
         f1.grid(row=r, column=0)
         b1.pack(side="left")
         b2.pack(side="left")
         b3.pack(side="left")
-        b3.configure(state=tk.DISABLED)
+        #b3.configure(state=tk.DISABLED)
         b4.pack(side="left")
+        b6.pack(side="left")
         b5 = tk.Button(A, text='Reconstruct', font=bold_font, fg="red3", \
                     command=self.reco)
         b5.grid(row=r,column=1)
@@ -461,11 +530,13 @@ class GUI:
 
 
     def dry_run(self):
-        self.e_dryrun = tk.BooleanVar(A, value=True)
+        self.e_dryrun = tk.BooleanVar(self.A, value=True)
         self.reco()
+        self.e_dryrun = tk.BooleanVar(self.A, value=False)
 
     def reco(self):
-        args=tk_args(self.e_indir, self.e_tmpdir, self.e_outdir, self.e_bigtif,\
+        args=tk_args(self.e_indir, self.e_bigtifinput, self.e_nviews, self.e_H, self.e_W,
+            self.e_tmpdir, self.e_outdir, self.e_bigtif,\
             self.e_ax, self.e_ax_range, self.e_ax_row, self.e_ax_p_size, self.e_ax_fix, self.e_dax, \
             self.e_inp, self.e_inp_thr, self.e_inp_sig, \
             self.e_RR, self.e_RR_par, \
@@ -473,9 +544,9 @@ class GUI:
             self.e_vcrop,self.e_y, self.e_yheight, self.e_ystep,\
             self.e_gray256, self.e_bit, self.e_hmin, self.e_hmax, \
             self.e_pre, self.e_pre_cmd, \
-            self.e_step, self.e_a0, \
+            self.e_a0, \
             self.e_crop, self.e_x0, self.e_dx, self.e_y0, self.e_dy, \
-            self.e_dryrun)
+            self.e_dryrun, self.e_parfile, self.e_keep_tmp)
 
         DIRTYP = []
         for i in self.e_DIRTYP:
@@ -484,11 +555,18 @@ class GUI:
         main_tk(args, DIRTYP)
 
     def rm_rec_dir(self):
-        if os.path.exists(self.e_outdir.get()):
-           os.system( 'rm -r {}'.format(self.e_outdir.get()) )
-           print "Directory with reconstructed data was removed"
+        titletext = "Warning: data can be lost"
+        text1 = "Delete directory with reconstructed data?"
+        text2 = "Cannot delete: output directory is the same as input"
+        dd = tkMessageBox.askyesno(titletext,text1)
+        if dd and os.path.exists(self.e_outdir.get()):
+            if self.e_outdir.get() == self.e_indir.get():
+                tkMessageBox.showinfo("Warning", text2)
+            else:
+                os.system( 'rm -rf {}'.format(self.e_outdir.get()) )
+                print "Directory with reconstructed data was removed"
 
-    def printhelp():
+    def printhelp(self):
           h="This utility provides an interface to the ufo-kit software package.\n"
           h+="Use it for batch processing and optimization of reconstruction parameters.\n"
           h+="It creates a list of paths to all CT directories in the _input_ directory.\n"
@@ -500,10 +578,7 @@ class GUI:
           h+="Those CT sets will be reconstructed, whose names are not yet in the _output_ directory."
           h+="Program will create an array of ufo/tofu commands according to defined parameters \n"
           h+="and then execute them sequentially. These commands can be also printed on the screen.\n"
-          h+="Note1: median filter based ring removal filter is hardcoded (line 69 in xrec_main.py) \n"
-          h+="if file with filter does not exist it won't be applied; \n"
-          h+="Note2: if you bin in preprocess center of rotation position can change a lot; \n"
-          h+="Note3: Several slices are required to avoid problems with automated search; \n"
+          h+="Note2: if you bin in preprocess the center of rotation will change a lot; \n"
           h+="Note4: set to \"flats\" if \"flats2\" exist but you need to ignore them; \n"
           h+="SerG, BMIT CLS, Dec. 2018."
           print h

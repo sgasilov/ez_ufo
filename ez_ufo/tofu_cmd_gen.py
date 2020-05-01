@@ -169,9 +169,6 @@ class tofu_cmds(object):
         cmd = 'tofu reco --overall-angle 180'
         cmd += '  --projections {}'.format(indir[2])
         cmd += ' --output {}'.format(out_pattern)
-        cmd += ' --center-position-x {}'.format(ax)
-        #cmd += ' --offset {}'.format(args.a0)
-        cmd += ' --number {}'.format(nviews)
         if ffc:
             cmd+=' --absorptivity --fix-nan-and-inf'
             cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
@@ -181,9 +178,12 @@ class tofu_cmds(object):
             cmd += ' --energy {} --propagation-distance {}'\
                    ' --pixel-size {} --regularization-rate {:0.2f}'\
                    .format(args.energy, args.z, args.pixel, args.log10db)
-        if args.step>0.0:
-            cmd += ' --angle {}'.format(args.step)
-        cmd += ' --volume-angle-z {}'.format(args.a0)
+        cmd += ' --center-position-x {}'.format(ax)
+        #if args.nviews==0:
+        cmd += ' --number {}'.format(nviews)
+        #elif args.nviews>0:
+        #    cmd += ' --number {}'.format(args.nviews)
+        cmd += ' --volume-angle-z {:0.5f}'.format(args.a0)
         # rows-slices to be reconstructed
         b = WH[0]/2
         a = -b
@@ -207,19 +207,19 @@ class tofu_cmds(object):
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
 
-        
 
 
 
 
 
 
-    
-    
-    
-    
-    
-    
-    
-    
-        
+
+
+
+
+
+
+
+
+
+
