@@ -48,3 +48,29 @@ All temporary data is saved in multi-page tif files. It will be preserved
 in the temporary directory until the next reconstruction or until the
 Quit button is pressed. Note that the size of temporary data can easily
 exceed 300 GB when multiple processing steps are applied to a large CT set.
+
+
+*** Tested combinations ***
+
+** w/o RingRemoval
+1. Straight CT with "corr" axis search	        <-- tested
+1b. Straight CT with "min std" axis search      <-- tested
+1c. CT search axis "corr" and bigtiff input	<-- tested
+2. PR + CT                                 	<-- tested
+2b. PR + CT + vertical ROI                 	<-- tested
+2. Prepro                                  	<-- tested
+3. Prepro and inp                          	<-- tested 
+4. Prepro and inp and PR:                  	<-- tested
+4b. Prepro and inp and PR + vert ROI      	<-- tested
+5. Inp                                     	<-- tested
+5b. Inp with multipage input		   	<-- tested
+6. Inp and PR                              	<-- tested
+
+** with RingRemoval
+8. RR only                                 	<-- tested
+8b. RR with bigtiff input			<-- tested
+8c. RR with vert ROI                        	<-- tested
+9. RR + PR                                 	<-- tested
+
+** finally
+10. Everything enabled                     	<-- tested

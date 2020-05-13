@@ -9,10 +9,10 @@ import os
 import argparse
 import sys
 import numpy as np
-from concert.storage import read_image
-from tofu.util import get_filenames, read_image
 from ez_ufo.evaluate_sharpness import process as process_metrics
 from ez_ufo.util import enquote
+from tofu.util import (get_filenames, read_image, determine_shape)
+
 
 class findCOR_cmds(object):
     '''
@@ -59,7 +59,7 @@ class findCOR_cmds(object):
         return res[0] + res[2] * maximum
         
 
-    def find_axis_corr(self, ctset, vcrop, y, height):
+    def find_axis_corr(self, ctset, vcrop, y, height, multipage):
         indir = self.make_inpaths(ctset[0], ctset[1])
         """Use correlation to estimate center of rotation for tomography."""
         from scipy.signal import fftconvolve
@@ -72,14 +72,24 @@ class findCOR_cmds(object):
 
             return np.log(result)
 
-        first = read_image(get_filenames(indir[2])[0]).astype(np.float)
-        last = read_image(get_filenames(indir[2])[-1]).astype(np.float)
+        if multipage:
+            first = read_image(get_filenames(indir[2])[0])[0].astype(np.float)
+            last = read_image(get_filenames(indir[2])[-1])[-1].astype(np.float)
+            dark = read_image(get_filenames(indir[0])[-1])[-1].astype(np.float)
+            flat1 = read_image(get_filenames(indir[1])[0])[-1] - dark
+        else:
+            first = read_image(get_filenames(indir[2])[0]).astype(np.float)
+            last = read_image(get_filenames(indir[2])[-1]).astype(np.float)
+            dark = read_image(get_filenames(indir[0])[-1]).astype(np.float)
+            flat1 = read_image(get_filenames(indir[1])[-1]) - dark
 
-        dark = read_image(get_filenames(indir[0])[0]).astype(np.float)
-        flat1 = read_image(get_filenames(indir[1])[-1]) - dark
         first = flat_correct(flat1, first - dark)
-        if ctset[1]==4:
-            flat2 = read_image(get_filenames(indir[3])[-1]) - dark
+
+        if ctset[1] == 4:
+            if multipage:
+                flat2 = read_image(get_filenames(indir[3])[-1])[-1] - dark
+            else:
+                flat2 = read_image(get_filenames(indir[3])[-1]) - dark
             last = flat_correct(flat2, last - dark)
         else:
             last = flat_correct(flat1, last - dark)

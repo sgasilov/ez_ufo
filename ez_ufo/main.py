@@ -10,6 +10,7 @@ import glob
 import os
 from tofu.util import get_filenames, read_image
 import warnings
+
 warnings.filterwarnings("ignore")
 import time
 from shutil import rmtree
@@ -19,21 +20,9 @@ from ez_ufo.tofu_cmd_gen import tofu_cmds
 from ez_ufo.ufo_cmd_gen import ufo_cmds
 from ez_ufo.find_axis_cmd_gen import findCOR_cmds
 from ez_ufo.util import *
+from tofu.util import get_filenames
 
-#    '''Tested combinations
-#    ** w/o RingRemoval
-#    1. straight CT                             <--tested
-#    2. if prepro and nothing else:             <--tested
-#    3. elif prepro and inp:                    <--tested
-#    4. elif prepro and inp and PR:             <--tested
-#    5. if (not prepro) and inp:                <--tested
-#    6. elif (not prepro) and inp and PR:       <--tested
-#    7. if (not prepro) and (not inp) and PR:   <--tested
-#    ** with RingRemoval
-#    8. if RR and nothing else:                 <--tested both
-#    9. if RR and PR and no other preprocessing <--tested
-#    10. if RR and PR and inp                   <--tested
-#    11. if RR and PR and inp and prepro        <--tested
+
 
 def get_CTdirs_list(inpath,dirtype):
     W = WalkCTdirs(inpath,dirtype)
@@ -43,90 +32,65 @@ def get_CTdirs_list(inpath,dirtype):
     W.SortBadGoodSets()
     return W.ctsets, W.lvl0
 
-def get_dims(pth, args): #must be changed if multipage tiff input!!!
-    # get number of projections and projections dimensions
-    if not args.bigtif_inp:
-        tomos = get_filenames(pth)
-        image = read_image(tomos[0])
-        return len(tomos), image.shape
-    else:
-        return args.nviews, [args.H, args.W]
-
-def clean_tmp_proj_dirs(tmpdir):
-    tmp_pattern =  ['axis','proj','sino','mask','flat','dark','radi']
-    #clean directories in tmpdir if their names match pattern
-    if os.path.exists(tmpdir):
-        for filename in os.listdir(tmpdir):
-            if filename[:4] in tmp_pattern:
-                os.system('rm -rf {}'.format(os.path.join(tmpdir, filename)))
-
 def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews, WH):
     '''formats list of processing commands for a CT set'''
-    ############ Preprocessing commands: working on projections
-    #must be made compatible with multipage tiffs
-    #any_flat = get_filenames(os.path.join(ctset[0],Tofu._fdt_names[1]))[1]
-    any_flat = get_filenames(os.path.join(ctset[0],Tofu._fdt_names[1]))[0]
-    # make a copy of original flat-field file in case if inp is enabled
-    if args.inp and args.pre:
-        any_flat_copy = os.path.join(args.tmpdir,'flat.tif')
-        cmds.append ("cp {} {}".format(any_flat, any_flat_copy))
-        any_flat=any_flat_copy
+    # two helper variables to mark that PR/FFC has been done at some step
+    swiFFC = True  # FFC is always required required
+    swiPR = args.PR  # PR is an optional operation
+
+    ####### PREPROCESSING #########
+    flat_file_for_mask = os.path.join(args.tmpdir, 'flat.tif')
+    if args.inp:
+        flatdir = os.path.join(ctset[0], Tofu._fdt_names[1])
+        cmd = make_copy_of_flat(flatdir, flat_file_for_mask, args.dryrun)
+        cmds.append(cmd)
     if args.pre:
-        cmds.append("echo \" - Preprocessing \"")
+        cmds.append("echo \" - Applying filter(s) to images \"")
         cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir)
         cmds.extend(cmds_prepro)
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
     ###################################################
-    if args.inp: # generate commands to "inpaint" projections
-        cmds.append("echo \" - Inpainting\"")
-        cmds_inpaint = Ufo.get_inp_cmd(ctset, args.tmpdir, args, WH[0], nviews, any_flat)
+    if args.inp: # generate commands to remove sci. spots from projections
+        cmds.append("echo \" - Flat-correcting and removing large spots\"")
+        cmds_inpaint = Ufo.get_inp_cmd(ctset, args.tmpdir, args, WH[0], nviews, flat_file_for_mask)
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
         cmds.extend(cmds_inpaint)
-    ######### Projections ready #############
-    ######### If RR is not enabled we do not need sinograms ########
-    if (not args.RR):
-        if args.inp and (not args.PR):
-            cmds.append("echo \" - CT with axis {}; no ffc, no PR\"".format(ax))
-            cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, False, False))
-        elif args.inp and args.PR:
-            cmds.append("echo \" - Phase retrieval from inpainted projections\"")
+        swiFFC = False # no need to do FFC anymore
+
+    ######## PHASE-RETRIEVAL #######
+    # Do PR separately if sinograms must be generate or if vertical ROI is defined
+    if (args.PR and args.RR):# or (args.PR and args.vcrop):
+        if swiFFC:  # we still need need flat correction
+            cmds.append("echo \" - Phase retrieval with flat-correction\"")
+            cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
+        else:
+            cmds.append("echo \" - Phase retrieval from flat-corrected projections\"")
             cmds.extend(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
-            cmds.append("echo \" - CT with axis {}; no ffc, no PR\"".format(ax))
-            cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, False, False))
-        elif (not args.inp) and args.PR:
-            cmds.append("echo \" - CT with axis {}; ffc and PR\"".format(ax))
-            cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, True, True))
-        elif (not args.inp) and (not args.PR):
-            cmds.append("echo \" - CT with axis {}; ffc, no PR\"".format(ax))
-            cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, True, False))
+        swiPR = False  # no need to do PR anymore
+        swiFFC = False # no need to do FFC anymore
+
+    #if args.PR and args.vcrop: # have to reset location of input data
+    #    ctset = (args.tmpdir, ctset[1])
+
     ################# RING REMOVAL #######################
     if args.RR:
-        # Generate sinograms
-        if args.PR: # we need to do phase retrieval
-            if args.inp: # if inp was requested flat field correction has been done already
-                cmds.append("echo \" - Phase retrieval from inpainted projections\"")
-                cmds.extend(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
-            else:
-                cmds.append("echo \" - Phase retrieval with flat-correction\"")
-                cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
-            cmds.append("echo \" - Make sinograms from phase-retrieved projections\"")
+        # Generate sinograms first
+        if swiFFC: #we still need to do flat-field correction
+            cmds.append("echo \" - Make sinograms with flat-correction\"")
+            cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.tmpdir, args, nviews, WH))
+        else: # we do not need flat-field correction
+            cmds.append("echo \" - Make sinograms without flat-correction\"")
             cmds.append(Tofu.get_sinos_noffc_cmd(args.tmpdir,args, nviews, WH))
-        else: # we do not need to do phase retrieval
-            if args.inp: # if inp was requested flat field correction has been done already
-                cmds.append("echo \" - Make sinograms from inpainted projections\"")
-                cmds.append(Tofu.get_sinos_noffc_cmd(args.tmpdir,args, nviews, WH))
-            else:
-                cmds.append("echo \" - Make sinograms with flat-correction\"")
-                cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.tmpdir,args, nviews, WH))
+        swiFFC = False
         # Filter sinograms
         if (args.RR_par >=1) and (args.RR_par <=3):
             cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
             cmds.append(Ufo.get_filter_sinos_cmd(ctset[0], args.tmpdir, args.RR_par, nviews, WH[1]))
         elif args.RR_par > 5:
             cmds.append("echo \" - Ring removal - median filter\"")
-            #note - calling an external program, not ufo-kit script
+            #note - calling an external program, not an ufo-kit script
             tmp = os.path.dirname(os.path.abspath(__file__))
             path_to_filt = os.path.join(tmp,'ez_RR_simple.py' )
             if os.path.isfile(path_to_filt):
@@ -138,14 +102,16 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")
         if not args.keep_tmp:
             cmds.append( 'rm -rf {}'.format(os.path.join(args.tmpdir,'sinos')) )
-        # Preparation for final CT command
+        # Convert filtered sinograms back to projections
         cmds.append("echo \" - Generating proj from filtered sinograms\"")
         cmds.append(Tofu.get_sinos2proj_cmd(args, WH[0]))
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
-        #Finally tofu reco without ffc and PR
-        cmds.append("echo \" - CT with axis {}\"".format(ax))
-        cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, False, False))
+
+    #Finally - call to tofu reco
+    cmds.append("echo \" - CT with axis {}; ffc:{}, PR:{}\"".format(ax, swiFFC, swiPR))
+    cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, swiFFC, swiPR))
+
     return nviews, WH
 
 def main_tk(args,fdt_names):
@@ -173,11 +139,11 @@ def main_tk(args,fdt_names):
     for i, ctset in enumerate(W):
         if not already_recd(ctset[0], lvl0, recd_sets ):
             # determine initial number of projections and their shape
-            nviews, WH = get_dims( os.path.join(ctset[0],Tofu._fdt_names[2],'*.tif'),args )
+            nviews, WH, multipage = get_dims(os.path.join(ctset[0], Tofu._fdt_names[2]))
             tmp="Number of projections: {}, dimensions: {}". format(nviews, WH)
             cmds.append("echo \"{}\"".format(tmp))
             if args.ax==1:
-                ax=FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight)
+                ax=FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight, multipage)
             elif args.ax==2:
                 ax=FindCOR.find_axis_std(ctset,args.tmpdir,\
                                 args.ax_range, args.ax_p_size,args.ax_row,nviews)

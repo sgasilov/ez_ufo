@@ -18,8 +18,7 @@ import getpass
 E=tk.E; W=tk.W
 
 class tk_args():
-    def __init__(self, e_indir, e_bigtifinput, e_nviews, e_H, e_W, \
-                e_tmpdir, e_outdir, e_bigtif, \
+    def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif, \
                 e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, \
                 e_inp, e_inp_thr, e_inp_sig, \
                 e_RR, e_RR_par, \
@@ -34,14 +33,14 @@ class tk_args():
         # PATHS
         self.args['indir']=str(e_indir.get())
         setattr(self,'indir',self.args['indir'])
-        self.args['bigtif_inp']=bool(e_bigtifinput.get())
-        setattr(self,'bigtif_inp',self.args['bigtif_inp'])
-        self.args['nviews']=int(e_nviews.get())
-        setattr(self,'nviews',self.args['nviews'])
-        self.args['H']=int(e_H.get())
-        setattr(self,'H',self.args['H'])
-        self.args['W']=int(e_W.get())
-        setattr(self,'W',self.args['W'])
+        # self.args['bigtif_inp']=bool(e_bigtifinput.get())
+        # setattr(self,'bigtif_inp',self.args['bigtif_inp'])
+        # self.args['nviews']=int(e_nviews.get())
+        # setattr(self,'nviews',self.args['nviews'])
+        # self.args['H']=int(e_H.get())
+        # setattr(self,'H',self.args['H'])
+        # self.args['W']=int(e_W.get())
+        # setattr(self,'W',self.args['W'])
         self.args['outdir']=str(e_outdir.get())
         setattr(self,'outdir',self.args['outdir'])
         self.args['tmpdir']=str(e_tmpdir.get())
@@ -148,35 +147,35 @@ class GUI:
         self.e_indir = tk.Entry(A,textvariable=v, width=70)
         self.e_indir.grid(row=r, column=0, columnspan=2, sticky=E)
         r+=1
-        #handling of multipage tiffs
-        f_mtif = tk.Frame(A)
-        f_mtif.grid(row=r, column=0, columnspan=2)
-        self.e_bigtifinput = tk.BooleanVar(A, value=False)
-        tmp="Frames stored in multipage tifs."
-        f_mtif_b0 = tk.Checkbutton(f_mtif, text=tmp, variable=self.e_bigtifinput)
-        f_mtif_b0.pack(side="left")
-        tmp="For input in multipage tifs define explicitly:"
-        f_mtif_l0 = tk.Label(f_mtif, text=tmp)
-        f_mtif_l0.pack(side="left")
-        r+=1
-        f_mtif_par = tk.Frame(A)
-        f_mtif_par.grid(row=r, column=0, columnspan=2)
-        f_mtif_l1 = tk.Label(f_mtif_par, text="Number of projections")
-        f_mtif_l1.pack(side="left")
-        v = tk.IntVar(A, value=0)
-        self.e_nviews = tk.Entry(f_mtif_par,textvariable=v,width=10);
-        self.e_nviews.pack(side="left")
-        f_mtif_l2 = tk.Label(f_mtif_par, text="  Frames height")
-        f_mtif_l2.pack(side="left")
-        v = tk.IntVar(A, value=0)
-        self.e_H = tk.Entry(f_mtif_par,textvariable=v,width=10);
-        self.e_H.pack(side="left")
-        f_mtif_l3 = tk.Label(f_mtif_par, text="  width")
-        f_mtif_l3.pack(side="left")
-        v = tk.IntVar(A, value=0)
-        self.e_W = tk.Entry(f_mtif_par,textvariable=v,width=10);
-        self.e_W.pack(side="left")
-        r+=1
+        # #explicit parameters for multipage tiffs
+        # f_mtif = tk.Frame(A)
+        # f_mtif.grid(row=r, column=0, columnspan=2)
+        # self.e_bigtifinput = tk.BooleanVar(A, value=False)
+        # tmp="Frames stored in multipage tifs."
+        # f_mtif_b0 = tk.Checkbutton(f_mtif, text=tmp, variable=self.e_bigtifinput)
+        # f_mtif_b0.pack(side="left")
+        # tmp="For input in multipage tifs define explicitly:"
+        # f_mtif_l0 = tk.Label(f_mtif, text=tmp)
+        # f_mtif_l0.pack(side="left")
+        # r+=1
+        # f_mtif_par = tk.Frame(A)
+        # f_mtif_par.grid(row=r, column=0, columnspan=2)
+        # f_mtif_l1 = tk.Label(f_mtif_par, text="Number of projections")
+        # f_mtif_l1.pack(side="left")
+        # v = tk.IntVar(A, value=0)
+        # self.e_nviews = tk.Entry(f_mtif_par,textvariable=v,width=10);
+        # self.e_nviews.pack(side="left")
+        # f_mtif_l2 = tk.Label(f_mtif_par, text="  Frames height")
+        # f_mtif_l2.pack(side="left")
+        # v = tk.IntVar(A, value=0)
+        # self.e_H = tk.Entry(f_mtif_par,textvariable=v,width=10);
+        # self.e_H.pack(side="left")
+        # f_mtif_l3 = tk.Label(f_mtif_par, text="  width")
+        # f_mtif_l3.pack(side="left")
+        # v = tk.IntVar(A, value=0)
+        # self.e_W = tk.Entry(f_mtif_par,textvariable=v,width=10);
+        # self.e_W.pack(side="left")
+        # r+=1
 
         #Select output directory
         f0 = tk.Frame(A)
@@ -315,7 +314,7 @@ class GUI:
         ################### PRE/POST PROCESSING ##############
         ### Crop vertically
         self.e_vcrop = tk.BooleanVar(A, value=False)
-        tmp="Select rows which will be processed"
+        tmp="Select rows which will be reconstructed"
         tk.Checkbutton(A, text=tmp, font=bold_font, fg="firebrick2", \
                         variable=self.e_vcrop).grid(row=r, column=0)
         r+=1
@@ -535,8 +534,7 @@ class GUI:
         self.e_dryrun = tk.BooleanVar(self.A, value=False)
 
     def reco(self):
-        args=tk_args(self.e_indir, self.e_bigtifinput, self.e_nviews, self.e_H, self.e_W,
-            self.e_tmpdir, self.e_outdir, self.e_bigtif,\
+        args=tk_args(self.e_indir, self.e_tmpdir, self.e_outdir, self.e_bigtif,\
             self.e_ax, self.e_ax_range, self.e_ax_row, self.e_ax_p_size, self.e_ax_fix, self.e_dax, \
             self.e_inp, self.e_inp_thr, self.e_inp_sig, \
             self.e_RR, self.e_RR_par, \

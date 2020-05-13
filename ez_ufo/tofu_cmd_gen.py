@@ -148,7 +148,7 @@ class tofu_cmds(object):
     def get_pr_tofu_cmd(self, ctset, args, nviews, N):
         indir = self.make_inpaths(ctset[0], ctset[1])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2])
-        cmd = 'tofu preprocess --absorptivity --fix-nan-and-inf --projection-filter none'
+        cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
         if ctset[1]==4:
             cmd += ' --flats2 {}'.format(indir[3])
@@ -170,12 +170,15 @@ class tofu_cmds(object):
         cmd += '  --projections {}'.format(indir[2])
         cmd += ' --output {}'.format(out_pattern)
         if ffc:
-            cmd+=' --absorptivity --fix-nan-and-inf'
+            cmd += ' --fix-nan-and-inf'
             cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
             if ctset[1]==4: #must be equivalent to len(indir)>3
                 cmd += ' --flats2 {}'.format(indir[3])
+            if not PR:
+                cmd += ' --absorptivity'
         if PR:
-            cmd += ' --energy {} --propagation-distance {}'\
+            cmd += ' --disable-projection-crop --delta 1e-6'\
+                   ' --energy {} --propagation-distance {}'\
                    ' --pixel-size {} --regularization-rate {:0.2f}'\
                    .format(args.energy, args.z, args.pixel, args.log10db)
         cmd += ' --center-position-x {}'.format(ax)
@@ -185,16 +188,19 @@ class tofu_cmds(object):
         #    cmd += ' --number {}'.format(args.nviews)
         cmd += ' --volume-angle-z {:0.5f}'.format(args.a0)
         # rows-slices to be reconstructed
-        b = WH[0]/2
-        a = -b
+        # full ROI
+        b = int(np.ceil(WH[0]/2.0))
+        a = -int(WH[0]/2.0)
         c = 1
         if args.vcrop:
             if args.RR:
-                b = int(args.yheight/args.ystep/2)
-                a = -b
+                h2 = args.yheight/args.ystep/2.0
+                b = np.ceil(h2)
+                a = -int(h2)
             else:
-                a = args.y-b
-                b = args.y+args.yheight-b
+                h2 = int(WH[0]/2.0)
+                a = args.y - h2
+                b = args.y+args.yheight - h2
                 c = args.ystep
         cmd += ' --region={},{},{}'.format(a,b,c)
         # crop of reconstructed slice in the axial plane
