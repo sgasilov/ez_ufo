@@ -136,15 +136,17 @@ def main_tk(args,fdt_names):
     #populate list of reconstruction commands
     if not os.path.exists(args.tmpdir):
             os.makedirs(args.tmpdir)
+    else:
+        clean_tmp_proj_dirs(args.tmpdir)
     for i, ctset in enumerate(W):
         if not already_recd(ctset[0], lvl0, recd_sets ):
             # determine initial number of projections and their shape
             nviews, WH, multipage = get_dims(os.path.join(ctset[0], Tofu._fdt_names[2]))
             tmp="Number of projections: {}, dimensions: {}". format(nviews, WH)
             cmds.append("echo \"{}\"".format(tmp))
-            if args.ax==1:
+            if args.ax == 1:
                 ax=FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight, multipage)
-            elif args.ax==2:
+            elif args.ax == 2:
                 ax=FindCOR.find_axis_std(ctset,args.tmpdir,\
                                 args.ax_range, args.ax_p_size,args.ax_row,nviews)
             else:
@@ -152,7 +154,6 @@ def main_tk(args,fdt_names):
             setid = ctset[0][len(lvl0)+1:]
             out_pattern=os.path.join(args.outdir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))
-            clean_tmp_proj_dirs(args.tmpdir)
             nviews, WH = frmt_ufo_cmds(cmds, ctset, out_pattern, \
                             ax, args, Tofu, Ufo, FindCOR, nviews, WH)
             save_params(args, setid, ax, nviews, WH)
