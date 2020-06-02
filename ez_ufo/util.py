@@ -6,7 +6,7 @@ Created on Apr 20, 2020
 import os
 from tofu.util import (get_filenames, get_first_filename, get_image_shape, read_image)
 import tifffile
-
+import numpy as np
 
 def get_dims(pth):
     # get number of projections and projections dimensions
@@ -26,6 +26,18 @@ def get_dims(pth):
         return nviews, [shape[-2], shape[-1]], multipage
     return -6, [-6, -6]
 
+def bad_vert_ROI(multipage, path2proj, y, height):
+    if multipage:
+        with tifffile.TiffFile(get_filenames(path2proj)[0]) as tif:
+            proj = tif.pages[0].asarray().astype(np.float)
+    else:
+        proj = read_image(get_filenames(path2proj)[0]).astype(np.float)
+    y_region = slice(y, min(y + height, proj.shape[0]), 1)
+    proj = proj[y_region, :]
+    if proj.shape[0] == 0:
+        return True
+    else:
+        return False
 
 def make_copy_of_flat(flatdir, flat_copy_name, dryrun):
     first_flat_file = get_first_filename(flatdir)

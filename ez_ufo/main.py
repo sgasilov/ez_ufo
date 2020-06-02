@@ -46,7 +46,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         cmds.append(cmd)
     if args.pre:
         cmds.append("echo \" - Applying filter(s) to images \"")
-        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir)
+        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir, args.dryrun)
         cmds.extend(cmds_prepro)
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
@@ -120,9 +120,8 @@ def main_tk(args,fdt_names):
     if args.gray256:
         if args.hmin>=args.hmax:
             raise ValueError('hmin must be smaller than hmax to convert to 8bit without contrast inversion')
-    print "**** Phase retrieval: {}; Ring removal: {}; Ufo-launch command {};"\
-                .format(args.PR, args.RR, args.pre)
     #get list of all good CT directories to be reconstructed
+    print '*********** Analyzing input directory ************'
     W, lvl0 = get_CTdirs_list(args.indir, fdt_names)
     # W is an array of tuples (path, type)
     # get list of already reconstructed sets
@@ -138,32 +137,41 @@ def main_tk(args,fdt_names):
             os.makedirs(args.tmpdir)
     else:
         clean_tmp_proj_dirs(args.tmpdir)
+    print '*********** AXIS INFO ************'
     for i, ctset in enumerate(W):
         if not already_recd(ctset[0], lvl0, recd_sets ):
             # determine initial number of projections and their shape
-            nviews, WH, multipage = get_dims(os.path.join(ctset[0], Tofu._fdt_names[2]))
-            tmp="Number of projections: {}, dimensions: {}". format(nviews, WH)
-            cmds.append("echo \"{}\"".format(tmp))
+            path2proj = os.path.join(ctset[0], Tofu._fdt_names[2])
+            nviews, WH, multipage = get_dims(path2proj)
+            if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
+                print '{:>30}\t{}'.format('CTset', 'Axis')
+                print '{:>30}\t{}'.format(ctset[0], 'na')
+                print 'Vertical ROI does not contain any rows.'
+                print "Number of projections: {}, dimensions: {}".format(nviews, WH)
+                continue
             if args.ax == 1:
-                ax=FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight, multipage)
+                ax = FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight, multipage)
             elif args.ax == 2:
-                ax=FindCOR.find_axis_std(ctset,args.tmpdir,\
+                ax = FindCOR.find_axis_std(ctset,args.tmpdir,\
                                 args.ax_range, args.ax_p_size,args.ax_row,nviews)
             else:
-                ax=args.ax_fix+i*args.dax
+                ax = args.ax_fix+i*args.dax
             setid = ctset[0][len(lvl0)+1:]
             out_pattern=os.path.join(args.outdir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))
             nviews, WH = frmt_ufo_cmds(cmds, ctset, out_pattern, \
                             ax, args, Tofu, Ufo, FindCOR, nviews, WH)
             save_params(args, setid, ax, nviews, WH)
-            print '*********** AXIS INFO ************'
             print '{:>30}\t{}'.format('CTset','Axis')
             print '{:>30}\t{}'.format(ctset[0], ax)
+            print "Number of projections: {}, dimensions: {}".format(nviews, WH)
+            #tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
+            #cmds.append("echo \"{}\"".format(tmp))
         else:
             print '{} has been already reconstructed'.format(ctset[0])
     #execute commands = start reconstruction
     start = time.time()
+    print '*********** PROCESSING ************'
     for cmd in cmds:
         if not args.dryrun:
             os.system(cmd)

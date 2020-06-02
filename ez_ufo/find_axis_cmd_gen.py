@@ -12,6 +12,7 @@ import numpy as np
 from ez_ufo.evaluate_sharpness import process as process_metrics
 from ez_ufo.util import enquote
 from tofu.util import (get_filenames, read_image, determine_shape)
+import tifffile
 
 
 class findCOR_cmds(object):
@@ -73,10 +74,14 @@ class findCOR_cmds(object):
             return np.log(result)
 
         if multipage:
-            first = read_image(get_filenames(indir[2])[0])[0].astype(np.float)
-            last = read_image(get_filenames(indir[2])[-1])[-1].astype(np.float)
-            dark = read_image(get_filenames(indir[0])[-1])[-1].astype(np.float)
-            flat1 = read_image(get_filenames(indir[1])[0])[-1] - dark
+            with tifffile.TiffFile(get_filenames(indir[2])[0]) as tif:
+                first = tif.pages[0].asarray().astype(np.float)
+            with tifffile.TiffFile(get_filenames(indir[2])[-1]) as tif:
+                last = tif.pages[-1].asarray().astype(np.float)
+            with tifffile.TiffFile(get_filenames(indir[0])[-1]) as tif:
+                dark = tif.pages[-1].asarray().astype(np.float)
+            with tifffile.TiffFile(get_filenames(indir[1])[0]) as tif:
+                flat1 = tif.pages[-1].asarray().astype(np.float) - dark
         else:
             first = read_image(get_filenames(indir[2])[0]).astype(np.float)
             last = read_image(get_filenames(indir[2])[-1]).astype(np.float)
@@ -87,7 +92,8 @@ class findCOR_cmds(object):
 
         if ctset[1] == 4:
             if multipage:
-                flat2 = read_image(get_filenames(indir[3])[-1])[-1] - dark
+                with tifffile.TiffFile(get_filenames(indir[3])[0]) as tif:
+                    flat2 = tif.pages[-1].asarray().astype(np.float) - dark
             else:
                 flat2 = read_image(get_filenames(indir[3])[-1]) - dark
             last = flat_correct(flat2, last - dark)

@@ -31,7 +31,7 @@ def fmt_in_out_path(tmpdir, indir, raw_proj_dir_name, croutdir = True):
         raise ValueError('Something is wrong with in/out filenames')
     #physically create output directory
     tmp = os.path.join(tmpdir,out_proj_dir)
-    if croutdir:
+    if croutdir and not os.path.exists(tmp):
         os.makedirs(tmp)
     #return names of input directory and output pattern with abs path
     return in_proj_dir, os.path.join( tmp, 'proj-%04i.tif' )
@@ -91,14 +91,15 @@ class ufo_cmds(object):
         return cmd
 
         
-    def get_pre_cmd(self, ctset, pre_cmd, tmpdir):
+    def get_pre_cmd(self, ctset, pre_cmd, tmpdir, dryrun):
         indir = self.make_inpaths(ctset[0],ctset[1])
         outdir = self.make_inpaths(tmpdir,ctset[1])
         #add index to the name of th eoutput directory with projections
         #if enabled preprocessing is always the first step
         outdir[2]=os.path.join(tmpdir, "proj-step1")
         #we also must create this directory to format pathes correcly
-        os.makedirs(outdir[2])
+        if not os.path.exists(outdir[2]):
+            os.makedirs(outdir[2])
         cmds=[]
         for i, fol in enumerate(indir):
             in_pattern = os.path.join(fol,'*.tif')
