@@ -92,7 +92,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             cmds.append("echo \" - Ring removal - median filter\"")
             #note - calling an external program, not an ufo-kit script
             tmp = os.path.dirname(os.path.abspath(__file__))
-            path_to_filt = os.path.join(tmp,'ez_RR_simple.py' )
+            path_to_filt = os.path.join(tmp,'RR_simple.py' )
             if os.path.isfile(path_to_filt):
                 tmp = os.path.join(args.tmpdir, "sinos")
                 cmdtmp = '{} --sinos {} --mws {}'\
@@ -117,6 +117,11 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
 def main_tk(args,fdt_names):
     # rm files in temporary directory first of all to avoid problems
     # when reconstructing ct sets with variable number of rows or projections
+    if not os.path.exists(args.tmpdir):
+            os.makedirs(args.tmpdir)
+    else:
+        clean_tmp_proj_dirs(args.tmpdir)
+    #input params consistency check
     if args.gray256:
         if args.hmin>=args.hmax:
             raise ValueError('hmin must be smaller than hmax to convert to 8bit without contrast inversion')
@@ -133,10 +138,6 @@ def main_tk(args,fdt_names):
     Tofu = tofu_cmds(fdt_names)
     Ufo = ufo_cmds(fdt_names)
     #populate list of reconstruction commands
-    if not os.path.exists(args.tmpdir):
-            os.makedirs(args.tmpdir)
-    else:
-        clean_tmp_proj_dirs(args.tmpdir)
     print '*********** AXIS INFO ************'
     for i, ctset in enumerate(W):
         if not already_recd(ctset[0], lvl0, recd_sets ):

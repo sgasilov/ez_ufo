@@ -83,11 +83,12 @@ class ufo_cmds(object):
         sin_in = os.path.join(tmpdir,'sinos')
         out_pattern = os.path.join(tmpdir,'sinos-filt/sin-%04i.tif')
         cmd = 'ufo-launch read path={}'.format(sin_in)
-        cmd += ' ! fft dimensions=2 ! filter-stripes sigma={}'.format(RR)
-        cmd += ' ! ifft dimensions=2 crop-width={} crop-height={}'.format(w, nviews)
+        #cmd += ' ! fft dimensions=2 ! filter-stripes sigma={}'.format(RR)
+        #cmd += ' ! ifft dimensions=2 crop-width={} crop-height={}'.format(w, nviews)
+        #cmd += ' ! write filename={}'.format(enquote(out_pattern))
+        cmd += ' ! transpose ! fft dimensions=1 !  filter-stripes1d strength={}'.format(RR)
+        cmd += ' ! ifft dimensions=1 crop-width={} ! transpose'.format(nviews)
         cmd += ' ! write filename={}'.format(enquote(out_pattern))
-        #'transpose ! fft dimensions=1 !  filter-stripes1d strength={} ! '\
-        #'ifft dimensions=1 crop-width={} ! transpose ! '\
         return cmd
 
         
