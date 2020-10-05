@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python2
 '''
 Created on Apr 5, 2018
 
@@ -95,7 +95,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             path_to_filt = os.path.join(tmp,'RR_simple.py' )
             if os.path.isfile(path_to_filt):
                 tmp = os.path.join(args.tmpdir, "sinos")
-                cmdtmp = '{} --sinos {} --mws {}'\
+                cmdtmp = 'python {} --sinos {} --mws {}'\
                     .format(path_to_filt, tmp, args.RR_par)
                 cmds.append(cmdtmp)
             else:
