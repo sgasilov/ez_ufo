@@ -58,14 +58,14 @@ def make_copy_of_flat(flatdir, flat_copy_name, dryrun):
     return cmd
 
 
-def clean_tmp_proj_dirs(tmpdir):
+def clean_tmp_dirs(tmpdir, fdt_names):
     tmp_pattern = ['axis', 'proj', 'sino', 'mask', 'flat', 'dark', 'radi']
+    tmp_pattern += fdt_names
     # clean directories in tmpdir if their names match pattern
     if os.path.exists(tmpdir):
         for filename in os.listdir(tmpdir):
             if filename[:4] in tmp_pattern:
                 os.system('rm -rf {}'.format(os.path.join(tmpdir, filename)))
-
 
 def enquote(string, escape=False):
     addition = '\\"' if escape else '"'

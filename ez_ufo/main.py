@@ -67,7 +67,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
         else:
             cmds.append("echo \" - Phase retrieval from flat-corrected projections\"")
-            cmds.extend(Ufo.get_pr_ufo_cmd(ctset, args, args.tmpdir, nviews, WH))
+            cmds.extend(Ufo.get_pr_ufo_cmd(args, nviews, WH))
         swiPR = False  # no need to do PR anymore
         swiFFC = False # no need to do FFC anymore
 
@@ -82,7 +82,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.tmpdir, args, nviews, WH))
         else: # we do not need flat-field correction
             cmds.append("echo \" - Make sinograms without flat-correction\"")
-            cmds.append(Tofu.get_sinos_noffc_cmd(args.tmpdir,args, nviews, WH))
+            cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
         swiFFC = False
         # Filter sinograms
         if (args.RR_par >=1) and (args.RR_par <=3):
@@ -115,12 +115,13 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     return nviews, WH
 
 def main_tk(args,fdt_names):
-    # rm files in temporary directory first of all to avoid problems
-    # when reconstructing ct sets with variable number of rows or projections
+    #array with the list of commands
+    cmds = []
+    #clean temporary directory or create if it doesn't exist
     if not os.path.exists(args.tmpdir):
             os.makedirs(args.tmpdir)
-    else:
-        clean_tmp_proj_dirs(args.tmpdir)
+    #else:
+    #    clean_tmp_dirs(args.tmpdir, fdt_names)
     #input params consistency check
     if args.gray256:
         if args.hmin>=args.hmax:
@@ -131,8 +132,6 @@ def main_tk(args,fdt_names):
     # W is an array of tuples (path, type)
     # get list of already reconstructed sets
     recd_sets = findSlicesDirs(args.outdir)
-    #generate list of commands
-    cmds = []
     #initialize command generators
     FindCOR = findCOR_cmds(fdt_names)
     Tofu = tofu_cmds(fdt_names)
@@ -158,8 +157,17 @@ def main_tk(args,fdt_names):
             else:
                 ax = args.ax_fix+i*args.dax
             setid = ctset[0][len(lvl0)+1:]
-            out_pattern=os.path.join(args.outdir, setid, 'sli/sli')
+            if args.bigtif_sli:
+                out_pattern = os.path.join(args.outdir, setid, 'sli/sli')
+            else:
+                out_pattern = os.path.join(args.outdir, setid, 'sli/sli_%04i.tif')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))
+            # rm files in temporary directory first of all to
+            # format paths correctly and to avoid problems
+            # when reconstructing ct sets with variable number of rows or projections
+            cmds.append("echo \"Cleaning temporary directory\"".format(setid))
+            clean_tmp_dirs(args.tmpdir, fdt_names)
+            # call function which formats commands for this data set
             nviews, WH = frmt_ufo_cmds(cmds, ctset, out_pattern, \
                             ax, args, Tofu, Ufo, FindCOR, nviews, WH)
             save_params(args, setid, ax, nviews, WH)

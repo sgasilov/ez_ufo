@@ -56,7 +56,7 @@ class tofu_cmds(object):
         #or CT reconstruction after preprocessing only
         indir = self.make_inpaths(ctset[0], ctset[1])
         #correct location of proj folder in case if prepro was done
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
+        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         #format command
         cmd = 'tofu tomo --absorptivity --fix-nan-and-inf'
@@ -76,7 +76,7 @@ class tofu_cmds(object):
 
     def get_ct_proj_cmd(self, out_pattern,ax, args, nviews, WH):
         #CT reconstruction from pre-processed and flat-corrected projections
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
+        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,'obsolete;if-you-need-fix-it', self._fdt_names[2], False)
         cmd = 'tofu tomo --projections {}'.format( in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
@@ -108,7 +108,7 @@ class tofu_cmds(object):
 
     def get_sinos_ffc_cmd(self,ctset, tmpdir,args, nviews, WH):
         indir = self.make_inpaths(ctset[0], ctset[1])
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
         cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
         if ctset[1]==4:
@@ -122,8 +122,8 @@ class tofu_cmds(object):
             cmd += " --output-bytes-per-file 0"
         return cmd
 
-    def get_sinos_noffc_cmd(self,tmpdir,args, nviews, WH):
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
+    def get_sinos_noffc_cmd(self, ctsetpath, tmpdir, args, nviews, WH):
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctsetpath, self._fdt_names[2], False)
         cmd = 'tofu sinos'
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
@@ -135,7 +135,7 @@ class tofu_cmds(object):
         return cmd
 
     def get_sinos2proj_cmd(self,args, proj_height):
-        quatsch, out_pattern = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], True)
+        quatsch, out_pattern = fmt_in_out_path(args.tmpdir,'quatsch', self._fdt_names[2], True)
         cmd = 'tofu sinos'
         cmd += ' --projections {}'.format(os.path.join(args.tmpdir,'sinos-filt'))
         cmd += ' --output {}'.format( out_pattern )
@@ -146,8 +146,12 @@ class tofu_cmds(object):
         return cmd
 
     def get_pr_tofu_cmd(self, ctset, args, nviews, N):
+        #indir will format paths to flats dakrs and tomo2 correctly even if they were
+        #pre-processed, however path to the input directory with projections
+        # cannot be formatted with that command correctly
         indir = self.make_inpaths(ctset[0], ctset[1])
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2])
+        # so we need a separate "universal" command which considers all previous steps
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2])
         cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
         if ctset[1]==4:
@@ -163,11 +167,13 @@ class tofu_cmds(object):
         #or CT reconstruction after preprocessing only
         indir = self.make_inpaths(ctset[0], ctset[1])
         #correct location of proj folder in case if prepro was done
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
-        indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
+        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
+        #in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
+        #indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         #format command
         cmd = 'tofu reco --overall-angle 180'
-        cmd += '  --projections {}'.format(indir[2])
+        #cmd += '  --projections {}'.format(indir[2])
+        cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if ffc:
             cmd += ' --fix-nan-and-inf'

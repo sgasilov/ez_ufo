@@ -8,7 +8,7 @@ Created on Apr 5, 2018
 import Tkinter as tk
 import tkMessageBox
 from tkFont import Font
-from ez_ufo.main import main_tk, clean_tmp_proj_dirs
+from ez_ufo.main import main_tk, clean_tmp_dirs
 import tkFileDialog as filedialog
 import numpy as np
 import os
@@ -497,7 +497,7 @@ class GUI:
         b5.grid(row=r,column=1)
 
     def clean_and_quit(self):
-        clean_tmp_proj_dirs(self.e_tmpdir.get())
+        clean_tmp_dirs(self.e_tmpdir.get(), self.get_fdt_names())
         self.A.quit()
 
     def select_indir(self):
@@ -546,11 +546,13 @@ class GUI:
             self.e_crop, self.e_x0, self.e_dx, self.e_y0, self.e_dy, \
             self.e_dryrun, self.e_parfile, self.e_keep_tmp)
 
+        main_tk(args, self.get_fdt_names())
+
+    def get_fdt_names(self):
         DIRTYP = []
         for i in self.e_DIRTYP:
             DIRTYP.append(i.get())
-
-        main_tk(args, DIRTYP)
+        return DIRTYP
 
     def rm_rec_dir(self):
         titletext = "Warning: data can be lost"

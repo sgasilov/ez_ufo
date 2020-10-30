@@ -63,8 +63,9 @@ class ufo_cmds(object):
             cmd += " bytes-per-file=0"
         return cmd
 
-    def get_pr_ufo_cmd(self, ctset, args, tmpdir, nviews, WH):
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2] )
+    def get_pr_ufo_cmd(self, args, nviews, WH):
+        #in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, 'quatsch', self._fdt_names[2])
         cmds=[]
         cmd = 'ufo-launch read path={} height={} number={}'.format(in_proj_dir, WH[0], nviews)
         cmd +=' ! fft dimensions=2 ! retrieve-phase'
@@ -123,7 +124,7 @@ class ufo_cmds(object):
         cmd += ' --output {} --output-bytes-per-file 0'.format(mask_file)
         cmds.append(cmd)
         ######### FLAT-CORRECT #########
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
         cmd = 'tofu flatcorrect --fix-nan-and-inf'
         cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
         cmd += ' --projections {}'.format(in_proj_dir)
@@ -140,7 +141,7 @@ class ufo_cmds(object):
             if len(indir)>3:
                 cmds.append( 'rm -rf {}'.format(indir[3]) )
         ######### INPAINT #########
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
         cmd = 'ufo-launch [read path={} height={} number={}'.format(in_proj_dir, N, nviews)
         cmd += ', read path={}]'.format(mask_file)
         cmd +=' ! horizontal-interpolate ! '
