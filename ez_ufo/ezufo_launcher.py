@@ -139,35 +139,6 @@ class GUI:
         self.e_indir = tk.Entry(A,textvariable=v, width=70)
         self.e_indir.grid(row=r, column=0, columnspan=2, sticky=E)
         r+=1
-        # #explicit parameters for multipage tiffs
-        # f_mtif = tk.Frame(A)
-        # f_mtif.grid(row=r, column=0, columnspan=2)
-        # self.e_bigtifinput = tk.BooleanVar(A, value=False)
-        # tmp="Frames stored in multipage tifs."
-        # f_mtif_b0 = tk.Checkbutton(f_mtif, text=tmp, variable=self.e_bigtifinput)
-        # f_mtif_b0.pack(side="left")
-        # tmp="For input in multipage tifs define explicitly:"
-        # f_mtif_l0 = tk.Label(f_mtif, text=tmp)
-        # f_mtif_l0.pack(side="left")
-        # r+=1
-        # f_mtif_par = tk.Frame(A)
-        # f_mtif_par.grid(row=r, column=0, columnspan=2)
-        # f_mtif_l1 = tk.Label(f_mtif_par, text="Number of projections")
-        # f_mtif_l1.pack(side="left")
-        # v = tk.IntVar(A, value=0)
-        # self.e_nviews = tk.Entry(f_mtif_par,textvariable=v,width=10);
-        # self.e_nviews.pack(side="left")
-        # f_mtif_l2 = tk.Label(f_mtif_par, text="  Frames height")
-        # f_mtif_l2.pack(side="left")
-        # v = tk.IntVar(A, value=0)
-        # self.e_H = tk.Entry(f_mtif_par,textvariable=v,width=10);
-        # self.e_H.pack(side="left")
-        # f_mtif_l3 = tk.Label(f_mtif_par, text="  width")
-        # f_mtif_l3.pack(side="left")
-        # v = tk.IntVar(A, value=0)
-        # self.e_W = tk.Entry(f_mtif_par,textvariable=v,width=10);
-        # self.e_W.pack(side="left")
-        # r+=1
 
         #Select output directory
         f0 = tk.Frame(A)
@@ -176,7 +147,7 @@ class GUI:
             text="Select output directory (or paste abs. path)", \
             font=bold_font, command=self.select_outdir)
         #Save in separate files of in one huge tiff file
-        self.e_bigtif = tk.BooleanVar(A, value=True)
+        self.e_bigtif = tk.BooleanVar(A, value=False)
         tmp="Save slices in multipage tifs"
         b0_2 = tk.Checkbutton(f0, text=tmp, variable=self.e_bigtif)
         f0.grid(row=r, column=0, columnspan=2)
@@ -489,7 +460,12 @@ class GUI:
         b5.grid(row=r,column=1)
 
     def clean_and_quit(self):
+        #remove all directories with projections
         clean_tmp_dirs(self.e_tmpdir.get(), self.get_fdt_names())
+        #remove axis-search dir too
+        tmp = os.path.join(self.e_tmpdir.get(), 'axis-search')
+        if os.path.exists(tmp):
+            os.system('rm -rf {}'.format(tmp))
         self.A.quit()
 
     def select_indir(self):

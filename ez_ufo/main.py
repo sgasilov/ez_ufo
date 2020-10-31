@@ -152,15 +152,14 @@ def main_tk(args,fdt_names):
             if args.ax == 1:
                 ax = FindCOR.find_axis_corr(ctset,args.vcrop, args.y,args.yheight, multipage)
             elif args.ax == 2:
+                cmds.append("echo \"Cleaning axis-search in tmp directory\"")
+                os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))
                 ax = FindCOR.find_axis_std(ctset,args.tmpdir,\
                                 args.ax_range, args.ax_p_size,args.ax_row,nviews)
             else:
                 ax = args.ax_fix+i*args.dax
             setid = ctset[0][len(lvl0)+1:]
-            if args.bigtif_sli:
-                out_pattern = os.path.join(args.outdir, setid, 'sli/sli')
-            else:
-                out_pattern = os.path.join(args.outdir, setid, 'sli/sli_%04i.tif')
+            out_pattern = os.path.join(args.outdir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))
             # rm files in temporary directory first of all to
             # format paths correctly and to avoid problems

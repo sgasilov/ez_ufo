@@ -42,7 +42,7 @@ class findCOR_cmds(object):
         cmd += ' --angle {:0.5f}'.format( np.radians(180.0/float(nviews)) )
         if ctset[1]==4:
             cmd += ' --flats2 {}'.format(indir[3])
-        out_pattern = os.path.join(tmpdir,"axis-search/slice")
+        out_pattern = os.path.join(tmpdir,"axis-search/sli")
         cmd += ' --output {}'.format(enquote(out_pattern))
         cmd += ' --x-region={},{},{}'.format(-p_width / 2, p_width / 2, 1)
         cmd += ' --y-region={},{},{}'.format(-p_width / 2, p_width / 2, 1)
