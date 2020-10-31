@@ -333,7 +333,7 @@ class GUI:
                         variable=self.e_pre).grid(row=r, column=0)
         r+=1
         #tmp='crop x=500 y=10args0 width=1000 height=50 ! bin size=2'
-        tmp = 'remove_outliers size=3 threshold=500 sign=1'
+        tmp = 'remove-outliers size=3 threshold=500 sign=1'
         v = tk.StringVar(A, value=tmp)
         self.e_pre_cmd = tk.Entry(A,textvariable=v, width=70)
         self.e_pre_cmd.grid(row=r, column=0, columnspan=2, sticky=E)
