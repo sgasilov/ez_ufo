@@ -8,6 +8,6 @@ setup(name='ez_ufo',
     url='https://bmit.lightsource.ca',
     packages=['ez_ufo'],
     package_data={'ez_ufo': ['block_diagram.jpg']},
-    scripts=['bin/ezufo', 'bin/eznlmdn]
+    scripts=['bin/ezufo', 'bin/eznlmdn']
     )
 
