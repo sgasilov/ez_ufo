@@ -1,8 +1,7 @@
-#!/usr/bin/env python2
 '''
 Created on Apr 5, 2018
 
-@author: gasilos
+@author: sergei gasilov
 '''
 
 import argparse

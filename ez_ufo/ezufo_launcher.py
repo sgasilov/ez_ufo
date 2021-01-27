@@ -471,18 +471,22 @@ class GUI:
     def select_indir(self):
         cwd = self.e_indir.get()
         if cwd=='':
-            cwd = '/mnt/BMIT_data/BMIT-USERS-DATA'
+            #cwd = '/mnt/BMIT_data/BMIT-USERS-DATA'
+            cwd = os.getcwd()
         tmp = "Select input directory"
         self.indir = filedialog.askdirectory(\
                   initialdir = cwd, title = tmp)
         self.e_indir.delete(0, tk.END)
         self.e_indir.insert(0, self.indir)
+        self.e_outdir.delete(0, tk.END)
+        self.e_outdir.insert(0, self.indir+'-rec')
 
     def select_outdir(self):
         tmp = "Select output directory"
         cwd = self.e_outdir.get()
         if cwd=='':
-            cwd = '/mnt/BMIT_data/BMIT-USERS-DATA/rec'
+            #cwd = '/mnt/BMIT_data/BMIT-USERS-DATA/rec'
+            cwd = os.getcwd()
         self.outdir = filedialog.askdirectory(\
                   initialdir = cwd, title = tmp)
         self.e_outdir.delete(0, tk.END)
@@ -515,6 +519,7 @@ class GUI:
             self.e_dryrun, self.e_parfile, self.e_keep_tmp)
 
         main_tk(args, self.get_fdt_names())
+        tkMessageBox.showinfo("Finished", "Done. See output in terminal for details.")
 
     def get_fdt_names(self):
         DIRTYP = []
