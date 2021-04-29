@@ -10,7 +10,7 @@ import argparse
 import sys
 import numpy as np
 from concert.storage import read_image
-from tofu.util import get_filenames, read_image
+from tofu.util import get_filenames, read_image, next_power_of_two
 from ez_ufo.util import enquote
 from ez_ufo.evaluate_sharpness import process as process_metrics
 
@@ -67,12 +67,19 @@ class ufo_cmds(object):
         #in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, 'quatsch', self._fdt_names[2])
         cmds=[]
-        cmd = 'ufo-launch read path={} height={} number={}'.format(in_proj_dir, WH[0], nviews)
-        cmd +=' ! fft dimensions=2 ! retrieve-phase'
+        pad_width = next_power_of_two(WH[1]+50)
+        pad_height = next_power_of_two(WH[0]+50)
+        pad_x = (pad_width - WH[1]) / 2
+        pad_y = (pad_height - WH[0]) / 2
+        cmd =  'ufo-launch read path={} height={} number={}'.format(in_proj_dir, WH[0], nviews)
+        cmd += ' ! pad x={} width={} y={} height={}'.format(pad_x, pad_width, pad_y, pad_height)
+        cmd += ' addressing-mode=clamp_to_edge'
+        cmd += ' ! fft dimensions=2 ! retrieve-phase'
         cmd += ' energy={} distance={} pixel-size={} regularization-rate={:0.2f}'\
                .format(args.energy, args.z, args.pixel, args.log10db)
         cmd += ' ! ifft dimensions=2 crop-width={} crop-height={}'\
-                .format(WH[1],WH[0])
+                .format(pad_width, pad_height)
+        cmd += ' ! crop x={} width={} y={} height={}'.format(pad_x, WH[1], pad_y, WH[0])
         cmd += ' ! opencl kernel=\'absorptivity\' ! opencl kernel=\'fix_nan_and_inf\' !'
         cmd += ' write filename={}'.format(enquote(out_pattern))
         cmds.append(cmd)
@@ -83,12 +90,18 @@ class ufo_cmds(object):
     def get_filter_sinos_cmd(self, ctset, tmpdir,RR, nviews, w):
         sin_in = os.path.join(tmpdir,'sinos')
         out_pattern = os.path.join(tmpdir,'sinos-filt/sin-%04i.tif')
+        pad_height = next_power_of_two(nviews + 50)
+        pad_y = (pad_height - nviews) / 2
         cmd = 'ufo-launch read path={}'.format(sin_in)
+        cmd += ' ! pad y={} height={}'.format(pad_y, pad_height)
+        cmd += ' addressing-mode=clamp_to_edge'
         #cmd += ' ! fft dimensions=2 ! filter-stripes sigma={}'.format(RR)
         #cmd += ' ! ifft dimensions=2 crop-width={} crop-height={}'.format(w, nviews)
         #cmd += ' ! write filename={}'.format(enquote(out_pattern))
         cmd += ' ! transpose ! fft dimensions=1 !  filter-stripes1d strength={}'.format(RR)
-        cmd += ' ! ifft dimensions=1 crop-width={} ! transpose'.format(nviews)
+        #cmd += ' ! ifft dimensions=1 crop-width={} ! transpose'.format(nviews)
+        cmd += ' ! ifft dimensions=1 ! transpose'
+        cmd += ' ! crop y={} height={}'.format(pad_y, nviews)
         cmd += ' ! write filename={}'.format(enquote(out_pattern))
         return cmd
 
