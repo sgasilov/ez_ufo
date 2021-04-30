@@ -15,12 +15,15 @@ import multiprocessing as mp
 from functools import partial
 from scipy.ndimage import median_filter
 from scipy.ndimage import binary_dilation
+from concert.readers import TiffSequenceReader
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--sinos', type=str, help='Input directory')
-    parser.add_argument('--mws', type=int, help='Median window size')
-    parser.add_argument('--mws2', type=int, help='Median window size along columns')
+    parser.add_argument('--mws', type=int, help='Window size for small rings (sorting algorithm)')
+    parser.add_argument('--mws2', type=int, help='Window size for large rings')
+    parser.add_argument('--snr', type=int, help='Median window size along columns')
+    parser.add_argument('--sort_only', type=bool, help='Only sorting or both')
     return parser.parse_args()
 
 # def RR_simplest(im, mws):
@@ -39,7 +42,14 @@ def parse_args():
 #     filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
 #     write_tiff( filt_sin_name, (im).astype(np.float32))
 
-def RR(mws, odir, fname):
+def RR_wide_sort(mws, mws2, snr, odir, fname):
+    filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
+    im = read_image(fname).astype(np.float32)
+    im = remove_large_stripe(im, snr, mws2)
+    im = remove_stripe_based_sorting(im, mws)
+    write_tiff(filt_sin_name, im.astype(np.float32))
+
+def RR_sort(mws, odir, fname):
     filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
     write_tiff(filt_sin_name,
                remove_stripe_based_sorting(read_image(fname).astype(np.float32), mws).astype(np.float32))
@@ -168,7 +178,10 @@ def main():
     if not os.path.exists(odir):
         os.makedirs(odir)
     pool = mp.Pool(processes=mp.cpu_count())
-    exec_func = partial(RR,args.mws,odir)
+    if args.sort_only:
+        exec_func = partial(RR_sort, args.mws, odir)
+    else:
+        exec_func = partial(RR_wide_sort, args.mws, args.mws2, args.snr, odir)
     pool.map(exec_func, sinos)
 
 if __name__ == '__main__':

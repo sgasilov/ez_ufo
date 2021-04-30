@@ -117,7 +117,7 @@ class tofu_cmds(object):
         cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
         cmd += ' --number {}'.format(nviews)
         cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        if args.RR_par > 5:
+        if not args.RR_ufo:
         # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
         return cmd
@@ -129,7 +129,7 @@ class tofu_cmds(object):
         cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
         cmd += ' --number {}'.format(nviews)
         cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        if args.RR_par > 5:
+        if not args.RR_ufo:
         # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
         return cmd

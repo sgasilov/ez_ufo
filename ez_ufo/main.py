@@ -84,18 +84,23 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
         swiFFC = False
         # Filter sinograms
-        if (args.RR_par >=1) and (args.RR_par <=3):
-            cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
-            cmds.append(Ufo.get_filter_sinos_cmd(ctset[0], args.tmpdir, args.RR_par, nviews, WH[1]))
-        elif args.RR_par > 5:
-            cmds.append("echo \" - Ring removal - median filter\"")
+        if args.RR_ufo:
+            if args.RR_ufo_1d:
+                cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
+                cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir, args.RR_par, nviews))
+            else:
+                cmds.append("echo \" - Ring removal - ufo 2d stripes filter\"")
+                cmds.append(Ufo.get_filter2d_sinos_cmd(args.tmpdir, args.RR_par, nviews, WH[1]))
+        else:
+            cmds.append("echo \" - Ring removal - sarepy filter(s)\"")
             #note - calling an external program, not an ufo-kit script
             tmp = os.path.dirname(os.path.abspath(__file__))
             path_to_filt = os.path.join(tmp,'RR_simple.py' )
             if os.path.isfile(path_to_filt):
                 tmp = os.path.join(args.tmpdir, "sinos")
-                cmdtmp = 'python {} --sinos {} --mws {}'\
-                    .format(path_to_filt, tmp, args.RR_par)
+                cmdtmp = 'python {} --sinos {} --mws {} --mws2 {} --snr {} --sort_only {}'\
+                    .format(path_to_filt, tmp, args.RR_srp_wind_sort,
+                            args.RR_srp_wide_wind, args.RR_srp_wide_snr, not args.RR_srp_wide)
                 cmds.append(cmdtmp)
             else:
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")

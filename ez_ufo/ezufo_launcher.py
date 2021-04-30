@@ -21,7 +21,8 @@ class tk_args():
     def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif, \
                 e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, \
                 e_inp, e_inp_thr, e_inp_sig, \
-                e_RR, e_RR_par, \
+                e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par, \
+                e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
                 e_PR, e_energy, e_pixel, e_z, e_log10db,\
                 e_vcrop, e_y, e_yheight, e_ystep,\
                 e_gray256, e_bit, e_hmin, e_hmax, \
@@ -61,8 +62,20 @@ class tk_args():
         setattr(self,'inp_sig',self.args['inp_sig'])
         self.args['RR']=bool(e_RR.get())
         setattr(self,'RR',self.args['RR'])
+        self.args['RR_ufo'] = bool(e_RR_ufo.get())
+        setattr(self, 'RR_ufo', self.args['RR_ufo'])
+        self.args['RR_ufo_1d'] = bool(e_RR_ufo_1d.get())
+        setattr(self, 'RR_ufo_1d', self.args['RR_ufo_1d'])
         self.args['RR_par']=int(e_RR_par.get())
         setattr(self,'RR_par',self.args['RR_par'])
+        self.args['RR_srp_wind_sort'] = int(e_rr_srp_wind_sort.get())
+        setattr(self, 'RR_srp_wind_sort', self.args['RR_srp_wind_sort'])
+        self.args['RR_srp_wide'] = bool(e_rr_srp_wide.get())
+        setattr(self, 'RR_srp_wide', self.args['RR_srp_wide'])
+        self.args['RR_srp_wide_wind'] = int(e_rr_srp_wide_wind.get())
+        setattr(self, 'RR_srp_wide_wind', self.args['RR_srp_wide_wind'])
+        self.args['RR_srp_wide_snr'] = int(e_rr_srp_wide_snr.get())
+        setattr(self, 'RR_srp_wide_snr', self.args['RR_srp_wide_snr'])
         # phase retrieval
         self.args['PR']=bool(e_PR.get())
         setattr(self,'PR',self.args['PR'])
@@ -236,12 +249,63 @@ class GUI:
                         variable=self.e_RR).grid(row=r, column=0)
         r+=1
 
-        #tmp="1,2,3 Low-pass Fourier filt; >5 window size for median filt"
-        tmp="Set 1,2,3 to suppress thin rings or odd number >5 for wide"
-        tk.Label(A, text=tmp, fg="darkorange3").grid(row=r);
+        #tmp="1,2,3 ufo filt; >5 window size for sarepy sorting"
+        #tmp="Set 1,2,3 to use ufo filt or odd number >5 for sarepy sorting"
+        #tk.Label(A, text=tmp, fg="darkorange3").grid(row=r);
+
+        ## UFO RR handling
+        f_rr_ufo = tk.Frame(A)
+        self.e_RR_ufo = tk.BooleanVar(A, value=True)
+        tmp = "Use ufo low-pass Fourier filter"
+        rb_rr = tk.Radiobutton(f_rr_ufo, text=tmp, fg="darkorange3", \
+                       variable=self.e_RR_ufo, value=True)
+
+        self.e_RR_ufo_1d = tk.BooleanVar(A, value=True)
+        rb_uforr1d = tk.Radiobutton(f_rr_ufo, text="1D", fg="darkorange3", \
+                       variable=self.e_RR_ufo_1d, value=True)
+
+        rb_uforr2d = tk.Radiobutton(f_rr_ufo, text="2D;  sigma", fg="darkorange3", \
+                                    variable=self.e_RR_ufo_1d, value=False)
+
+        f_rr_ufo.grid(row=r, column=0)
+        rb_rr.pack(side="left")
+        rb_uforr1d.pack(side="left")
+        rb_uforr2d.pack(side="left")
+
         v = tk.IntVar(A, value=2)
-        self.e_RR_par = tk.Entry(A,textvariable=v);
-        self.e_RR_par.grid(row=r, column=1, sticky=E); r+=1
+        self.e_RR_par = tk.Entry(A, textvariable=v);
+        self.e_RR_par.grid(row=r, column=1, sticky=E);
+        r += 1
+
+        ## Sarepy RR handling
+        f_rr2 = tk.Frame(A)
+        tmp = "Use sarepy sorting; wind. size"
+        rb_sarepy = tk.Radiobutton(f_rr2, text=tmp, fg="darkorange3", \
+                       variable=self.e_RR_ufo, value=False)
+
+
+        #lbl1 = tk.Label(f_rr_ufo, text="Wind. width", fg="darkorange3")
+        v = tk.IntVar(A, value=21)
+        self.e_rr_srp_wind_sort = tk.Entry(f_rr2, textvariable=v, width=5)
+
+        self.e_rr_srp_wide = tk.BooleanVar(A, value=False)
+        but1 = tk.Checkbutton(f_rr2, text="Remove wide; wind.", fg="darkorange3", \
+                       variable=self.e_rr_srp_wide)
+        v = tk.IntVar(A, value=91)
+        self.e_rr_srp_wind_wide = tk.Entry(f_rr2, textvariable=v, width=5)
+        lblsrp = tk.Label(f_rr2, text="SNR", fg="darkorange3")
+        v = tk.IntVar(A, value=3)
+        self.e_rr_srp_snr = tk.Entry(f_rr2, textvariable=v, width=5)
+
+        f_rr2.grid(row=r, column=0, columnspan=2)
+        rb_sarepy.pack(side="left")
+        self.e_rr_srp_wind_sort.pack(side="left")
+        but1.pack(side="left")
+        self.e_rr_srp_wind_wide.pack(side="left")
+        lblsrp.pack(side="left")
+        self.e_rr_srp_snr.pack(side="left")
+        r += 1
+
 
         ################### PHASE RETRIEVAL ##############
         self.e_PR = tk.BooleanVar(A, value=False)
@@ -509,7 +573,8 @@ class GUI:
         args=tk_args(self.e_indir, self.e_tmpdir, self.e_outdir, self.e_bigtif,\
             self.e_ax, self.e_ax_range, self.e_ax_row, self.e_ax_p_size, self.e_ax_fix, self.e_dax, \
             self.e_inp, self.e_inp_thr, self.e_inp_sig, \
-            self.e_RR, self.e_RR_par, \
+            self.e_RR, self.e_RR_ufo, self.e_RR_ufo_1d, self.e_RR_par, \
+            self.e_rr_srp_wind_sort, self.e_rr_srp_wide, self.e_rr_srp_wind_wide, self.e_rr_srp_snr,\
             self.e_PR, self.e_energy, self.e_pixel, self.e_z, self.e_log10db,\
             self.e_vcrop,self.e_y, self.e_yheight, self.e_ystep,\
             self.e_gray256, self.e_bit, self.e_hmin, self.e_hmax, \
