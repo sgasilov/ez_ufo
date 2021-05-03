@@ -23,24 +23,8 @@ def parse_args():
     parser.add_argument('--mws', type=int, help='Window size for small rings (sorting algorithm)')
     parser.add_argument('--mws2', type=int, help='Window size for large rings')
     parser.add_argument('--snr', type=int, help='Median window size along columns')
-    parser.add_argument('--sort_only', type=bool, help='Only sorting or both')
+    parser.add_argument('--sort_only', type=int, help='Only sorting or both')
     return parser.parse_args()
-
-# def RR_simplest(im, mws):
-#     N = im.shape[0]
-#     tmp = np.sum(im,0)/N
-#     tmp = medf(tmp,(mws,))
-#     return np.array([tmp,]*N)
-
-# def RR_original(mws, odir, fname):
-#     im = read_image(fname).astype(np.float32)
-#     N = im.shape[0]
-#     tmp = np.sum(im,0)/N
-#     tmp = medf(tmp,(mws,))
-#     tmp = np.array([tmp,]*N)
-#     im-=tmp
-#     filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
-#     write_tiff( filt_sin_name, (im).astype(np.float32))
 
 def RR_wide_sort(mws, mws2, snr, odir, fname):
     filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
@@ -117,6 +101,7 @@ def detect_stripe(list_data, snr):
     return list_mask
 
 def remove_large_stripe(sinogram, size, snr=3, drop_ratio=0.1, norm=True):
+
     # taken from sarepy, Author: Nghia T. Vo https://doi.org/10.1364/OE.26.028396
     """
     Remove large stripes, algorithm 5 in Ref. [1], by: locating stripes,

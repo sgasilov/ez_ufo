@@ -100,7 +100,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
                 tmp = os.path.join(args.tmpdir, "sinos")
                 cmdtmp = 'python {} --sinos {} --mws {} --mws2 {} --snr {} --sort_only {}'\
                     .format(path_to_filt, tmp, args.RR_srp_wind_sort,
-                            args.RR_srp_wide_wind, args.RR_srp_wide_snr, not args.RR_srp_wide)
+                            args.RR_srp_wide_wind, args.RR_srp_wide_snr, int(not args.RR_srp_wide))
                 cmds.append(cmdtmp)
             else:
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")
