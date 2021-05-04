@@ -94,24 +94,40 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('Dimensions of projections {} x {} (height x width)\n'.format(WH[0], WH[1]))
         f.write('Number of projections {}\n'.format(nviews))
         f.write('*** Preprocessing ***\n')
-        tmp = 'none'
+        tmp = 'None'
         if args.pre:
             tmp = args.pre_cmd
-        f.write('Image filters: {}\n'.format(tmp))
+        f.write('  '+tmp+'\n')
+        f.write('*** Image filters ***\n')
         if args.inp:
-            f.write('Remove large spots enabled\n')
+            f.write(' Remove large spots enabled\n')
             f.write('  threshold {}\n'.format(args.inp_thr))
             f.write('  sigma {}\n'.format(args.inp_sig))
         else:
-            f.write('Remove large spots disabled\n')
+            f.write('  Remove large spots disabled\n')
         if args.PR:
-            f.write('Phase retreival enabled\n')
+            f.write(' Phase retreival enabled\n')
             f.write('  energy {} keV\n'.format(args.energy))
             f.write('  pixel size {:0.1f} um\n'.format(args.pixel * 1e6))
             f.write('  sample-detector distance {} m\n'.format(args.z))
             f.write('  delta/beta ratio {:0.0f}\n'.format(10 ** args.log10db))
         else:
-            f.write('Phase retreival disabled\n')
+            f.write('  Phase retreival disabled\n')
+        f.write('*** Ring removal ***\n')
+        if args.RR:
+            if args.RR_ufo:
+                tmp = '2d'
+                if args.RR_ufo_1d:
+                    tmp = '1d'
+                f.write('  RR with ufo {} stripes filter, sigma {}\n'.format(tmp, args.RR_par))
+            else:
+                if args.RR_srp_wide:
+                    tmp = '  RR with ufo sarepy remove wide filter, '
+                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.RR_srp_wide_snr)
+                    f.write(tmp)
+                f.write('  RR with ufo sarepy sorting filter, window {}\n'.format(args.RR_srp_wind_sort))
+        else:
+            f.write('RR disabled\n')
         f.write('*** Region of interest ***\n')
         if args.vcrop:
             f.write('Vertical ROI defined\n')
