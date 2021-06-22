@@ -1,0 +1,50 @@
+# Default configuration file for ez_ufo_qt
+# Modify at your own peril
+
+---
+e_indir: ""
+e_tmpdir: ""
+e_outdir: ""
+e_bigtif: false
+e_ax: 1
+e_ax_range: "1010,1030,0.5"
+e_ax_row: 100
+e_ax_p_size: 256
+e_ax_fix: 0.0
+e_dax: 0.0
+e_inp: false
+e_inp_thr: 1000
+e_inp_sig: 2
+e_RR: false
+e_RR_ufo: true
+e_RR_ufo_1d: true
+e_RR_par: 2
+e_rr_srp_wind_sort: 21
+e_rr_srp_wide: false
+e_rr_srp_wind_wide: 91
+e_rr_srp_snr: 3
+e_PR: false
+e_energy: 20
+e_pixel: 3.6
+e_z: 0.1
+e_log10db: 200
+e_vcrop: false
+e_y: 100
+e_yheight: 200
+e_ystep: 20
+e_gray256: false
+e_bit: 8
+e_hmin: 0.0
+e_hmax: 0.0
+e_pre: false
+e_pre_cmd: "remove-outliers size=3 threshold=500 sign=1"
+e_a0: 0.0
+e_crop: false
+e_x0: 0
+e_dx: 0
+e_y0: 0
+e_dy: 0
+e_dryrun: false
+e_parfile: false
+e_keep_tmp: false
+...

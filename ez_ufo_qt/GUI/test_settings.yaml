@@ -1,0 +1,47 @@
+---
+e_indir: "indir"
+e_tmpdir: "tmpdir"
+e_outdir: "outdir"
+e_bigtif: false
+e_ax: 1
+e_ax_range: "1520,1111,0.5"
+e_ax_row: 42
+e_ax_p_size: 19
+e_ax_fix: 0.0
+e_dax: 0.0
+e_inp: false
+e_inp_thr: 10
+e_inp_sig: 3
+e_RR: true
+e_RR_ufo: true
+e_RR_ufo_1d: true
+e_RR_par: 2
+e_rr_srp_wind_sort: 21
+e_rr_srp_wide: false
+e_rr_srp_wind_wide: 91
+e_rr_srp_snr: 3
+e_PR: true
+e_energy: 12
+e_pixel: 3.5
+e_z: 3.14
+e_log10db: 42
+e_vcrop: false
+e_y: 101
+e_yheight: 201
+e_ystep: 22
+e_gray256: true
+e_bit: 16
+e_hmin: 1.0
+e_hmax: 2.0
+e_pre: true
+e_pre_cmd: "remove-outliers size=3 threshold=500 sign=1 fart=20"
+e_a0: 0.0
+e_crop: true
+e_x0: 1
+e_dx: 2
+e_y0: 3
+e_dy: 4
+e_dryrun: false
+e_parfile: false
+e_keep_tmp: false
+...
