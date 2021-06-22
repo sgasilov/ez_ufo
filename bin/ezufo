@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+import sys
+from PyQt5 import QtWidgets as qtw
+from ez_ufo_qt.GUI import ezufo_launcher
+
+app = qtw.QApplication(sys.argv)
+window = ezufo_launcher.GUI()
+sys.exit(app.exec_())
