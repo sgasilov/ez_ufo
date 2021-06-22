@@ -34,7 +34,7 @@ e_bit: 16
 e_hmin: 1.0
 e_hmax: 2.0
 e_pre: true
-e_pre_cmd: "remove-outliers size=3 threshold=500 sign=1 fart=20"
+e_pre_cmd: "remove-outliers size=3 threshold=500 sign=1"
 e_a0: 0.0
 e_crop: true
 e_x0: 1
