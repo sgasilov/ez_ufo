@@ -1,0 +1,20 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="libtiff" />
+            <item index="1" class="java.lang.String" itemvalue="pycairo" />
+            <item index="2" class="java.lang.String" itemvalue="PyQt5-sip" />
+            <item index="3" class="java.lang.String" itemvalue="ezufo-helpers" />
+            <item index="4" class="java.lang.String" itemvalue="PyGObject" />
+            <item index="5" class="java.lang.String" itemvalue="ufo" />
+            <item index="6" class="java.lang.String" itemvalue="tofu" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
