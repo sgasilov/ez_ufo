@@ -60,6 +60,13 @@ class GUI(qtw.QWidget):
         self.show()
 
     def set_layout(self):
+        self.layout = qtw.QVBoxLayout(self)
+        # Initialize tab screen
+        self.tabs = qtw.QTabWidget()
+        self.tab1 = qtw.QWidget()
+        self.tab2 = qtw.QWidget()
+        self.tab3 = qtw.QWidget()
+
         main_layout = qtw.QGridLayout()
 
         main_layout.addWidget(self.centre_of_rotation_group, 0, 0)
@@ -68,7 +75,18 @@ class GUI(qtw.QWidget):
         main_layout.addWidget(self.binning_group, 1, 1)
         main_layout.addWidget(self.config_group, 2, 0, 2, 0)
 
-        self.setLayout(main_layout)
+        # Add tabs
+        self.tabs.addTab(self.tab1, "Main")
+        self.tabs.addTab(self.tab2, "Image Viewer")
+        self.tabs.addTab(self.tab3, "Advanced")
+
+        # Create first tab
+        self.tab1.layout = main_layout
+        self.tab1.setLayout(self.tab1.layout)
+
+        # Add tabs to widget
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
 
     def update_values_from_params(self, params):
         logging.debug("Update Values from Params")
