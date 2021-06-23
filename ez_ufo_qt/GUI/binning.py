@@ -130,13 +130,13 @@ class BinningGroup(QGroupBox):
         self.num_rows_entry.setText("200")
         self.nth_row_entry.setText("20")
         self.clip_histo_checkbox.setChecked(False)
-        self.params['e_gray256'] = str(False)
+        self.params['e_gray256'] = False
         self.eight_bit_rButton.setChecked(True)
         self.params['e_bit'] = str(8)
         self.min_val_entry.setText("0.0")
         self.max_val_entry.setText("0.0")
         self.crop_slices_checkbox.setChecked(False)
-        self.params['e_crop'] = str(False)
+        self.params['e_crop'] = False
         self.x_val_entry.setText("0")
         self.width_val_entry.setText("0")
         self.y_val_entry.setText("0")

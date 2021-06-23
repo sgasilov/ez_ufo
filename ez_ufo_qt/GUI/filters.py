@@ -114,10 +114,12 @@ class FiltersGroup(QGroupBox):
     def init_values(self):
         self.remove_wide_checkbox.setChecked(False)
         self.set_remove_spots()
+        self.params['e_inp'] = False
         self.threshold_entry.setText("1000")
         self.spot_blur_entry.setText("2")
         self.enable_RR_checkbox.setChecked(False)
         self.set_ring_removal()
+        self.params['e_RR'] = False
         self.use_LPF_rButton.setChecked(True)
         self.select_rButton()
         self.sarepy_rButton.setChecked(False)

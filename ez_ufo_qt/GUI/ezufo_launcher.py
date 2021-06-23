@@ -36,10 +36,10 @@ class GUI(qtw.QWidget):
         self.params = {}
 
         # Read in default parameter settings from yaml file
-        #settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
-        #self.yaml_io = Yaml_IO()
-        #self.yaml_data = self.yaml_io.read_yaml(settings_path)
-        #self.params = dict(self.yaml_data)
+        settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
+        self.yaml_io = Yaml_IO()
+        self.yaml_data = self.yaml_io.read_yaml(settings_path)
+        self.params = dict(self.yaml_data)
 
         # Create and setup classes for each section of GUI
         self.centre_of_rotation_group = CentreOfRotationGroup(self.params)
