@@ -163,7 +163,9 @@ class ConfigGroup(QGroupBox):
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
         self.output_dir_entry.setText(self.outdir)
         self.bigtiff_checkbox.setChecked(False)
+        self.set_big_tiff()
         self.preproc_checkbox.setChecked(False)
+        self.set_preproc()
         self.preproc_entry.setText("remove-outliers size=3 threshold=500 sign=1")
         self.darks_entry.setText("darks")
         self.flats_entry.setText("flats")
@@ -171,7 +173,11 @@ class ConfigGroup(QGroupBox):
         self.flats2_entry.setText("flats2")
         self.temp_dir_entry.setText("/data/tmp-ezufo")
         self.keep_tmp_data_checkbox.setChecked(False)
+        self.params['e_keep_tmp'] = False
+        self.set_temp_dir()
         self.dry_run_button.setChecked(False)
+        self.params['e_dryrun'] = False
+        self.params['e_parfile'] = False
 
     def set_values_from_params(self, params):
         self.input_dir_entry.setText(self.params['e_indir'])
@@ -192,7 +198,8 @@ class ConfigGroup(QGroupBox):
         dir = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(dir)
         self.output_dir_entry.setText(dir + "-rec")
-        self.params['e_indir'] = dir + "-rec"
+        self.params['e_indir'] = dir
+        self.params['e_outdir'] = dir + "-rec"
 
     def set_input_dir(self):
         logging.debug(str(self.input_dir_entry.text()))
@@ -329,18 +336,20 @@ class ConfigGroup(QGroupBox):
 
     def reco_button_pressed(self):
         logging.debug("RECO")
-        args = tk_args(self.params['e_indir'], self.params['e_tmpdir'], self.params['e_outdir'], self.params['e_bigtif'],
-                       self.params['e_ax'], self.params['e_ax_range'], self.params['e_ax_row'], self.params['e_ax_p_size'], self.params['e_ax_fix'], self.params['e_dax'],
-                       self.params['e_inp'], self.params['e_inp_thr'], self.params['e_inp_sig'],
-                       self.params['e_RR'], self.params['e_RR_ufo'], self.params['e_RR_ufo_1d'], self.params['e_RR_par'],
-                       self.params['e_rr_srp_wind_sort'], self.params['e_rr_srp_wide'], self.params['e_rr_srp_wind_wide'], self.params['e_rr_srp_snr'],
-                       self.params['e_PR'], self.params['e_energy'], self.params['e_pixel'], self.params['e_z'], self.params['e_log10db'],
-                       self.params['e_vcrop'], self.params['e_y'], self.params['e_yheight'], self.params['e_ystep'],
-                       self.params['e_gray256'], self.params['e_bit'], self.params['e_hmin'], self.params['e_hmax'],
-                       self.params['e_pre'], self.params['e_pre_cmd'],
-                       self.params['e_a0'],
-                       self.params['e_crop'], self.params['e_x0'], self.params['e_dx'], self.params['e_y0'], self.params['e_dy'],
-                       self.params['e_dryrun'], self.params['e_parfile'], self.params['e_keep_tmp'])
+        print("Reco")
+        print(self.params)
+        args = tk_args( self.params['e_indir'],  self.params['e_tmpdir'],  self.params['e_outdir'],  self.params['e_bigtif'],
+                        self.params['e_ax'],  self.params['e_ax_range'],  self.params['e_ax_row'],  self.params['e_ax_p_size'],  self.params['e_ax_fix'],  self.params['e_dax'],
+                        self.params['e_inp'],  self.params['e_inp_thr'],  self.params['e_inp_sig'],
+                        self.params['e_RR'],  self.params['e_RR_ufo'],  self.params['e_RR_ufo_1d'],  self.params['e_RR_par'],
+                        self.params['e_rr_srp_wind_sort'],  self.params['e_rr_srp_wide'],  self.params['e_rr_srp_wind_wide'],  self.params['e_rr_srp_snr'],
+                        self.params['e_PR'],  self.params['e_energy'],  self.params['e_pixel'],  self.params['e_z'],  self.params['e_log10db'],
+                        self.params['e_vcrop'],  self.params['e_y'],  self.params['e_yheight'],  self.params['e_ystep'],
+                        self.params['e_gray256'],  self.params['e_bit'],  self.params['e_hmin'],  self.params['e_hmax'],
+                        self.params['e_pre'],  self.params['e_pre_cmd'],
+                        self.params['e_a0'],
+                        self.params['e_crop'],  self.params['e_x0'],  self.params['e_dx'],  self.params['e_y0'],  self.params['e_dy'],
+                        self.params['e_dryrun'],  self.params['e_parfile'],  self.params['e_keep_tmp'])
 
         main_tk(args, self.get_fdt_names())
         msg = "Done. See output in terminal for details."

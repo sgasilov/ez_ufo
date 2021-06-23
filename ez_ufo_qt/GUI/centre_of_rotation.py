@@ -83,6 +83,7 @@ class CentreOfRotationGroup(QGroupBox):
         self.auto_correlate_rButton.setChecked(True)
         self.auto_minimize_rButton.setChecked(False)
         self.define_axis_rButton.setChecked(False)
+        self.set_rButton()
         self.search_rotation_entry.setText("1010, 1030, 0.5")
         self.search_in_slice_entry.setText("100")
         self.side_of_recon_entry.setText("256")

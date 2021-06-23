@@ -30,16 +30,16 @@ class GUI(qtw.QWidget):
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fhandler.setFormatter(formatter)
         logger.addHandler(fhandler)
-        logger.setLevel(logging.WARNING)
+        logger.setLevel(logging.DEBUG)
 
         # Dict which holds the value of parameters set by user in GUI interaction
         self.params = {}
 
         # Read in default parameter settings from yaml file
-        settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
-        self.yaml_io = Yaml_IO()
-        self.yaml_data = self.yaml_io.read_yaml(settings_path)
-        self.params = dict(self.yaml_data)
+        #settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
+        #self.yaml_io = Yaml_IO()
+        #self.yaml_data = self.yaml_io.read_yaml(settings_path)
+        #self.params = dict(self.yaml_data)
 
         # Create and setup classes for each section of GUI
         self.centre_of_rotation_group = CentreOfRotationGroup(self.params)
@@ -51,6 +51,7 @@ class GUI(qtw.QWidget):
         self.set_layout()
         self.resize(0, 0) #window to minimum size
 
+        # When new settings are imported signal is sent and this catches it to update params for each GUI object
         self.config_group.signal_update_vals_from_params.connect(self.update_values_from_params)
 
         finish = qtw.QAction("Quit", self)
@@ -70,7 +71,8 @@ class GUI(qtw.QWidget):
         self.setLayout(main_layout)
 
     def update_values_from_params(self, params):
-        print(params)
+        logging.debug("Update Values from Params")
+        logging.debug(params)
         self.centre_of_rotation_group.set_values_from_params(params)
         self.filters_group.set_values_from_params(params)
         self.phase_retrieval_group.set_values_from_params(params)

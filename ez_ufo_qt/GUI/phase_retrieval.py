@@ -64,6 +64,7 @@ class PhaseRetrievalGroup(QGroupBox):
 
     def init_values(self):
         self.enable_PR_checkBox.setChecked(False)
+        self.params['e_PR'] = False
         self.photon_energy_entry.setText("20")
         self.pixel_size_entry.setText("3.6")
         self.detector_distance_entry.setText("0.1")

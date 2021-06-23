@@ -113,15 +113,20 @@ class FiltersGroup(QGroupBox):
 
     def init_values(self):
         self.remove_wide_checkbox.setChecked(False)
+        self.set_remove_spots()
         self.threshold_entry.setText("1000")
         self.spot_blur_entry.setText("2")
         self.enable_RR_checkbox.setChecked(False)
+        self.set_ring_removal()
         self.use_LPF_rButton.setChecked(True)
+        self.select_rButton()
         self.sarepy_rButton.setChecked(False)
         self.one_dimens_rButton.setChecked(True)
+        self.params['e_RR_ufo_1d'] = True
         self.sigma_entry.setText("2")
         self.wind_size_entry.setText("21")
         self.remove_wide_checkbox.setChecked(False)
+        self.params['e_rr_srp_wide'] = False
         self.remove_wide_entry.setText("91")
         self.SNR_entry.setText("3")
 
