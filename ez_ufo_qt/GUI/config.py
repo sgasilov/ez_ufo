@@ -162,10 +162,10 @@ class ConfigGroup(QGroupBox):
         self.input_dir_entry.setText(self.indir)
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
         self.output_dir_entry.setText(self.outdir)
-        self.bigtiff_checkbox.setChecked(False)
-        self.set_big_tiff()
+        self.params['e_bigtif'] = False
         self.preproc_checkbox.setChecked(False)
         self.set_preproc()
+        self.params['e_pre'] = False
         self.preproc_entry.setText("remove-outliers size=3 threshold=500 sign=1")
         self.darks_entry.setText("darks")
         self.flats_entry.setText("flats")
@@ -177,7 +177,7 @@ class ConfigGroup(QGroupBox):
         self.set_temp_dir()
         self.dry_run_button.setChecked(False)
         self.params['e_dryrun'] = False
-        self.params['e_parfile'] = False
+        self.params['e_parfile'] = True
 
     def set_values_from_params(self, params):
         self.input_dir_entry.setText(self.params['e_indir'])
