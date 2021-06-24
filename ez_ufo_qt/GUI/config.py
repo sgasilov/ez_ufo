@@ -335,8 +335,8 @@ class ConfigGroup(QGroupBox):
 
     def reco_button_pressed(self):
         logging.debug("RECO")
-        print("Reco")
-        print(parameters.params)
+        logging.debug(parameters.params)
+
         args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
                         parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],  parameters.params['e_dax'],
                         parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
@@ -477,7 +477,5 @@ class tk_args():
         self.args['keep_tmp']=bool(e_keep_tmp)
         setattr(self,'keep_tmp',self.args['keep_tmp'])
 
-        print("contents of arg dict:")
-        print(self.args.items())
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
