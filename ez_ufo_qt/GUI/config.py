@@ -184,10 +184,10 @@ class ConfigGroup(QGroupBox):
         self.bigtiff_checkbox.setChecked(parameters.params['e_bigtif'])
         self.preproc_checkbox.setChecked(parameters.params['e_pre'])
         self.preproc_entry.setText(parameters.params['e_pre_cmd'])
-        self.darks_entry.setText("darks") #***** SAVE THESE TO YAML AS WELL
-        self.flats_entry.setText("flats") #****
-        self.tomo_entry.setText("tomo") #*****
-        self.flats2_entry.setText("flats2") #*****
+        self.darks_entry.setText(parameters.params['e_darks']) #***** SAVE THESE TO YAML AS WELL
+        self.flats_entry.setText(parameters.params['e_flats']) #****
+        self.tomo_entry.setText(parameters.params['e_tomo']) #*****
+        self.flats2_entry.setText(parameters.params['e_flats2']) #*****
         self.temp_dir_entry.setText(parameters.params['e_tmpdir'])
         self.keep_tmp_data_checkbox.setChecked(parameters.params['e_keep_tmp'])
         self.dry_run_button.setChecked(parameters.params['e_dryrun'])
@@ -229,18 +229,22 @@ class ConfigGroup(QGroupBox):
     def set_darks(self):
         logging.debug(self.darks_entry.text())
         self.e_DIRTYP.insert(0, str(self.darks_entry.text()))
+        parameters.params['e_darks'] = str(self.darks_entry.text())
 
     def set_flats(self):
         logging.debug(self.flats_entry.text())
         self.e_DIRTYP.insert(1, str(self.flats_entry.text()))
+        parameters.params['e_flats'] = str(self.flats_entry.text())
 
     def set_tomo(self):
         logging.debug(self.tomo_entry.text())
         self.e_DIRTYP.insert(2, str(self.tomo_entry.text()))
+        parameters.params['e_tomo'] = str(self.tomo_entry.text())
 
     def set_flats2(self):
         logging.debug(self.flats2_entry.text())
         self.e_DIRTYP.insert(3, str(self.flats2_entry.text()))
+        parameters.params['e_flats2'] = str(self.flats2_entry.text())
 
     def select_temp_dir(self):
         dir_explore = QFileDialog(self)

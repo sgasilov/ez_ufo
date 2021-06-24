@@ -5,6 +5,10 @@
 e_indir: ""
 e_tmpdir: ""
 e_outdir: ""
+e_darks: "darks"
+e_flats: "flats"
+e_tomo: "tomo"
+e_flats2: "flats2"
 e_bigtif: false
 e_ax: 1
 e_ax_range: "1010,1030,0.5"

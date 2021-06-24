@@ -11,6 +11,7 @@ from ez_ufo_qt.GUI.binning import BinningGroup
 from ez_ufo_qt.GUI.config import ConfigGroup
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
+from ez_ufo_qt.GUI.image_viewer import ImageViewerGroup
 
 import ez_ufo_qt.GUI.params as parameters
 
@@ -55,6 +56,8 @@ class GUI(qtw.QWidget):
         self.config_group = ConfigGroup()
         self.config_group.init_values()
 
+        self.image_group = ImageViewerGroup()
+
         #######################################################
 
         self.set_layout()
@@ -77,21 +80,27 @@ class GUI(qtw.QWidget):
         tab3 = qtw.QWidget()
 
         main_layout = qtw.QGridLayout()
-
         main_layout.addWidget(self.centre_of_rotation_group, 0, 0)
         main_layout.addWidget(self.filters_group, 0, 1)
         main_layout.addWidget(self.phase_retrieval_group, 1, 0)
         main_layout.addWidget(self.binning_group, 1, 1)
         main_layout.addWidget(self.config_group, 2, 0, 2, 0)
 
+        image_layout = qtw.QGridLayout()
+        image_layout.addWidget(self.image_group, 0, 0)
+
         # Add tabs
         tabs.addTab(tab1, "Main")
         tabs.addTab(tab2, "Image Viewer")
         tabs.addTab(tab3, "Advanced")
 
-        # Create first tab
+        # Create main tab
         tab1.layout = main_layout
         tab1.setLayout(tab1.layout)
+
+        # Create image tab
+        tab2.layout = image_layout
+        tab2.setLayout(tab2.layout)
 
         # Add tabs to widget
         layout.addWidget(tabs)
