@@ -341,6 +341,8 @@ class ConfigGroup(QGroupBox):
         logging.debug("RECO")
         logging.debug(parameters.params)
 
+        self.validate_input()
+
         args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
                         parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],  parameters.params['e_dax'],
                         parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
@@ -357,6 +359,108 @@ class ConfigGroup(QGroupBox):
         msg = "Done. See output in terminal for details."
         QMessageBox.information(self, "Finished", msg)
 
+    # NEED TO DETERMINE VALID RANGES
+    # ALSO CHECK TYPES SOMEHOW
+    # Could throw error or return some value based on valid/invalid
+    def validate_input(self):
+
+        # Search rotation: e_ax_range
+
+        # Search in slide: e_ax_row
+        if int(parameters.params['e_ax_row']) < 0:
+            print("Invalid")
+
+        # Side of reconstructed: e_ax_p_size
+        if int(parameters.params['e_ax_p_size']) < 0:
+            print("Invalid")
+
+        # Axis is in column No: e_ax_fix
+        if float(parameters.params['e_ax_fix']) < 0:
+            print("Invalid")
+
+        # Increment axis: e_dax
+        if float(parameters.params['e_dax']) < 0:
+            print("Invalid")
+
+        # Threshold: e_inp_thr
+        if int(parameters.params['e_inp_thr']) < 0:
+            print("Invalid")
+
+        # Spot blur: e_inp_sig
+        if int(parameters.params['e_inp_sig']) < 0:
+            print("Invalid")
+
+        # Sigma: e_RR_par
+        if int(parameters.params['e_RR_par']) < 0:
+            print("Invalid")
+
+        # Window size: e_rr_srp_wind_sort
+        if int(parameters.params['e_rr_srp_wind_sort']) < 0:
+            print("Invalid")
+
+        # Wind: e_rr_srp_wind_wide
+        if int(parameters.params['e_rr_srp_wind_wide']) < 0:
+            print("Invalid")
+
+        # SNR: e_rr_srp_snr
+        if int(parameters.params['e_rr_srp_snr']) < 0:
+            print("Invalid")
+
+        # Photon energy: e_energy
+        if int(parameters.params['e_energy']) < 0:
+            print("Invalid")
+
+        # Pixel size: e_pixel
+        if float(parameters.params['e_pixel']) < 0:
+            print("Invalid")
+
+        # Sample detector distance: e_z
+        if float(parameters.params['e_z']) < 0:
+            print("Invalid")
+
+        # Delta/beta ratio: e_log10db
+        if int(parameters.params['e_log10db']) < 0:
+            print("Invalid")
+
+        # First row in projections: e_y
+        if int(parameters.params['e_y']) < 0:
+            print("Invalid")
+
+        # Number of rows: e_yheight
+        if int(parameters.params['e_yheight']) < 0:
+            print("Invalid")
+
+        # Reconstruct every Nth row: e_ystep
+        if int(parameters.params['e_ystep']) < 0:
+            print("Invalid")
+
+        # Min value: e_hmin
+        if float(parameters.params['e_hmin']) < 0:
+            print("Invalid")
+
+        # Max value: e_hmax
+        if float(parameters.params['e_hmax']) < 0:
+            print("Invalid")
+
+        # x: e_x0
+        if int(parameters.params['e_x0']) < 0:
+            print("Invalid")
+
+        # width: e_dx
+        if int(parameters.params['e_dx']) < 0:
+            print("Invalid")
+
+        # y: e_y0
+        if int(parameters.params['e_y0']) < 0:
+            print("Invalid")
+
+        # height: e_dy
+        if int(parameters.params['e_dy']) < 0:
+            print("Invalid")
+
+        # Optional: rotate volume: e_a0
+        if float(parameters.params['e_a0']) < 0:
+            print("Invalid")
 
     def get_fdt_names(self):
         DIRTYP = []

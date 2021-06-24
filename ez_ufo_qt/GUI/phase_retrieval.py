@@ -36,7 +36,7 @@ class PhaseRetrievalGroup(QGroupBox):
         self.detector_distance_entry.setStyleSheet("background-color:white")
 
         self.delta_beta_ratio_label = QLabel()
-        self.delta_beta_ratio_label.setText("Delta/beta ratio: (try default if unsure")
+        self.delta_beta_ratio_label.setText("Delta/beta ratio: (try default if unsure)")
         self.delta_beta_ratio_entry = QLineEdit()
         self.delta_beta_ratio_entry.textChanged.connect(self.set_delta_beta)
         self.delta_beta_ratio_entry.setStyleSheet("background-color:white")
