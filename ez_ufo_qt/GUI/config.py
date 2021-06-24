@@ -341,126 +341,131 @@ class ConfigGroup(QGroupBox):
         logging.debug("RECO")
         logging.debug(parameters.params)
 
-        self.validate_input()
+        try:
+            self.validate_input()
 
-        args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
-                        parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],  parameters.params['e_dax'],
-                        parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
-                        parameters.params['e_RR'],  parameters.params['e_RR_ufo'],  parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
-                        parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],  parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
-                        parameters.params['e_PR'],  parameters.params['e_energy'],  parameters.params['e_pixel'],  parameters.params['e_z'],  parameters.params['e_log10db'],
-                        parameters.params['e_vcrop'],  parameters.params['e_y'],  parameters.params['e_yheight'],  parameters.params['e_ystep'],
-                        parameters.params['e_gray256'],  parameters.params['e_bit'],  parameters.params['e_hmin'],  parameters.params['e_hmax'],
-                        parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
-                        parameters.params['e_a0'],
-                        parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
-                        parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'])
-        main_tk(args, self.get_fdt_names())
-        msg = "Done. See output in terminal for details."
-        QMessageBox.information(self, "Finished", msg)
+            args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
+                            parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],  parameters.params['e_dax'],
+                            parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
+                            parameters.params['e_RR'],  parameters.params['e_RR_ufo'],  parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
+                            parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],  parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
+                            parameters.params['e_PR'],  parameters.params['e_energy'],  parameters.params['e_pixel'],  parameters.params['e_z'],  parameters.params['e_log10db'],
+                            parameters.params['e_vcrop'],  parameters.params['e_y'],  parameters.params['e_yheight'],  parameters.params['e_ystep'],
+                            parameters.params['e_gray256'],  parameters.params['e_bit'],  parameters.params['e_hmin'],  parameters.params['e_hmax'],
+                            parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
+                            parameters.params['e_a0'],
+                            parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
+                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'])
+            main_tk(args, self.get_fdt_names())
+            msg = "Done. See output in terminal for details."
+            QMessageBox.information(self, "Finished", msg)
+        except InvalidInputError as err:
+            msg = ""
+            err_arg = err.args
+            msg += err.args[0]
+            QMessageBox.information(self, "Invalid Input Error", msg)
 
     # NEED TO DETERMINE VALID RANGES
     # ALSO CHECK TYPES SOMEHOW
-    # Could throw error or return some value based on valid/invalid
     def validate_input(self):
 
         # Search rotation: e_ax_range
 
-        # Search in slide: e_ax_row
+        # Search in slice: e_ax_row
         if int(parameters.params['e_ax_row']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Search in slice from row number")
 
         # Side of reconstructed: e_ax_p_size
         if int(parameters.params['e_ax_p_size']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Side of reconstructed path [pixel]")
 
         # Axis is in column No: e_ax_fix
         if float(parameters.params['e_ax_fix']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Axis is in column No [pixel]")
 
         # Increment axis: e_dax
         if float(parameters.params['e_dax']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Increment axis every reconstruction")
 
         # Threshold: e_inp_thr
         if int(parameters.params['e_inp_thr']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Threshold (prominence of the spot) [counts]")
 
         # Spot blur: e_inp_sig
         if int(parameters.params['e_inp_sig']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Spot blur. sigma [pixels]")
 
         # Sigma: e_RR_par
         if int(parameters.params['e_RR_par']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: sigma")
 
         # Window size: e_rr_srp_wind_sort
         if int(parameters.params['e_rr_srp_wind_sort']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: window size")
 
         # Wind: e_rr_srp_wind_wide
         if int(parameters.params['e_rr_srp_wind_wide']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: wind")
 
         # SNR: e_rr_srp_snr
         if int(parameters.params['e_rr_srp_snr']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: SNR")
 
         # Photon energy: e_energy
         if int(parameters.params['e_energy']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Photon energy [keV]")
 
         # Pixel size: e_pixel
         if float(parameters.params['e_pixel']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Pixel size [micron]")
 
         # Sample detector distance: e_z
         if float(parameters.params['e_z']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Sample-detector distance [m]")
 
         # Delta/beta ratio: e_log10db
         if int(parameters.params['e_log10db']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Delta/beta ratio: (try default if unsure)")
 
         # First row in projections: e_y
         if int(parameters.params['e_y']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: First row in projections")
 
         # Number of rows: e_yheight
         if int(parameters.params['e_yheight']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Number of rows (ROI height)")
 
         # Reconstruct every Nth row: e_ystep
         if int(parameters.params['e_ystep']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Reconstruct every Nth row")
 
         # Min value: e_hmin
         if float(parameters.params['e_hmin']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Min value in 32-bit histogram")
 
         # Max value: e_hmax
         if float(parameters.params['e_hmax']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Max value in 32-bit histogram")
 
         # x: e_x0
         if int(parameters.params['e_x0']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Crop slices: x")
 
         # width: e_dx
         if int(parameters.params['e_dx']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Crop slices: width")
 
         # y: e_y0
         if int(parameters.params['e_y0']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Crop slices: y")
 
         # height: e_dy
         if int(parameters.params['e_dy']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Crop slices: height")
 
         # Optional: rotate volume: e_a0
         if float(parameters.params['e_a0']) < 0:
-            print("Invalid")
+            raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
 
     def get_fdt_names(self):
         DIRTYP = []
@@ -587,3 +592,10 @@ class tk_args():
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
+
+
+class InvalidInputError(Exception):
+    """
+    Error to be raised when input values from GUI are out of range or invalid
+    """
+    pass
