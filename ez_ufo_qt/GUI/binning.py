@@ -2,19 +2,19 @@ import logging
 from PyQt5.QtWidgets import QGridLayout, QRadioButton, QLabel, QGroupBox, QLineEdit, QCheckBox
 from PyQt5.QtCore import Qt
 
+import ez_ufo_qt.GUI.params as parameters
+
 
 class BinningGroup(QGroupBox):
     """
     Binning settings
     """
 
-    def __init__(self, params):
+    def __init__(self):
         super().__init__()
 
         self.setTitle("Binning")
         self.setStyleSheet('QGroupBox {color: red;}')
-
-        self.params = params
 
         self.select_rows_checkbox = QCheckBox()
         self.select_rows_checkbox.setText("Select rows which will be reconstructed")
@@ -90,7 +90,6 @@ class BinningGroup(QGroupBox):
         # self.setStyleSheet('background-color:Azure')
 
         self.set_layout()
-        self.init_values()
 
     def set_layout(self):
         layout = QGridLayout()
@@ -125,102 +124,101 @@ class BinningGroup(QGroupBox):
 
     def init_values(self):
         self.select_rows_checkbox.setChecked(False)
-        self.params['e_vcrop'] = False
+        parameters.params['e_vcrop'] = False
         self.first_row_entry.setText("100")
         self.num_rows_entry.setText("200")
         self.nth_row_entry.setText("20")
         self.clip_histo_checkbox.setChecked(False)
-        self.params['e_gray256'] = False
+        parameters.params['e_gray256'] = False
         self.eight_bit_rButton.setChecked(True)
-        self.params['e_bit'] = str(8)
+        parameters.params['e_bit'] = str(8)
         self.min_val_entry.setText("0.0")
         self.max_val_entry.setText("0.0")
         self.crop_slices_checkbox.setChecked(False)
-        self.params['e_crop'] = False
+        parameters.params['e_crop'] = False
         self.x_val_entry.setText("0")
         self.width_val_entry.setText("0")
         self.y_val_entry.setText("0")
         self.height_val_entry.setText("0")
         self.rotate_vol_entry.setText("0.0")
 
-    def set_values_from_params(self, params):
-        self.params = dict(params)
-        self.select_rows_checkbox.setChecked(self.params['e_vcrop'])
-        self.first_row_entry.setText(str(self.params['e_y']))
-        self.num_rows_entry.setText(str(self.params['e_yheight']))
-        self.nth_row_entry.setText(str(self.params['e_ystep']))
-        self.clip_histo_checkbox.setChecked(self.params['e_gray256'])
-        if int(self.params['e_bit']) == 8:
+    def set_values_from_params(self):
+        self.select_rows_checkbox.setChecked(parameters.params['e_vcrop'])
+        self.first_row_entry.setText(str(parameters.params['e_y']))
+        self.num_rows_entry.setText(str(parameters.params['e_yheight']))
+        self.nth_row_entry.setText(str(parameters.params['e_ystep']))
+        self.clip_histo_checkbox.setChecked(parameters.params['e_gray256'])
+        if int(parameters.params['e_bit']) == 8:
             self.eight_bit_rButton.setChecked(True)
             self.sixteen_bit_rButton.setChecked(False)
-        elif int(self.params['e_bit']) == 16:
+        elif int(parameters.params['e_bit']) == 16:
             self.eight_bit_rButton.setChecked(False)
             self.sixteen_bit_rButton.setChecked(True)
-        self.min_val_entry.setText(str(self.params['e_hmin']))
-        self.max_val_entry.setText(str(self.params['e_hmax']))
-        self.crop_slices_checkbox.setChecked(self.params['e_crop'])
-        self.x_val_entry.setText(str(self.params['e_x0']))
-        self.width_val_entry.setText(str(self.params['e_dx']))
-        self.y_val_entry.setText(str(self.params['e_y0']))
-        self.height_val_entry.setText(str(self.params['e_dy']))
-        self.rotate_vol_entry.setText(str(self.params['e_a0']))
+        self.min_val_entry.setText(str(parameters.params['e_hmin']))
+        self.max_val_entry.setText(str(parameters.params['e_hmax']))
+        self.crop_slices_checkbox.setChecked(parameters.params['e_crop'])
+        self.x_val_entry.setText(str(parameters.params['e_x0']))
+        self.width_val_entry.setText(str(parameters.params['e_dx']))
+        self.y_val_entry.setText(str(parameters.params['e_y0']))
+        self.height_val_entry.setText(str(parameters.params['e_dy']))
+        self.rotate_vol_entry.setText(str(parameters.params['e_a0']))
 
     def set_select_rows(self):
         logging.debug("Select rows: " + str(self.select_rows_checkbox.isChecked()))
-        self.params['e_vcrop'] = str(self.select_rows_checkbox.isChecked())
+        parameters.params['e_vcrop'] = bool(self.select_rows_checkbox.isChecked())
 
     def set_first_row(self):
         logging.debug(self.first_row_entry.text())
-        self.params['e_y'] = str(self.first_row_entry.text())
+        parameters.params['e_y'] = str(self.first_row_entry.text())
 
     def set_num_rows(self):
         logging.debug(self.num_rows_entry.text())
-        self.params['e_yheight'] = str(self.num_rows_entry.text())
+        parameters.params['e_yheight'] = str(self.num_rows_entry.text())
 
     def set_reco_nth_rows(self):
         logging.debug(self.nth_row_entry.text())
-        self.params['e_ystep'] = str(self.nth_row_entry.text())
+        parameters.params['e_ystep'] = str(self.nth_row_entry.text())
 
     def set_clip_histo(self):
         logging.debug("Clip histo: " + str(self.clip_histo_checkbox.isChecked()))
-        self.params['e_gray256'] = str(self.clip_histo_checkbox.isChecked())
+        parameters.params['e_gray256'] = bool(self.clip_histo_checkbox.isChecked())
 
     def set_bitdepth(self):
         if self.eight_bit_rButton.isChecked():
             logging.debug("8 bit")
-            self.params['e_bit'] = str(8)
+            parameters.params['e_bit'] = str(8)
         elif self.sixteen_bit_rButton.isChecked():
             logging.debug("16 bit")
-            self.params['e_bit'] = str(16)
+            parameters.params['e_bit'] = str(16)
 
     def set_min_val(self):
         logging.debug(self.min_val_entry.text())
-        self.params['e_hmin'] = str(self.min_val_entry.text())
+        parameters.params['e_hmin'] = str(self.min_val_entry.text())
 
     def set_max_val(self):
         logging.debug(self.max_val_entry.text())
-        self.params['e_hmax'] = str(self.max_val_entry.text())
+        parameters.params['e_hmax'] = str(self.max_val_entry.text())
 
     def set_crop_slices(self):
         logging.debug("Crop slices: " + str(self.crop_slices_checkbox.isChecked()))
-        self.params['e_crop'] = str(self.crop_slices_checkbox.isChecked())
+        parameters.params['e_crop'] = bool(self.crop_slices_checkbox.isChecked())
 
     def set_x(self):
         logging.debug(self.x_val_entry.text())
-        self.params['e_x0'] = str(self.x_val_entry.text())
+        parameters.params['e_x0'] = str(self.x_val_entry.text())
 
     def set_width(self):
         logging.debug(self.width_val_entry.text())
-        self.params['e_dx'] = str(self.width_val_entry.text())
+        parameters.params['e_dx'] = str(self.width_val_entry.text())
 
     def set_y(self):
         logging.debug(self.y_val_entry.text())
-        self.params['e_y0'] = str(self.y_val_entry.text())
+        parameters.params['e_y0'] = str(self.y_val_entry.text())
 
     def set_height(self):
         logging.debug(self.height_val_entry.text())
-        self.params['e_dy'] = str(self.height_val_entry.text())
+        parameters.params['e_dy'] = str(self.height_val_entry.text())
 
     def set_rotate_volume(self):
         logging.debug(self.rotate_vol_entry.text())
-        self.params['e_a0'] = str(self.rotate_vol_entry.text())
+        parameters.params['e_a0'] = str(self.rotate_vol_entry.text())

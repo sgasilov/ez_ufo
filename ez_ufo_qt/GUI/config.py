@@ -8,6 +8,8 @@ from PyQt5.QtCore import pyqtSignal
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 
+import ez_ufo_qt.GUI.params as parameters
+
 class ConfigGroup(QGroupBox):
     """
     Setup and configuration settings
@@ -15,13 +17,11 @@ class ConfigGroup(QGroupBox):
     # Used to send signal to ezufo_launcher when settings are imported https://stackoverflow.com/questions/2970312/pyqt4-qtcore-pyqtsignal-object-has-no-attribute-connect
     signal_update_vals_from_params = pyqtSignal(dict)
 
-    def __init__(self, params):
+    def __init__(self):
         super().__init__()
 
         self.setTitle("Configuration")
         self.setStyleSheet('QGroupBox {color: purple;}')
-
-        self.params = params
 
         self.yaml_io = Yaml_IO()
 
@@ -127,7 +127,6 @@ class ConfigGroup(QGroupBox):
         self.reco_button.clicked.connect(self.reco_button_pressed)
 
         self.set_layout()
-        self.init_values()
 
     def set_layout(self):
         layout = QGridLayout()
@@ -162,10 +161,10 @@ class ConfigGroup(QGroupBox):
         self.input_dir_entry.setText(self.indir)
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
         self.output_dir_entry.setText(self.outdir)
-        self.params['e_bigtif'] = False
+        parameters.params['e_bigtif'] = False
         self.preproc_checkbox.setChecked(False)
         self.set_preproc()
-        self.params['e_pre'] = False
+        parameters.params['e_pre'] = False
         self.preproc_entry.setText("remove-outliers size=3 threshold=500 sign=1")
         self.darks_entry.setText("darks")
         self.flats_entry.setText("flats")
@@ -173,59 +172,59 @@ class ConfigGroup(QGroupBox):
         self.flats2_entry.setText("flats2")
         self.temp_dir_entry.setText("/data/tmp-ezufo")
         self.keep_tmp_data_checkbox.setChecked(False)
-        self.params['e_keep_tmp'] = False
+        parameters.params['e_keep_tmp'] = False
         self.set_temp_dir()
         self.dry_run_button.setChecked(False)
-        self.params['e_dryrun'] = False
-        self.params['e_parfile'] = True
+        parameters.params['e_dryrun'] = False
+        parameters.params['e_parfile'] = False
 
-    def set_values_from_params(self, params):
-        self.input_dir_entry.setText(self.params['e_indir'])
-        self.output_dir_entry.setText(self.params['e_outdir'])
-        self.bigtiff_checkbox.setChecked(self.params['e_bigtif'])
-        self.preproc_checkbox.setChecked(self.params['e_pre'])
-        self.preproc_entry.setText(self.params['e_pre_cmd'])
+    def set_values_from_params(self):
+        self.input_dir_entry.setText(parameters.params['e_indir'])
+        self.output_dir_entry.setText(parameters.params['e_outdir'])
+        self.bigtiff_checkbox.setChecked(parameters.params['e_bigtif'])
+        self.preproc_checkbox.setChecked(parameters.params['e_pre'])
+        self.preproc_entry.setText(parameters.params['e_pre_cmd'])
         self.darks_entry.setText("darks") #***** SAVE THESE TO YAML AS WELL
         self.flats_entry.setText("flats") #****
         self.tomo_entry.setText("tomo") #*****
         self.flats2_entry.setText("flats2") #*****
-        self.temp_dir_entry.setText(self.params['e_tmpdir'])
-        self.keep_tmp_data_checkbox.setChecked(self.params['e_keep_tmp'])
-        self.dry_run_button.setChecked(self.params['e_dryrun'])
+        self.temp_dir_entry.setText(parameters.params['e_tmpdir'])
+        self.keep_tmp_data_checkbox.setChecked(parameters.params['e_keep_tmp'])
+        self.dry_run_button.setChecked(parameters.params['e_dryrun'])
 
     def select_input_dir(self):
         dir_explore = QFileDialog(self)
         dir = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(dir)
         self.output_dir_entry.setText(dir + "-rec")
-        self.params['e_indir'] = dir
-        self.params['e_outdir'] = dir + "-rec"
+        parameters.params['e_indir'] = dir
+        parameters.params['e_outdir'] = dir + "-rec"
 
     def set_input_dir(self):
         logging.debug(str(self.input_dir_entry.text()))
-        self.params['e_indir'] = str(self.input_dir_entry.text())
+        parameters.params['e_indir'] = str(self.input_dir_entry.text())
 
     def select_output_dir(self):
         dir_explore = QFileDialog(self)
         dir = dir_explore.getExistingDirectory()
         self.output_dir_entry.setText(dir)
-        self.params['e_outdir'] = dir
+        parameters.params['e_outdir'] = dir
 
     def set_output_dir(self):
         logging.debug(str(self.output_dir_entry.text()))
-        self.params['e_outdir'] = str(self.output_dir_entry.text())
+        parameters.params['e_outdir'] = str(self.output_dir_entry.text())
 
     def set_big_tiff(self):
         logging.debug("Bigtiff: " + str(self.bigtiff_checkbox.isChecked()))
-        self.params['e_bigtif'] = str(self.bigtiff_checkbox.isChecked())
+        parameters.params['e_bigtif'] = bool(self.bigtiff_checkbox.isChecked())
 
     def set_preproc(self):
         logging.debug("Preproc: " + str(self.preproc_checkbox.isChecked()))
-        self.params['e_pre'] = str(self.preproc_checkbox.isChecked())
+        parameters.params['e_pre'] = bool(self.preproc_checkbox.isChecked())
 
     def set_preproc_entry(self):
         logging.debug(self.preproc_entry.text())
-        self.params['e_pre_cmd'] = str(self.preproc_entry.text())
+        parameters.params['e_pre_cmd'] = str(self.preproc_entry.text())
 
     def set_darks(self):
         logging.debug(self.darks_entry.text())
@@ -250,11 +249,11 @@ class ConfigGroup(QGroupBox):
 
     def set_temp_dir(self):
         logging.debug(str(self.temp_dir_entry.text()))
-        self.params['e_tmpdir'] = str(self.temp_dir_entry.text())
+        parameters.params['e_tmpdir'] = str(self.temp_dir_entry.text())
 
     def set_keep_tmp_data(self):
         logging.debug("Keep tmp: " + str(self.keep_tmp_data_checkbox.isChecked()))
-        self.params['e_keep_tmp'] = str(self.keep_tmp_data_checkbox.isChecked())
+        parameters.params['e_keep_tmp'] = bool(self.keep_tmp_data_checkbox.isChecked())
 
     def quit_button_pressed(self):
         logging.debug("QUIT")
@@ -262,9 +261,9 @@ class ConfigGroup(QGroupBox):
         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             # remove all directories with projections
-            clean_tmp_dirs(self.params['e_tmpdir'], self.get_fdt_names())
+            clean_tmp_dirs(parameters.params['e_tmpdir'], self.get_fdt_names())
             # remove axis-search dir too
-            tmp = os.path.join(self.params['e_tmpdir'], 'axis-search')
+            tmp = os.path.join(parameters.params['e_tmpdir'], 'axis-search')
             QCoreApplication.instance().quit()
         else:
             pass
@@ -293,12 +292,12 @@ class ConfigGroup(QGroupBox):
         dialog = QMessageBox.warning(self, "Warning: data can be lost", msg, QMessageBox.Yes | QMessageBox.No)
 
         if dialog == QMessageBox.Yes:
-            if os.path.exists(str(self.params['e_outdir'])):
+            if os.path.exists(str(parameters.params['e_outdir'])):
                 logging.debug("YES")
-                if self.params['e_outdir'] == self.params['e_indir']:
+                if parameters.params['e_outdir'] == parameters.params['e_indir']:
                     QMessageBox.warning("Cannot delete: output directory is the same as input")
                 else:
-                    os.system( 'rm -rf {}'.format(self.params['e_outdir']))
+                    os.system( 'rm -rf {}'.format(parameters.params['e_outdir']))
                     logging.debug("Directory with reconstructed data was removed")
             else:
                 logging.debug("Directory does not exist")
@@ -307,13 +306,13 @@ class ConfigGroup(QGroupBox):
 
     def dryrun_button_pressed(self):
         logging.debug("DRY")
-        self.params['e_dryrun'] = str(True)
+        parameters.params['e_dryrun'] = str(True)
         self.reco_button_pressed()
-        self.params['e_dryrun'] = str(False)
+        parameters.params['e_dryrun'] = str(False)
 
     def set_save_args(self):
         logging.debug("Save args: " + str(self.save_args_checkbox.isChecked()))
-        self.params['e_parfile'] = str(self.save_args_checkbox.isChecked())
+        parameters.params['e_parfile'] = bool(self.save_args_checkbox.isChecked())
 
     def export_settings_button_pressed(self):
         logging.debug("Save settings pressed")
@@ -322,7 +321,7 @@ class ConfigGroup(QGroupBox):
         if fileName:
             logging.debug("Export YAML Path: " + fileName)
         #Create and write to YAML file based on given fileName
-        self.yaml_io.write_yaml(fileName, self.params)
+        self.yaml_io.write_yaml(fileName, parameters.params)
 
     def import_settings_button_pressed(self):
         logging.debug("Import settings pressed")
@@ -331,29 +330,29 @@ class ConfigGroup(QGroupBox):
         if filePath:
             logging.debug("Import YAML Path: " + filePath)
             yaml_data = self.yaml_io.read_yaml(filePath)
-            self.params = dict(yaml_data)
-            self.signal_update_vals_from_params.emit(self.params)
+            parameters.params = dict(yaml_data)
+            self.signal_update_vals_from_params.emit(parameters.params)
 
     def reco_button_pressed(self):
         logging.debug("RECO")
         print("Reco")
-        print(self.params)
-        args = tk_args( self.params['e_indir'],  self.params['e_tmpdir'],  self.params['e_outdir'],  self.params['e_bigtif'],
-                        self.params['e_ax'],  self.params['e_ax_range'],  self.params['e_ax_row'],  self.params['e_ax_p_size'],  self.params['e_ax_fix'],  self.params['e_dax'],
-                        self.params['e_inp'],  self.params['e_inp_thr'],  self.params['e_inp_sig'],
-                        self.params['e_RR'],  self.params['e_RR_ufo'],  self.params['e_RR_ufo_1d'],  self.params['e_RR_par'],
-                        self.params['e_rr_srp_wind_sort'],  self.params['e_rr_srp_wide'],  self.params['e_rr_srp_wind_wide'],  self.params['e_rr_srp_snr'],
-                        self.params['e_PR'],  self.params['e_energy'],  self.params['e_pixel'],  self.params['e_z'],  self.params['e_log10db'],
-                        self.params['e_vcrop'],  self.params['e_y'],  self.params['e_yheight'],  self.params['e_ystep'],
-                        self.params['e_gray256'],  self.params['e_bit'],  self.params['e_hmin'],  self.params['e_hmax'],
-                        self.params['e_pre'],  self.params['e_pre_cmd'],
-                        self.params['e_a0'],
-                        self.params['e_crop'],  self.params['e_x0'],  self.params['e_dx'],  self.params['e_y0'],  self.params['e_dy'],
-                        self.params['e_dryrun'],  self.params['e_parfile'],  self.params['e_keep_tmp'])
-
+        print(parameters.params)
+        args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
+                        parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],  parameters.params['e_dax'],
+                        parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
+                        parameters.params['e_RR'],  parameters.params['e_RR_ufo'],  parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
+                        parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],  parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
+                        parameters.params['e_PR'],  parameters.params['e_energy'],  parameters.params['e_pixel'],  parameters.params['e_z'],  parameters.params['e_log10db'],
+                        parameters.params['e_vcrop'],  parameters.params['e_y'],  parameters.params['e_yheight'],  parameters.params['e_ystep'],
+                        parameters.params['e_gray256'],  parameters.params['e_bit'],  parameters.params['e_hmin'],  parameters.params['e_hmax'],
+                        parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
+                        parameters.params['e_a0'],
+                        parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
+                        parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'])
         main_tk(args, self.get_fdt_names())
         msg = "Done. See output in terminal for details."
         QMessageBox.information(self, "Finished", msg)
+
 
     def get_fdt_names(self):
         DIRTYP = []
@@ -478,5 +477,7 @@ class tk_args():
         self.args['keep_tmp']=bool(e_keep_tmp)
         setattr(self,'keep_tmp',self.args['keep_tmp'])
 
+        print("contents of arg dict:")
+        print(self.args.items())
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())

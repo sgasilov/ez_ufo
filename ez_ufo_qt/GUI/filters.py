@@ -2,18 +2,18 @@ import logging
 from PyQt5.QtWidgets import QButtonGroup, QGridLayout, QLabel, QRadioButton, QCheckBox, QGroupBox, QLineEdit
 from PyQt5.QtCore import Qt
 
+import ez_ufo_qt.GUI.params as parameters
+
 class FiltersGroup(QGroupBox):
     """
     Filter settings
     """
 
-    def __init__(self, params):
+    def __init__(self):
         super().__init__()
 
         self.setTitle("Filters")
         self.setStyleSheet('QGroupBox {color: orange;}')
-
-        self.params = params
 
         self.remove_spots_checkBox = QCheckBox()
         self.remove_spots_checkBox.setText("Remove large spots from projections")
@@ -81,10 +81,7 @@ class FiltersGroup(QGroupBox):
         self.SNR_entry = QLineEdit()
         self.SNR_entry.textChanged.connect(self.set_SNR)
 
-        #self.setStyleSheet('background-color:lightseagreen')
-
         self.set_layout()
-        self.init_values()
 
     def set_layout(self):
         layout = QGridLayout()
@@ -114,95 +111,94 @@ class FiltersGroup(QGroupBox):
     def init_values(self):
         self.remove_wide_checkbox.setChecked(False)
         self.set_remove_spots()
-        self.params['e_inp'] = False
+        parameters.params['e_inp'] = False
         self.threshold_entry.setText("1000")
         self.spot_blur_entry.setText("2")
         self.enable_RR_checkbox.setChecked(False)
         self.set_ring_removal()
-        self.params['e_RR'] = False
+        parameters.params['e_RR'] = False
         self.use_LPF_rButton.setChecked(True)
         self.select_rButton()
         self.sarepy_rButton.setChecked(False)
         self.one_dimens_rButton.setChecked(True)
-        self.params['e_RR_ufo_1d'] = True
+        parameters.params['e_RR_ufo_1d'] = True
         self.sigma_entry.setText("2")
         self.wind_size_entry.setText("21")
         self.remove_wide_checkbox.setChecked(False)
-        self.params['e_rr_srp_wide'] = False
+        parameters.params['e_rr_srp_wide'] = False
         self.remove_wide_entry.setText("91")
         self.SNR_entry.setText("3")
 
-    def set_values_from_params(self, params):
-        self.params = dict(params)
-        self.remove_spots_checkBox.setChecked(self.params['e_inp'])
-        self.threshold_entry.setText(str(self.params['e_inp_thr']))
-        self.spot_blur_entry.setText(str(self.params['e_inp_sig']))
-        self.enable_RR_checkbox.setChecked(self.params['e_RR'])
-        if self.params['e_RR_ufo'] == True:
+    def set_values_from_params(self):
+        self.remove_spots_checkBox.setChecked(parameters.params['e_inp'])
+        self.threshold_entry.setText(str(parameters.params['e_inp_thr']))
+        self.spot_blur_entry.setText(str(parameters.params['e_inp_sig']))
+        self.enable_RR_checkbox.setChecked(parameters.params['e_RR'])
+        if parameters.params['e_RR_ufo'] == True:
             self.use_LPF_rButton.setChecked(True)
-        elif self.params['e_RR_ufo]'] == False:
+        elif parameters.params['e_RR_ufo]'] == False:
             self.use_LPF_rButton.setChecked(False)
-        if self.params['e_RR_ufo_1d'] == True:
+        if parameters.params['e_RR_ufo_1d'] == True:
             self.one_dimens_rButton.setChecked(True)
             self.two_dimens_rButton.setChecked(False)
-        elif self.params['e_RR_ufo_1d'] == False:
+        elif parameters.params['e_RR_ufo_1d'] == False:
             self.two_dimens_rButton.setChecked(True)
             self.one_dimens_rButton.setChecked(False)
-        self.sigma_entry.setText(str(self.params['e_RR_par']))
-        self.wind_size_entry.setText(str(self.params['e_rr_srp_wind_sort']))
-        self.remove_wide_checkbox.setChecked(self.params['e_rr_srp_wide'])
-        self.remove_wide_entry.setText(str(self.params['e_rr_srp_wind_wide']))
-        self.SNR_entry.setText(str(self.params['e_rr_srp_snr']))
+        self.sigma_entry.setText(str(parameters.params['e_RR_par']))
+        self.wind_size_entry.setText(str(parameters.params['e_rr_srp_wind_sort']))
+        self.remove_wide_checkbox.setChecked(parameters.params['e_rr_srp_wide'])
+        self.remove_wide_entry.setText(str(parameters.params['e_rr_srp_wind_wide']))
+        self.SNR_entry.setText(str(parameters.params['e_rr_srp_snr']))
 
     def set_remove_spots(self):
         logging.debug("Remove large spots:" + str(self.remove_spots_checkBox.isChecked()))
-        self.params['e_inp'] = str(self.remove_spots_checkBox.isChecked())
+        parameters.params['e_inp'] = bool(self.remove_spots_checkBox.isChecked())
 
     def set_threshold(self):
         logging.debug(self.threshold_entry.text())
-        self.params['e_inp_thr'] = str(self.threshold_entry.text())
+        parameters.params['e_inp_thr'] = str(self.threshold_entry.text())
 
     def set_spot_blur(self):
         logging.debug(self.spot_blur_entry.text())
-        self.params['e_inp_sig'] = str(self.spot_blur_entry.text())
+        parameters.params['e_inp_sig'] = str(self.spot_blur_entry.text())
 
     def set_ring_removal(self):
         logging.debug("RR: " + str(self.enable_RR_checkbox.isChecked()))
-        self.params['e_RR'] = str(self.enable_RR_checkbox.isChecked())
+        parameters.params['e_RR'] = bool(self.enable_RR_checkbox.isChecked())
 
     ## THIS IS WEIRD DOUBLE CHECK
     def select_rButton(self):
         if self.use_LPF_rButton.isChecked():
             logging.debug("Use LPF")
-            self.params['e_RR_ufo'] = str(True)
+            parameters.params['e_RR_ufo'] = bool(True)
         elif self.sarepy_rButton.isChecked():
             logging.debug("Use Sarepy")
-            self.params['e_RR_ufo'] = str(False)
+            parameters.params['e_RR_ufo'] = bool(False)
 
     def select_dimens_rButton(self):
         if self.one_dimens_rButton.isChecked():
             logging.debug("One dimension")
-            self.params['e_RR_ufo_1d'] = str(True)
+            parameters.params['e_RR_ufo_1d'] = bool(True)
         elif self.two_dimens_rButton.isChecked():
             logging.debug("Two dimensions")
-            self.params['e_RR_ufo_1d'] = str(False)
+            parameters.params['e_RR_ufo_1d'] = bool(False)
 
     def set_sigma(self):
         logging.debug(self.sigma_entry.text())
-        self.params['e_RR_par'] = str(self.sigma_entry.text())
+        parameters.params['e_RR_par'] = str(self.sigma_entry.text())
 
     def set_window_size(self):
         logging.debug(self.wind_size_entry.text())
-        self.params['e_rr_srp_wind_sort'] = str(self.wind_size_entry.text())
+        parameters.params['e_rr_srp_wind_sort'] = str(self.wind_size_entry.text())
 
     def set_remove_wide(self):
         logging.debug("Wide: " + str(self.remove_wide_checkbox.isChecked()))
-        self.params['e_rr_srp_wide'] = str(self.remove_wide_checkbox.isChecked())
+        parameters.params['e_rr_srp_wide'] = bool(self.remove_wide_checkbox.isChecked())
 
     def set_wind(self):
         logging.debug(self.remove_wide_entry.text())
-        self.params['e_rr_srp_wind_wide'] = str(self.remove_wide_entry.text())
+        parameters.params['e_rr_srp_wind_wide'] = str(self.remove_wide_entry.text())
 
     def set_SNR(self):
         logging.debug(self.SNR_entry.text())
-        self.params['e_rr_srp_snr'] = str(self.SNR_entry.text())
+        parameters.params['e_rr_srp_snr'] = str(self.SNR_entry.text())

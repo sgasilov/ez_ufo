@@ -12,6 +12,7 @@ from ez_ufo_qt.GUI.config import ConfigGroup
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 
+import ez_ufo_qt.GUI.params as parameters
 
 class GUI(qtw.QWidget):
     """
@@ -32,21 +33,29 @@ class GUI(qtw.QWidget):
         logger.addHandler(fhandler)
         logger.setLevel(logging.DEBUG)
 
-        # Dict which holds the value of parameters set by user in GUI interaction
-        self.params = {}
-
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
         self.yaml_io = Yaml_IO()
         self.yaml_data = self.yaml_io.read_yaml(settings_path)
-        self.params = dict(self.yaml_data)
+        parameters.params = dict(self.yaml_data)
 
         # Create and setup classes for each section of GUI
-        self.centre_of_rotation_group = CentreOfRotationGroup(self.params)
-        self.filters_group = FiltersGroup(self.params)
-        self.phase_retrieval_group = PhaseRetrievalGroup(self.params)
-        self.binning_group = BinningGroup(self.params)
-        self.config_group = ConfigGroup(self.params)
+        self.centre_of_rotation_group = CentreOfRotationGroup()
+        self.centre_of_rotation_group.init_values()
+
+        self.filters_group = FiltersGroup()
+        self.filters_group.init_values()
+
+        self.phase_retrieval_group = PhaseRetrievalGroup()
+        self.phase_retrieval_group.init_values()
+
+        self.binning_group = BinningGroup()
+        self.binning_group.init_values()
+
+        self.config_group = ConfigGroup()
+        self.config_group.init_values()
+
+        #######################################################
 
         self.set_layout()
         self.resize(0, 0) #window to minimum size
@@ -60,12 +69,12 @@ class GUI(qtw.QWidget):
         self.show()
 
     def set_layout(self):
-        self.layout = qtw.QVBoxLayout(self)
+        layout = qtw.QVBoxLayout(self)
         # Initialize tab screen
-        self.tabs = qtw.QTabWidget()
-        self.tab1 = qtw.QWidget()
-        self.tab2 = qtw.QWidget()
-        self.tab3 = qtw.QWidget()
+        tabs = qtw.QTabWidget()
+        tab1 = qtw.QWidget()
+        tab2 = qtw.QWidget()
+        tab3 = qtw.QWidget()
 
         main_layout = qtw.QGridLayout()
 
@@ -76,26 +85,26 @@ class GUI(qtw.QWidget):
         main_layout.addWidget(self.config_group, 2, 0, 2, 0)
 
         # Add tabs
-        self.tabs.addTab(self.tab1, "Main")
-        self.tabs.addTab(self.tab2, "Image Viewer")
-        self.tabs.addTab(self.tab3, "Advanced")
+        tabs.addTab(tab1, "Main")
+        tabs.addTab(tab2, "Image Viewer")
+        tabs.addTab(tab3, "Advanced")
 
         # Create first tab
-        self.tab1.layout = main_layout
-        self.tab1.setLayout(self.tab1.layout)
+        tab1.layout = main_layout
+        tab1.setLayout(tab1.layout)
 
         # Add tabs to widget
-        self.layout.addWidget(self.tabs)
-        self.setLayout(self.layout)
+        layout.addWidget(tabs)
+        self.setLayout(layout)
 
-    def update_values_from_params(self, params):
+    def update_values_from_params(self):
         logging.debug("Update Values from Params")
-        logging.debug(params)
-        self.centre_of_rotation_group.set_values_from_params(params)
-        self.filters_group.set_values_from_params(params)
-        self.phase_retrieval_group.set_values_from_params(params)
-        self.binning_group.set_values_from_params(params)
-        self.config_group.set_values_from_params(params)
+        logging.debug(parameters.params)
+        self.centre_of_rotation_group.set_values_from_params()
+        self.filters_group.set_values_from_params()
+        self.phase_retrieval_group.set_values_from_params()
+        self.binning_group.set_values_from_params()
+        self.config_group.set_values_from_params()
 
     def closeEvent(self, event):
         logging.debug("QUIT")
@@ -103,9 +112,9 @@ class GUI(qtw.QWidget):
         qtw.QMessageBox.Yes | qtw.QMessageBox.No, qtw.QMessageBox.No)
         if reply == qtw.QMessageBox.Yes:
             # remove all directories with projections
-            clean_tmp_dirs(self.params['e_tmpdir'], self.config_group.get_fdt_names())
+            clean_tmp_dirs(parameters.params['e_tmpdir'], self.config_group.get_fdt_names())
             # remove axis-search dir too
-            tmp = os.path.join(self.params['e_tmpdir'], 'axis-search')
+            tmp = os.path.join(parameters.params['e_tmpdir'], 'axis-search')
             event.accept()
         else:
             event.ignore()
