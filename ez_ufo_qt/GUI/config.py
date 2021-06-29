@@ -375,9 +375,9 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_ax_row']) < 0:
             raise InvalidInputError("Value out of range for: Search in slice from row number")
 
-        # Side of reconstructed: e_ax_p_size
+        # Size of reconstructed: e_ax_p_size
         if int(parameters.params['e_ax_p_size']) < 0:
-            raise InvalidInputError("Value out of range for: Side of reconstructed path [pixel]")
+            raise InvalidInputError("Value out of range for: Size of reconstructed path [pixel]")
 
         # Axis is in column No: e_ax_fix
         if float(parameters.params['e_ax_fix']) < 0:
@@ -439,9 +439,10 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_ystep']) < 0:
             raise InvalidInputError("Value out of range for: Reconstruct every Nth row")
 
+        # Can be negative when 16-bit selected
         # Min value: e_hmin
-        if float(parameters.params['e_hmin']) < 0:
-            raise InvalidInputError("Value out of range for: Min value in 32-bit histogram")
+        #if float(parameters.params['e_hmin']) < 0:
+        #    raise InvalidInputError("Value out of range for: Min value in 32-bit histogram")
 
         # Max value: e_hmax
         if float(parameters.params['e_hmax']) < 0:
@@ -463,9 +464,10 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_dy']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
+        # Can be negative value
         # Optional: rotate volume: e_a0
-        if float(parameters.params['e_a0']) < 0:
-            raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
+        #if float(parameters.params['e_a0']) < 0:
+        #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
 
     def get_fdt_names(self):
         DIRTYP = []

@@ -1,9 +1,13 @@
+import sys
 import os
-import numpy as np
 import logging
 import pyqtgraph as pg
-from tifffile import imread, imwrite
-from PyQt5.QtWidgets import QGroupBox, QGridLayout, QPushButton, QFileDialog, QLabel, QWidget
+import pyqtgraph.exporters
+import numpy as np
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import ez_ufo_qt.GUI.image_read_write
 
 
 class ImageViewerGroup(QGroupBox):
@@ -14,106 +18,158 @@ class ImageViewerGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.directory_select = QPushButton()
-        self.directory_select.setText("Open image from file")
-        self.directory_select.clicked.connect(self.open_image_from_file)
+        self.tiff_arr = np.empty([0, 0, 0])
+        self.img_arr = np.empty([0, 0])
+        self.bit_depth = 32
 
-        self.set_layout()
+        logger = logging.getLogger()
+        fhandler = logging.FileHandler(filename='mylog.log', mode='w')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fhandler.setFormatter(formatter)
+        logger.addHandler(fhandler)
+        logger.setLevel(logging.DEBUG)
 
-    def set_layout(self):
+        self.open_file_button = QPushButton("Open Image File")
+        self.open_file_button.clicked.connect(self.open_image_from_file)
+
+        self.open_stack_button = QPushButton("Open Image Stack")
+        self.open_stack_button.clicked.connect(self.open_stack_from_directory)
+
+        self.save_file_button = QPushButton("Save Image File")
+        self.save_file_button.clicked.connect(self.save_image_to_file)
+
+        self.save_stack_button = QPushButton("Save Image Stack")
+        self.save_stack_button.clicked.connect(self.save_stack_to_directory)
+
+        self.hist_min_label = QLabel("Histogram Min:")
+        self.hist_min_label.setAlignment(Qt.AlignRight)
+        self.hist_max_label = QLabel("Histogram Max:")
+        self.hist_max_label.setAlignment(Qt.AlignRight)
+
+        self.hist_min_input = QSpinBox()
+        self.hist_min_input.setRange(0, 100)
+        self.hist_min_input.valueChanged.connect(self.min_spin_changed)
+        self.hist_max_input = QSpinBox()
+        self.hist_max_input.setRange(0, 100)
+        self.hist_max_input.valueChanged.connect(self.max_spin_changed)
+
+        self.save_8bit_rButton = QRadioButton()
+        self.save_8bit_rButton.setText("Save as 8-bit")
+        self.save_8bit_rButton.clicked.connect(self.set_8bit)
+        self.save_8bit_rButton.setChecked(False)
+
+        self.save_16bit_rButton = QRadioButton()
+        self.save_16bit_rButton.setText("Save as 16-bit")
+        self.save_16bit_rButton.clicked.connect(self.set_16bit)
+        self.save_16bit_rButton.setChecked(False)
+
+        self.save_32bit_rButton = QRadioButton()
+        self.save_32bit_rButton.setText("Save as 32-bit")
+        self.save_32bit_rButton.clicked.connect(self.set_32bit)
+        self.save_32bit_rButton.setChecked(True)
+
+        self.image_window = pg.ImageView()
+
+        self.scroller = QScrollBar(Qt.Horizontal)
+        self.scroller.orientation()
+        self.scroller.setEnabled(False)
+        self.scroller.valueChanged.connect(self.scroll_changed)
+
         layout = QGridLayout()
-
-        layout.addWidget(self.directory_select, 0, 1)
+        layout.addWidget(self.open_file_button, 0, 0)
+        layout.addWidget(self.open_stack_button, 0, 1)
+        layout.addWidget(self.save_file_button, 0, 2)
+        layout.addWidget(self.save_stack_button, 0, 3)
+        layout.addWidget(self.save_8bit_rButton, 1, 1)
+        layout.addWidget(self.save_16bit_rButton, 1, 2)
+        layout.addWidget(self.save_32bit_rButton, 1, 3)
+        layout.addWidget(self.image_window, 2, 0, 1, 4)
+        layout.addWidget(self.hist_min_label, 4, 2)
+        layout.addWidget(self.hist_min_input, 4, 3)
+        layout.addWidget(self.hist_max_label, 3, 2)
+        layout.addWidget(self.hist_max_input, 3, 3)
+        layout.addWidget(self.scroller, 5, 0, 1, 4)
 
         self.setLayout(layout)
+
+        self.resize(640, 480)
+
+        self.show()
+
+    def scroll_changed(self):
+        #self.image_index.setText(str(self.scroller.value()))
+        self.image_window.setImage(self.tiff_arr[self.scroller.value()])
 
     def open_image_from_file(self):
         logging.debug("Open image button pressed")
         options = QFileDialog.Options()
-        filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "All Files (*)", options=options)
+        filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "All Files (*)",
+                                                  options=options)
         if filePath:
             logging.debug("Import image path: " + filePath)
-            img_arr = read_image(filePath)
-            pg.image(img_arr)
+            self.img_arr = image_read_write.read_image(filePath)
+            self.image_window.setImage(self.img_arr)
+            self.image_window.getHistogramWidget()
+            self.scroller.setEnabled(False)
+
+    def save_image_to_file(self):
+        logging.debug("Save image to file")
+        options = QFileDialog.Options()
+        filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
+        if filepath:
+            print(filepath)
+            image_read_write.write_image(self.img_arr, os.path.dirname(filepath), os.path.basename(filepath))
 
 
-class InvalidDataSetError(Exception):
-    """
-    Error to be raised on attempt to read data from empty or non-existing data set
-    """
-    pass
-
-def validate_files_path(files_path: str, supported_file_types: list) -> bool:
-    """
-    Validates specified path
-    :param supported_file_types: List of supported extensions
-    :param files_path: Path to validate
-    :return: True if path exists and contains at least one file of supported type, else False
-    """
-    try:
-        valid_files_list = get_valid_files_list(files_path=files_path,
-                                                supported_file_types=supported_file_types)
-    except InvalidDataSetError:
-        return False
-    return len(valid_files_list) > 0
-
-
-def get_valid_files_list(files_path: str, supported_file_types: list) -> list:
-    """
-    Get the list of files of supported type in directory
-    :param supported_file_types: List of supported extensions
-    :param files_path: Path to directory with files
-    :return: List of full paths to files
-    """
-    # Check if directory exists
-    if not os.path.exists(files_path):
-        raise InvalidDataSetError(f"No such directory: {files_path}")
-
-    files_list = os.listdir(files_path)
-    valid_files_list = [
-        os.path.join(files_path, file_name)
-        for file_name in files_list
-        if os.path.splitext(file_name)[1] in supported_file_types
-    ]
-    return valid_files_list
+    def open_stack_from_directory(self):
+        logging.debug("Open image stack button pressed")
+        dir_explore = QFileDialog()
+        dir = dir_explore.getExistingDirectory()
+        if dir:
+            try:
+                tiff_list = (".tif", ".tiff")
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Information)
+                msg.setWindowTitle("Loading Images...")
+                msg.setText("Loading Images from Directory")
+                msg.show()
+                self.tiff_arr = image_read_write.read_all_images(dir, tiff_list)
+                msg.close()
+                self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
+                self.scroller.setEnabled(True)
+            except image_read_write.InvalidDataSetError:
+                print("Invalid Data Set")
 
 
-def read_image(image_file_path: str, data_type=np.float32) -> np.ndarray:
-    """
-    Reads image file to numpy.ndarray of specified type
-    :param data_type: Data type to store the image
-    :param image_file_path: Full path to image to read
-    :return:
-    """
-    return imread(image_file_path).astype(dtype=data_type)
+    def save_stack_to_directory(self):
+        logging.debug("Save stack to directory button pressed")
+        logging.debug("Saving with bitdepth: " + str(self.bit_depth))
+        dir_explore = QFileDialog()
+        dir = dir_explore.getExistingDirectory()
+        print(dir)
+        if dir:
+            if self.bit_depth == 8:
+                bit_depth_string = "uint8"
+            elif self.bit_depth == 16:
+                bit_depth_string = "uint16"
+            elif self.bit_depth == 32:
+                bit_depth_string = "uint32"
+            image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
 
+    def min_spin_changed(self):
+        pass
 
-def write_image(image: np.ndarray, target_directory: str, target_name: str, data_type=np.float32):
-    """
-    Writes image data to file
-    :param image: Image data
-    :param target_directory: Path to directory to write image
-    :param target_name: Target image file name
-    :param data_type: Data type to write the image
-    :return:
-    """
-    os.makedirs(target_directory, exist_ok=True)
-    data_file_path = os.path.join(target_directory, target_name)
-    imwrite(data_file_path, data=image.astype(dtype=data_type))
+    def max_spin_changed(self):
+        pass
 
+    def set_8bit(self):
+        logging.debug("Set 8-bit")
+        self.bit_depth = 8
 
-def read_all_images(image_files_path: str, supported_image_types: list,  data_type=np.float32) -> np.ndarray:
-    """
-    Reads all images of the supported type from specified directory
-    :param supported_image_types: List of supported extensions
-    :param image_files_path: Path to directory with images
-    :param data_type: Data type to store the images
-    :return: 3-dimensional numpy.ndarray of specified type, first index being image index
-    """
-    valid_files_list = get_valid_files_list(files_path=image_files_path,
-                                            supported_file_types=supported_image_types)
-    if len(valid_files_list) == 0:
-        raise InvalidDataSetError(f"Directory {image_files_path} "
-                                  f"does not contain files of supported types {supported_image_types}")
-    data_array = imread(valid_files_list).astype(dtype=data_type)
-    return np.array(data_array)
+    def set_16bit(self):
+        logging.debug("Set 16-bit")
+        self.bit_depth = 16
+
+    def set_32bit(self):
+        logging.debug("Set 32-bit")
+        self.bit_depth = 32
