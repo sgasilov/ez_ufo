@@ -7,7 +7,7 @@ import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import ez_ufo_qt.GUI.image_read_write
+import ez_ufo_qt.GUI.image_read_write as image_read_write
 
 
 class ImageViewerGroup(QGroupBox):
