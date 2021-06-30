@@ -4,6 +4,7 @@ import logging
 import pyqtgraph as pg
 import pyqtgraph.exporters
 import numpy as np
+import tifffile
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -62,7 +63,12 @@ class ImageViewerGroup(QGroupBox):
         self.save_32bit_rButton.clicked.connect(self.set_32bit)
         self.save_32bit_rButton.setChecked(True)
 
+        self.big_tiff_checkbox = QCheckBox()
+        self.big_tiff_checkbox.setText("Save as BigTiff")
+        self.big_tiff_checkbox.stateChanged.connect(self.big_tiff_checkbox_clicked)
+
         self.image_window = pg.ImageView()
+
         self.image_window.ui.histogram.gradient.hide()
         self.histo = self.image_window.getHistogramWidget()
 
@@ -76,19 +82,22 @@ class ImageViewerGroup(QGroupBox):
         vbox.addWidget(self.save_16bit_rButton)
         vbox.addWidget(self.save_32bit_rButton)
 
+        gridbox = QGridLayout()
+        gridbox.addWidget(self.hist_max_label, 0, 0)
+        gridbox.addWidget(self.hist_max_input, 0, 1)
+        gridbox.addWidget(self.hist_min_label, 1, 0)
+        gridbox.addWidget(self.hist_min_input, 1, 1)
+
         layout = QGridLayout()
         layout.addWidget(self.open_file_button, 0, 0)
         layout.addWidget(self.open_stack_button, 1, 0)
         layout.addWidget(self.save_file_button, 0, 1)
         layout.addWidget(self.save_stack_button, 1, 1)
         layout.addItem(vbox, 0, 2, 2, 1)
-        layout.addWidget(self.hist_max_label, 0, 3)
-        layout.addWidget(self.hist_max_input, 0, 4)
-        layout.addWidget(self.hist_min_label, 1, 3)
-        layout.addWidget(self.hist_min_input, 1, 4)
-
+        layout.addWidget(self.big_tiff_checkbox, 1, 3)
+        layout.addItem(gridbox, 0, 4, 2, 1)
         layout.addWidget(self.image_window, 2, 0, 1, 5)
-        layout.addWidget(self.scroller, 5, 0, 1, 5)
+        layout.addWidget(self.scroller, 4, 0, 1, 5)
 
         self.setLayout(layout)
 
@@ -97,7 +106,7 @@ class ImageViewerGroup(QGroupBox):
         self.show()
 
     def scroll_changed(self):
-        self.image_window.setImage(self.tiff_arr[self.scroller.value()])
+        self.image_window.setImage(self.tiff_arr[self.scroller.value()].T)
 
     def open_image_from_file(self):
         logging.debug("Open image button pressed")
@@ -107,7 +116,7 @@ class ImageViewerGroup(QGroupBox):
         if filePath:
             logging.debug("Import image path: " + filePath)
             self.img_arr = image_read_write.read_image(filePath)
-            self.image_window.setImage(self.img_arr)
+            self.image_window.setImage(self.img_arr.T)
             self.scroller.setEnabled(False)
 
     def save_image_to_file(self):
@@ -116,14 +125,9 @@ class ImageViewerGroup(QGroupBox):
         filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
         if filepath:
             logging.debug(filepath)
-            if self.bit_depth == 8:
-                bit_depth_string = "uint8"
-            elif self.bit_depth == 16:
-                bit_depth_string = "uint16"
-            elif self.bit_depth == 32:
-                bit_depth_string = "uint32"
+            bit_depth_string = self.check_bit_depth(self.bit_depth)
             #np_image_arr = fn.imageToArray(self.image_item.qimage)
-            #np_image_arr = fn.qimage_to_ndarray(self.image_item.qimage)
+            #np_image_arr = fn.qimage_to_ndarray(self.image_item.qimage) #Trying to figure out how to save with histogram
             image_read_write.write_image(self.img_arr, os.path.dirname(filepath), os.path.basename(filepath), bit_depth_string)
 
     def open_stack_from_directory(self):
@@ -141,7 +145,7 @@ class ImageViewerGroup(QGroupBox):
                 self.tiff_arr = image_read_write.read_all_images(dir, tiff_list)
                 self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
                 self.scroller.setEnabled(True)
-                self.image_window.setImage(self.tiff_arr[0])
+                self.image_window.setImage(self.tiff_arr[0].T)
                 msg.close()
                 mid_index = self.tiff_arr.shape[0] / 2
                 self.scroller.setValue(mid_index)
@@ -149,6 +153,10 @@ class ImageViewerGroup(QGroupBox):
                 print("Invalid Data Set")
 
     def open_stack_from_path(self, dir_path: str):
+        """
+        Read images from directory path into RAM as 3D numpy array
+        :param dir_path: Path to directory containing multiple .tiff image files
+        """
         logging.debug("Open stack from path")
         try:
             tiff_list = (".tif", ".tiff")
@@ -160,7 +168,7 @@ class ImageViewerGroup(QGroupBox):
             self.tiff_arr = image_read_write.read_all_images(dir_path, tiff_list)
             self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
             self.scroller.setEnabled(True)
-            self.image_window.setImage(self.tiff_arr[0])
+            self.image_window.setImage(self.tiff_arr[0].T)
             msg.close()
             mid_index = self.tiff_arr.shape[0] / 2
             self.scroller.setValue(mid_index)
@@ -168,24 +176,28 @@ class ImageViewerGroup(QGroupBox):
             print("Invalid Data Set")
 
     def save_stack_to_directory(self):
+        """
+        Saves images stored in numpy array to individual files in directory specified by user dialog
+        Saves these images as BigTiff if checkbox is set to True
+        """
         logging.debug("Save stack to directory button pressed")
         logging.debug("Saving with bitdepth: " + str(self.bit_depth))
         dir_explore = QFileDialog()
         dir = dir_explore.getExistingDirectory()
         logging.debug("Writing to directory: " + dir)
         if dir:
-            if self.bit_depth == 8:
-                bit_depth_string = "uint8"
-            elif self.bit_depth == 16:
-                bit_depth_string = "uint16"
-            elif self.bit_depth == 32:
-                bit_depth_string = "uint32"
+            bit_depth_string = self.check_bit_depth(self.bit_depth)
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Saving Images...")
-            msg.setText("Saving Images to Directory")
-            msg.show()
-            image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
+            if self.big_tiff_checkbox.isChecked():
+                msg.setText("Saving Images to BigTiff")
+                msg.show()
+                tifffile.imwrite(dir + '/temp.tif', self.tiff_arr, bigtiff=True)
+            else:
+                msg.setText("Saving Images to Directory")
+                msg.show()
+                image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
             msg.close()
 
     def min_spin_changed(self):
@@ -200,6 +212,14 @@ class ImageViewerGroup(QGroupBox):
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
 
+    def check_bit_depth(self, bit_depth: int) -> str:
+        if bit_depth == 8:
+            return "uint8"
+        elif bit_depth == 16:
+            return "uint16"
+        elif bit_depth == 32:
+            return "uint32"
+
     def set_8bit(self):
         logging.debug("Set 8-bit")
         self.bit_depth = 8
@@ -211,3 +231,6 @@ class ImageViewerGroup(QGroupBox):
     def set_32bit(self):
         logging.debug("Set 32-bit")
         self.bit_depth = 32
+
+    def big_tiff_checkbox_clicked(self):
+        logging.debug("BigTiff checkbox: " + str(self.big_tiff_checkbox.isChecked()))

@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import tifffile
 from tifffile import imread, imwrite
 
 
@@ -72,7 +73,7 @@ def write_image(image: np.ndarray, target_directory: str, target_name: str, data
 
 def write_all_images(tiff_arr: np.ndarray, target_directory: str, data_type=np.float32):
     """
-    Writes all images in numpy array as files in a directory
+    Writes all images in numpy array as individual files in a directory
     :param tiff_arr: Array containing images
     :param target_directory: Path to directory to write images
     :param data_type: Data type to write the images
