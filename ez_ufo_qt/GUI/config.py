@@ -16,6 +16,8 @@ class ConfigGroup(QGroupBox):
     """
     # Used to send signal to ezufo_launcher when settings are imported https://stackoverflow.com/questions/2970312/pyqt4-qtcore-pyqtsignal-object-has-no-attribute-connect
     signal_update_vals_from_params = pyqtSignal(dict)
+    # Used to send signal when reconstruction is done
+    signal_reco_done = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -359,6 +361,7 @@ class ConfigGroup(QGroupBox):
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
+            self.signal_reco_done.emit()
         except InvalidInputError as err:
             msg = ""
             err_arg = err.args

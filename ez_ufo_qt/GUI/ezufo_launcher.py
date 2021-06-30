@@ -66,6 +66,9 @@ class GUI(qtw.QWidget):
         # When new settings are imported signal is sent and this catches it to update params for each GUI object
         self.config_group.signal_update_vals_from_params.connect(self.update_values_from_params)
 
+        # When RECO is done send signal from config
+        self.config_group.signal_reco_done.connect(self.switch_to_image_tab)
+
         finish = qtw.QAction("Quit", self)
         finish.triggered.connect(self.closeEvent)
 
@@ -74,10 +77,10 @@ class GUI(qtw.QWidget):
     def set_layout(self):
         layout = qtw.QVBoxLayout(self)
         # Initialize tab screen
-        tabs = qtw.QTabWidget()
-        tab1 = qtw.QWidget()
-        tab2 = qtw.QWidget()
-        tab3 = qtw.QWidget()
+        self.tabs = qtw.QTabWidget()
+        self.tab1 = qtw.QWidget()
+        self.tab2 = qtw.QWidget()
+        self.tab3 = qtw.QWidget()
 
         main_layout = qtw.QGridLayout()
         main_layout.addWidget(self.centre_of_rotation_group, 0, 0)
@@ -90,20 +93,20 @@ class GUI(qtw.QWidget):
         image_layout.addWidget(self.image_group, 0, 0)
 
         # Add tabs
-        tabs.addTab(tab1, "Main")
-        tabs.addTab(tab2, "Image Viewer")
-        tabs.addTab(tab3, "Advanced")
+        self.tabs.addTab(self.tab1, "Main")
+        self.tabs.addTab(self.tab2, "Image Viewer")
+        self.tabs.addTab(self.tab3, "Advanced")
 
         # Create main tab
-        tab1.layout = main_layout
-        tab1.setLayout(tab1.layout)
+        self.tab1.layout = main_layout
+        self.tab1.setLayout(self.tab1.layout)
 
         # Create image tab
-        tab2.layout = image_layout
-        tab2.setLayout(tab2.layout)
+        self.tab2.layout = image_layout
+        self.tab2.setLayout(self.tab2.layout)
 
         # Add tabs to widget
-        layout.addWidget(tabs)
+        layout.addWidget(self.tabs)
         self.setLayout(layout)
 
     def update_values_from_params(self):
@@ -114,6 +117,10 @@ class GUI(qtw.QWidget):
         self.phase_retrieval_group.set_values_from_params()
         self.binning_group.set_values_from_params()
         self.config_group.set_values_from_params()
+
+    def switch_to_image_tab(self):
+        logging.debug("Switch to Image Tab")
+        self.tabs.setCurrentWidget(self.tab2)
 
     def closeEvent(self, event):
         logging.debug("QUIT")
