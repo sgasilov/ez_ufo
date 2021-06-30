@@ -141,6 +141,7 @@ class ImageViewerGroup(QGroupBox):
                 self.tiff_arr = image_read_write.read_all_images(dir, tiff_list)
                 self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
                 self.scroller.setEnabled(True)
+                self.image_window.setImage(self.tiff_arr[self.tiff_arr.shape[0] / 2])
                 msg.close()
             except image_read_write.InvalidDataSetError:
                 print("Invalid Data Set")
