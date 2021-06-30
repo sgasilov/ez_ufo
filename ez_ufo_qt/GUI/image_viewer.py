@@ -90,11 +90,7 @@ class ImageViewerGroup(QGroupBox):
         layout.addWidget(self.hist_min_input, 1, 4)
 
         layout.addWidget(self.image_window, 2, 0, 1, 5)
-        #layout.addWidget(self.hist_max_label, 3, 2)
-        #layout.addWidget(self.hist_max_input, 3, 3)
-        #layout.addWidget(self.hist_min_label, 4, 2)
-        #layout.addWidget(self.hist_min_input, 4, 3)
-        layout.addWidget(self.scroller, 5, 0, 1, 4)
+        layout.addWidget(self.scroller, 5, 0, 1, 5)
 
         self.setLayout(layout)
 
