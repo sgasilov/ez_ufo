@@ -121,6 +121,8 @@ class GUI(qtw.QWidget):
     def switch_to_image_tab(self):
         logging.debug("Switch to Image Tab")
         self.tabs.setCurrentWidget(self.tab2)
+        #print(parameters.params['e_indir'])
+        self.image_group.open_stack_from_path(parameters.params['e_indir'])
 
     def closeEvent(self, event):
         logging.debug("QUIT")

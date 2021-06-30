@@ -64,8 +64,6 @@ class ImageViewerGroup(QGroupBox):
 
         self.image_window = pg.ImageView()
         self.image_window.ui.histogram.gradient.hide()
-        #self.image_item = self.image_window.getImageItem()
-
         self.histo = self.image_window.getHistogramWidget()
 
         self.scroller = QScrollBar(Qt.Horizontal)
@@ -146,6 +144,23 @@ class ImageViewerGroup(QGroupBox):
                 msg.close()
             except image_read_write.InvalidDataSetError:
                 print("Invalid Data Set")
+
+    def open_stack_from_path(self, dir_path: str):
+        logging.debug("Open stack from path")
+        try:
+            tiff_list = (".tif", ".tiff")
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Loading Images...")
+            msg.setText("Loading Images from Directory")
+            msg.show()
+            self.tiff_arr = image_read_write.read_all_images(dir, tiff_list)
+            self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
+            self.scroller.setEnabled(True)
+            self.image_window.setImage(self.tiff_arr[self.tiff_arr.shape[0]/2])
+            msg.close()
+        except image_read_write.InvalidDataSetError:
+            print("Invalid Data Set")
 
     def save_stack_to_directory(self):
         logging.debug("Save stack to directory button pressed")
