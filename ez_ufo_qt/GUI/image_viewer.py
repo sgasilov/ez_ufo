@@ -36,6 +36,14 @@ class ImageViewerGroup(QGroupBox):
         self.save_stack_button.clicked.connect(self.save_stack_to_directory)
         self.save_stack_button.setStyleSheet("background-color: lightgrey; font: 11pt")
 
+        self.open_big_tiff_button = QPushButton("Open BigTiff")
+        self.open_big_tiff_button.clicked.connect(self.open_big_tiff)
+        self.open_big_tiff_button.setStyleSheet("background-color: lightgrey; font: 11pt")
+
+        self.save_big_tiff_button = QPushButton("Save BigTiff")
+        self.save_big_tiff_button.clicked.connect(self.save_stack_to_big_tiff)
+        self.save_big_tiff_button.setStyleSheet("background-color: lightgrey; font: 11pt")
+
         self.hist_min_label = QLabel("Histogram Min:")
         self.hist_min_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.hist_max_label = QLabel("Histogram Max:")
@@ -63,9 +71,9 @@ class ImageViewerGroup(QGroupBox):
         self.save_32bit_rButton.clicked.connect(self.set_32bit)
         self.save_32bit_rButton.setChecked(True)
 
-        self.big_tiff_checkbox = QCheckBox()
-        self.big_tiff_checkbox.setText("Save as BigTiff")
-        self.big_tiff_checkbox.stateChanged.connect(self.big_tiff_checkbox_clicked)
+        #self.big_tiff_checkbox = QCheckBox()
+        #self.big_tiff_checkbox.setText("Save as BigTiff")
+        #self.big_tiff_checkbox.stateChanged.connect(self.big_tiff_checkbox_clicked)
 
         self.image_window = pg.ImageView()
 
@@ -90,11 +98,13 @@ class ImageViewerGroup(QGroupBox):
 
         layout = QGridLayout()
         layout.addWidget(self.open_file_button, 0, 0)
-        layout.addWidget(self.open_stack_button, 1, 0)
-        layout.addWidget(self.save_file_button, 0, 1)
+        layout.addWidget(self.save_file_button, 1, 0)
+        layout.addWidget(self.open_stack_button, 0, 1)
         layout.addWidget(self.save_stack_button, 1, 1)
-        layout.addItem(vbox, 0, 2, 2, 1)
-        layout.addWidget(self.big_tiff_checkbox, 1, 3)
+        layout.addWidget(self.open_big_tiff_button, 0, 2)
+        layout.addWidget(self.save_big_tiff_button, 1, 2)
+        layout.addItem(vbox, 0, 3, 2, 1)
+        #layout.addWidget(self.big_tiff_checkbox, 1, 3)
         layout.addItem(gridbox, 0, 4, 2, 1)
         layout.addWidget(self.image_window, 2, 0, 1, 5)
         layout.addWidget(self.scroller, 4, 0, 1, 5)
@@ -190,14 +200,41 @@ class ImageViewerGroup(QGroupBox):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Saving Images...")
-            if self.big_tiff_checkbox.isChecked():
-                msg.setText("Saving Images to BigTiff")
-                msg.show()
-                tifffile.imwrite(dir + '/temp.tif', self.tiff_arr, bigtiff=True)
-            else:
-                msg.setText("Saving Images to Directory")
-                msg.show()
-                image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
+            msg.setText("Saving Images to Directory")
+            msg.show()
+            image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
+            msg.close()
+
+    def open_big_tiff(self):
+        logging.debug("Open big tiff button pressed")
+        options = QFileDialog.Options()
+        filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "All Files (*)",
+                                                  options=options)
+        if filePath:
+            logging.debug("Import image path: " + filePath)
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Loading Images...")
+            msg.setText("Loading Images from BigTiff")
+            msg.show()
+
+
+
+    def save_stack_to_big_tiff(self):
+        logging.debug("Save stack to bigtiff button pressed")
+        logging.debug("Saving with bitdepth: " + str(self.bit_depth))
+        dir_explore = QFileDialog()
+        options = QFileDialog.Options()
+        filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
+        #logging.debug("Writing to file path: " + save_file)
+        if filepath:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Saving Images...")
+            msg.setText("Saving Images to BigTiff")
+            msg.show()
+            print(filepath)
+            tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=self.bit_depth)
             msg.close()
 
     def min_spin_changed(self):
