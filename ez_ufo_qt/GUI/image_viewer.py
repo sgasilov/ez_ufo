@@ -217,8 +217,13 @@ class ImageViewerGroup(QGroupBox):
             msg.setWindowTitle("Loading Images...")
             msg.setText("Loading Images from BigTiff")
             msg.show()
-
-
+            self.tiff_arr = tifffile.imread(filePath).astype(dtype=np.float32)
+            self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
+            self.scroller.setEnabled(True)
+            self.image_window.setImage(self.tiff_arr[0].T)
+            msg.close()
+            mid_index = self.tiff_arr.shape[0] / 2
+            self.scroller.setValue(mid_index)
 
     def save_stack_to_big_tiff(self):
         logging.debug("Save stack to bigtiff button pressed")
@@ -233,7 +238,6 @@ class ImageViewerGroup(QGroupBox):
             msg.setWindowTitle("Saving Images...")
             msg.setText("Saving Images to BigTiff")
             msg.show()
-            print(filepath)
             tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=self.bit_depth)
             msg.close()
 
