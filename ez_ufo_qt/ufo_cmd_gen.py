@@ -6,6 +6,7 @@ Created on Apr 6, 2018
 '''
 import glob
 import os
+import logging
 import argparse
 import sys
 import numpy as np
@@ -152,9 +153,9 @@ class ufo_cmds(object):
         ######### FLAT-CORRECT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
         if args.sinFFC is True:
-            print("Use sin FFC")
+            logging.debug("USING sinFFC")
         else:
-            print("Use old FFC")
+            logging.debug("USING OLD sinFFC")
         cmd = 'tofu flatcorrect --fix-nan-and-inf'
         cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
         cmd += ' --projections {}'.format(in_proj_dir)
