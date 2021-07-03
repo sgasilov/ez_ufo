@@ -13,6 +13,10 @@ class PhaseRetrievalGroup(QGroupBox):
         self.setTitle("Phase Retrieval")
         self.setStyleSheet('QGroupBox {color: blue;}')
 
+        self.enable_sinFFC_checkbox = QCheckBox()
+        self.enable_sinFFC_checkbox.setText("Use Smart Intensity Normalization Flat Field Correction")
+        self.enable_sinFFC_checkbox.stateChanged.connect(self.set_sinFFC)
+
         self.enable_PR_checkBox = QCheckBox()
         self.enable_PR_checkBox.setText("Enable Paganin/TIE phase retrieval")
         self.enable_PR_checkBox.stateChanged.connect(self.set_PR)
@@ -46,15 +50,16 @@ class PhaseRetrievalGroup(QGroupBox):
     def set_layout(self):
         layout = QGridLayout()
 
-        layout.addWidget(self.enable_PR_checkBox, 0, 0)
-        layout.addWidget(self.photon_energy_label, 1, 0)
-        layout.addWidget(self.photon_energy_entry, 1, 1)
-        layout.addWidget(self.pixel_size_label, 2, 0)
-        layout.addWidget(self.pixel_size_entry, 2, 1)
-        layout.addWidget(self.detector_distance_label, 3, 0)
-        layout.addWidget(self.detector_distance_entry, 3, 1)
-        layout.addWidget(self.delta_beta_ratio_label, 4, 0)
-        layout.addWidget(self.delta_beta_ratio_entry, 4, 1)
+        layout.addWidget(self.enable_sinFFC_checkbox, 0, 0)
+        layout.addWidget(self.enable_PR_checkBox, 1, 0)
+        layout.addWidget(self.photon_energy_label, 2, 0)
+        layout.addWidget(self.photon_energy_entry, 2, 1)
+        layout.addWidget(self.pixel_size_label, 3, 0)
+        layout.addWidget(self.pixel_size_entry, 3, 1)
+        layout.addWidget(self.detector_distance_label, 4, 0)
+        layout.addWidget(self.detector_distance_entry, 4, 1)
+        layout.addWidget(self.delta_beta_ratio_label, 5, 0)
+        layout.addWidget(self.delta_beta_ratio_entry, 5, 1)
 
         self.setLayout(layout)
 
@@ -72,6 +77,9 @@ class PhaseRetrievalGroup(QGroupBox):
         self.pixel_size_entry.setText(str(parameters.params['e_pixel']))
         self.detector_distance_entry.setText(str(parameters.params['e_z']))
         self.delta_beta_ratio_entry.setText(str(parameters.params['e_log10db']))
+
+    def set_sinFFC(self):
+        logging.debug("sinFFC: " + str(self.enable_sinFFC_checkbox.isChecked()))
 
     def set_PR(self):
         logging.debug("PR: " + str(self.enable_PR_checkBox.isChecked()))
