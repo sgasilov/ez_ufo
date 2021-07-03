@@ -71,10 +71,6 @@ class ImageViewerGroup(QGroupBox):
         self.save_32bit_rButton.clicked.connect(self.set_32bit)
         self.save_32bit_rButton.setChecked(True)
 
-        #self.big_tiff_checkbox = QCheckBox()
-        #self.big_tiff_checkbox.setText("Save as BigTiff")
-        #self.big_tiff_checkbox.stateChanged.connect(self.big_tiff_checkbox_clicked)
-
         self.image_window = pg.ImageView()
 
         self.image_window.ui.histogram.gradient.hide()
@@ -104,7 +100,6 @@ class ImageViewerGroup(QGroupBox):
         layout.addWidget(self.open_big_tiff_button, 0, 2)
         layout.addWidget(self.save_big_tiff_button, 1, 2)
         layout.addItem(vbox, 0, 3, 2, 1)
-        #layout.addWidget(self.big_tiff_checkbox, 1, 3)
         layout.addItem(gridbox, 0, 4, 2, 1)
         layout.addWidget(self.image_window, 2, 0, 1, 5)
         layout.addWidget(self.scroller, 4, 0, 1, 5)
@@ -136,8 +131,6 @@ class ImageViewerGroup(QGroupBox):
         if filepath:
             logging.debug(filepath)
             bit_depth_string = self.check_bit_depth(self.bit_depth)
-            #np_image_arr = fn.imageToArray(self.image_item.qimage)
-            #np_image_arr = fn.qimage_to_ndarray(self.image_item.qimage) #Trying to figure out how to save with histogram
             image_read_write.write_image(self.img_arr, os.path.dirname(filepath), os.path.basename(filepath), bit_depth_string)
 
     def open_stack_from_directory(self):
@@ -202,6 +195,7 @@ class ImageViewerGroup(QGroupBox):
             msg.setWindowTitle("Saving Images...")
             msg.setText("Saving Images to Directory")
             msg.show()
+            self.apply_histogram_to_images()
             image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
             msg.close()
 
@@ -231,13 +225,13 @@ class ImageViewerGroup(QGroupBox):
         dir_explore = QFileDialog()
         options = QFileDialog.Options()
         filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
-        #logging.debug("Writing to file path: " + save_file)
         if filepath:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Saving Images...")
             msg.setText("Saving Images to BigTiff")
             msg.show()
+            #self.apply_histogram_to_images()
             tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=self.bit_depth)
             msg.close()
 
@@ -252,6 +246,14 @@ class ImageViewerGroup(QGroupBox):
         levels = self.histo.getLevels()
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
+
+    def apply_histogram_to_images(self):
+        for item in self.tiff_arr:
+            levels = self.histo.getLevels()
+            img = pg.ImageItem(item)
+            img.setLevels(levels, True)
+            print(img.getLevels())
+            item = img.image
 
     def check_bit_depth(self, bit_depth: int) -> str:
         if bit_depth == 8:
@@ -272,6 +274,3 @@ class ImageViewerGroup(QGroupBox):
     def set_32bit(self):
         logging.debug("Set 32-bit")
         self.bit_depth = 32
-
-    def big_tiff_checkbox_clicked(self):
-        logging.debug("BigTiff checkbox: " + str(self.big_tiff_checkbox.isChecked()))
