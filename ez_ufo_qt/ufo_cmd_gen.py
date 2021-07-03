@@ -151,6 +151,10 @@ class ufo_cmds(object):
         cmds.append(cmd)
         ######### FLAT-CORRECT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
+        if args.sinFFC is True:
+            print("Use sin FFC")
+        else:
+            print("Use old FFC")
         cmd = 'tofu flatcorrect --fix-nan-and-inf'
         cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
         cmd += ' --projections {}'.format(in_proj_dir)
