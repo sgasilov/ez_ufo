@@ -72,6 +72,7 @@ class PhaseRetrievalGroup(QGroupBox):
         self.delta_beta_ratio_entry.setText("200")
 
     def set_values_from_params(self):
+        self.enable_sinFFC_checkbox.setChecked(parameters.params['e_sinFFC'])
         self.enable_PR_checkBox.setChecked(parameters.params['e_PR'])
         self.photon_energy_entry.setText(str(parameters.params['e_energy']))
         self.pixel_size_entry.setText(str(parameters.params['e_pixel']))
@@ -80,6 +81,7 @@ class PhaseRetrievalGroup(QGroupBox):
 
     def set_sinFFC(self):
         logging.debug("sinFFC: " + str(self.enable_sinFFC_checkbox.isChecked()))
+        parameters.params['e_sinFFC'] = bool(self.enable_sinFFC_checkbox.isChecked())
 
     def set_PR(self):
         logging.debug("PR: " + str(self.enable_PR_checkBox.isChecked()))

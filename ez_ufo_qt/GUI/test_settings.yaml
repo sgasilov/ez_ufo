@@ -48,4 +48,5 @@ e_dy: 4
 e_dryrun: false
 e_parfile: false
 e_keep_tmp: false
+e_sinFFC: false
 ...

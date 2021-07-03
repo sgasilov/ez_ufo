@@ -357,7 +357,7 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
                             parameters.params['e_a0'],
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
-                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'])
+                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'])
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
@@ -492,7 +492,7 @@ class tk_args():
                 e_pre, e_pre_cmd, \
                 e_a0, \
                 e_crop, e_x0, e_dx, e_y0, e_dy, \
-                e_dryrun, e_parfile, e_keep_tmp):
+                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -594,6 +594,8 @@ class tk_args():
         setattr(self,'parfile',self.args['parfile'])
         self.args['keep_tmp']=bool(e_keep_tmp)
         setattr(self,'keep_tmp',self.args['keep_tmp'])
+        self.args['sinFFC']=bool(e_sinFFC)
+        setattr(self,'sinFFC', self.args['sinFFC'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
