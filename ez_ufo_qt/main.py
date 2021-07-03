@@ -35,10 +35,10 @@ def get_CTdirs_list(inpath, dirtype):
 def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews, WH):
     '''formats list of processing commands for a CT set'''
     # two helper variables to mark that PR/FFC has been done at some step
-    if args.sinFFC is False:
-        swiFFC = True
-    else:
+    if args.sinFFC is True:
         swiFFC = False
+    else:
+        swiFFC = True
     swiPR = args.PR  # PR is an optional operation
 
     ####### PREPROCESSING #########
