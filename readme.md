@@ -52,11 +52,11 @@ https://github.com/ufo-kit/concert/commit/6bb7b3436702adaa2e6df1e0c0e68de6837dd5
 	- git clone https://github.com/ufo-kit/tofu.git
 	- cd tofu
 	- git checkout flow	
-	- python setup.py install –record install_manifest.txt
+	- python setup.py install –-record install_manifest.txt
 
 6. Install EZ_UFO
 	- cd ~my/venvs/bmit38/lib
 	- git clone https://github.com/sgasilov/ez_ufo.git
 	- cd ez_ufo
 	- git checkout ez_ufo_qt
-	- python setup.py install –record install_manifest.txt
+	- python setup.py install –-record install_manifest.txt
