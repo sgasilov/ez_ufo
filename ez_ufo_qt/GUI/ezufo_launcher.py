@@ -32,7 +32,7 @@ class GUI(qtw.QWidget):
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fhandler.setFormatter(formatter)
         logger.addHandler(fhandler)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.WARNING)
 
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
