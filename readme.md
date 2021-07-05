@@ -1,5 +1,7 @@
 <h1> EZUFO </h1>
 
+![Image of EZUFO](https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface.png)
+
 <h2> Introduction </h2>
   
 Ezufo provides a graphical interface to the data reconstruction tools of 
