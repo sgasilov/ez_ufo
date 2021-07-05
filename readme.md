@@ -1,6 +1,6 @@
-<h1> EZUFO 
+<h1> EZUFO </h1>
 
-<h2> Introduction 
+<h2> Introduction </h2>
   
 Ezufo provides a graphical interface to the data reconstruction tools of 
 the ufo-kit software package (https://github.com/ufo-kit). 
@@ -10,7 +10,7 @@ and to batch process multiple data sets after experiment.
 
 Distributed without warranty of any kind.
   
-<h2> Installation Requirements 
+<h2> Installation Requirements </h2>
   
 1. Working installation of ufo-core, ufo-python-tools, ufo-filters, 
 tofu, and concert is required. This version was tested with
