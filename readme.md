@@ -60,3 +60,52 @@ https://github.com/ufo-kit/concert/commit/6bb7b3436702adaa2e6df1e0c0e68de6837dd5
 	- cd ez_ufo
 	- git checkout ez_ufo_qt
 	- python setup.py install –-record install_manifest.txt
+
+<h2> How it works </h2>
+It the beginning ezufo creates a list of paths to all CT directories 
+in the input directory recursively. A CT directory is defined as any 
+directory, which containing a set of flats, darks, tomo, and, optionally, 
+flats2 subdirectories. These subdirectories must contain only *.tif files 
+with CT data. Names of directories with CT data sets are compared with the 
+directory tree in the output directory. Those CT sets will be reconstructed,
+whose names are not yet in the output directory. Ezufo will create a 
+list of formatted ufo-launch/tofu commands according to defined parameters. 
+These commands can be executed or printed on the screen. 
+
+Three or more pre-processing steps can be applied to data:
+- An arbitrary pipeline of ufo-launch filters
+- Removal of large spots (scintillator defects)
+- Paganing/TIE phase retrieval.
+Sinograms can be created and filtered in order to suppress ring artifacts.
+Finally, CT reconstruction is performed with tofu reco algorithm. 
+Region of interest and other miscellaneous parameters can be defined.
+
+All temporary data is saved in multi-page tif files. It will be preserved
+in the temporary directory until the next reconstruction or until the
+Quit button is pressed. Note that the size of temporary data can easily
+exceed 300 GB when multiple processing steps are applied to a large CT set.
+
+<h2> Testest Combinations </h2>
+
+** w/o RingRemoval
+1. Straight CT with "corr" axis search	        <-- tested
+1b. Straight CT with "min std" axis search      <-- tested
+1c. CT search axis "corr" and bigtiff input	<-- tested
+2. PR + CT                                 	<-- tested
+2b. PR + CT + vertical ROI                 	<-- tested
+2. Prepro                                  	<-- tested
+3. Prepro and inp                          	<-- tested 
+4. Prepro and inp and PR:                  	<-- tested
+4b. Prepro and inp and PR + vert ROI      	<-- tested
+5. Inp                                     	<-- tested
+5b. Inp with multipage input		   	<-- tested
+6. Inp and PR                              	<-- tested
+
+** with RingRemoval
+8. RR only                                 	<-- tested
+8b. RR with bigtiff input			<-- tested
+8c. RR with vert ROI                        	<-- tested
+9. RR + PR                                 	<-- tested
+
+** finally
+10. Everything enabled                     	<-- tested
