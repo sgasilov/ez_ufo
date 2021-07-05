@@ -85,7 +85,7 @@ in the temporary directory until the next reconstruction or until the
 Quit button is pressed. Note that the size of temporary data can easily
 exceed 300 GB when multiple processing steps are applied to a large CT set.
 
-<h2> Testest Combinations </h2>
+<h2> Tested Combinations </h2>
 
 ** w/o RingRemoval
 1. Straight CT with "corr" axis search	        <-- tested
