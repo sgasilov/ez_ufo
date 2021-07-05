@@ -5,8 +5,8 @@
 Ezufo provides a graphical interface to the data reconstruction tools of 
 the ufo-kit software package (https://github.com/ufo-kit). 
 It can be used to find the center of rotation and reconstruct 
-X-ray uCT slices, to optimize reconstruction parameters, 
-and to batch process multiple data sets after experiment.
+X-ray microCT slices, to optimize reconstruction parameters, 
+and to batch process multiple data sets after an experiment.
 
 Distributed without warranty of any kind.
 
