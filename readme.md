@@ -103,11 +103,11 @@ exceed 300 GB when multiple processing steps are applied to a large CT set.
 5b. Inp with multipage input		   	<-- tested
 6. Inp and PR                              	<-- tested
 
-* with RingRemoval
-8. RR only                                 	<-- tested
-8b. RR with bigtiff input			<-- tested
-8c. RR with vert ROI                        	<-- tested
-9. RR + PR                                 	<-- tested
+** with RingRemoval **
+7. RR only                                 	<-- tested
+7b. RR with bigtiff input			<-- tested
+7c. RR with vert ROI                        	<-- tested
+8. RR + PR                                 	<-- tested
 
-* finally
-10. Everything enabled                     	<-- tested
+** finally **
+9. Everything enabled                     	<-- tested
