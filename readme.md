@@ -1,8 +1,8 @@
-<h1> EZUFO </h1>
+<h1> EZ-UFO </h1>
 
 <h2> Introduction </h2>
   
-Ezufo provides a graphical interface to the data reconstruction tools of 
+EZ-UFO provides a graphical interface to the data reconstruction tools of 
 the ufo-kit software package (https://github.com/ufo-kit). 
 It can be used to find the center of rotation and reconstruct 
 X-ray microCT slices, to optimize reconstruction parameters, 
