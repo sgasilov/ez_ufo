@@ -153,7 +153,10 @@ class ufo_cmds(object):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
         if args.sinFFC is True:
             cmd = 'bmit_sin'
-            ### NEED TO FIGURE THIS OUT
+            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
+            cmd += ' --projections {}'.format(in_proj_dir)
+            cmd += ' --output {}'.format(out_pattern)
+            cmds.append(cmd)
         else:
             cmd = 'tofu flatcorrect --fix-nan-and-inf'
             cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
