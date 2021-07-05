@@ -184,6 +184,7 @@ class ufo_cmds(object):
         cmds.append(cmd)
         if not args.keep_tmp:
             cmds.append( 'rm -rf {}'.format(in_proj_dir) )
+
         return cmds
 
     def get_crop_sli(self, out_pattern, args):

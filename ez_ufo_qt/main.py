@@ -57,6 +57,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     if args.inp:  # generate commands to remove sci. spots from projections
         cmds.append("echo \" - Flat-correcting and removing large spots\"")
         cmds_inpaint = Ufo.get_inp_cmd(ctset, args.tmpdir, args, WH[0], nviews, flat_file_for_mask)
+        print(cmds_inpaint)
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
         cmds.extend(cmds_inpaint)
