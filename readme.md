@@ -1,7 +1,5 @@
 <h1> EZUFO </h1>
 
-![Image of EZUFO](https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface.png)
-
 <h2> Introduction </h2>
   
 Ezufo provides a graphical interface to the data reconstruction tools of 
@@ -11,6 +9,8 @@ X-ray uCT slices, to optimize reconstruction parameters,
 and to batch process multiple data sets after experiment.
 
 Distributed without warranty of any kind.
+
+![Image of EZUFO](https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface.png)
   
 <h2> Installation Requirements </h2>
   
