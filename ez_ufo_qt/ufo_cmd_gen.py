@@ -156,6 +156,8 @@ class ufo_cmds(object):
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
+            if ctset[1] == 4:
+                cmd += ' --flats2 {}'.format(indir[3])
             cmds.append(cmd)
         else:
             cmd = 'tofu flatcorrect --fix-nan-and-inf'
