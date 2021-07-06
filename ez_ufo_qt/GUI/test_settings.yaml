@@ -49,4 +49,7 @@ e_dryrun: false
 e_parfile: false
 e_keep_tmp: false
 e_sinFFC: false
+e_sinFFCEigenReps: 4
+e_sinFFCEigenDowns: 2
+e_sinFFCDowns: 4
 ...

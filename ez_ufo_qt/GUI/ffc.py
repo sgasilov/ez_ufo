@@ -47,24 +47,30 @@ class FFCGroup(QGroupBox):
 
         self.setLayout(layout)
 
-    #TODO Set initial values
     def init_values(self):
-        pass
+        self.enable_sinFFC_checkbox.setChecked(False)
+        self.eigen_pco_repetitions_entry.setText("4")
+        self.eigen_pco_downsample_entry.setText("2")
+        self.downsample_entry.setText("4")
 
-    #TODO update values from parameters file
     def set_values_from_params(self):
         self.enable_sinFFC_checkbox.setChecked(parameters.params['e_sinFFC'])
+        self.eigen_pco_repetitions_entry.setText(str(parameters.params['e_sinFFCEigenReps']))
+        self.eigen_pco_downsample_entry.setText(str(parameters.params['e_sinFFCEigenDowns']))
+        self.downsample_entry.setText(str(parameters.params['e_sinFFCDowns']))
 
     def set_sinFFC(self):
         logging.debug("sinFFC: " + str(self.enable_sinFFC_checkbox.isChecked()))
         parameters.params['e_sinFFC'] = bool(self.enable_sinFFC_checkbox.isChecked())
 
-    #TODO Add values in parameters file
     def set_pcoReps(self):
         logging.debug("PCO Reps: ")
+        parameters.params['e_sinFFCEigenReps'] = str(self.eigen_pco_repetitions_entry.text())
 
     def set_pcoDowns(self):
         logging.debug("PCO Downsample: ")
+        parameters.params['e_sinFFCEigenDowns'] = str(self.eigen_pco_downsample_entry.text())
 
     def set_downsample(self):
         logging.debug("Downsample: ")
+        parameters.params['e_sinFFCDowns'] = str(self.downsample_entry.text())
