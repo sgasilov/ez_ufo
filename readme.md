@@ -65,7 +65,7 @@ https://github.com/ufo-kit/concert/commit/6bb7b3436702adaa2e6df1e0c0e68de6837dd5
 	- python setup.py install –-record install_manifest.txt
 
 <h2> How it works </h2>
-![Image of Block Scheme](https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_block-scheme.png)
+![Image of Block Scheme](ezufo_block-scheme.png)
 
 It the beginning ezufo creates a list of paths to all CT directories 
 in the input directory recursively. A CT directory is defined as any 
