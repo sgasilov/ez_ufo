@@ -39,7 +39,7 @@ def fmt_in_out_path(tmpdir, indir, raw_proj_dir_name, croutdir = True):
 class ufo_cmds(object):
     '''
     Generates partially formatted ufo-launch and tofu commands
-    Parameters are included in the string; pathnames must be added 
+    Parameters are included in the string; pathnames must be added
     '''
     def __init__(self, fol):
         self._fdt_names = fol
@@ -118,7 +118,7 @@ class ufo_cmds(object):
         cmd += ' ! write filename={}'.format(enquote(out_pattern))
         return cmd
 
-        
+
     def get_pre_cmd(self, ctset, pre_cmd, tmpdir, dryrun):
         indir = self.make_inpaths(ctset[0],ctset[1])
         outdir = self.make_inpaths(tmpdir,ctset[1])
@@ -151,30 +151,21 @@ class ufo_cmds(object):
         cmds.append(cmd)
         ######### FLAT-CORRECT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
-        if args.sinFFC is True:
-            cmd = 'bmit_sin'
-            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
-            cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --output {}'.format(out_pattern)
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            cmds.append(cmd)
-        else:
-            cmd = 'tofu flatcorrect --fix-nan-and-inf'
-            cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
-            cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --output {}'.format(out_pattern)
-            if ctset[1]==4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            if not args.PR:
-                cmd += ' --absorptivity'
-            cmds.append(cmd)
-            if not args.keep_tmp and args.pre:
-                cmds.append( 'rm -rf {}'.format(indir[0]) )
-                cmds.append( 'rm -rf {}'.format(indir[1]) )
-                cmds.append( 'rm -rf {}'.format(in_proj_dir) )
-                if len(indir)>3:
-                    cmds.append( 'rm -rf {}'.format(indir[3]) )
+        cmd = 'tofu flatcorrect --fix-nan-and-inf'
+        cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
+        cmd += ' --projections {}'.format(in_proj_dir)
+        cmd += ' --output {}'.format(out_pattern)
+        if ctset[1]==4:
+            cmd += ' --flats2 {}'.format(indir[3])
+        if not args.PR:
+            cmd += ' --absorptivity'
+        cmds.append(cmd)
+        if not args.keep_tmp and args.pre:
+            cmds.append( 'rm -rf {}'.format(indir[0]) )
+            cmds.append( 'rm -rf {}'.format(indir[1]) )
+            cmds.append( 'rm -rf {}'.format(in_proj_dir) )
+            if len(indir)>3:
+                cmds.append( 'rm -rf {}'.format(indir[3]) )
         ######### INPAINT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0],self._fdt_names[2])
         cmd = 'ufo-launch [read path={} height={} number={}'.format(in_proj_dir, N, nviews)
@@ -199,12 +190,12 @@ class ufo_cmds(object):
 
 
 
-    
-    
-    
-    
-    
-    
-    
-    
-        
+
+
+
+
+
+
+
+
+

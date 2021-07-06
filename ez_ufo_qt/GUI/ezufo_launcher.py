@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets as qtw
 
 from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
 from ez_ufo_qt.GUI.filters import FiltersGroup
+from ez_ufo_qt.GUI.ffc import FFCGroup
 from ez_ufo_qt.GUI.phase_retrieval import PhaseRetrievalGroup
 from ez_ufo_qt.GUI.binning import BinningGroup
 from ez_ufo_qt.GUI.config import ConfigGroup
@@ -47,6 +48,9 @@ class GUI(qtw.QWidget):
         self.filters_group = FiltersGroup()
         self.filters_group.init_values()
 
+        self.ffc_group = FFCGroup()
+        self.ffc_group.init_values()
+
         self.phase_retrieval_group = PhaseRetrievalGroup()
         self.phase_retrieval_group.init_values()
 
@@ -82,10 +86,15 @@ class GUI(qtw.QWidget):
         self.tab2 = qtw.QWidget()
         self.tab3 = qtw.QWidget()
 
+        pr_ffc_box = qtw.QVBoxLayout()
+        pr_ffc_box.addWidget(self.ffc_group)
+        pr_ffc_box.addWidget(self.phase_retrieval_group)
+
         main_layout = qtw.QGridLayout()
         main_layout.addWidget(self.centre_of_rotation_group, 0, 0)
         main_layout.addWidget(self.filters_group, 0, 1)
-        main_layout.addWidget(self.phase_retrieval_group, 1, 0)
+        main_layout.addItem(pr_ffc_box, 1, 0)
+        #main_layout.addWidget(self.phase_retrieval_group, 1, 0)
         main_layout.addWidget(self.binning_group, 1, 1)
         main_layout.addWidget(self.config_group, 2, 0, 2, 0)
 
