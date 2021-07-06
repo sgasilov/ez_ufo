@@ -68,7 +68,7 @@ https://github.com/ufo-kit/concert/commit/6bb7b3436702adaa2e6df1e0c0e68de6837dd5
 
 <h2> How it works </h2>
 
-<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_block-scheme.jpg" alt="drawing" width="75%"/>
+<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_block-scheme.jpg" alt="drawing" width="75%" class="centre"/>
 
 It the beginning ezufo creates a list of paths to all CT directories 
 in the input directory recursively. A CT directory is defined as any 
