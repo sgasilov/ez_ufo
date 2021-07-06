@@ -10,9 +10,8 @@ and to batch process multiple data sets after an experiment.
 
 Distributed without warranty of any kind.
 
-#![Image of EZUFO](https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png)
 <img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png" alt="drawing" width="50%"/>
-#![Image of Image Viewer](https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png)
+<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png" alt="drawing" width="50%"/>
   
 <h2> Installation Requirements </h2>
   
