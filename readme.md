@@ -9,11 +9,9 @@ X-ray microCT slices, to optimize reconstruction parameters,
 and to batch process multiple data sets after an experiment.
 
 Distributed without warranty of any kind.
-
-Solarized dark             |  Solarized Ocean
+Main Tab             |  Image Viewer
 :-------------------------:|:-------------------------:
-<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png" alt="drawing" width="50%"/>  |  
-<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png" alt="drawing" width="50%"/>
+<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png" alt="drawing" width="50%"/>  |  <img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png" alt="drawing" width="50%"/>
 
 
   
