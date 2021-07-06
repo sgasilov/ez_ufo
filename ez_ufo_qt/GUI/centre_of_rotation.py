@@ -56,10 +56,7 @@ class CentreOfRotationGroup(QGroupBox):
         self.inc_axis_entry.textChanged.connect(self.set_axis_inc)
         self.inc_axis_entry.setStyleSheet("background-color:white")
 
-        #self.setStyleSheet('background-color:lightcoral')
-
         self.set_layout()
-        #self.init_values()
 
     def set_layout(self):
         layout = QGridLayout()
