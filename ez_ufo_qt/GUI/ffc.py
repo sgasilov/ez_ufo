@@ -64,13 +64,13 @@ class FFCGroup(QGroupBox):
         parameters.params['e_sinFFC'] = bool(self.enable_sinFFC_checkbox.isChecked())
 
     def set_pcoReps(self):
-        logging.debug("PCO Reps: ")
+        logging.debug("PCO Reps: " + str(self.eigen_pco_repetitions_entry.text()))
         parameters.params['e_sinFFCEigenReps'] = str(self.eigen_pco_repetitions_entry.text())
 
     def set_pcoDowns(self):
-        logging.debug("PCO Downsample: ")
+        logging.debug("PCO Downsample: " + str(self.eigen_pco_downsample_entry.text()))
         parameters.params['e_sinFFCEigenDowns'] = str(self.eigen_pco_downsample_entry.text())
 
     def set_downsample(self):
-        logging.debug("Downsample: ")
+        logging.debug("Downsample: " + str(self.downsample_entry.text()))
         parameters.params['e_sinFFCDowns'] = str(self.downsample_entry.text())

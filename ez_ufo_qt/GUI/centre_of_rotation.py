@@ -1,5 +1,5 @@
 import logging
-from PyQt5.QtWidgets import QGridLayout, QLabel, QRadioButton, QGroupBox, QLineEdit
+from PyQt5.QtWidgets import QGridLayout, QLabel, QRadioButton, QGroupBox, QLineEdit, QCheckBox
 
 import ez_ufo_qt.GUI.params as parameters
 
@@ -56,6 +56,10 @@ class CentreOfRotationGroup(QGroupBox):
         self.inc_axis_entry.textChanged.connect(self.set_axis_inc)
         self.inc_axis_entry.setStyleSheet("background-color:white")
 
+        self.bypass_checkbox = QCheckBox()
+        self.bypass_checkbox.setText("Bypass axis search and use image midpoint")
+        self.bypass_checkbox.stateChanged.connect(self.set_bypass)
+
         self.set_layout()
 
     def set_layout(self):
@@ -73,6 +77,7 @@ class CentreOfRotationGroup(QGroupBox):
         layout.addWidget(self.axis_col_entry, 5, 1)
         layout.addWidget(self.inc_axis_label, 6, 0)
         layout.addWidget(self.inc_axis_entry, 6, 1)
+        layout.addWidget(self.bypass_checkbox, 7, 0)
 
         self.setLayout(layout)
 
@@ -86,6 +91,7 @@ class CentreOfRotationGroup(QGroupBox):
         self.size_of_recon_entry.setText("256")
         self.axis_col_entry.setText("0.0")
         self.inc_axis_entry.setText("0.0")
+        self.bypass_checkbox.setChecked(False)
 
     def set_values_from_params(self):
         self.set_rButton_from_params()
@@ -94,6 +100,7 @@ class CentreOfRotationGroup(QGroupBox):
         self.size_of_recon_entry.setText(str(parameters.params['e_ax_p_size']))
         self.axis_col_entry.setText(str(parameters.params['e_ax_fix']))
         self.inc_axis_entry.setText(str(parameters.params['e_dax']))
+        self.bypass_checkbox.setChecked(parameters.params['e_axis_bypass'])
 
     def set_rButton(self):
         if self.auto_correlate_rButton.isChecked():
@@ -122,20 +129,24 @@ class CentreOfRotationGroup(QGroupBox):
 
     def set_search_rotation(self):
         logging.debug(self.search_rotation_entry.text())
-        parameters.params['e_ax_range'] = self.search_rotation_entry.text()
+        parameters.params['e_ax_range'] = str(self.search_rotation_entry.text())
 
     def set_search_slice(self):
         logging.debug(self.search_in_slice_entry.text())
-        parameters.params['e_ax_row'] = self.search_in_slice_entry.text()
+        parameters.params['e_ax_row'] = str(self.search_in_slice_entry.text())
 
     def set_size_of_reco(self):
         logging.debug(self.size_of_recon_entry.text())
-        parameters.params['e_ax_p_size'] = self.size_of_recon_entry.text()
+        parameters.params['e_ax_p_size'] = str(self.size_of_recon_entry.text())
 
     def set_axis_col(self):
         logging.debug(self.axis_col_entry.text())
-        parameters.params['e_ax_fix'] = self.axis_col_entry.text()
+        parameters.params['e_ax_fix'] = str(self.axis_col_entry.text())
 
     def set_axis_inc(self):
         logging.debug(self.inc_axis_entry.text())
-        parameters.params['e_dax'] = self.inc_axis_entry.text()
+        parameters.params['e_dax'] = str(self.inc_axis_entry.text())
+
+    def set_bypass(self):
+        logging.debug("Bypass Checkbox: " + str(self.bypass_checkbox.isChecked()))
+        parameters.params['e_axis_bypass'] = bool(self.bypass_checkbox.isChecked())

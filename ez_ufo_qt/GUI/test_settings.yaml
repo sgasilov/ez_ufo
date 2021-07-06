@@ -7,6 +7,7 @@ e_flats: "floats"
 e_tomo: "tom"
 e_flats2: "floats2"
 e_bigtif: false
+e_axis_bypass: false
 e_ax: 1
 e_ax_range: "1520,1111,0.5"
 e_ax_row: 42
