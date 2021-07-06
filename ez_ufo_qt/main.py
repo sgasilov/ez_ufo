@@ -1,6 +1,5 @@
 '''
 Created on Apr 5, 2018
-
 @author: sergei gasilov
 '''
 
