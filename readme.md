@@ -10,8 +10,12 @@ and to batch process multiple data sets after an experiment.
 
 Distributed without warranty of any kind.
 
-<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png" alt="drawing" width="50%"/>
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png" alt="drawing" width="50%"/>  |  
 <img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png" alt="drawing" width="50%"/>
+
+
   
 <h2> Installation Requirements </h2>
   
