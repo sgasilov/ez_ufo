@@ -153,21 +153,26 @@ def main_tk(args, fdt_names):
             # determine initial number of projections and their shape
             path2proj = os.path.join(ctset[0], Tofu._fdt_names[2])
             nviews, WH, multipage = get_dims(path2proj)
-            if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
-                print('{:>30}\t{}'.format('CTset', 'Axis'))
-                print('{:>30}\t{}'.format(ctset[0], 'na'))
-                print('Vertical ROI does not contain any rows.')
-                print("Number of projections: {}, dimensions: {}".format(nviews, WH))
-                continue
-            if args.ax == 1:
-                ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage)
-            elif args.ax == 2:
-                cmds.append("echo \"Cleaning axis-search in tmp directory\"")
-                os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))
-                ax = FindCOR.find_axis_std(ctset, args.tmpdir, \
-                                           args.ax_range, args.ax_p_size, args.ax_row, nviews)
-            else:
-                ax = args.ax_fix + i * args.dax
+            if not args.e_axis_bypass:
+                if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
+                    print('{:>30}\t{}'.format('CTset', 'Axis'))
+                    print('{:>30}\t{}'.format(ctset[0], 'na'))
+                    print('Vertical ROI does not contain any rows.')
+                    print("Number of projections: {}, dimensions: {}".format(nviews, WH))
+                    continue
+                if args.ax == 1:
+                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage)
+                elif args.ax == 2:
+                    cmds.append("echo \"Cleaning axis-search in tmp directory\"")
+                    os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))
+                    ax = FindCOR.find_axis_std(ctset, args.tmpdir, \
+                                               args.ax_range, args.ax_p_size, args.ax_row, nviews)
+                else:
+                    ax = args.ax_fix + i * args.dax
+            elif args.e_axis_bypass:
+                print("Bypassing axis search and using image midpoint")
+
+
             setid = ctset[0][len(lvl0) + 1:]
             out_pattern = os.path.join(args.outdir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))

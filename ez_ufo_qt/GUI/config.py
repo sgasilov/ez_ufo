@@ -356,7 +356,8 @@ class ConfigGroup(QGroupBox):
             self.validate_input()
 
             args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
-                            parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],  parameters.params['e_dax'],
+                            parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],
+                            parameters.params['e_dax'], parameters.params['e_axis_bypass'],
                             parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
                             parameters.params['e_RR'],  parameters.params['e_RR_ufo'],  parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
                             parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],  parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
@@ -495,7 +496,7 @@ class ConfigGroup(QGroupBox):
 
 class tk_args():
     def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif, \
-                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, \
+                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, e_axis_bypass,\
                 e_inp, e_inp_thr, e_inp_sig, \
                 e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par, \
                 e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
@@ -529,6 +530,8 @@ class tk_args():
         setattr(self,'ax_fix',self.args['ax_fix'])
         self.args['dax']=float(e_dax)
         setattr(self,'dax',self.args['dax'])
+        self.args['e_axis_bypass']=bool(e_axis_bypass)
+        setattr(self, 'e_axis_bypass', self.args['e_axis_bypass'])
         #ring removal
         self.args['inp']=bool(e_inp)
         setattr(self,'inp',self.args['inp'])
