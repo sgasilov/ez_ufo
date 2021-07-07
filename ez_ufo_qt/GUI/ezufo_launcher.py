@@ -128,9 +128,10 @@ class GUI(qtw.QWidget):
         self.config_group.set_values_from_params()
 
     def switch_to_image_tab(self):
-        logging.debug("Switch to Image Tab")
-        self.tabs.setCurrentWidget(self.tab2)
-        self.image_group.open_stack_from_path(str(parameters.params['e_outdir'] + '/sli'))
+        if parameters.params['e_openIV'] is True:
+            logging.debug("Switch to Image Tab")
+            self.tabs.setCurrentWidget(self.tab2)
+            self.image_group.open_stack_from_path(str(parameters.params['e_outdir'] + '/sli'))
 
     def closeEvent(self, event):
         logging.debug("QUIT")

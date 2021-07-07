@@ -128,18 +128,24 @@ class ConfigGroup(QGroupBox):
         self.reco_button.setStyleSheet("background-color:lightgrey;color:royalblue; font: 14pt; font-weight: bold;")
         self.reco_button.clicked.connect(self.reco_button_pressed)
 
+        #OPEN IMAGE AFTER RECONSTRUCT
+        self.open_image_after_reco_checkbox = QCheckBox()
+        self.open_image_after_reco_checkbox.setText("Load images and open viewer after reconstruction")
+        self.open_image_after_reco_checkbox.clicked.connect(self.set_open_image_after_reco)
+
         self.set_layout()
 
     def set_layout(self):
         layout = QGridLayout()
 
         layout.addWidget(self.input_dir_select, 0, 0)
-        layout.addWidget(self.input_dir_entry, 0, 1, 1, 4)
+        layout.addWidget(self.input_dir_entry, 0, 1, 1, 3)
         layout.addWidget(self.output_dir_select, 1, 0)
         layout.addWidget(self.output_dir_entry, 1, 1, 1, 3)
         layout.addWidget(self.bigtiff_checkbox, 1, 4)
         layout.addWidget(self.preproc_checkbox, 2, 0)
-        layout.addWidget(self.preproc_entry, 2, 1, 1, 4)
+        layout.addWidget(self.preproc_entry, 2, 1, 1, 3)
+        layout.addWidget(self.open_image_after_reco_checkbox, 2, 4)
         layout.addWidget(self.dir_name_label, 3, 0)
         layout.addWidget(self.darks_entry, 3, 1)
         layout.addWidget(self.flats_entry, 3, 2)
@@ -179,6 +185,7 @@ class ConfigGroup(QGroupBox):
         self.dry_run_button.setChecked(False)
         parameters.params['e_dryrun'] = False
         parameters.params['e_parfile'] = False
+        parameters.params['e_openIV'] = False
 
     def set_values_from_params(self):
         self.input_dir_entry.setText(parameters.params['e_indir'])
@@ -193,6 +200,7 @@ class ConfigGroup(QGroupBox):
         self.temp_dir_entry.setText(parameters.params['e_tmpdir'])
         self.keep_tmp_data_checkbox.setChecked(parameters.params['e_keep_tmp'])
         self.dry_run_button.setChecked(parameters.params['e_dryrun'])
+        self.open_image_after_reco_checkbox.setChecked(parameters.params['e_openIV'])
 
     def select_input_dir(self):
         dir_explore = QFileDialog(self)
@@ -367,6 +375,10 @@ class ConfigGroup(QGroupBox):
             err_arg = err.args
             msg += err.args[0]
             QMessageBox.information(self, "Invalid Input Error", msg)
+
+    def set_open_image_after_reco(self):
+        logging.debug("Switch to Image Viewer After Reco: " + str(self.open_image_after_reco_checkbox.isChecked()))
+        parameters.params['e_openIV'] = bool(self.open_image_after_reco_checkbox.isChecked())
 
     # NEED TO DETERMINE VALID RANGES
     # ALSO CHECK TYPES SOMEHOW
