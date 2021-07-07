@@ -56,4 +56,5 @@ e_sinFFC: false
 e_sinFFCEigenReps: 4
 e_sinFFCEigenDowns: 2
 e_sinFFCDowns: 4
+e_openIV: True
 ...
