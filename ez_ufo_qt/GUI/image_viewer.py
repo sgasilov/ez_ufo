@@ -1,6 +1,7 @@
 import sys
 import os
 import logging
+import threading
 import pyqtgraph as pg
 import pyqtgraph.exporters
 import numpy as np
@@ -163,7 +164,7 @@ class ImageViewerGroup(QGroupBox):
         logging.debug("Open stack from path")
         try:
             tiff_list = (".tif", ".tiff")
-            msg = QMessageBox()
+            msg = QProgressDialog()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Loading Images...")
             msg.setText("Loading Images from Directory")

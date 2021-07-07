@@ -1,7 +1,6 @@
 #!/bin/python
 '''
 Created on Apr 6, 2018
-
 @author: gasilos
 '''
 import glob
@@ -18,7 +17,7 @@ from ez_ufo_qt.util import enquote
 class tofu_cmds(object):
     '''
     Generates partially formatted ufo-launch and tofu commands
-    Parameters are included in the string; pathnames must be added 
+    Parameters are included in the string; pathnames must be added
     '''
     def __init__(self, fol):
         self._fdt_names = fol
@@ -109,20 +108,17 @@ class tofu_cmds(object):
     def get_sinos_ffc_cmd(self,ctset, tmpdir,args, nviews, WH):
         indir = self.make_inpaths(ctset[0], ctset[1])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
-        if args.sinFFC:
-            pass
-        else:
-            cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
-            cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
-            if ctset[1]==4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
-            cmd += ' --number {}'.format(nviews)
-            cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-            if not args.RR_ufo:
-            # because second RR algorithm does not know how to work with multipage tiffs
-                cmd += " --output-bytes-per-file 0"
+        cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
+        cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
+        if ctset[1]==4:
+            cmd += ' --flats2 {}'.format(indir[3])
+        cmd += ' --projections {}'.format(in_proj_dir)
+        cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
+        cmd += ' --number {}'.format(nviews)
+        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        if not args.RR_ufo:
+        # because second RR algorithm does not know how to work with multipage tiffs
+            cmd += " --output-bytes-per-file 0"
         return cmd
 
     def get_sinos_noffc_cmd(self, ctsetpath, tmpdir, args, nviews, WH):
@@ -155,27 +151,14 @@ class tofu_cmds(object):
         indir = self.make_inpaths(ctset[0], ctset[1])
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2])
-
-        # Use Smart Intensity Normalization Flat Field Correction
-        if args.sinFFC is True:
-            cmd = 'tofu preprocess --projection-filter none --delta 1e-6'
-            cmd = 'bmit_sin --fix-nan'
-            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
-            cmd += ' --projections {}'.format(in_proj_dir)
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            cmd += ' --output {}'.format(out_pattern)
-        # Use TOFU built-in Flat Field Correction
-        else:
-            cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
-            cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
-            if ctset[1]==4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            cmd += ' --output {}'.format(out_pattern)
-
+        cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
+        cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
+        if ctset[1]==4:
+            cmd += ' --flats2 {}'.format(indir[3])
+        cmd += ' --output {}'.format(out_pattern)
         cmd += ' --energy {} --propagation-distance {}'\
-                ' --pixel-size {} --regularization-rate {:0.2f}'\
-                .format(args.energy, args.z, args.pixel, args.log10db)
+               ' --pixel-size {} --regularization-rate {:0.2f}'\
+               .format(args.energy, args.z, args.pixel, args.log10db)
         return cmd
 
     def get_reco_cmd(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
@@ -189,28 +172,15 @@ class tofu_cmds(object):
         #format command
         cmd = 'tofu reco --overall-angle 180'
         #cmd += '  --projections {}'.format(indir[2])
+        cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if ffc:
-            # Use Smart Intensity Normalization Flat Field Correction
-            if args.sinFFC is True:
-                cmd = 'bmit_sin --fix-nan'
-                cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
-                cmd += ' --projections {}'.format(in_proj_dir)
-                cmd += ' --output {}'.format(out_pattern)
-                if ctset[1] == 4:
-                    cmd += ' --flats2 {}'.format(indir[3])
-                #TODO add absorptivity
-                #if not PR:
-                #    cmd += ' --absorptivity'
-            # Use TOFU built-in Flat Field Correction
-            else:
-                cmd += '  --projections {}'.format(in_proj_dir)
-                cmd += ' --fix-nan-and-inf'
-                cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
-                if ctset[1]==4: #must be equivalent to len(indir)>3
-                    cmd += ' --flats2 {}'.format(indir[3])
-                if not PR:
-                    cmd += ' --absorptivity'
+            cmd += ' --fix-nan-and-inf'
+            cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
+            if ctset[1]==4: #must be equivalent to len(indir)>3
+                cmd += ' --flats2 {}'.format(indir[3])
+            if not PR:
+                cmd += ' --absorptivity'
         if PR:
             cmd += ' --disable-projection-crop --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\
@@ -248,20 +218,3 @@ class tofu_cmds(object):
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         cmd += ' --slice-memory-coeff=0.5'
         return cmd
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
