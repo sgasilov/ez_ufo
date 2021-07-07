@@ -164,7 +164,7 @@ class ImageViewerGroup(QGroupBox):
         logging.debug("Open stack from path")
         try:
             tiff_list = (".tif", ".tiff")
-            msg = QProgressDialog()
+            msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
             msg.setWindowTitle("Loading Images...")
             msg.setText("Loading Images from Directory")
