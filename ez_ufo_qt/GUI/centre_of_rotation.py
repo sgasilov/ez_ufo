@@ -57,7 +57,7 @@ class CentreOfRotationGroup(QGroupBox):
         self.inc_axis_entry.setStyleSheet("background-color:white")
 
         self.bypass_checkbox = QCheckBox()
-        self.bypass_checkbox.setText("Bypass axis search and use image midpoint (for half-acquisition")
+        self.bypass_checkbox.setText("Bypass axis search and use image midpoint (for half-acquisition)")
         self.bypass_checkbox.stateChanged.connect(self.set_bypass)
 
         self.set_layout()
