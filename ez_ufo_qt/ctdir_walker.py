@@ -9,9 +9,9 @@ import os
 
 class WalkCTdirs():
     '''
-    Walks in the directory structure and creats list of paths to CT folders
+    Walks in the directory structure and creates list of paths to CT folders
     Determines flats before/after
-    and checks that foltders contain only tiff files 
+    and checks that folders contain only tiff files
     '''
 
     def __init__(self, inpath, fol, verb = True):

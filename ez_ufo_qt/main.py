@@ -171,6 +171,7 @@ def main_tk(args, fdt_names):
                     ax = args.ax_fix + i * args.dax
             elif args.e_axis_bypass:
                 print("Bypassing axis search and using image midpoint")
+                ax = FindCOR.find_axis_image_midpoint(ctset, multipage)
 
 
             setid = ctset[0][len(lvl0) + 1:]

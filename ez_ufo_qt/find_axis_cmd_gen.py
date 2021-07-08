@@ -114,6 +114,12 @@ class findCOR_cmds(object):
 
         return (width / 2.0 + center) / 2.0
 
+    #Find midpoint width of image and return its value
+    def find_axis_image_midpoint(self, ctset, multipage):
+        indir = self.make_inpaths(ctset[0], ctset[1])
+
+        return 1200
+
 
 def evaluate_images_simp(input_pattern, metric, num_images_for_stats=0, out_prefix=None, fwhm=None,
                 blur_fwhm=None, verbose=False):
