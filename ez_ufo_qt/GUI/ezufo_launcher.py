@@ -134,8 +134,9 @@ class GUI(qtw.QWidget):
             ##CHECK IF ONLY SINGLE IMAGE THEN USE OPEN IMAGE -- OTHERWISE OPEN STACK
             files = os.listdir(str(parameters.params['e_outdir'] + '/sli'))
             if len(files) == 1:
-                print("Only one file in {}: Opening single image".format(str(parameters.params['e_outdir'] + '/sli')))
-                print(files[0])
+                print("Only one file in {}: Opening single image {}".format(str(parameters.params['e_outdir'] + '/sli', str(files[0]))))
+                filePath = str(parameters.params['e_outdir'] + '/sli/' + str(files[0]))
+                self.image_group.open_image_from_filepath(filePath)
             else:
                 print("Multiple files in {}: Opening stack of images".format(str(parameters.params['e_outdir'] + '/sli')))
                 self.image_group.open_stack_from_path(str(parameters.params['e_outdir'] + '/sli'))

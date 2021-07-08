@@ -125,6 +125,14 @@ class ImageViewerGroup(QGroupBox):
             self.image_window.setImage(self.img_arr.T)
             self.scroller.setEnabled(False)
 
+    def open_image_from_filepath(self, filePath):
+        logging.debug("Open image from filepath: " + str(filePath))
+        if filePath:
+            logging.debug("Import image path: " + filePath)
+            self.img_arr = image_read_write.read_image(filePath)
+            self.image_window.setImage(self.img_arr.T)
+            self.scroller.setEnabled(False)
+
     def save_image_to_file(self):
         logging.debug("Save image to file")
         options = QFileDialog.Options()
