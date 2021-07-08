@@ -133,7 +133,7 @@ class GUI(qtw.QWidget):
             self.tabs.setCurrentWidget(self.tab2)
             ##CHECK IF ONLY SINGLE IMAGE THEN USE OPEN IMAGE -- OTHERWISE OPEN STACK
             files = os.listdir(str(parameters.params['e_outdir'] + '/sli'))
-            if len(files) is 1:
+            if len(files) == 1:
                 print("Only one file in {}: Opening single image".format, str(parameters.params['e_outdir'] + '/sli'))
                 print(files[0])
             else:
