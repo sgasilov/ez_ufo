@@ -173,7 +173,6 @@ def main_tk(args, fdt_names):
                 ax = FindCOR.find_axis_image_midpoint(ctset, multipage, WH)
                 print("Bypassing axis search and using image midpoint: {}".format(ax))
 
-
             setid = ctset[0][len(lvl0) + 1:]
             out_pattern = os.path.join(args.outdir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))

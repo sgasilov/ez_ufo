@@ -131,7 +131,14 @@ class GUI(qtw.QWidget):
         if parameters.params['e_openIV'] is True:
             logging.debug("Switch to Image Tab")
             self.tabs.setCurrentWidget(self.tab2)
-            self.image_group.open_stack_from_path(str(parameters.params['e_outdir'] + '/sli'))
+            ##CHECK IF ONLY SINGLE IMAGE THEN USE OPEN IMAGE -- OTHERWISE OPEN STACK
+            files = os.listdir(str(parameters.params['e_outdir'] + '/sli'))
+            if len(files) is 1:
+                logging.debug("Only one file in {}: Opening single image".format, str(parameters.params['e_outdir'] + '/sli'))
+                print(files[0])
+            else:
+                logging.debug("Multiple files in {}: Opening stack of images".format, str(parameters.params['e_outdir'] + '/sli'))
+                self.image_group.open_stack_from_path(str(parameters.params['e_outdir'] + '/sli'))
 
     def closeEvent(self, event):
         logging.debug("QUIT")
