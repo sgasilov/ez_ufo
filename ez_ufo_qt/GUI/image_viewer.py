@@ -112,12 +112,20 @@ class ImageViewerGroup(QGroupBox):
         self.show()
 
     def scroll_changed(self):
+        """
+        Updated the currently displayed image based on position of scroll bar
+        :return: None
+        """
         self.image_window.setImage(self.tiff_arr[self.scroller.value()].T)
 
     def open_image_from_file(self):
+        """
+        Opens and displays a single image (.tif) specified by the user in the file dialog
+        :return: None
+        """
         logging.debug("Open image button pressed")
         options = QFileDialog.Options()
-        filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "All Files (*)",
+        filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "Tiff Files (*.tif)",
                                                   options=options)
         if filePath:
             logging.debug("Import image path: " + filePath)
@@ -126,6 +134,11 @@ class ImageViewerGroup(QGroupBox):
             self.scroller.setEnabled(False)
 
     def open_image_from_filepath(self, filePath):
+        """
+        Opens and displays a single image (.tif) contained in a directory - (used when one slice is reconstructed)
+        :param filePath: Full path and filename
+        :return: None
+        """
         logging.debug("Open image from filepath: " + str(filePath))
         if filePath:
             logging.debug("Import image path: " + filePath)
@@ -134,15 +147,28 @@ class ImageViewerGroup(QGroupBox):
             self.scroller.setEnabled(False)
 
     def save_image_to_file(self):
+        """
+        Saves the currently displayed image to a file (.tif) specified by the user in the file dialog
+        :return: None
+        """
         logging.debug("Save image to file")
         options = QFileDialog.Options()
         filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
         if filepath:
             logging.debug(filepath)
             bit_depth_string = self.check_bit_depth(self.bit_depth)
-            image_read_write.write_image(self.img_arr, os.path.dirname(filepath), os.path.basename(filepath), bit_depth_string)
+            img = self.image_window.imageItem.qimage
+            # https://www.programmersought.com/article/73475006380/
+            size = img.size()
+            s = img.bits().asstring(size.width() * size.height() * img.depth() // 8)  # format 0xffRRGGBB
+            arr = np.fromstring(s, dtype=np.uint8).reshape((size.height(), size.width(), img.depth() // 8))
+            image_read_write.write_image(arr.T[0].T, os.path.dirname(filepath), os.path.basename(filepath), bit_depth_string)
 
     def open_stack_from_directory(self):
+        """
+        Opens all images (.tif) in a directory and displays them. Allows for scrolling through images with slider
+        :return: None
+        """
         logging.debug("Open image stack button pressed")
         dir_explore = QFileDialog()
         dir = dir_explore.getExistingDirectory()
@@ -166,7 +192,7 @@ class ImageViewerGroup(QGroupBox):
 
     def open_stack_from_path(self, dir_path: str):
         """
-        Read images from directory path into RAM as 3D numpy array
+        Read images (.tif) from directory path into RAM as 3D numpy array
         :param dir_path: Path to directory containing multiple .tiff image files
         """
         logging.debug("Open stack from path")
@@ -189,7 +215,7 @@ class ImageViewerGroup(QGroupBox):
 
     def save_stack_to_directory(self):
         """
-        Saves images stored in numpy array to individual files in directory specified by user dialog
+        Saves images stored in numpy array to individual files (.tif) in directory specified by user dialog
         Saves these images as BigTiff if checkbox is set to True
         """
         logging.debug("Save stack to directory button pressed")
@@ -209,6 +235,10 @@ class ImageViewerGroup(QGroupBox):
             msg.close()
 
     def open_big_tiff(self):
+        """
+        Opens images stored in a big tiff file (.tif) and displays them. Allows user to view them using scrollbar.
+        :return: None
+        """
         logging.debug("Open big tiff button pressed")
         options = QFileDialog.Options()
         filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "All Files (*)",
@@ -229,6 +259,10 @@ class ImageViewerGroup(QGroupBox):
             self.scroller.setValue(mid_index)
 
     def save_stack_to_big_tiff(self):
+        """
+        Saves the stack of images currently loaded into RAM to a single bigtif file
+        :return: None
+        """
         logging.debug("Save stack to bigtiff button pressed")
         logging.debug("Saving with bitdepth: " + str(self.bit_depth))
         dir_explore = QFileDialog()
@@ -245,18 +279,30 @@ class ImageViewerGroup(QGroupBox):
             msg.close()
 
     def min_spin_changed(self):
+        """
+        Changes the levels of the histogram widget if the min spinbox has been changed
+        :return: None
+        """
         histo = self.image_window.getHistogramWidget()
         levels = self.histo.getLevels()
         min_level = self.hist_min_input.value()
         self.image_window.setLevels(min_level, levels[1])
 
     def max_spin_changed(self):
+        """
+        Changes the levels of the histogram widget if the max spinbox has been changed
+        :return: None
+        """
         histo = self.image_window.getHistogramWidget()
         levels = self.histo.getLevels()
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
 
     def apply_histogram_to_images(self):
+        """
+        Gets the histogram levels of the currently displayed image and applies them to all images in RAM
+        :return: None
+        """
         for item in self.tiff_arr:
             levels = self.histo.getLevels()
             img = pg.ImageItem(item)
@@ -265,6 +311,11 @@ class ImageViewerGroup(QGroupBox):
             item = img.image
 
     def check_bit_depth(self, bit_depth: int) -> str:
+        """
+        Returns a string indicating the bitdepth to store the images based on value of bit-depth radio buttons
+        :param bit_depth:
+        :return: String specifying datatype for numpy array
+        """
         if bit_depth == 8:
             return "uint8"
         elif bit_depth == 16:
@@ -273,13 +324,25 @@ class ImageViewerGroup(QGroupBox):
             return "uint32"
 
     def set_8bit(self):
+        """
+        Sets value of bit_depth variable based on radio button selection
+        :return: None
+        """
         logging.debug("Set 8-bit")
         self.bit_depth = 8
 
     def set_16bit(self):
+        """
+        Sets value of bit_depth variable based on radio button selection
+        :return: None
+        """
         logging.debug("Set 16-bit")
         self.bit_depth = 16
 
     def set_32bit(self):
+        """
+        Sets value of bit_depth variable based on radio button selection
+        :return: None
+        """
         logging.debug("Set 32-bit")
         self.bit_depth = 32
