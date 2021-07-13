@@ -108,14 +108,25 @@ class tofu_cmds(object):
     def get_sinos_ffc_cmd(self,ctset, tmpdir,args, nviews, WH):
         indir = self.make_inpaths(ctset[0], ctset[1])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
-        cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
-        cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
-        if ctset[1]==4:
-            cmd += ' --flats2 {}'.format(indir[3])
-        cmd += ' --projections {}'.format(in_proj_dir)
-        cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
-        cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        if args.sinFFC:
+            cmd = 'tofu sinos'
+            cmd += 'bmit_sin --fix-nan'
+            cmd += ' --darks {} --flats {} '.format(indir[0], indir[1])
+            if ctset[1] == 4:
+                cmd += ' --flats2 {}'.format(indir[3])
+            cmd += ' --projections {}'.format(in_proj_dir)
+            cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
+            cmd += ' --number {}'.format(nviews)
+            cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        elif not args.sinFFC:
+            cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
+            cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
+            if ctset[1]==4:
+                cmd += ' --flats2 {}'.format(indir[3])
+            cmd += ' --projections {}'.format(in_proj_dir)
+            cmd += ' --output {}'.format( os.path.join(tmpdir,'sinos/sin-%04i.tif') )
+            cmd += ' --number {}'.format(nviews)
+            cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         if not args.RR_ufo:
         # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
@@ -151,14 +162,25 @@ class tofu_cmds(object):
         indir = self.make_inpaths(ctset[0], ctset[1])
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2])
-        cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
-        cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
-        if ctset[1]==4:
-            cmd += ' --flats2 {}'.format(indir[3])
-        cmd += ' --output {}'.format(out_pattern)
-        cmd += ' --energy {} --propagation-distance {}'\
-               ' --pixel-size {} --regularization-rate {:0.2f}'\
-               .format(args.energy, args.z, args.pixel, args.log10db)
+        if args.sinFFC:
+            cmd = 'tofu preprocess --projection-filter none --delta 1e-6'
+            cmd += 'bmit_sin --fix-nan'
+            cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
+            if ctset[1] == 4:
+                cmd += ' --flats2 {}'.format(indir[3])
+            cmd += ' --output {}'.format(out_pattern)
+            cmd += ' --energy {} --propagation-distance {}' \
+                   ' --pixel-size {} --regularization-rate {:0.2f}' \
+                .format(args.energy, args.z, args.pixel, args.log10db)
+        elif not args.sinFFC:
+            cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
+            cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
+            if ctset[1]==4:
+                cmd += ' --flats2 {}'.format(indir[3])
+            cmd += ' --output {}'.format(out_pattern)
+            cmd += ' --energy {} --propagation-distance {}'\
+                   ' --pixel-size {} --regularization-rate {:0.2f}'\
+                   .format(args.energy, args.z, args.pixel, args.log10db)
         return cmd
 
     def get_reco_cmd(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
@@ -175,12 +197,21 @@ class tofu_cmds(object):
         cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if ffc:
-            cmd += ' --fix-nan-and-inf'
-            cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
-            if ctset[1]==4: #must be equivalent to len(indir)>3
-                cmd += ' --flats2 {}'.format(indir[3])
-            if not PR:
-                cmd += ' --absorptivity'
+            if args.sinFFC:
+                cmd += 'bmit_sin --fix-nan'
+                cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
+                if ctset[1] == 4:  # must be equivalent to len(indir)>3
+                    cmd += ' --flats2 {}'.format(indir[3])
+                ## ADD BACK WHEN ADDED TO sinFFC
+                #if not PR:
+                #    cmd += ' --absorptivity'
+            elif not args.sinFFC:
+                cmd += ' --fix-nan-and-inf'
+                cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
+                if ctset[1]==4: #must be equivalent to len(indir)>3
+                    cmd += ' --flats2 {}'.format(indir[3])
+                if not PR:
+                    cmd += ' --absorptivity'
         if PR:
             cmd += ' --disable-projection-crop --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\

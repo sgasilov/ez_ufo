@@ -60,11 +60,11 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
 
     ######## PHASE-RETRIEVAL #######
     # Do PR separately if sinograms must be generate or if vertical ROI is defined
-    if (args.PR and args.RR):  # or (args.PR and args.vcrop):
-        if swiFFC:  # we still need need flat correction
+    if (args.PR and args.RR):  # or (args.PR and args.vcrop): #Phase Retrieval and Ring Removal
+        if swiFFC:  # we still need need flat correction #Inpaint No
             cmds.append("echo \" - Phase retrieval with flat-correction\"")
             cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
-        else:
+        else: #Inpaint Yes
             cmds.append("echo \" - Phase retrieval from flat-corrected projections\"")
             cmds.extend(Ufo.get_pr_ufo_cmd(args, nviews, WH))
         swiPR = False  # no need to do PR anymore
@@ -153,6 +153,7 @@ def main_tk(args, fdt_names):
             # determine initial number of projections and their shape
             path2proj = os.path.join(ctset[0], Tofu._fdt_names[2])
             nviews, WH, multipage = get_dims(path2proj)
+            # e_axis_bypass is OFF then find centre of rotation
             if not args.e_axis_bypass:
                 if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
                     print('{:>30}\t{}'.format('CTset', 'Axis'))
@@ -169,6 +170,7 @@ def main_tk(args, fdt_names):
                                                args.ax_range, args.ax_p_size, args.ax_row, nviews)
                 else:
                     ax = args.ax_fix + i * args.dax
+            # e_axis_bypass is ON then image midpoint forms axis of rotation
             elif args.e_axis_bypass:
                 ax = FindCOR.find_axis_image_midpoint(ctset, multipage, WH)
                 print("Bypassing axis search and using image midpoint: {}".format(ax))
