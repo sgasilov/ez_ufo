@@ -153,7 +153,18 @@ class ufo_cmds(object):
         ######### FLAT-CORRECT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         ##REMOVE REDUNDANCIES WHEN --ABSORPTIVITY ADDED TO sinFFC
-        if not args.sinFFC:
+        if args.sinFFC:
+            cmd = 'bmit_sin --fix-nan'
+            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
+            cmd += ' --projections {}'.format(in_proj_dir)
+            cmd += ' --output {}'.format(out_pattern)
+            if ctset[1] == 4:
+                cmd += ' --flats2 {}'.format(indir[3])
+            # NEEDS TO BE ADDED TO sinFFC
+            # if not args.PR:
+            #    cmd += ' --absorptivity'
+            cmds.append(cmd)
+        elif not args.sinFFC:
             cmd = 'tofu flatcorrect --fix-nan-and-inf'
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             cmd += ' --projections {}'.format(in_proj_dir)
@@ -163,25 +174,12 @@ class ufo_cmds(object):
             if not args.PR:
                 cmd += ' --absorptivity'
             cmds.append(cmd)
-        elif args.sinFFC:
-            print("Using sinFFC")
-            cmd = 'bmit_sin --fix-nan'
-            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
-            cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --output {}'.format(out_pattern)
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            # NEEDS TO BE ADDED TO sinFFC
-            #if not args.PR:
-            #    cmd += ' --absorptivity'
-            cmds.append(cmd)
-
-        if not args.keep_tmp and args.pre:
-            cmds.append('rm -rf {}'.format(indir[0]))
-            cmds.append('rm -rf {}'.format(indir[1]))
-            cmds.append('rm -rf {}'.format(in_proj_dir))
-            if len(indir) > 3:
-                cmds.append('rm -rf {}'.format(indir[3]))
+            if not args.keep_tmp and args.pre:
+                cmds.append('rm -rf {}'.format(indir[0]))
+                cmds.append('rm -rf {}'.format(indir[1]))
+                cmds.append('rm -rf {}'.format(in_proj_dir))
+                if len(indir) > 3:
+                    cmds.append('rm -rf {}'.format(indir[3]))
         ######### INPAINT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         cmd = 'ufo-launch [read path={} height={} number={}'.format(in_proj_dir, N, nviews)
