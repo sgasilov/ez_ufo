@@ -82,6 +82,9 @@ class ImageViewerGroup(QGroupBox):
         self.scroller.setEnabled(False)
         self.scroller.valueChanged.connect(self.scroll_changed)
 
+        self.set_layout()
+
+    def set_layout(self):
         vbox = QVBoxLayout()
         vbox.addWidget(self.save_8bit_rButton)
         vbox.addWidget(self.save_16bit_rButton)
