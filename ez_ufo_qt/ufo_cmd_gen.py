@@ -34,7 +34,8 @@ def fmt_in_out_path(tmpdir, indir, raw_proj_dir_name, croutdir=True):
     if croutdir and not os.path.exists(tmp):
         os.makedirs(tmp)
     # return names of input directory and output pattern with abs path
-    return in_proj_dir, os.path.join(tmp, 'proj-%04i.tif')
+    return in_proj_dir, tmp
+    #return in_proj_dir, os.path.join(tmp, 'proj-%04i.tif')
 
 
 class ufo_cmds(object):
@@ -154,12 +155,14 @@ class ufo_cmds(object):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         ##REMOVE REDUNDANCIES WHEN --ABSORPTIVITY ADDED TO sinFFC
         if args.sinFFC:
-            cmd = 'bmit_sin --fix-nan'
+            cmd = 'bmit_sin'
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
             cmd += ' --output {}'.format(out_pattern)
+            cmd += '--fix-nan'
+
             # NEEDS TO BE ADDED TO sinFFC
             #if not args.PR:
             #    cmd += ' --absorptivity'
