@@ -162,6 +162,7 @@ class ufo_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             print("DIR_NAME: " + str(out_pattern))
             cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+            print("DIR_NAME: " + str(out_pattern))
 
             # NEEDS TO BE ADDED TO sinFFC
             #if not args.PR:
