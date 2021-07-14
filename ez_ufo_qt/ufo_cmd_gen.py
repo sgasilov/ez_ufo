@@ -160,8 +160,8 @@ class ufo_cmds(object):
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
-            cmd += ' --output {}'.format(out_pattern)
-
+            print("DIR_NAME: " + str(out_pattern))
+            cmd += ' --output {}'.format(os.path.dirname(out_pattern))
 
             # NEEDS TO BE ADDED TO sinFFC
             #if not args.PR:
