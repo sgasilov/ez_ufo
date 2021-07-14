@@ -109,6 +109,7 @@ class tofu_cmds(object):
         indir = self.make_inpaths(ctset[0], ctset[1])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         if args.sinFFC:
+            ## NEED TO SAVE SINOS TO DIRECTORY THEN USE THAT AS INPUT TO THE FFC
             cmd = 'tofu sinos'
             cmd += ' bmit_sin --fix-nan'
             cmd += ' --darks {} --flats {} '.format(indir[0], indir[1])
@@ -202,7 +203,7 @@ class tofu_cmds(object):
                 if ctset[1] == 4:  # must be equivalent to len(indir)>3
                     cmd += ' --flats2 {}'.format(indir[3])
                 cmd += '  --projections {}'.format(in_proj_dir)
-                cmd += ' --output {}'.format(out_pattern)
+                cmd += ' --output {}'.format(os.path.dirname(out_pattern))
                 ## ADD BACK WHEN ADDED TO sinFFC
                 #if not PR:
                 #    cmd += ' --absorptivity'
