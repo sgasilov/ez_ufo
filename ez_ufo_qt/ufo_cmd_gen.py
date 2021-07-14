@@ -34,8 +34,7 @@ def fmt_in_out_path(tmpdir, indir, raw_proj_dir_name, croutdir=True):
     if croutdir and not os.path.exists(tmp):
         os.makedirs(tmp)
     # return names of input directory and output pattern with abs path
-    return in_proj_dir, tmp
-    #return in_proj_dir, os.path.join(tmp, 'proj-%04i.tif')
+    return in_proj_dir, os.path.join(tmp, 'proj-%04i.tif')
 
 
 class ufo_cmds(object):
