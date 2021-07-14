@@ -162,7 +162,11 @@ class tofu_cmds(object):
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2])
         if args.sinFFC:
+            # First do preprocessing and save as first directory in tmp directory
             cmd = 'tofu preprocess --projection-filter none --delta 1e-6'
+            cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+            in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+            # Using output of preprocess to run sinFFC
             cmd += 'bmit_sin --fix-nan'
             cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
             if ctset[1] == 4:
