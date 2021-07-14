@@ -95,7 +95,9 @@ class MultiStitch360Group(QGroupBox):
 
         self.show()
 
+'''
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = MultiStitch360Group()
     sys.exit(app.exec_())
+'''
