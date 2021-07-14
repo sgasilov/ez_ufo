@@ -107,19 +107,17 @@ class tofu_cmds(object):
 
     def get_sinos_ffc_cmd(self,ctset, tmpdir,args, nviews, WH):
         indir = self.make_inpaths(ctset[0], ctset[1])
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         if args.sinFFC:
-            ## NEED TO SAVE SINOS TO DIRECTORY THEN USE THAT AS INPUT TO THE FFC
+            ## NEED TO DO FFC AND THEN FEED THAT TO SINOS
+
+            in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
             cmd = 'tofu sinos'
-            cmd += ' bmit_sin --fix-nan'
-            cmd += ' --darks {} --flats {} '.format(indir[0], indir[1])
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
             cmd += ' --number {}'.format(nviews)
             cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         elif not args.sinFFC:
+            in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
             cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
             cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
             if ctset[1]==4:
@@ -196,9 +194,12 @@ class tofu_cmds(object):
         cmd = 'tofu reco --overall-angle 180'
         #cmd += '  --projections {}'.format(indir[2])
 
+        #THIS DOESN'T WORK
+        #NEED TO GET OUTPUT OF sinFFC and feed that into tofu reco
+
         if ffc:
             if args.sinFFC:
-                cmd += 'bmit_sin --fix-nan'
+                cmd += ' bmit_sin --fix-nan'
                 cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
                 if ctset[1] == 4:  # must be equivalent to len(indir)>3
                     cmd += ' --flats2 {}'.format(indir[3])
