@@ -110,7 +110,7 @@ class tofu_cmds(object):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         if args.sinFFC:
             cmd = 'tofu sinos'
-            cmd += 'bmit_sin --fix-nan'
+            cmd += ' bmit_sin --fix-nan'
             cmd += ' --darks {} --flats {} '.format(indir[0], indir[1])
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
@@ -194,14 +194,15 @@ class tofu_cmds(object):
         #format command
         cmd = 'tofu reco --overall-angle 180'
         #cmd += '  --projections {}'.format(indir[2])
-        cmd += '  --projections {}'.format(in_proj_dir)
-        cmd += ' --output {}'.format(out_pattern)
+
         if ffc:
             if args.sinFFC:
                 cmd += 'bmit_sin --fix-nan'
                 cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
                 if ctset[1] == 4:  # must be equivalent to len(indir)>3
                     cmd += ' --flats2 {}'.format(indir[3])
+                cmd += '  --projections {}'.format(in_proj_dir)
+                cmd += ' --output {}'.format(out_pattern)
                 ## ADD BACK WHEN ADDED TO sinFFC
                 #if not PR:
                 #    cmd += ' --absorptivity'
@@ -210,6 +211,8 @@ class tofu_cmds(object):
                 cmd += ' --darks {} --flats {}'.format(indir[0],indir[1])
                 if ctset[1]==4: #must be equivalent to len(indir)>3
                     cmd += ' --flats2 {}'.format(indir[3])
+                cmd += '  --projections {}'.format(in_proj_dir)
+                cmd += ' --output {}'.format(out_pattern)
                 if not PR:
                     cmd += ' --absorptivity'
         if PR:
