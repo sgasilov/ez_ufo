@@ -156,12 +156,13 @@ class ufo_cmds(object):
         ##REMOVE REDUNDANCIES WHEN --ABSORPTIVITY ADDED TO sinFFC
         if args.sinFFC:
             cmd = 'bmit_sin'
+            cmd += ' --fix-nan'
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
             cmd += ' --output {}'.format(out_pattern)
-            cmd += '--fix-nan'
+
 
             # NEEDS TO BE ADDED TO sinFFC
             #if not args.PR:
