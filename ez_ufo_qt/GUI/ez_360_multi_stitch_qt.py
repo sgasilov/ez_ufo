@@ -6,24 +6,27 @@ class MultiStitch360Group(QGroupBox):
     def __init__(self):
         super().__init__()
 
+        self.setTitle("360 Multi Stitch")
+        self.setStyleSheet('QGroupBox {color: red;}')
+
         self.input_dir_button = QPushButton()
-        self.input_dir_button.setStyleSheet("background-color:gainsboro")
+        #self.input_dir_button.setStyleSheet("background-color:gainsboro")
         self.input_dir_button.setText("Select input directory with 000,001,...,00N subdirectories")
-        self.input_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.input_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.input_dir_entry = QLineEdit()
 
         self.temp_dir_button = QPushButton()
-        self.temp_dir_button.setStyleSheet("background-color:gainsboro")
+        #self.temp_dir_button.setStyleSheet("background-color:gainsboro")
         self.temp_dir_button.setText("Select temporary directory - default value recommended")
-        self.temp_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.temp_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.temp_dir_entry = QLineEdit()
 
         self.output_dir_button = QPushButton()
-        self.output_dir_button.setStyleSheet("background-color:gainsboro")
+        #self.output_dir_button.setStyleSheet("background-color:gainsboro")
         self.output_dir_button.setText("Directory to save stitched images")
-        self.output_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.output_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.output_dir_entry = QLineEdit()
 
@@ -41,26 +44,28 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_entry = QLineEdit()
 
         self.stitch_button = QPushButton()
-        self.stitch_button.setStyleSheet("background-color:gainsboro")
+        #self.stitch_button.setStyleSheet("background-color:gainsboro")
         self.stitch_button.setText("Stitch")
-        self.stitch_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.stitch_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.delete_button = QPushButton()
-        self.delete_button.setStyleSheet("background-color:gainsboro")
+        #self.delete_button.setStyleSheet("background-color:gainsboro")
         self.delete_button.setText("Delete")
-        self.delete_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.delete_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.help_button = QPushButton()
-        self.help_button.setStyleSheet("background-color:gainsboro")
+        #self.help_button.setStyleSheet("background-color:gainsboro")
         self.help_button.setText("Help")
-        self.help_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.help_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.quit_button = QPushButton()
-        self.quit_button.setStyleSheet("background-color:gainsboro")
+        #self.quit_button.setStyleSheet("background-color:gainsboro")
         self.quit_button.setText("Quit")
-        self.quit_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+        #self.quit_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.set_layout()
+
+        #self.show()
 
 
     def set_layout(self):
@@ -92,8 +97,6 @@ class MultiStitch360Group(QGroupBox):
         layout.addItem(hbox, 4, 0)
 
         self.setLayout(layout)
-
-        self.show()
 
 '''
 if __name__ == '__main__':
