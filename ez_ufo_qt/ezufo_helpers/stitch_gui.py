@@ -9,7 +9,7 @@ import Tkinter as tk
 import tkFileDialog as filedialog
 import numpy as np
 import os
-from ezufo_helpers.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
+from stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
 import getpass
 
 E=tk.E; W=tk.W
@@ -256,7 +256,7 @@ class GUI:
     def clean_and_quit(self):
         if os.path.exists(self.e_tmpdir.get()):
            os.system( 'rm -r {}'.format(self.e_tmpdir.get()) )
-           print "==== Directory with temporary data was removed. ==="
+           print("==== Directory with temporary data was removed. ===")
         self.A.quit()
 
     def printhelp(self):
@@ -267,7 +267,7 @@ class GUI:
         h+="across all subdirectories in the Input directory"
         h+="to be added as options:\n"
         h+="(1) orthogonal reslicing, (2) interpolation, (3) horizontal stitching"
-        print h
+        print(h)
 
 
 if __name__=="__main__":

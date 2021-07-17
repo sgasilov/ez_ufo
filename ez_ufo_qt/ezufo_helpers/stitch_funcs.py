@@ -9,7 +9,7 @@ import argparse
 import sys
 import numpy as np
 import tifffile
-from ezufo_helpers.util import read_image
+from util import read_image
 import time
 import multiprocessing as mp
 from functools import partial
@@ -94,10 +94,10 @@ def main_sti_mp(args):
     pool = mp.Pool(processes=mp.cpu_count())
     exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
             Vsteps, indir, dx,M, args, ramp, hmin, hmax)
-    print "Adjusting and stitching"
+    print("Adjusting and stitching")
     #start = time.time()
     pool.map(exec_func, J)
-    print "========== Done =========="
+    print("========== Done ==========")
 
 def make_buf(tmp,l,a,b):
     first=read_image(tmp)
@@ -125,7 +125,7 @@ def exec_conc_mp(start, step, example_im, l, args, zfold, indir, j):
 
 def main_conc_mp(args):
     if args.ort:
-        print "Creating orthogonal sections"
+        print("Creating orthogonal sections")
     #start = time.time()
     indir, hmin, hmax, start, stop, step = prepare(args)
     #if args.ort:
@@ -138,11 +138,11 @@ def main_conc_mp(args):
     J=range(int((stop-start)/step))
     pool = mp.Pool(processes=mp.cpu_count())
     exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir )
-    print "Concatenating"
+    print("Concatenating")
     #start = time.time()
     pool.map(exec_func, J)
     #print "Images stitched in {:.01f} sec".format(time.time()-start)
-    print "========== Done =========="
+    print("========== Done ==========")
 
 
 ############################## HALF ACQ ##############################
@@ -187,7 +187,7 @@ def main_360_mp_depth1(args):
         num_projs = len(names)
         if num_projs<2:
             warnings.warn("Warning: less than 2 files")
-        print '{} files in {}'.format(num_projs, sdir)
+        print('{} files in {}'.format(num_projs, sdir))
 
         os.makedirs(os.path.join(args.output,sdir))
         out_fmt = os.path.join(args.output, sdir, 'sti-{:>04}.tif')
@@ -214,7 +214,7 @@ def main_360_mp_depth1(args):
         #pool.map(exec_func, names[0:num_projs/2])
         pool.map(exec_func, idxs)
 
-    print "========== Done =========="
+    print("========== Done ==========")
 
 
 def main_360_mp_depth2(args):
