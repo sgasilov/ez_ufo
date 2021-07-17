@@ -4,7 +4,7 @@ Created on Feb 5, 2019
 
 @author: gasilos
 '''
-"""
+
 import Tkinter as tk
 import tkFileDialog as filedialog
 import numpy as np
@@ -129,7 +129,7 @@ if __name__=="__main__":
     A = tk.Tk()
     gui = GUI(A)
     A.mainloop()
-"""
+
 
 
 

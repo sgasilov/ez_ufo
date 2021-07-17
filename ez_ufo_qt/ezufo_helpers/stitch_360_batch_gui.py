@@ -4,7 +4,7 @@ Created on Apr 5, 2018
 
 @author: gasilos, bondt
 '''
-"""
+
 import Tkinter as tk
 import tkFileDialog as filedialog
 import numpy as np
@@ -255,7 +255,6 @@ if __name__=="__main__":
     gui = GUI(A)
     A.mainloop()
 
-"""
 
 
 
