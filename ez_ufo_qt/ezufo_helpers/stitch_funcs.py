@@ -79,7 +79,7 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
 
 def main_sti_mp(args):
     if args.ort:
-        print "Creating orthogonal sections"
+        print("Creating orthogonal sections")
     indir, hmin, hmax, start, stop, step = prepare(args)
     dx=int(args.reprows)
     #second: stitch them

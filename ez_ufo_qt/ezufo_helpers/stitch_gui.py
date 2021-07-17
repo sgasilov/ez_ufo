@@ -209,7 +209,7 @@ class GUI:
     def rm_rec_dir(self):
         if os.path.exists(self.e_output.get()):
            os.system( 'rm -r {}'.format(self.e_output.get()) )
-           print "Directory with reconstructed data was removed"
+           print("Directory with reconstructed data was removed")
 
     def select_input(self):
         cwd = '/mnt/BMIT_data/BMIT-USERS-DATA'

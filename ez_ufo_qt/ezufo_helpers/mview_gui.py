@@ -123,7 +123,7 @@ class GUI:
         h="assuming that acqusition sequence is flats->darks->tomo->flats2\n"
         h+='Use only for sequences with flat fields acquired at 0 and 180!\n'
         h+="Conversions happens in-place but can be undone"
-        print h
+        print (h)
 
 if __name__=="__main__":
     A = tk.Tk()
