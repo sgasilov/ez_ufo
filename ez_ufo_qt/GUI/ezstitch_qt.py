@@ -73,15 +73,19 @@ class EZStitchGroup(QGroupBox):
 
         self.stitch_button = QPushButton()
         self.stitch_button.setText("Stitch")
+        self.stitch_button.setStyleSheet("background-color:lightgrey;color: royalblue; font: 14pt; font-weight: bold;")
 
         self.delete_button = QPushButton()
         self.delete_button.setText("Delete output dir")
+        self.delete_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.help_button = QPushButton()
         self.help_button.setText("Help")
+        self.help_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.quit_button = QPushButton()
         self.quit_button.setText("Quit")
+        self.quit_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.set_layout()
 

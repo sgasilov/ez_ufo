@@ -53,18 +53,23 @@ class EZnlmdnGroup(QGroupBox):
 
         self.quit_button = QPushButton()
         self.quit_button.setText("Quit")
+        self.quit_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.help_button = QPushButton()
         self.help_button.setText("Help")
+        self.help_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.delete_button = QPushButton()
         self.delete_button.setText("Delete reco dir")
+        self.delete_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.dry_run_button = QPushButton()
         self.dry_run_button.setText("Dry run")
+        self.dry_run_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.apply_filter_button = QPushButton()
         self.apply_filter_button.setText("Apply filter")
+        self.apply_filter_button.setStyleSheet("background-color:lightgrey;color:royalblue; font: 14pt; font-weight: bold;")
 
         self.set_layout()
 

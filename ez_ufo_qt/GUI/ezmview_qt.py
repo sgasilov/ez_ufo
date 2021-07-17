@@ -42,15 +42,19 @@ class EZMView(QGroupBox):
 
         self.convert_button = QPushButton()
         self.convert_button.setText("Convert")
+        self.convert_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.undo_button = QPushButton()
         self.undo_button.setText("Undo")
+        self.undo_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.help_button = QPushButton()
         self.help_button.setText("Help")
+        self.help_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.quit_button = QPushButton()
         self.quit_button.setText("Quit")
+        self.quit_button.setStyleSheet("background-color:lightgrey;color:black; font: 14pt; font-weight: bold;")
 
         self.set_layout()
 
