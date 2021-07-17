@@ -152,31 +152,15 @@ class ufo_cmds(object):
         cmds.append(cmd)
         ######### FLAT-CORRECT #########
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
-        ##REMOVE REDUNDANCIES WHEN --ABSORPTIVITY ADDED TO sinFFC
-        if args.sinFFC:
-            cmd = 'bmit_sin'
-            cmd += ' --fix-nan'
-            cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            cmd += ' --output {}'.format(os.path.dirname(out_pattern))
-
-            # NEEDS TO BE ADDED TO sinFFC
-            #if not args.PR:
-            #    cmd += ' --absorptivity'
-            cmds.append(cmd)
-        elif not args.sinFFC:
-            cmd = 'tofu flatcorrect --fix-nan-and-inf'
-            cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
-            cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --output {}'.format(out_pattern)
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            if not args.PR:
-                cmd += ' --absorptivity'
-            cmds.append(cmd)
-
+        cmd = 'tofu flatcorrect --fix-nan-and-inf'
+        cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
+        cmd += ' --projections {}'.format(in_proj_dir)
+        cmd += ' --output {}'.format(out_pattern)
+        if ctset[1] == 4:
+            cmd += ' --flats2 {}'.format(indir[3])
+        if not args.PR:
+            cmd += ' --absorptivity'
+        cmds.append(cmd)
         if not args.keep_tmp and args.pre:
             cmds.append('rm -rf {}'.format(indir[0]))
             cmds.append('rm -rf {}'.format(indir[1]))
