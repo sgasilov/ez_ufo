@@ -65,7 +65,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             cmds.append("echo \" - Phase retrieval with flat-correction\"")
             if args.sinFFC:
                 cmds.append(Tofu.get_pr_sinFFC_cmd(ctset, args, nviews, WH[0]))
-            cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
+            cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH))
         else: #Inpaint Yes
             cmds.append("echo \" - Phase retrieval from flat-corrected projections\"")
             cmds.extend(Ufo.get_pr_ufo_cmd(args, nviews, WH))

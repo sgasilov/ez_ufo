@@ -155,7 +155,7 @@ class tofu_cmds(object):
 
         return cmd
 
-    def get_pr_tofu_cmd(self, ctset, args, nviews, N):
+    def get_pr_tofu_cmd(self, ctset, args, nviews, WH):
         #indir will format paths to flats dakrs and tomo2 correctly even if they were
         #pre-processed, however path to the input directory with projections
         # cannot be formatted with that command correctly
@@ -168,9 +168,10 @@ class tofu_cmds(object):
             cmd += ' --energy {} --propagation-distance {}' \
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
                 .format(args.energy, args.z, args.pixel, args.log10db)
-            #cmd += ' retrieval-padded-width'.format()
-            print("SIZE OF N: ")
-            print(N)
+            cmd += ' retrieval-padded-width'.format(WH[0])
+            cmd += ' retrieval-padded-height'.format(WH[1])
+            #WH[1] = height
+            #WH[0] = width
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
             return cmd
