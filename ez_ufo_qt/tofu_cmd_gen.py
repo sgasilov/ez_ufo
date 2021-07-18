@@ -169,7 +169,8 @@ class tofu_cmds(object):
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
                 .format(args.energy, args.z, args.pixel, args.log10db)
             #cmd += ' retrieval-padded-width'.format()
-            print("SIZE OF N: " + N)
+            print("SIZE OF N: ")
+            print(N)
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
             return cmd
