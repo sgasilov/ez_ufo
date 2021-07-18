@@ -144,6 +144,17 @@ class tofu_cmds(object):
             cmd += ' --number {}'.format(int(args.yheight/args.ystep))#(np.ceil(args.yheight/args.ystep))
         return cmd
 
+    def get_pr_sinFFC_cmd(self, ctset, args, nviews, n):
+        indir = self.make_inpaths(ctset[0], ctset[1])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        cmd = ' bmit_sin --fix-nan'
+        cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
+        if ctset[1] == 4:
+            cmd += ' --flats2 {}'.format(indir[3])
+        cmd += ' --output {}'.format(out_pattern)
+        return cmd
+
     def get_pr_tofu_cmd(self, ctset, args, nviews, N):
         #indir will format paths to flats dakrs and tomo2 correctly even if they were
         #pre-processed, however path to the input directory with projections
@@ -160,6 +171,7 @@ class tofu_cmds(object):
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
             # Flat field correction
+            '''
             in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
             cmd += ' bmit_sin --fix-nan'
             cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
@@ -167,6 +179,7 @@ class tofu_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             cmd += ' --output {}'.format(out_pattern)
             return cmd
+            '''
         elif not args.sinFFC:
             cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
             cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
