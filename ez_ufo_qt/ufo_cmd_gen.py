@@ -159,6 +159,8 @@ class ufo_cmds(object):
             cmd += ' --output {}'.format(os.path.dirname(out_pattern))
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
+            # Add options for eigen-pco-repetitions etc.
+
             #if not args.PR:
             #    cmd += ' --absorptivity'
             cmds.append(cmd)
