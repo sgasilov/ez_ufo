@@ -158,6 +158,7 @@ class tofu_cmds(object):
                 .format(args.energy, args.z, args.pixel, args.log10db)
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
+            return cmd
         elif not args.sinFFC:
             cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
             cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
