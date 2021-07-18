@@ -170,6 +170,7 @@ class tofu_cmds(object):
                 .format(args.energy, args.z, args.pixel, args.log10db)
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
+            return cmd
             # Flat field correction
             '''
             in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
