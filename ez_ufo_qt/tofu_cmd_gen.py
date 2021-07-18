@@ -151,15 +151,23 @@ class tofu_cmds(object):
         indir = self.make_inpaths(ctset[0], ctset[1])
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2])
-        cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
-        cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
-        if ctset[1]==4:
-            cmd += ' --flats2 {}'.format(indir[3])
-        cmd += ' --output {}'.format(out_pattern)
-        cmd += ' --energy {} --propagation-distance {}'\
-               ' --pixel-size {} --regularization-rate {:0.2f}'\
-               .format(args.energy, args.z, args.pixel, args.log10db)
-        return cmd
+        if args.sinFFC:
+            cmd = 'tofu preprocess --delta 1e-6'
+            cmd += ' --energy {} --propagation-distance {}' \
+                   ' --pixel-size {} --regularization-rate {:0.2f}' \
+                .format(args.energy, args.z, args.pixel, args.log10db)
+            cmd += ' --projections {}'.format(in_proj_dir)
+            cmd += ' --output {}'.format(out_pattern)
+        elif not args.sinFFC:
+            cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
+            cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
+            if ctset[1]==4:
+                cmd += ' --flats2 {}'.format(indir[3])
+            cmd += ' --output {}'.format(out_pattern)
+            cmd += ' --energy {} --propagation-distance {}'\
+                   ' --pixel-size {} --regularization-rate {:0.2f}'\
+                   .format(args.energy, args.z, args.pixel, args.log10db)
+            return cmd
 
     def get_reco_cmd(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
         #direct CT reconstruction from input dir to output dir;
