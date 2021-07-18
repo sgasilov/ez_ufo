@@ -151,7 +151,7 @@ class tofu_cmds(object):
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
         if ctset[1] == 4:
             cmd += ' --flats2 {}'.format(indir[3])
-        cmd += ' --output {}'.format(out_pattern)
+        cmd += ' --output {}'.format(os.path.dirname(out_pattern))
         return cmd
 
     def get_pr_tofu_cmd(self, ctset, args, nviews, N):
