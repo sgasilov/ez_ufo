@@ -164,12 +164,12 @@ class tofu_cmds(object):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2])
         if args.sinFFC:
             # Phase retrieval
-            cmd = 'tofu preprocess --retrieve-phase --delta 1e-6'
+            cmd = 'tofu preprocess --delta 1e-6'
             cmd += ' --energy {} --propagation-distance {}' \
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
                 .format(args.energy, args.z, args.pixel, args.log10db)
-            cmd += ' retrieval-padded-width'.format(WH[0])
-            cmd += ' retrieval-padded-height'.format(WH[1])
+            cmd += ' --retrieval-padded-width'.format(WH[0])
+            cmd += ' --retrieval-padded-height'.format(WH[1])
             #WH[1] = height
             #WH[0] = width
             cmd += ' --projections {}'.format(in_proj_dir)
