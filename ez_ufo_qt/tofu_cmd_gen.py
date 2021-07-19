@@ -168,8 +168,8 @@ class tofu_cmds(object):
             cmd += ' --energy {} --propagation-distance {}' \
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
                 .format(args.energy, args.z, args.pixel, args.log10db)
-            cmd += ' --retrieval-padded-width'.format(WH[0])
-            cmd += ' --retrieval-padded-height'.format(WH[1])
+            cmd += ' --retrieval-padded-width {}'.format(WH[0])
+            cmd += ' --retrieval-padded-height {}'.format(WH[1])
             #WH[1] = height
             #WH[0] = width
             cmd += ' --projections {}'.format(in_proj_dir)
