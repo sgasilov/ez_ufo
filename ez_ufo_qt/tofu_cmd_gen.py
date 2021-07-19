@@ -170,21 +170,9 @@ class tofu_cmds(object):
                 .format(args.energy, args.z, args.pixel, args.log10db)
             cmd += ' --retrieval-padded-width {}'.format(WH[0])
             cmd += ' --retrieval-padded-height {}'.format(WH[1])
-            #WH[1] = height
-            #WH[0] = width
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
             return cmd
-            # Flat field correction
-            '''
-            in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
-            cmd += ' bmit_sin --fix-nan'
-            cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
-            if ctset[1] == 4:
-                cmd += ' --flats2 {}'.format(indir[3])
-            cmd += ' --output {}'.format(out_pattern)
-            return cmd
-            '''
         elif not args.sinFFC:
             cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
             cmd += ' --darks {} --flats {} --projections {}'.format(indir[0],indir[1],in_proj_dir)
