@@ -64,7 +64,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         if swiFFC:  # we still need need flat correction #Inpaint No
             cmds.append("echo \" - Phase retrieval with flat-correction\"")
             if args.sinFFC:
-                cmds.append(Tofu.get_pr_sinFFC_cmd(ctset, args, nviews, WH[0]))
+                cmds.append(Tofu.get_sinFFC_cmd(ctset, args, nviews, WH[0]))
             cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH))
         else: #Inpaint Yes
             cmds.append("echo \" - Phase retrieval from flat-corrected projections\"")
@@ -79,8 +79,14 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     if args.RR:
         # Generate sinograms first
         if swiFFC:  # we still need to do flat-field correction
-            cmds.append("echo \" - Make sinograms with flat-correction\"")
-            cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.tmpdir, args, nviews, WH))
+            if args.sinFFC:
+                # Create flat corrected images using sinFFC
+                cmds.append(Tofu.get_sinFFC_cmd(ctset, args, nviews, WH[0]))
+                # Feed the flat corrected images to sinogram generation
+                cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
+            elif not args.sinFFC:
+                cmds.append("echo \" - Make sinograms with flat-correction\"")
+                cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.tmpdir, args, nviews, WH))
         else:  # we do not need flat-field correction
             cmds.append("echo \" - Make sinograms without flat-correction\"")
             cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
