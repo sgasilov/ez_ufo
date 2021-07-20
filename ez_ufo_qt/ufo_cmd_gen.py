@@ -156,7 +156,8 @@ class ufo_cmds(object):
             cmd = 'bmit_sin --fix-nan'
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             cmd += ' --projections {}'.format(in_proj_dir)
-            cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+            #cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+            cmd += ' --output {}'.format(out_pattern)
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
             # Add options for eigen-pco-repetitions etc.
