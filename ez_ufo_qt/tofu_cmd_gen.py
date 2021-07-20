@@ -144,7 +144,7 @@ class tofu_cmds(object):
             cmd += ' --number {}'.format(int(args.yheight/args.ystep))#(np.ceil(args.yheight/args.ystep))
         return cmd
 
-    def get_pr_sinFFC_cmd(self, ctset, args, nviews, n):
+    def get_sinFFC_cmd(self, ctset, args, nviews, n):
         indir = self.make_inpaths(ctset[0], ctset[1])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         cmd = 'bmit_sin --fix-nan'
@@ -177,8 +177,8 @@ class tofu_cmds(object):
             cmd += ' --energy {} --propagation-distance {}' \
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
                 .format(args.energy, args.z, args.pixel, args.log10db)
-            cmd += ' --retrieval-padded-width {}'.format(WH[0])
-            cmd += ' --retrieval-padded-height {}'.format(WH[1])
+            #cmd += ' --retrieval-padded-width {}'.format(WH[0])
+            #cmd += ' --retrieval-padded-height {}'.format(WH[1])
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(out_pattern)
             return cmd
