@@ -168,7 +168,7 @@ class tofu_cmds(object):
         # indir will format paths to flats darks and tomo2 correctly even if they were
         # pre-processed, however path to the input directory with projections
         # cannot be formatted with that command correctly
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        #indir = self.make_inpaths(ctset[0], ctset[1])
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         # Phase retrieval
