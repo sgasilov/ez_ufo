@@ -172,7 +172,7 @@ class tofu_cmds(object):
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         # Phase retrieval
-        cmd = 'tofu retrieve-phase --delta 1e-6'
+        cmd = 'tofu preprocess --delta 1e-6'
         cmd += ' --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
             .format(args.energy, args.z, args.pixel, args.log10db)
