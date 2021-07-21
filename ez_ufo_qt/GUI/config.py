@@ -367,8 +367,8 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
                             parameters.params['e_a0'],
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
-                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC']),\
-                            parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns']
+                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
+                            parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'] )
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
