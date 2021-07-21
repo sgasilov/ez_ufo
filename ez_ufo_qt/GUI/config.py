@@ -482,7 +482,14 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_dy']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
-        #TODO: ADD Validation for sinFFC arguments
+        if int(parameters.params['sinFFCEigenReps']) < 0:
+            raise InvalidInputError("Value out of range for: Flat Field Correction: Eigen PCO Repetitions")
+
+        if int(parameters.params['sinFFCEigenDowns']) < 0:
+            raise InvalidInputError("Value out of range for: Flat Field Correction: Eigen PCO Downsample")
+
+        if int(parameters.params['sinFFCDowns']) < 0:
+            raise InvalidInputError("Value out of range for: Flat Field Correction: Downsample")
 
         # Can be negative value
         # Optional: rotate volume: e_a0
