@@ -618,7 +618,7 @@ class tk_args():
         setattr(self, 'sinFFCEigenReps', self.args['sinFFCEigenReps'])
         self.args['sinFFCEigenDowns'] = int(e_sinFFCEigenDowns)
         setattr(self, 'sinFFCEigenDowns', self.args['sinFFCEigenDowns'])
-        self.args['sinFFCDowns'] = int(e_sinFFCEigenDowns)
+        self.args['sinFFCDowns'] = int(e_sinFFCDowns)
         setattr(self, 'sinFFCDowns', self.args['sinFFCDowns'])
 
         logging.debug("Contents of arg dict: ")
