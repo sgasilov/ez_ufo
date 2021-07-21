@@ -127,7 +127,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     if args.sinFFC and swiFFC:
         cmds.append(Tofu.get_sinFFC_cmd(ctset, args, nviews, WH[0]))
         cmds.append(Tofu.get_reco_cmd_sinFFC(ctset, out_pattern, ax, args, nviews, WH, swiFFC, swiPR))
-    else:
+    else: #If not using sinFFC
         cmds.append(Tofu.get_reco_cmd(ctset, out_pattern, ax, args, nviews, WH, swiFFC, swiPR))
 
     return nviews, WH
