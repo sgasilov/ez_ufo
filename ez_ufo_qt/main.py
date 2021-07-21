@@ -83,7 +83,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         if swiFFC:  # we still need to do flat-field correction
             if args.sinFFC:
                 # Create flat corrected images using sinFFC
-                cmds.append(Tofu.get_pr_sinFFC_cmd(ctset, args, nviews, WH[0]))
+                cmds.append(Tofu.get_sinFFC_cmd(ctset, args, nviews, WH[0]))
                 # Feed the flat corrected images to sino gram generation
                 cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
             elif not args.sinFFC:
