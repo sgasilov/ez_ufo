@@ -482,6 +482,8 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_dy']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
+        #TODO: ADD Validation for sinFFC arguments
+
         # Can be negative value
         # Optional: rotate volume: e_a0
         #if float(parameters.params['e_a0']) < 0:
@@ -613,6 +615,7 @@ class tk_args():
         self.args['keep_tmp']=bool(e_keep_tmp)
         setattr(self,'keep_tmp',self.args['keep_tmp'])
         self.args['sinFFC']=bool(e_sinFFC)
+        #sinFFC settings
         setattr(self,'sinFFC', self.args['sinFFC'])
         self.args['sinFFCEigenReps']=int(e_sinFFCEigenReps)
         setattr(self, 'sinFFCEigenReps', self.args['sinFFCEigenReps'])
