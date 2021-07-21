@@ -323,7 +323,7 @@ class ConfigGroup(QGroupBox):
         logging.debug("DRY")
         parameters.params['e_dryrun'] = str(True)
         self.reco_button_pressed()
-        parameters.params['e_dryrun'] = str(False)
+        parameters.params['e_dryrun'] = bool(False)
 
     def set_save_args(self):
         logging.debug("Save args: " + str(self.save_args_checkbox.isChecked()))
@@ -367,7 +367,8 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
                             parameters.params['e_a0'],
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
-                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'])
+                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC']),\
+                            parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns']
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
@@ -506,7 +507,8 @@ class tk_args():
                 e_pre, e_pre_cmd, \
                 e_a0, \
                 e_crop, e_x0, e_dx, e_y0, e_dy, \
-                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC):
+                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFCEigenReps,
+                e_sinFFCEigenDowns, e_sinFFCDowns):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -612,6 +614,12 @@ class tk_args():
         setattr(self,'keep_tmp',self.args['keep_tmp'])
         self.args['sinFFC']=bool(e_sinFFC)
         setattr(self,'sinFFC', self.args['sinFFC'])
+        self.args['sinFFCEigenReps']=int(e_sinFFCEigenReps)
+        setattr(self, 'sinFFCEigenReps', self.args['sinFFCEigenReps'])
+        self.args['sinFFCEigenDowns'] = int(e_sinFFCEigenDowns)
+        setattr(self, 'sinFFCEigenDowns', self.args['sinFFCEigenDowns'])
+        self.args['sinFFCDowns'] = int(e_sinFFCEigenDowns)
+        setattr(self, 'sinFFCDowns', self.args['sinFFCDowns'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())

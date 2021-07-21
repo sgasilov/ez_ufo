@@ -152,6 +152,9 @@ class tofu_cmds(object):
         if ctset[1] == 4:
             cmd += ' --flats2 {}'.format(indir[3])
         cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+        cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
+        cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
+        cmd += ' --downsample {}'.format(args.sinFFCDowns)
         return cmd
 
     def get_pr_sinFFC_cmd(self, ctset, args, nviews, n):
@@ -162,6 +165,9 @@ class tofu_cmds(object):
         if ctset[1] == 4:
             cmd += ' --flats2 {}'.format(indir[3])
         cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+        #cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
+        #cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
+        #cmd += ' --downsample {}'.format(args.sinFFCDowns)
         return cmd
 
     def get_pr_tofu_cmd_sinFFC(self, ctset, args, nviews, WH):

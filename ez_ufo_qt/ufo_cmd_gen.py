@@ -161,6 +161,9 @@ class ufo_cmds(object):
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
             # Add options for eigen-pco-repetitions etc.
+            cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
+            cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
+            cmd += ' --downsample {}'.format(args.sinFFCDowns)
 
             #if not args.PR:
             #    cmd += ' --absorptivity'
