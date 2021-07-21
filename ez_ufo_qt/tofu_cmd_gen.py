@@ -173,7 +173,7 @@ class tofu_cmds(object):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         # Phase retrieval
         cmd = 'tofu preprocess --delta 1e-6'
-        cmd += ' --energy {} --propagation-distance {}' \
+        cmd += ' --disable-projection-crop --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
             .format(args.energy, args.z, args.pixel, args.log10db)
         #cmd += ' --width {}'.format(WH[0])
@@ -219,6 +219,58 @@ class tofu_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             if not PR:
                 cmd += ' --absorptivity'
+        if PR:
+            cmd += ' --disable-projection-crop --delta 1e-6'\
+                   ' --energy {} --propagation-distance {}'\
+                   ' --pixel-size {} --regularization-rate {:0.2f}'\
+                   .format(args.energy, args.z, args.pixel, args.log10db)
+        cmd += ' --center-position-x {}'.format(ax)
+        #if args.nviews==0:
+        cmd += ' --number {}'.format(nviews)
+        #elif args.nviews>0:
+        #    cmd += ' --number {}'.format(args.nviews)
+        cmd += ' --volume-angle-z {:0.5f}'.format(args.a0)
+        # rows-slices to be reconstructed
+        # full ROI
+        b = int(np.ceil(WH[0]/2.0))
+        a = -int(WH[0]/2.0)
+        c = 1
+        if args.vcrop:
+            if args.RR:
+                h2 = args.yheight/args.ystep/2.0
+                b = np.ceil(h2)
+                a = -int(h2)
+            else:
+                h2 = int(WH[0]/2.0)
+                a = args.y - h2
+                b = args.y+args.yheight - h2
+                c = args.ystep
+        cmd += ' --region={},{},{}'.format(a,b,c)
+        # crop of reconstructed slice in the axial plane
+        b = WH[1]/2
+        if args.crop:
+            cmd += ' --x-region={},{},{}'.format(args.x0-b,args.x0+args.dx-b,1)
+            cmd += ' --y-region={},{},{}'.format(args.y0-b,args.y0+args.dy-b,1)
+        #cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
+        cmd = self.check_bigtif(cmd, args.bigtif_sli)
+        cmd += ' --slice-memory-coeff=0.5'
+        return cmd
+
+
+    def get_reco_cmd_sinFFC(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
+        #direct CT reconstruction from input dir to output dir;
+        #or CT reconstruction after preprocessing only
+        indir = self.make_inpaths(ctset[0], ctset[1])
+        #correct location of proj folder in case if prepro was done
+        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
+        #in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
+        #indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
+        #format command
+        cmd = 'tofu reco --overall-angle 180'
+        #cmd += '  --projections {}'.format(indir[2])
+        cmd += '  --projections {}'.format(in_proj_dir)
+        cmd += ' --output {}'.format(out_pattern)
         if PR:
             cmd += ' --disable-projection-crop --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\
