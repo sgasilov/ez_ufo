@@ -627,7 +627,6 @@ class tk_args():
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
 
-
 class InvalidInputError(Exception):
     """
     Error to be raised when input values from GUI are out of range or invalid
