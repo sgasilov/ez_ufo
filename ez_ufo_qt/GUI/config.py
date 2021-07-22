@@ -2,7 +2,7 @@ import os
 import logging
 import numpy as np
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QCheckBox, QPushButton, QGridLayout, QLabel, QGroupBox, QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QCheckBox, QPushButton, QGridLayout, QLabel, QGroupBox, QLineEdit, QHBoxLayout
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import pyqtSignal
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
@@ -72,6 +72,13 @@ class ConfigGroup(QGroupBox):
         self.tomo_entry.textChanged.connect(self.set_tomo)
         self.flats2_entry = QLineEdit()
         self.flats2_entry.textChanged.connect(self.set_flats2)
+
+        #Select flats/darks/flats2 for use in multiple reconstructions
+        self.use_common_flats_darks_checkbox = QCheckBox()
+        self.use_common_flats_darks_checkbox.setText("Use same flats/darks across multiple experiments")
+        self.darks_absolute_entry = QLineEdit()
+        self.flats_absolute_entry = QLineEdit()
+        self.flats2_absolute_entry = QLineEdit()
 
         #Select temporary directory
         self.temp_dir_select = QPushButton()
@@ -151,16 +158,23 @@ class ConfigGroup(QGroupBox):
         layout.addWidget(self.flats_entry, 3, 2)
         layout.addWidget(self.tomo_entry, 3, 3)
         layout.addWidget(self.flats2_entry, 3, 4)
-        layout.addWidget(self.temp_dir_select, 4, 0)
-        layout.addWidget(self.temp_dir_entry, 4, 1, 1, 3)
-        layout.addWidget(self.keep_tmp_data_checkbox, 4, 4)
-        layout.addWidget(self.open_settings_file, 5, 0, 1, 3)
-        layout.addWidget(self.save_settings_file, 5, 3, 1, 3)
-        layout.addWidget(self.quit_button, 6, 0)
-        layout.addWidget(self.help_button, 6, 1)
-        layout.addWidget(self.delete_reco_dir_button, 6, 2)
-        layout.addWidget(self.dry_run_button, 6, 3)
-        layout.addWidget(self.reco_button, 6, 4)
+        #layout.addWidget(self.use_common_flats_darks_checkbox, 4, 0)
+        layout.addWidget(self.use_common_flats_darks_checkbox, 4, 0)
+        vbox = QHBoxLayout()
+        vbox.addWidget(self.flats_absolute_entry)
+        vbox.addWidget(self.darks_absolute_entry)
+        vbox.addWidget(self.flats2_absolute_entry)
+        layout.addItem(vbox, 4, 1, 1, 5)
+        layout.addWidget(self.temp_dir_select, 5, 0)
+        layout.addWidget(self.temp_dir_entry, 5, 1, 1, 3)
+        layout.addWidget(self.keep_tmp_data_checkbox, 5, 4)
+        layout.addWidget(self.open_settings_file, 6, 0, 1, 3)
+        layout.addWidget(self.save_settings_file, 6, 3, 1, 3)
+        layout.addWidget(self.quit_button, 7, 0)
+        layout.addWidget(self.help_button, 7, 1)
+        layout.addWidget(self.delete_reco_dir_button, 7, 2)
+        layout.addWidget(self.dry_run_button, 7, 3)
+        layout.addWidget(self.reco_button, 7, 4)
 
         self.setLayout(layout)
 
@@ -505,17 +519,17 @@ class ConfigGroup(QGroupBox):
         return DIRTYP
 
 class tk_args():
-    def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif, \
-                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, e_axis_bypass,\
-                e_inp, e_inp_thr, e_inp_sig, \
-                e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par, \
+    def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif,
+                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, e_axis_bypass,
+                e_inp, e_inp_thr, e_inp_sig,
+                e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par,
                 e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
-                e_PR, e_energy, e_pixel, e_z, e_log10db,\
-                e_vcrop, e_y, e_yheight, e_ystep,\
-                e_gray256, e_bit, e_hmin, e_hmax, \
-                e_pre, e_pre_cmd, \
-                e_a0, \
-                e_crop, e_x0, e_dx, e_y0, e_dy, \
+                e_PR, e_energy, e_pixel, e_z, e_log10db,
+                e_vcrop, e_y, e_yheight, e_ystep,
+                e_gray256, e_bit, e_hmin, e_hmax,
+                e_pre, e_pre_cmd,
+                e_a0,
+                e_crop, e_x0, e_dx, e_y0, e_dy,
                 e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFCEigenReps,
                 e_sinFFCEigenDowns, e_sinFFCDowns):
         self.args={}
