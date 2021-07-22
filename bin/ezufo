@@ -1,9 +1,26 @@
 #!/usr/bin/env python3
 
 import sys
+import logging
+import argparse
 from PyQt5 import QtWidgets as qtw
 from ez_ufo_qt.GUI import ezufo_launcher
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--debug', help="Enable detailed debug statements to be printed to console")
+args = parser.parse_args()
+
+# Setup logging for debugging
+logger = logging.getLogger()
+fhandler = logging.FileHandler(filename='mylog.log', mode='w')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fhandler.setFormatter(formatter)
+logger.addHandler(fhandler)
+
+if args.debug:
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.WARNING)
 app = qtw.QApplication(sys.argv)
 window = ezufo_launcher.GUI()
 sys.exit(app.exec_())

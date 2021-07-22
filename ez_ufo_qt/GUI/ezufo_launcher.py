@@ -1,5 +1,6 @@
 import logging
 import os
+import argparse
 from PyQt5 import QtWidgets as qtw
 
 from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
@@ -28,14 +29,6 @@ class GUI(qtw.QWidget):
         self.setWindowTitle('EZ-UFO GUI')
 
         self.setStyleSheet("font: 10pt; font-family: Arial")
-
-        # Setup logging for debugging
-        logger = logging.getLogger()
-        fhandler = logging.FileHandler(filename='mylog.log', mode='w')
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fhandler.setFormatter(formatter)
-        logger.addHandler(fhandler)
-        logger.setLevel(logging.DEBUG)
 
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
