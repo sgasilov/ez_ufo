@@ -16,6 +16,7 @@ head, tail = os.path.split(os.path.dirname(__file__))
 # Setup logging for debugging
 logger = logging.getLogger()
 logger_path = os.path.join(head, 'mylog.log')
+print("Logging file stored at: " + logger_path)
 fhandler = logging.FileHandler(filename='mylog.log', mode='w')
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fhandler.setFormatter(formatter)
