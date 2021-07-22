@@ -76,11 +76,18 @@ class ConfigGroup(QGroupBox):
         #Select flats/darks/flats2 for use in multiple reconstructions
         self.use_common_flats_darks_checkbox = QCheckBox()
         self.use_common_flats_darks_checkbox.setText("Use same flats/darks across multiple experiments")
+        self.use_common_flats_darks_checkbox.stateChanged.connect(self.set_flats_darks_checkbox)
+
         self.darks_absolute_entry = QLineEdit()
         self.darks_absolute_entry.setText("Absolute path to darks")
+        self.darks_absolute_entry.textChanged.connect(self.set_common_darks)
+
         self.flats_absolute_entry = QLineEdit()
         self.flats_absolute_entry.setText("Absolute path to flats")
+        self.flats_absolute_entry.textChanged.connect(self.set_common_flats)
+
         self.flats2_absolute_entry = QLineEdit()
+        self.flats2_absolute_entry.textChanged.connect(self.set_commond_flats2)
         self.flats2_absolute_entry.setText("Absolute path to flats2")
 
         #Select temporary directory
@@ -214,10 +221,10 @@ class ConfigGroup(QGroupBox):
         self.bigtiff_checkbox.setChecked(parameters.params['e_bigtif'])
         self.preproc_checkbox.setChecked(parameters.params['e_pre'])
         self.preproc_entry.setText(parameters.params['e_pre_cmd'])
-        self.darks_entry.setText(parameters.params['e_darks']) #***** SAVE THESE TO YAML AS WELL
-        self.flats_entry.setText(parameters.params['e_flats']) #****
-        self.tomo_entry.setText(parameters.params['e_tomo']) #*****
-        self.flats2_entry.setText(parameters.params['e_flats2']) #*****
+        self.darks_entry.setText(parameters.params['e_darks'])
+        self.flats_entry.setText(parameters.params['e_flats'])
+        self.tomo_entry.setText(parameters.params['e_tomo'])
+        self.flats2_entry.setText(parameters.params['e_flats2'])
         self.temp_dir_entry.setText(parameters.params['e_tmpdir'])
         self.keep_tmp_data_checkbox.setChecked(parameters.params['e_keep_tmp'])
         self.dry_run_button.setChecked(parameters.params['e_dryrun'])
@@ -257,6 +264,10 @@ class ConfigGroup(QGroupBox):
         logging.debug(self.preproc_entry.text())
         parameters.params['e_pre_cmd'] = str(self.preproc_entry.text())
 
+    def set_open_image_after_reco(self):
+        logging.debug("Switch to Image Viewer After Reco: " + str(self.open_image_after_reco_checkbox.isChecked()))
+        parameters.params['e_openIV'] = bool(self.open_image_after_reco_checkbox.isChecked())
+
     def set_darks(self):
         logging.debug(self.darks_entry.text())
         self.e_DIRTYP[0] = str(self.darks_entry.text())
@@ -277,10 +288,24 @@ class ConfigGroup(QGroupBox):
         self.e_DIRTYP[3] = str(self.flats2_entry.text())
         parameters.params['e_flats2'] = str(self.flats2_entry.text())
 
+    def set_flats_darks_checkbox(self):
+        logging.debug("Use same flats/darks across multiple experiments: "
+                      + str(self.use_common_flats_darks_checkbox.isChecked()))
+        parameters.params['e_common_darks_flats'] = bool(self.use_common_flats_darks_checkbox.isChecked())
+
+    def set_common_darks(self):
+        logging.debug("Common darks path: " + str(self.darks_absolute_entry.text()))
+
+    def set_common_flats(self):
+        logging.debug("Common flats path: " + str(self.flats_absolute_entry.text()))
+
+    def set_commond_flats2(self):
+        logging.debug("Common flats2 path: " + str(self.flats2_absolute_entry.text()))
+
     def select_temp_dir(self):
         dir_explore = QFileDialog(self)
-        dir = dir_explore.getExistingDirectory()
-        self.temp_dir_entry.setText(dir)
+        tmp_dir = dir_explore.getExistingDirectory()
+        self.temp_dir_entry.setText(tmp_dir)
 
     def set_temp_dir(self):
         logging.debug(str(self.temp_dir_entry.text()))
@@ -388,7 +413,8 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_a0'],
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
                             parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
-                            parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'] )
+                            parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
+                            parameters.params['e_common_darks_flats'])
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
@@ -398,10 +424,6 @@ class ConfigGroup(QGroupBox):
             err_arg = err.args
             msg += err.args[0]
             QMessageBox.information(self, "Invalid Input Error", msg)
-
-    def set_open_image_after_reco(self):
-        logging.debug("Switch to Image Viewer After Reco: " + str(self.open_image_after_reco_checkbox.isChecked()))
-        parameters.params['e_openIV'] = bool(self.open_image_after_reco_checkbox.isChecked())
 
     # NEED TO DETERMINE VALID RANGES
     # ALSO CHECK TYPES SOMEHOW
@@ -537,7 +559,7 @@ class tk_args():
                 e_a0,
                 e_crop, e_x0, e_dx, e_y0, e_dy,
                 e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFCEigenReps,
-                e_sinFFCEigenDowns, e_sinFFCDowns):
+                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -641,8 +663,8 @@ class tk_args():
         setattr(self,'parfile',self.args['parfile'])
         self.args['keep_tmp']=bool(e_keep_tmp)
         setattr(self,'keep_tmp',self.args['keep_tmp'])
-        self.args['sinFFC']=bool(e_sinFFC)
         #sinFFC settings
+        self.args['sinFFC']=bool(e_sinFFC)
         setattr(self,'sinFFC', self.args['sinFFC'])
         self.args['sinFFCEigenReps']=int(e_sinFFCEigenReps)
         setattr(self, 'sinFFCEigenReps', self.args['sinFFCEigenReps'])
@@ -650,6 +672,8 @@ class tk_args():
         setattr(self, 'sinFFCEigenDowns', self.args['sinFFCEigenDowns'])
         self.args['sinFFCDowns'] = int(e_sinFFCDowns)
         setattr(self, 'sinFFCDowns', self.args['sinFFCDowns'])
+        self.args['common_darks_flats'] = bool(e_common_darks_flats)
+        setattr(self, 'common_darks_flats', self.args['e_common_darks_flats'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
