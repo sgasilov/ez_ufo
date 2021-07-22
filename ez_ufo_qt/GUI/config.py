@@ -77,8 +77,11 @@ class ConfigGroup(QGroupBox):
         self.use_common_flats_darks_checkbox = QCheckBox()
         self.use_common_flats_darks_checkbox.setText("Use same flats/darks across multiple experiments")
         self.darks_absolute_entry = QLineEdit()
+        self.darks_absolute_entry.setText("Absolute path to darks")
         self.flats_absolute_entry = QLineEdit()
+        self.flats_absolute_entry.setText("Absolute path to flats")
         self.flats2_absolute_entry = QLineEdit()
+        self.flats2_absolute_entry.setText("Absolute path to flats2")
 
         #Select temporary directory
         self.temp_dir_select = QPushButton()
@@ -156,15 +159,18 @@ class ConfigGroup(QGroupBox):
         layout.addWidget(self.dir_name_label, 3, 0)
         layout.addWidget(self.darks_entry, 3, 1)
         layout.addWidget(self.flats_entry, 3, 2)
-        layout.addWidget(self.tomo_entry, 3, 3)
-        layout.addWidget(self.flats2_entry, 3, 4)
+        layout.addWidget(self.flats2_entry, 3, 3)
+        layout.addWidget(self.tomo_entry, 3, 4)
         #layout.addWidget(self.use_common_flats_darks_checkbox, 4, 0)
         layout.addWidget(self.use_common_flats_darks_checkbox, 4, 0)
-        vbox = QHBoxLayout()
-        vbox.addWidget(self.flats_absolute_entry)
-        vbox.addWidget(self.darks_absolute_entry)
-        vbox.addWidget(self.flats2_absolute_entry)
-        layout.addItem(vbox, 4, 1, 1, 5)
+        layout.addWidget(self.darks_absolute_entry, 4, 1)
+        layout.addWidget(self.flats_absolute_entry, 4, 2)
+        layout.addWidget(self.flats2_absolute_entry, 4, 3)
+        #vbox = QHBoxLayout()
+        #vbox.addWidget(self.flats_absolute_entry)
+        #vbox.addWidget(self.darks_absolute_entry)
+        #vbox.addWidget(self.flats2_absolute_entry)
+        #layout.addItem(vbox, 4, 1, 1, 5)
         layout.addWidget(self.temp_dir_select, 5, 0)
         layout.addWidget(self.temp_dir_entry, 5, 1, 1, 3)
         layout.addWidget(self.keep_tmp_data_checkbox, 5, 4)
@@ -496,13 +502,13 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_dy']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
-        if int(parameters.params['sinFFCEigenReps']) < 0:
+        if int(parameters.params['e_sinFFCEigenReps']) < 0:
             raise InvalidInputError("Value out of range for: Flat Field Correction: Eigen PCO Repetitions")
 
-        if int(parameters.params['sinFFCEigenDowns']) < 0:
+        if int(parameters.params['e_sinFFCEigenDowns']) < 0:
             raise InvalidInputError("Value out of range for: Flat Field Correction: Eigen PCO Downsample")
 
-        if int(parameters.params['sinFFCDowns']) < 0:
+        if int(parameters.params['e_sinFFCDowns']) < 0:
             raise InvalidInputError("Value out of range for: Flat Field Correction: Downsample")
 
         # Can be negative value
