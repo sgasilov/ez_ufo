@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 # Save logging file in the directory above the executable
 head, tail = os.path.split(os.path.dirname(__file__))
-head, tail = os.path.split(os.path.dirname(head))
+head, tail = os.path.split(head)
 # Setup logging for debugging
 logger = logging.getLogger()
 logger_path = os.path.join(head, 'mylog.log')
