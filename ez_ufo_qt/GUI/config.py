@@ -87,7 +87,7 @@ class ConfigGroup(QGroupBox):
         self.flats_absolute_entry.textChanged.connect(self.set_common_flats)
 
         self.flats2_absolute_entry = QLineEdit()
-        self.flats2_absolute_entry.textChanged.connect(self.set_commond_flats2)
+        self.flats2_absolute_entry.textChanged.connect(self.set_common_flats2)
         self.flats2_absolute_entry.setText("Absolute path to flats2")
 
         #Select temporary directory
@@ -304,7 +304,7 @@ class ConfigGroup(QGroupBox):
         logging.debug("Common flats path: " + str(self.flats_absolute_entry.text()))
         parameters.params['e_common_flats'] = str(self.darks_absolute_entry.text())
 
-    def set_commond_flats2(self):
+    def set_common_flats2(self):
         logging.debug("Common flats2 path: " + str(self.flats2_absolute_entry.text()))
         parameters.params['e_common_flats2'] = str(self.flats2_absolute_entry.text())
 
@@ -420,7 +420,7 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
                             parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
                             parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
-                            parameters.params['e_common_darks_flats'], parameters.params['e_commond_darks'],
+                            parameters.params['e_common_darks_flats'], parameters.params['e_common_darks'],
                             parameters.params['e_common_flats'], parameters.params['e_common_flats2'])
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."

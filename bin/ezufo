@@ -23,14 +23,14 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 fhandler.setFormatter(formatter)
 logger.addHandler(fhandler)
 
-#logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.DEBUG)
 #TODO: FIX THIS IN RELEASE
-
+'''
 if args.debug:
     logger.setLevel(logging.DEBUG)
 else:
     logger.setLevel(logging.WARNING)
-
+'''
 app = qtw.QApplication(sys.argv)
 window = ezufo_launcher.GUI()
 sys.exit(app.exec_())
