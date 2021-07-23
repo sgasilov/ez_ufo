@@ -54,4 +54,8 @@ e_sinFFCEigenReps: 9
 e_sinFFCEigenDowns: 9
 e_sinFFCDowns: 9
 e_openIV: False
+e_common_darks_flats: False
+e_common_darks: "Absolute path to darks - TEST"
+e_common_flats: "Absolute path to flats - TEST"
+e_common_flats2: "Absolute path to flats2 - TEST"
 ...

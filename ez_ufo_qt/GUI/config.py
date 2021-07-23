@@ -229,6 +229,9 @@ class ConfigGroup(QGroupBox):
         self.keep_tmp_data_checkbox.setChecked(parameters.params['e_keep_tmp'])
         self.dry_run_button.setChecked(parameters.params['e_dryrun'])
         self.open_image_after_reco_checkbox.setChecked(parameters.params['e_openIV'])
+        self.darks_absolute_entry.setText(parameters.params['e_common_darks'])
+        self.flats_absolute_entry.setText(parameters.params['e_common_flats'])
+        self.flats2_absolute_entry.setText(parameters.params['e_common_flats2'])
 
     def select_input_dir(self):
         dir_explore = QFileDialog(self)
@@ -295,12 +298,15 @@ class ConfigGroup(QGroupBox):
 
     def set_common_darks(self):
         logging.debug("Common darks path: " + str(self.darks_absolute_entry.text()))
+        parameters.params['e_common_darks'] = str(self.darks_absolute_entry.text())
 
     def set_common_flats(self):
         logging.debug("Common flats path: " + str(self.flats_absolute_entry.text()))
+        parameters.params['e_common_flats'] = str(self.darks_absolute_entry.text())
 
     def set_commond_flats2(self):
         logging.debug("Common flats2 path: " + str(self.flats2_absolute_entry.text()))
+        parameters.params['e_common_flats2'] = str(self.flats2_absolute_entry.text())
 
     def select_temp_dir(self):
         dir_explore = QFileDialog(self)
@@ -414,7 +420,8 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
                             parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
                             parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
-                            parameters.params['e_common_darks_flats'])
+                            parameters.params['e_common_darks_flats'], parameters.params['e_commond_darks'],
+                            parameters.params['e_common_flats'], parameters.params['e_common_flats2'])
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
@@ -559,7 +566,8 @@ class tk_args():
                 e_a0,
                 e_crop, e_x0, e_dx, e_y0, e_dy,
                 e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFCEigenReps,
-                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats):
+                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats,
+                e_common_darks, e_common_flats, e_common_flats2):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -672,8 +680,15 @@ class tk_args():
         setattr(self, 'sinFFCEigenDowns', self.args['sinFFCEigenDowns'])
         self.args['sinFFCDowns'] = int(e_sinFFCDowns)
         setattr(self, 'sinFFCDowns', self.args['sinFFCDowns'])
+        #Settings for using flats/darks across multiple experiments
         self.args['common_darks_flats'] = bool(e_common_darks_flats)
         setattr(self, 'common_darks_flats', self.args['e_common_darks_flats'])
+        self.args['common_darks'] = str('e_common_darks')
+        setattr(self, 'common_darks', self.args['e_common_darks'])
+        self.args['common_flats'] = str('e_common_flats')
+        setattr(self, 'common_flats', self.args['e_common_flats'])
+        self.args['common_flats2'] = str('e_common_flats2')
+        setattr(self, 'common_flats2', self.args['e_common_flats2'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
