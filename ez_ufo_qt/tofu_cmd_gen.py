@@ -181,7 +181,7 @@ class tofu_cmds(object):
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         # Phase retrieval
         cmd = 'tofu preprocess --delta 1e-6'
-        cmd += ' --disable-projection-crop --energy {} --propagation-distance {}' \
+        cmd += ' --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
             .format(args.energy, args.z, args.pixel, args.log10db)
         #cmd += ' --width {}'.format(WH[0])
@@ -229,7 +229,7 @@ class tofu_cmds(object):
             if not PR:
                 cmd += ' --absorptivity'
         if PR:
-            cmd += ' --disable-projection-crop --delta 1e-6'\
+            cmd += ' --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\
                    ' --pixel-size {} --regularization-rate {:0.2f}'\
                    .format(args.energy, args.z, args.pixel, args.log10db)
@@ -281,7 +281,7 @@ class tofu_cmds(object):
         cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if PR:
-            cmd += ' --disable-projection-crop --delta 1e-6'\
+            cmd += ' --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\
                    ' --pixel-size {} --regularization-rate {:0.2f}'\
                    .format(args.energy, args.z, args.pixel, args.log10db)
