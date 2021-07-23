@@ -183,7 +183,7 @@ class tofu_cmds(object):
             if not PR:
                 cmd += ' --absorptivity'
         if PR:
-            cmd += ' --disable-projection-crop --delta 1e-6'\
+            cmd += ' --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\
                    ' --pixel-size {} --regularization-rate {:0.2f}'\
                    .format(args.energy, args.z, args.pixel, args.log10db)
