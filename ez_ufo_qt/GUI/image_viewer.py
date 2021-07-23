@@ -198,6 +198,7 @@ class ImageViewerGroup(QGroupBox):
         Read images (.tif) from directory path into RAM as 3D numpy array
         :param dir_path: Path to directory containing multiple .tiff image files
         """
+        #TODO - ADD PROGRESS BAR
         logging.debug("Open stack from path")
         try:
             tiff_list = (".tif", ".tiff")

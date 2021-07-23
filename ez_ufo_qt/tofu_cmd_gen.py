@@ -164,7 +164,9 @@ class tofu_cmds(object):
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
         if ctset[1] == 4:
             cmd += ' --flats2 {}'.format(indir[3])
-        cmd += ' --output {}'.format(out_pattern)
+        cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+        #cmd += ' --absorptivity'
+        cmd += ' --multiprocessing'
         #cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
         #cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
         #cmd += ' --downsample {}'.format(args.sinFFCDowns)
@@ -184,7 +186,8 @@ class tofu_cmds(object):
             .format(args.energy, args.z, args.pixel, args.log10db)
         #cmd += ' --width {}'.format(WH[0])
         #cmd += ' --height {}'.format(WH[1])
-        cmd += ' --projections {}'.format(os.path.join(in_proj_dir, 'proj-%04i.tif'))
+        cmd += ' --projections {}'.format(in_proj_dir)
+        #cmd += ' --projections {}'.format(os.path.join(in_proj_dir, 'proj-%04i.tif'))
         cmd += ' --output {}'.format(out_pattern)
         return cmd
 
