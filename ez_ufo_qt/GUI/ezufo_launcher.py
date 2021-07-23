@@ -136,6 +136,7 @@ class GUI(qtw.QWidget):
         logging.debug(parameters.params)
         self.centre_of_rotation_group.set_values_from_params()
         self.filters_group.set_values_from_params()
+        self.ffc_group.set_values_from_params()
         self.phase_retrieval_group.set_values_from_params()
         self.binning_group.set_values_from_params()
         self.config_group.set_values_from_params()

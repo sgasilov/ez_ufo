@@ -23,6 +23,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 fhandler.setFormatter(formatter)
 logger.addHandler(fhandler)
 
+#logger.setLevel(logging.DEBUG)
+#TODO: FIX THIS IN RELEASE
 
 if args.debug:
     logger.setLevel(logging.DEBUG)
