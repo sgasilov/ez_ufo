@@ -682,13 +682,14 @@ class tk_args():
         setattr(self, 'sinFFCDowns', self.args['sinFFCDowns'])
         #Settings for using flats/darks across multiple experiments
         self.args['common_darks_flats'] = bool(e_common_darks_flats)
-        setattr(self, 'common_darks_flats', self.args['e_common_darks_flats'])
+        setattr(self, 'common_darks_flats', self.args['common_darks_flats'])
+
         self.args['common_darks'] = str(e_common_darks)
-        setattr(self, 'common_darks', self.args['e_common_darks'])
+        setattr(self, 'common_darks', self.args['common_darks'])
         self.args['common_flats'] = str(e_common_flats)
-        setattr(self, 'common_flats', self.args['e_common_flats'])
+        setattr(self, 'common_flats', self.args['common_flats'])
         self.args['common_flats2'] = str(e_common_flats2)
-        setattr(self, 'common_flats2', self.args['e_common_flats2'])
+        setattr(self, 'common_flats2', self.args['common_flats2'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
