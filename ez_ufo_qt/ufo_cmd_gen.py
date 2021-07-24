@@ -157,6 +157,7 @@ class ufo_cmds(object):
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             cmd += ' --projections {}'.format(in_proj_dir)
             cmd += ' --output {}'.format(os.path.dirname(out_pattern))
+            cmd += ' --multiprocessing'
             #cmd += ' --output {}'.format(out_pattern)
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
@@ -164,6 +165,7 @@ class ufo_cmds(object):
             cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
             cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
             cmd += ' --downsample {}'.format(args.sinFFCDowns)
+
 
             #if not args.PR:
             #    cmd += ' --absorptivity'
