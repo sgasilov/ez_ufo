@@ -189,6 +189,7 @@ class tofu_cmds(object):
         cmd += ' --projections {}'.format(in_proj_dir)
         #cmd += ' --projections {}'.format(os.path.join(in_proj_dir, 'proj-%04i.tif'))
         cmd += ' --output {}'.format(out_pattern)
+        #cmd += ' --projection-crop-after'
         return cmd
 
     def get_pr_tofu_cmd(self, ctset, args, nviews, WH):
@@ -281,7 +282,8 @@ class tofu_cmds(object):
         cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if PR:
-            cmd += ' --delta 1e-6'\
+            cmd += ' --disable-projection-crop'\
+                   ' --delta 1e-6'\
                    ' --energy {} --propagation-distance {}'\
                    ' --pixel-size {} --regularization-rate {:0.2f}'\
                    .format(args.energy, args.z, args.pixel, args.log10db)
