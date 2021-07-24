@@ -155,6 +155,7 @@ class tofu_cmds(object):
         cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
         cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
         cmd += ' --downsample {}'.format(args.sinFFCDowns)
+        cmd += ' --multiprocessing'
         return cmd
 
     def get_pr_sinFFC_cmd(self, ctset, args, nviews, n):
