@@ -186,7 +186,7 @@ class tofu_cmds(object):
             .format(args.energy, args.z, args.pixel, args.log10db)
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
-        cmd += ' --projection-crop-after'
+        cmd += ' --projection-crop-after filter'
         return cmd
 
     def get_pr_tofu_cmd(self, ctset, args, nviews, WH):
