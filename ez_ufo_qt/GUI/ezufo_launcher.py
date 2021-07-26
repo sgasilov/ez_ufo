@@ -1,6 +1,5 @@
 import logging
 import os
-import argparse
 from PyQt5 import QtWidgets as qtw
 
 from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
@@ -44,6 +43,7 @@ class GUI(qtw.QWidget):
         self.filters_group.init_values()
 
         self.ffc_group = FFCGroup()
+        #self.ffc_group.setEnabled(False)
         self.ffc_group.init_values()
 
         self.phase_retrieval_group = PhaseRetrievalGroup()
