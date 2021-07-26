@@ -12,10 +12,10 @@ from ez_ufo_qt.GUI.config import ConfigGroup
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 from ez_ufo_qt.GUI.image_viewer import ImageViewerGroup
-from ez_ufo_qt.GUI.ez_360_multi_stitch_qt import MultiStitch360Group
-from ez_ufo_qt.GUI.ezmview_qt import EZMView
-from ez_ufo_qt.GUI.eznlmdn_qt import EZnlmdnGroup
-from ez_ufo_qt.GUI.ezstitch_qt import EZStitchGroup
+#from ez_ufo_qt.GUI.ez_360_multi_stitch_qt import MultiStitch360Group
+#from ez_ufo_qt.GUI.ezmview_qt import EZMView
+#from ez_ufo_qt.GUI.eznlmdn_qt import EZnlmdnGroup
+#from ez_ufo_qt.GUI.ezstitch_qt import EZStitchGroup
 
 import ez_ufo_qt.GUI.params as parameters
 
@@ -57,13 +57,13 @@ class GUI(qtw.QWidget):
 
         self.image_group = ImageViewerGroup()
 
-        self.multi_stitch_360_group = MultiStitch360Group()
+        #self.multi_stitch_360_group = MultiStitch360Group()
 
-        self.ezmview_group = EZMView()
+        #self.ezmview_group = EZMView()
 
-        self.eznlmdn_group = EZnlmdnGroup()
+        #self.eznlmdn_group = EZnlmdnGroup()
 
-        self.ezstitch_group = EZStitchGroup()
+        #self.ezstitch_group = EZStitchGroup()
 
         #######################################################
 
@@ -88,7 +88,7 @@ class GUI(qtw.QWidget):
         self.tab1 = qtw.QWidget()
         self.tab2 = qtw.QWidget()
         self.tab3 = qtw.QWidget()
-        self.tab4 = qtw.QWidget()
+        #self.tab4 = qtw.QWidget()
 
         pr_ffc_box = qtw.QVBoxLayout()
         pr_ffc_box.addWidget(self.ffc_group)
@@ -104,17 +104,17 @@ class GUI(qtw.QWidget):
         image_layout = qtw.QGridLayout()
         image_layout.addWidget(self.image_group, 0, 0)
 
-        ez_helpers_layout = qtw.QGridLayout()
-        ez_helpers_layout.addWidget(self.multi_stitch_360_group, 0, 0)
-        ez_helpers_layout.addWidget(self.ezmview_group, 0, 1)
-        ez_helpers_layout.addWidget(self.eznlmdn_group, 1, 0)
-        ez_helpers_layout.addWidget(self.ezstitch_group, 1, 1)
+        #ez_helpers_layout = qtw.QGridLayout()
+        #ez_helpers_layout.addWidget(self.multi_stitch_360_group, 0, 0)
+        #ez_helpers_layout.addWidget(self.ezmview_group, 0, 1)
+        #ez_helpers_layout.addWidget(self.eznlmdn_group, 1, 0)
+        #ez_helpers_layout.addWidget(self.ezstitch_group, 1, 1)
 
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
         self.tabs.addTab(self.tab2, "Image Viewer")
         self.tabs.addTab(self.tab3, "Advanced")
-        self.tabs.addTab(self.tab4, "EZ Helpers")
+        #self.tabs.addTab(self.tab4, "EZ Helpers")
 
         # Create main tab
         self.tab1.layout = main_layout
@@ -124,8 +124,8 @@ class GUI(qtw.QWidget):
         self.tab2.layout = image_layout
         self.tab2.setLayout(self.tab2.layout)
 
-        self.tab4.layout = ez_helpers_layout
-        self.tab4.setLayout(self.tab4.layout)
+        #self.tab4.layout = ez_helpers_layout
+        #self.tab4.setLayout(self.tab4.layout)
 
         # Add tabs to widget
         layout.addWidget(self.tabs)

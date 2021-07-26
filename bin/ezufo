@@ -9,7 +9,6 @@ from ez_ufo_qt.GUI import ezufo_launcher
 
 
 def main():
-    print("Hello")
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', help="Enable detailed debug statements to be printed to console",
                         action="store_true")
