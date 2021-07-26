@@ -153,6 +153,9 @@ class ConfigGroup(QGroupBox):
         self.set_layout()
 
     def set_layout(self):
+        """
+        Sets the layout of buttons, labels, etc. for config group
+        """
         layout = QGridLayout()
 
         layout.addWidget(self.input_dir_select, 0, 0)
@@ -186,6 +189,9 @@ class ConfigGroup(QGroupBox):
         self.setLayout(layout)
 
     def init_values(self):
+        """
+        Sets the initial default values of config group
+        """
         self.indir = os.getcwd()
         self.input_dir_entry.setText(self.indir)
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
@@ -210,6 +216,10 @@ class ConfigGroup(QGroupBox):
         self.open_image_after_reco_checkbox.setChecked(True)
 
     def set_values_from_params(self):
+        """
+        Updates displayed values for config group
+        Called when .yaml file of params is loaded
+        """
         self.input_dir_entry.setText(parameters.params['e_indir'])
         self.output_dir_entry.setText(parameters.params['e_outdir'])
         self.bigtiff_checkbox.setChecked(parameters.params['e_bigtif'])
@@ -228,6 +238,9 @@ class ConfigGroup(QGroupBox):
         self.flats2_absolute_entry.setText(parameters.params['e_common_flats2'])
 
     def select_input_dir(self):
+        """
+        Saves directory specified by user in file-dialog for input tomographic data
+        """
         dir_explore = QFileDialog(self)
         dir = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(dir)
@@ -316,6 +329,9 @@ class ConfigGroup(QGroupBox):
         parameters.params['e_keep_tmp'] = bool(self.keep_tmp_data_checkbox.isChecked())
 
     def quit_button_pressed(self):
+        """
+        Displays confirmation dialog and cleans temporary directories
+        """
         logging.debug("QUIT")
         reply = QMessageBox.question(self, 'Quit', 'Are you sure you want to quit?',
         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -329,6 +345,9 @@ class ConfigGroup(QGroupBox):
             pass
 
     def help_button_pressed(self):
+        """
+        Displays pop-up help information
+        """
         logging.debug("HELP")
         h = "This utility provides an interface to the ufo-kit software package.\n"
         h += "Use it for batch processing and optimization of reconstruction parameters.\n"
@@ -347,6 +366,9 @@ class ConfigGroup(QGroupBox):
         QMessageBox.information(self, "Help", h)
 
     def delete_button_pressed(self):
+        """
+        Deletes the directory that contains reconstructed data
+        """
         logging.debug("DELETE")
         msg = "Delete directory with reconstructed data?"
         dialog = QMessageBox.warning(self, "Warning: data can be lost", msg, QMessageBox.Yes | QMessageBox.No)
@@ -365,6 +387,10 @@ class ConfigGroup(QGroupBox):
             logging.debug("NO")
 
     def dryrun_button_pressed(self):
+        """
+        Sets the dry-run parameter for Tofu to True
+        and calls reconstruction
+        """
         logging.debug("DRY")
         parameters.params['e_dryrun'] = str(True)
         self.reco_button_pressed()
@@ -375,6 +401,10 @@ class ConfigGroup(QGroupBox):
         parameters.params['e_parfile'] = bool(self.save_args_checkbox.isChecked())
 
     def export_settings_button_pressed(self):
+        """
+        Saves currently displayed GUI settings
+        to an external .yaml file specified by user
+        """
         logging.debug("Save settings pressed")
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "YAML Files (*.yaml);; All Files (*)", options=options)
@@ -384,6 +414,10 @@ class ConfigGroup(QGroupBox):
         self.yaml_io.write_yaml(fileName, parameters.params)
 
     def import_settings_button_pressed(self):
+        """
+        Loads external settings from .yaml file specified by user
+        Signal is sent to enable updating of displayed GUI values
+        """
         logging.debug("Import settings pressed")
         options = QFileDialog.Options()
         filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "YAML Files (*.yaml);; All Files (*)", options=options)
@@ -394,6 +428,10 @@ class ConfigGroup(QGroupBox):
             self.signal_update_vals_from_params.emit(parameters.params)
 
     def reco_button_pressed(self):
+        """
+        Gets the settings set by the user in the GUI
+        These are then passed to main_tk
+        """
         logging.debug("RECO")
         logging.debug(parameters.params)
 
@@ -429,6 +467,9 @@ class ConfigGroup(QGroupBox):
     # NEED TO DETERMINE VALID RANGES
     # ALSO CHECK TYPES SOMEHOW
     def validate_input(self):
+        """
+        Determines whether user-input values are valid
+        """
 
         # Search rotation: e_ax_range
 

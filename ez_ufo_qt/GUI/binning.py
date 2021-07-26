@@ -92,6 +92,9 @@ class BinningGroup(QGroupBox):
         self.set_layout()
 
     def set_layout(self):
+        """
+        Sets the layout of buttons, labels, etc. for binning group
+        """
         layout = QGridLayout()
 
         layout.addWidget(self.select_rows_checkbox, 0, 0)

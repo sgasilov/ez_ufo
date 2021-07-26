@@ -9,6 +9,7 @@ from ez_ufo_qt.GUI import ezufo_launcher
 
 
 def main():
+    # Command Line Parsing
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', help="Enable detailed debug statements to be printed to console",
                         action="store_true")
@@ -34,6 +35,7 @@ def main():
     else:
         logger.setLevel(logging.WARNING)
 
+    # Launch PyQT Application
     app = qtw.QApplication(sys.argv)
     window = ezufo_launcher.GUI()
     sys.exit(app.exec_())

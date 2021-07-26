@@ -11,12 +11,8 @@ from ez_ufo_qt.GUI.config import ConfigGroup
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 from ez_ufo_qt.GUI.image_viewer import ImageViewerGroup
-#from ez_ufo_qt.GUI.ez_360_multi_stitch_qt import MultiStitch360Group
-#from ez_ufo_qt.GUI.ezmview_qt import EZMView
-#from ez_ufo_qt.GUI.eznlmdn_qt import EZnlmdnGroup
-#from ez_ufo_qt.GUI.ezstitch_qt import EZStitchGroup
-
 import ez_ufo_qt.GUI.params as parameters
+
 
 class GUI(qtw.QWidget):
     """
@@ -35,6 +31,12 @@ class GUI(qtw.QWidget):
         self.yaml_data = self.yaml_io.read_yaml(settings_path)
         parameters.params = dict(self.yaml_data)
 
+        # Initialize tab screen
+        self.tabs = qtw.QTabWidget()
+        self.tab1 = qtw.QWidget()
+        self.tab2 = qtw.QWidget()
+        self.tab3 = qtw.QWidget()
+
         # Create and setup classes for each section of GUI
         self.centre_of_rotation_group = CentreOfRotationGroup()
         self.centre_of_rotation_group.init_values()
@@ -43,7 +45,6 @@ class GUI(qtw.QWidget):
         self.filters_group.init_values()
 
         self.ffc_group = FFCGroup()
-        #self.ffc_group.setEnabled(False)
         self.ffc_group.init_values()
 
         self.phase_retrieval_group = PhaseRetrievalGroup()
@@ -56,14 +57,6 @@ class GUI(qtw.QWidget):
         self.config_group.init_values()
 
         self.image_group = ImageViewerGroup()
-
-        #self.multi_stitch_360_group = MultiStitch360Group()
-
-        #self.ezmview_group = EZMView()
-
-        #self.eznlmdn_group = EZnlmdnGroup()
-
-        #self.ezstitch_group = EZStitchGroup()
 
         #######################################################
 
@@ -82,13 +75,10 @@ class GUI(qtw.QWidget):
         self.show()
 
     def set_layout(self):
+        """
+        Set the layout of groups/tabs for the overall application layout
+        """
         layout = qtw.QVBoxLayout(self)
-        # Initialize tab screen
-        self.tabs = qtw.QTabWidget()
-        self.tab1 = qtw.QWidget()
-        self.tab2 = qtw.QWidget()
-        self.tab3 = qtw.QWidget()
-        #self.tab4 = qtw.QWidget()
 
         pr_ffc_box = qtw.QVBoxLayout()
         pr_ffc_box.addWidget(self.ffc_group)
@@ -104,17 +94,10 @@ class GUI(qtw.QWidget):
         image_layout = qtw.QGridLayout()
         image_layout.addWidget(self.image_group, 0, 0)
 
-        #ez_helpers_layout = qtw.QGridLayout()
-        #ez_helpers_layout.addWidget(self.multi_stitch_360_group, 0, 0)
-        #ez_helpers_layout.addWidget(self.ezmview_group, 0, 1)
-        #ez_helpers_layout.addWidget(self.eznlmdn_group, 1, 0)
-        #ez_helpers_layout.addWidget(self.ezstitch_group, 1, 1)
-
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
         self.tabs.addTab(self.tab2, "Image Viewer")
         self.tabs.addTab(self.tab3, "Advanced")
-        #self.tabs.addTab(self.tab4, "EZ Helpers")
 
         # Create main tab
         self.tab1.layout = main_layout
@@ -124,14 +107,14 @@ class GUI(qtw.QWidget):
         self.tab2.layout = image_layout
         self.tab2.setLayout(self.tab2.layout)
 
-        #self.tab4.layout = ez_helpers_layout
-        #self.tab4.setLayout(self.tab4.layout)
-
         # Add tabs to widget
         layout.addWidget(self.tabs)
         self.setLayout(layout)
 
     def update_values_from_params(self):
+        """
+        Updates displayed values when loaded in from external .yaml file of parameters
+        """
         logging.debug("Update Values from Params")
         logging.debug(parameters.params)
         self.centre_of_rotation_group.set_values_from_params()
@@ -142,6 +125,11 @@ class GUI(qtw.QWidget):
         self.config_group.set_values_from_params()
 
     def switch_to_image_tab(self):
+        """
+        Function is called after reconstruction
+        when checkbox "Load images and open viewer after reconstruction" is enabled
+        Automatically loads images from the output reconstruction directory for viewing
+        """
         if parameters.params['e_openIV'] is True:
             logging.debug("Switch to Image Tab")
             self.tabs.setCurrentWidget(self.tab2)
@@ -159,6 +147,10 @@ class GUI(qtw.QWidget):
                 print("No output directory found")
 
     def closeEvent(self, event):
+        """
+        Creates verification message box
+        Cleans up temporary directories when user quits application
+        """
         logging.debug("QUIT")
         reply = qtw.QMessageBox.question(self, 'Quit', 'Are you sure you want to quit?',
         qtw.QMessageBox.Yes | qtw.QMessageBox.No, qtw.QMessageBox.No)
