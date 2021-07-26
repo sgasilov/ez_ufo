@@ -7,30 +7,38 @@ import os
 from PyQt5 import QtWidgets as qtw
 from ez_ufo_qt.GUI import ezufo_launcher
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--debug', help="Enable detailed debug statements to be printed to console", action="store_true")
-args = parser.parse_args()
 
-# Save logging file in the directory above the executable
-head, tail = os.path.split(os.path.dirname(__file__))
-head, tail = os.path.split(head)
-# Setup logging for debugging
-logger = logging.getLogger()
-logger_path = os.path.join(head, 'mylog.log')
-print("Logging file stored at: " + logger_path)
-fhandler = logging.FileHandler(filename=logger_path, mode='w')
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fhandler.setFormatter(formatter)
-logger.addHandler(fhandler)
+def main():
+    print("Hello")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debug', help="Enable detailed debug statements to be printed to console",
+                        action="store_true")
+    args = parser.parse_args()
 
-#logger.setLevel(logging.DEBUG)
-#TODO: FIX THIS IN RELEASE
+    # Save logging file in the directory above the executable
+    head, tail = os.path.split(os.path.dirname(__file__))
+    head, tail = os.path.split(head)
+    # Setup logging for debugging
+    logger = logging.getLogger()
+    logger_path = os.path.join(head, 'mylog.log')
+    print("Logging file stored at: " + logger_path)
+    fhandler = logging.FileHandler(filename=logger_path, mode='w')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fhandler.setFormatter(formatter)
+    logger.addHandler(fhandler)
 
-if args.debug:
-    logger.setLevel(logging.DEBUG)
-else:
-    logger.setLevel(logging.WARNING)
+    # logger.setLevel(logging.DEBUG)
+    # TODO: FIX THIS IN RELEASE
 
-app = qtw.QApplication(sys.argv)
-window = ezufo_launcher.GUI()
-sys.exit(app.exec_())
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.WARNING)
+
+    app = qtw.QApplication(sys.argv)
+    window = ezufo_launcher.GUI()
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
