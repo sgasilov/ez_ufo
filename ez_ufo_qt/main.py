@@ -25,7 +25,10 @@ from ez_ufo_qt.util import *
 def get_CTdirs_list(inpath, dirtype):
     W = WalkCTdirs(inpath, dirtype)
     W.findCTdirs()
+    # Need to check if "Use common flats/darks is enabled"
+    # Check if common flats/darks/flats2 are type 3 or 4
     W.checkCTdirs()
+    # Need to check if common flats/darks contain only .tif files
     W.checkCTfiles()
     W.SortBadGoodSets()
     return W.ctsets, W.lvl0
