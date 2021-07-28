@@ -5,6 +5,7 @@ import numpy as np
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QCheckBox, QPushButton, QGridLayout, QLabel, QGroupBox, QLineEdit, QHBoxLayout
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import Qt
 from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 
@@ -75,7 +76,7 @@ class ConfigGroup(QGroupBox):
 
         #Select flats/darks/flats2 for use in multiple reconstructions
         self.use_common_flats_darks_checkbox = QCheckBox()
-        self.use_common_flats_darks_checkbox.setText("Use same flats/darks across multiple experiments")
+        self.use_common_flats_darks_checkbox.setText("Use common flats/darks across multiple experiments")
         self.use_common_flats_darks_checkbox.stateChanged.connect(self.set_flats_darks_checkbox)
 
         self.darks_absolute_entry = QLineEdit()
@@ -85,6 +86,9 @@ class ConfigGroup(QGroupBox):
         self.flats_absolute_entry = QLineEdit()
         self.flats_absolute_entry.setText("Absolute path to flats")
         self.flats_absolute_entry.textChanged.connect(self.set_common_flats)
+
+        self.use_flats2_checkbox = QCheckBox("Use common flats2")
+        self.use_flats2_checkbox.clicked.connect(self.set_use_flats2)
 
         self.flats2_absolute_entry = QLineEdit()
         self.flats2_absolute_entry.textChanged.connect(self.set_common_flats2)
@@ -169,12 +173,13 @@ class ConfigGroup(QGroupBox):
         layout.addWidget(self.dir_name_label, 3, 0)
         layout.addWidget(self.darks_entry, 3, 1)
         layout.addWidget(self.flats_entry, 3, 2)
-        layout.addWidget(self.flats2_entry, 3, 3)
-        layout.addWidget(self.tomo_entry, 3, 4)
+        layout.addWidget(self.tomo_entry, 3, 3)
+        layout.addWidget(self.flats2_entry, 3, 4)
         layout.addWidget(self.use_common_flats_darks_checkbox, 4, 0)
         layout.addWidget(self.darks_absolute_entry, 4, 1)
         layout.addWidget(self.flats_absolute_entry, 4, 2)
-        layout.addWidget(self.flats2_absolute_entry, 4, 3)
+        layout.addWidget(self.use_flats2_checkbox, 4, 3, Qt.AlignRight)
+        layout.addWidget(self.flats2_absolute_entry, 4, 4)
         layout.addWidget(self.temp_dir_select, 5, 0)
         layout.addWidget(self.temp_dir_entry, 5, 1, 1, 3)
         layout.addWidget(self.keep_tmp_data_checkbox, 5, 4)
@@ -205,6 +210,11 @@ class ConfigGroup(QGroupBox):
         self.flats_entry.setText("flats")
         self.tomo_entry.setText("tomo")
         self.flats2_entry.setText("flats2")
+        self.use_common_flats_darks_checkbox.setChecked(False)
+        self.darks_absolute_entry.setText("Absolute path to darks")
+        self.flats_absolute_entry.setText("Absolute path to flats")
+        self.use_common_flats_darks_checkbox.setChecked(False)
+        self.flats2_absolute_entry.setText("Absolute path to flats2")
         self.temp_dir_entry.setText("/data/tmp-ezufo")
         self.keep_tmp_data_checkbox.setChecked(False)
         parameters.params['e_keep_tmp'] = False
@@ -235,6 +245,7 @@ class ConfigGroup(QGroupBox):
         self.open_image_after_reco_checkbox.setChecked(parameters.params['e_openIV'])
         self.darks_absolute_entry.setText(parameters.params['e_common_darks'])
         self.flats_absolute_entry.setText(parameters.params['e_common_flats'])
+        self.use_flats2_checkbox.setChecked(parameters.params['e_use_common_flats2'])
         self.flats2_absolute_entry.setText(parameters.params['e_common_flats2'])
 
     def select_input_dir(self):
@@ -310,6 +321,10 @@ class ConfigGroup(QGroupBox):
     def set_common_flats(self):
         logging.debug("Common flats path: " + str(self.flats_absolute_entry.text()))
         parameters.params['e_common_flats'] = str(self.darks_absolute_entry.text())
+
+    def set_use_flats2(self):
+        logging.debug("Use common flats2 checkbox: " + str(self.use_flats2_checkbox.isChecked()))
+        parameters.params['e_use_common_flats2'] = bool(self.use_flats2_checkbox.isChecked())
 
     def set_common_flats2(self):
         logging.debug("Common flats2 path: " + str(self.flats2_absolute_entry.text()))
@@ -453,7 +468,7 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
                             parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
                             parameters.params['e_common_darks_flats'], parameters.params['e_common_darks'],
-                            parameters.params['e_common_flats'], parameters.params['e_common_flats2'])
+                            parameters.params['e_common_flats'], parameters.params['e_use_common_flats2'], parameters.params['e_common_flats2'])
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
@@ -602,7 +617,7 @@ class tk_args():
                 e_crop, e_x0, e_dx, e_y0, e_dy,
                 e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFCEigenReps,
                 e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats,
-                e_common_darks, e_common_flats, e_common_flats2):
+                e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -722,6 +737,8 @@ class tk_args():
         setattr(self, 'common_darks', self.args['common_darks'])
         self.args['common_flats'] = str(e_common_flats)
         setattr(self, 'common_flats', self.args['common_flats'])
+        self.args['use_common_flats2'] = bool(e_use_common_flats2)
+        setattr(self, 'use_common_flats2', self.args['use_common_flats2'])
         self.args['common_flats2'] = str(e_common_flats2)
         setattr(self, 'common_flats2', self.args['common_flats2'])
 

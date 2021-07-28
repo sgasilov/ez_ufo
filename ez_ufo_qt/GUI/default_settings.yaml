@@ -60,5 +60,6 @@ e_openIV: True
 e_common_darks_flats: False
 e_common_darks: "Absolute path to darks"
 e_common_flats: "Absolute path to flats"
+e_use_common_flats2: False
 e_common_flats2: "Absolute path to flats2"
 ...

@@ -58,7 +58,7 @@ class WalkCTdirs():
                      and os.path.exists(os.path.join(ctdir, self._fol[3])) ):
                 self.typ.append(4)
             else:
-                print (os.path.basename(ctdir))
+                print(os.path.basename(ctdir))
                 self.typ.append(0)
     
     def checkCTfiles(self):
@@ -101,22 +101,22 @@ class WalkCTdirs():
         Good with flats 2 (1) or good without flats2 (0) or bad (<0)
         """
         self.total = len(self.ctdirs)
-        self.ctsets = sorted(zip(self.ctdirs, self.typ), key=lambda s:s[0])
+        self.ctsets = sorted(zip(self.ctdirs, self.typ), key=lambda s: s[0])
         self.total = len(self.ctsets)
-        self.good = [int(y)>2 for x,y in self.ctsets].count(True)
+        self.good = [int(y) > 2 for x, y in self.ctsets].count(True)
 
         tmp = len(self.lvl0)
         if self.verb:
-            print ('Total folders {}, good folders {}'.format(self.total, self.good))
-            print ('{:>20}\t{}'.format("Path to CT set", "Typ: 0 bad, 3 no flats2, 4 with flats2"))
+            print('Total folders {}, good folders {}'.format(self.total, self.good))
+            print('{:>20}\t{}'.format("Path to CT set", "Typ: 0 bad, 3 no flats2, 4 with flats2"))
             for ctdir in self.ctsets:
-                msg1=ctdir[0][tmp:]
-                if msg1=='':
-                    msg1='.'
-                print ('{:>20}\t{}'.format(msg1, ctdir[1]))
+                msg1 = ctdir[0][tmp:]
+                if msg1 == '':
+                    msg1 = '.'
+                print('{:>20}\t{}'.format(msg1, ctdir[1]))
 
         #keep paths to directories with good ct data only:
-        self.ctsets = [q for q in self.ctsets if int(q[1]>0)]
+        self.ctsets = [q for q in self.ctsets if int(q[1] > 0)]
 
 
     def Getlvl0(self):

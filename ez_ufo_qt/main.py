@@ -22,10 +22,14 @@ from ez_ufo_qt.util import *
 #from tofu.util import get_filenames
 
 
-def get_CTdirs_list(inpath, dirtype):
+def get_CTdirs_list(inpath, dirtype, args):
     W = WalkCTdirs(inpath, dirtype)
     W.findCTdirs()
     # Need to check if "Use common flats/darks is enabled"
+    if args.common_darks_flats:
+        print("Use common darks flats")
+    else:
+        print("Use flats/darks in same dir as tomo")
     # Check if common flats/darks/flats2 are type 3 or 4
     W.checkCTdirs()
     # Need to check if common flats/darks contain only .tif files
@@ -155,7 +159,7 @@ def main_tk(args, fdt_names):
     '''
     # get list of all good CT directories to be reconstructed
     print('*********** Analyzing input directory ************')
-    W, lvl0 = get_CTdirs_list(args.indir, fdt_names)
+    W, lvl0 = get_CTdirs_list(args.indir, fdt_names, args)
     # W is an array of tuples (path, type)
     # get list of already reconstructed sets
     recd_sets = findSlicesDirs(args.outdir)
