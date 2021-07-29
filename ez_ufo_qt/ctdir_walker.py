@@ -109,6 +109,7 @@ class WalkCTdirs():
             if self.use_common_flats2 and not self._checkTifs(self.common_flats2):
                 print("Invalid files found in " + str(self.common_flats2))
                 return False
+            return True
 
 
     def checkCTfiles(self):
