@@ -16,7 +16,7 @@ class WalkCTdirs():
     fdt_names = flats/darks/tomo directory names
     """
 
-    def __init__(self, inpath, fdt_names, verb=True):
+    def __init__(self, inpath, fdt_names, args, verb=True):
         self.lvl0 = os.path.abspath(inpath)
         self.ctdirs = []
         self.types = []
@@ -26,6 +26,10 @@ class WalkCTdirs():
         self.good = 0
         self.verb = verb
         self._fdt_names = fdt_names
+        self.common_flats = args.common_flats
+        self.common_darks = args.common_darks
+        self.common_flats2 = args.common_flats2
+        self.use_common_flats2 = args.use_common_flats2
     
     def print_tree(self):
         print('We start in {}'.format(self.lvl0))
@@ -62,7 +66,51 @@ class WalkCTdirs():
             else:
                 print(os.path.basename(ctdir))
                 self.typ.append(0)
-    
+
+    def checkCommonFDT(self):
+        """
+        Verifies that paths to directories specified by common_flats, common_darks, and common_flats2 exist
+        :return: True if directories exist, False if they do not exist
+        """
+        for ctdir in self.ctdirs:
+            if self.use_common_flats2 is True:
+                self.typ.append(4)
+            elif self.use_common_flats2 is False:
+                self.typ.append(3)
+
+        if self.use_common_flats2 is True:
+            if (os.path.exists(self.common_flats)
+                    and os.path.exists(self.common_darks)
+                    and os.path.exists(self.common_flats2)):
+                return True
+        elif self.use_common_flats2 is False:
+            if (os.path.exists(self.common_flats)
+                    and os.path.exists(self.common_darks)):
+                return True
+        return False
+
+    def checkCommonFDTFiles(self):
+        """
+        Verifies that directories of tomo and common flats/darks/flats contain only .tif files
+        :return: True if directories exist, False if they do not exist
+        """
+        for i, ctdir in enumerate(self.ctdirs):
+            ctdir_tomo_path = os.path.join(ctdir, self._fdt_names[2])
+            if not self._checkTifs(ctdir_tomo_path):
+                print("Invalid files found in " + str(ctdir_tomo_path))
+                self.typ[i] = 0
+                return False
+            if not self._checkTifs(self.common_flats):
+                print("Invalid files found in " + str(self.common_flats))
+                return False
+            if not self._checkTifs(self.common_darks):
+                print("Invalid files found in " + str(self.common_darks))
+                return False
+            if self.use_common_flats2 and not self._checkTifs(self.common_flats2):
+                print("Invalid files found in " + str(self.common_flats2))
+                return False
+
+
     def checkCTfiles(self):
         """
         Checks whether each ctdir is of type 3 or 4 by comparing index of self.typ[] to corresponding index of ctdir[]

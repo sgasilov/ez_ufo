@@ -32,28 +32,38 @@ def get_CTdirs_list(inpath, fdt_names, args):
     :return: W.ctsets: List of "good" CTSets and W.lvl0: Path to root of CT sets
     """
     # Constructor call to create WalkCTDirs object
-    W = WalkCTdirs(inpath, fdt_names)
+    W = WalkCTdirs(inpath, fdt_names, args)
     # Find any directories containing "tomo" directory
     W.findCTdirs()
-    # Need to check if "Use common flats/darks is enabled"
+    # If "Use common flats/darks across multiple experiments" is enabled
     if args.common_darks_flats:
         logging.debug("Use common darks/flats")
         logging.debug("Path to darks: " + str(args.common_darks))
         logging.debug("Path to flats: " + str(args.common_flats))
         logging.debug("Path to flats2: " + str(args.common_flats2))
         logging.debug("Use flats2: " + str(args.use_common_flats2))
-        if not args.use_common_flats2:
-            logging.debug("Directory Type: 3")
-        elif args.use_common_flats2:
-            logging.debug("Directory Type: 4")
+        # Determine whether paths to common flats/darks/flats2 exist
+        if not W.checkCommonFDT():
+            print("Invalid path to common flats/darks")
+            return W.ctsets, W.lvl0
+        else:
+            print("Paths to common flats/darks exist")
+            # Check whether directories contain only .tif files
+            if not W.checkCommonFDTFiles():
+                return W.ctsets, W.lvl0
+            else:
+                # Sort good bad sets
+                W.SortBadGoodSets()
+                return W.ctsets, W.lvl0
+    # If "Use common flats/darks across multiple experiments" is not enabled
     else:
-        logging.debug("Use flats/darks in same dir as tomo")
+        logging.debug("Use flats/darks in same directory as tomo")
     # Check if common flats/darks/flats2 are type 3 or 4
-    W.checkCTdirs()
+        W.checkCTdirs()
     # Need to check if common flats/darks contain only .tif files
-    W.checkCTfiles()
-    W.SortBadGoodSets()
-    return W.ctsets, W.lvl0
+        W.checkCTfiles()
+        W.SortBadGoodSets()
+        return W.ctsets, W.lvl0
 
 
 def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews, WH):
