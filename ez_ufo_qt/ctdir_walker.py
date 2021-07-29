@@ -7,14 +7,16 @@ Created on Apr 5, 2018
 import glob
 import os
 
+
 class WalkCTdirs():
-    '''
+    """
     Walks in the directory structure and creates list of paths to CT folders
     Determines flats before/after
     and checks that folders contain only tiff files
-    '''
+    fdt_names = flats/darks/tomo directory names
+    """
 
-    def __init__(self, inpath, fol, verb = True):
+    def __init__(self, inpath, fdt_names, verb=True):
         self.lvl0 = os.path.abspath(inpath)
         self.ctdirs = []
         self.types = []
@@ -23,10 +25,10 @@ class WalkCTdirs():
         self.total = 0 
         self.good = 0
         self.verb = verb
-        self._fol = fol
+        self._fdt_names = fdt_names
     
     def print_tree(self):
-        print ('We start in {}'.format(self.lvl0))
+        print('We start in {}'.format(self.lvl0))
         
     def findCTdirs(self):
         """
@@ -35,7 +37,7 @@ class WalkCTdirs():
         """
         for root, dirs, files in os.walk(self.lvl0):
             for name in dirs:
-                if name == self._fol[2]:
+                if name == self._fdt_names[2]:
                     self.ctdirs.append(root)
         self.ctdirs = list(set(self.ctdirs))
 
@@ -47,15 +49,15 @@ class WalkCTdirs():
         """
         for ctdir in self.ctdirs:
             # flats/darks and no flats2 or flats2==flats -> type 3
-            if ( os.path.exists(os.path.join(ctdir, self._fol[1])) \
-                     and os.path.exists(os.path.join(ctdir, self._fol[0])) \
-                     and (not os.path.exists(os.path.join(ctdir, self._fol[3])) \
-                            or self._fol[1]==self._fol[3]) ):
+            if ( os.path.exists(os.path.join(ctdir, self._fdt_names[1])) \
+                     and os.path.exists(os.path.join(ctdir, self._fdt_names[0])) \
+                     and (not os.path.exists(os.path.join(ctdir, self._fdt_names[3])) \
+                            or self._fdt_names[1]==self._fdt_names[3]) ):
                 self.typ.append(3)
             # flats/darks/flats2 -> type4
-            elif ( os.path.exists(os.path.join(ctdir, self._fol[1])) \
-                     and os.path.exists(os.path.join(ctdir, self._fol[0])) \
-                     and os.path.exists(os.path.join(ctdir, self._fol[3])) ):
+            elif ( os.path.exists(os.path.join(ctdir, self._fdt_names[1])) \
+                     and os.path.exists(os.path.join(ctdir, self._fdt_names[0])) \
+                     and os.path.exists(os.path.join(ctdir, self._fdt_names[3])) ):
                 self.typ.append(4)
             else:
                 print(os.path.basename(ctdir))
@@ -69,15 +71,15 @@ class WalkCTdirs():
         """
         for i, ctdir in enumerate(self.ctdirs):
             if ( self.typ[i] == 3 and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[1])) and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[0])) and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[2])) ):
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[1])) and \
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[0])) and \
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[2])) ):
                 continue
             elif  ( self.typ[i] == 4 and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[1])) and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[0])) and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[2]))and \
-                    self._checkTifs(os.path.join(ctdir, self._fol[3])) ):
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[1])) and \
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[0])) and \
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[2]))and \
+                    self._checkTifs(os.path.join(ctdir, self._fdt_names[3])) ):
                 continue
             else: 
                 self.typ[i] = 0

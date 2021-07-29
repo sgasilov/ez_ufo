@@ -22,14 +22,32 @@ from ez_ufo_qt.util import *
 #from tofu.util import get_filenames
 
 
-def get_CTdirs_list(inpath, dirtype, args):
-    W = WalkCTdirs(inpath, dirtype)
+def get_CTdirs_list(inpath, fdt_names, args):
+    """
+    Determines whether directories containing CT data are valid.
+    Returns list of subdirectories with valid CT data
+    :param inpath: Path to the CT directory containing subdirectories with flats/darks/tomo (and flats2 if used)
+    :param fdt_names: Names of the directories which store flats/darks/tomo (and flats2 if used)
+    :param args: Arguments from the GUI
+    :return: W.ctsets: List of "good" CTSets and W.lvl0: Path to root of CT sets
+    """
+    # Constructor call to create WalkCTDirs object
+    W = WalkCTdirs(inpath, fdt_names)
+    # Find any directories containing "tomo" directory
     W.findCTdirs()
     # Need to check if "Use common flats/darks is enabled"
     if args.common_darks_flats:
-        print("Use common darks flats")
+        logging.debug("Use common darks/flats")
+        logging.debug("Path to darks: " + str(args.common_darks))
+        logging.debug("Path to flats: " + str(args.common_flats))
+        logging.debug("Path to flats2: " + str(args.common_flats2))
+        logging.debug("Use flats2: " + str(args.use_common_flats2))
+        if not args.use_common_flats2:
+            logging.debug("Directory Type: 3")
+        elif args.use_common_flats2:
+            logging.debug("Directory Type: 4")
     else:
-        print("Use flats/darks in same dir as tomo")
+        logging.debug("Use flats/darks in same dir as tomo")
     # Check if common flats/darks/flats2 are type 3 or 4
     W.checkCTdirs()
     # Need to check if common flats/darks contain only .tif files
@@ -170,6 +188,7 @@ def main_tk(args, fdt_names):
     # populate list of reconstruction commands
     print('*********** AXIS INFO ************')
     for i, ctset in enumerate(W):
+        # ctset is a tuple containing a path and a type (3 or 4)
         if not already_recd(ctset[0], lvl0, recd_sets):
             # determine initial number of projections and their shape
             path2proj = os.path.join(ctset[0], Tofu._fdt_names[2])
@@ -182,8 +201,10 @@ def main_tk(args, fdt_names):
                     print('Vertical ROI does not contain any rows.')
                     print("Number of projections: {}, dimensions: {}".format(nviews, WH))
                     continue
+                # Find axis of rotation using auto: correlate first/last projections
                 if args.ax == 1:
                     ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage)
+                # Find axis of rotation using auto: minimize STD of a slice
                 elif args.ax == 2:
                     cmds.append("echo \"Cleaning axis-search in tmp directory\"")
                     os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))

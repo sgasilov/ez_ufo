@@ -320,7 +320,7 @@ class ConfigGroup(QGroupBox):
 
     def set_common_flats(self):
         logging.debug("Common flats path: " + str(self.flats_absolute_entry.text()))
-        parameters.params['e_common_flats'] = str(self.darks_absolute_entry.text())
+        parameters.params['e_common_flats'] = str(self.flats_absolute_entry.text())
 
     def set_use_flats2(self):
         logging.debug("Use common flats2 checkbox: " + str(self.use_flats2_checkbox.isChecked()))

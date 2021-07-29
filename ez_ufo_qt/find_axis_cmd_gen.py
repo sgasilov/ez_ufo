@@ -22,17 +22,22 @@ class findCOR_cmds(object):
     def __init__(self, fol):
         self._fdt_names = fol
 
-    def make_inpaths(self,lvl0, flats2):
+    def make_inpaths(self, lvl0, flats2):
+        """
+        Creates a list of paths to flats/darks/tomo directories
+        :param lvl0: Root of directory containing flats/darks/tomo
+        :param flats2: The type of directory: 3 contains flats/darks/tomo 4 contains flats/darks/tomo/flats2
+        :return: List of paths to the directories containing darks/flats/tomo and flats2 (if used)
+        """
         indir = []
         for i in self._fdt_names[:3]:
-            indir.append( os.path.join(lvl0, i) )
-        if flats2-3:
-            indir.append( os.path.join(lvl0, self._fdt_names[3]) )
+            indir.append(os.path.join(lvl0, i))
+        if flats2 - 3:
+            indir.append(os.path.join(lvl0, self._fdt_names[3]))
         return indir
 
-    def find_axis_std(self, ctset, tmpdir,ax_range, p_width,search_row,nviews):
+    def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews):
         indir = self.make_inpaths(ctset[0], ctset[1])
-        print(indir[2])
         image = read_image(get_filenames(indir[2])[0])
         cmd =  'tofu lamino --absorptivity --fix-nan-and-inf --overall-angle 180'\
                ' --lamino-angle 90 --height 2'
