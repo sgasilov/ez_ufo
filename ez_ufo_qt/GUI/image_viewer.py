@@ -13,7 +13,6 @@ import ez_ufo_qt.GUI.image_read_write as image_read_write
 
 
 class ImageViewerGroup(QGroupBox):
-
     def __init__(self):
         super().__init__()
 

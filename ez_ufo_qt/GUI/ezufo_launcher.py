@@ -135,6 +135,8 @@ class GUI(qtw.QWidget):
             self.tabs.setCurrentWidget(self.tab2)
             if os.path.isdir(str(parameters.params['e_outdir'] + '/sli')):
                 files = os.listdir(str(parameters.params['e_outdir'] + '/sli'))
+                #Start thread here to load images
+
                 ##CHECK IF ONLY SINGLE IMAGE THEN USE OPEN IMAGE -- OTHERWISE OPEN STACK
                 if len(files) == 1:
                     print("Only one file in {}: Opening single image {}".format(parameters.params['e_outdir'] + '/sli', files[0]))
