@@ -16,7 +16,7 @@ def main():
     args = parser.parse_args()
 
     # Save logging file in the directory above the executable
-    head = os.getcwd()
+    head = os.path.expanduser("~")
     #head, tail = os.path.split(os.path.dirname(__file__))
     #head, tail = os.path.split(head)
     # Setup logging for debugging
