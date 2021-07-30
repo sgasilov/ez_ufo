@@ -75,7 +75,10 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     ####### PREPROCESSING #########
     flat_file_for_mask = os.path.join(args.tmpdir, 'flat.tif')
     if args.inp:
-        flatdir = os.path.join(ctset[0], Tofu._fdt_names[1])
+        if not args.common_darks_flats:
+            flatdir = os.path.join(ctset[0], Tofu._fdt_names[1])
+        elif args.common_darks_flats:
+            flatdir = args.common_flats
         cmd = make_copy_of_flat(flatdir, flat_file_for_mask, args.dryrun)
         cmds.append(cmd)
     if args.pre:
@@ -201,7 +204,7 @@ def main_tk(args, fdt_names):
         # ctset is a tuple containing a path and a type (3 or 4)
         if not already_recd(ctset[0], lvl0, recd_sets):
             # determine initial number of projections and their shape
-            path2proj = os.path.join(ctset[0], Tofu._fdt_names[2])
+            path2proj = os.path.join(ctset[0], fdt_names[2])
             nviews, WH, multipage = get_dims(path2proj)
             # e_axis_bypass is OFF then find centre of rotation
             if not args.e_axis_bypass:
@@ -213,7 +216,7 @@ def main_tk(args, fdt_names):
                     continue
                 # Find axis of rotation using auto: correlate first/last projections
                 if args.ax == 1:
-                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage)
+                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage, args)
                 # Find axis of rotation using auto: minimize STD of a slice
                 elif args.ax == 2:
                     cmds.append("echo \"Cleaning axis-search in tmp directory\"")

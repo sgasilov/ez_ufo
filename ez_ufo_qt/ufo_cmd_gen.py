@@ -46,13 +46,29 @@ class ufo_cmds(object):
     def __init__(self, fol):
         self._fdt_names = fol
 
-    def make_inpaths(self, lvl0, flats2):
+    def make_inpaths(self, lvl0, flats2, args):
+        """
+        Creates a list of paths to flats/darks/tomo directories
+        :param lvl0: Root of directory containing flats/darks/tomo
+        :param flats2: The type of directory: 3 contains flats/darks/tomo 4 contains flats/darks/tomo/flats2
+        :return: List of paths to the directories containing darks/flats/tomo and flats2 (if used)
+        """
         indir = []
-        for i in self._fdt_names[:3]:
-            indir.append(os.path.join(lvl0, i))
-        if flats2 - 3:
-            indir.append(os.path.join(lvl0, self._fdt_names[3]))
-        return indir
+        # If using flats/darks/flats2 in same dir as tomo
+        if not args.common_darks_flats:
+            for i in self._fdt_names[:3]:
+                indir.append(os.path.join(lvl0, i))
+            if flats2 - 3:
+                indir.append(os.path.join(lvl0, self._fdt_names[3]))
+            return indir
+        # If using common flats/darks/flats2 across multiple reconstructions
+        elif args.common_darks_flats:
+            indir.append(args.common_darks)
+            indir.append(args.common_flats)
+            indir.append(os.path.join(lvl0, self._fdt_names[2]))
+            if args.use_common_flats2:
+                indir.append(args.common_flats2)
+            return indir
 
     def check_vcrop(self, cmd, vcrop, y, yheight, ystep):
         if vcrop:
@@ -165,8 +181,6 @@ class ufo_cmds(object):
             cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
             cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
             cmd += ' --downsample {}'.format(args.sinFFCDowns)
-
-
             #if not args.PR:
             #    cmd += ' --absorptivity'
             cmds.append(cmd)

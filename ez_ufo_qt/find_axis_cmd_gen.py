@@ -22,7 +22,7 @@ class findCOR_cmds(object):
     def __init__(self, fol):
         self._fdt_names = fol
 
-    def make_inpaths(self, lvl0, flats2):
+    def make_inpaths(self, lvl0, flats2, args):
         """
         Creates a list of paths to flats/darks/tomo directories
         :param lvl0: Root of directory containing flats/darks/tomo
@@ -30,11 +30,21 @@ class findCOR_cmds(object):
         :return: List of paths to the directories containing darks/flats/tomo and flats2 (if used)
         """
         indir = []
-        for i in self._fdt_names[:3]:
-            indir.append(os.path.join(lvl0, i))
-        if flats2 - 3:
-            indir.append(os.path.join(lvl0, self._fdt_names[3]))
-        return indir
+        # If using flats/darks/flats2 in same dir as tomo
+        if not args.common_darks_flats:
+            for i in self._fdt_names[:3]:
+                indir.append(os.path.join(lvl0, i))
+            if flats2 - 3:
+                indir.append(os.path.join(lvl0, self._fdt_names[3]))
+            return indir
+        # If using common flats/darks/flats2 across multiple reconstructions
+        elif args.common_darks_flats:
+            indir.append(args.common_darks)
+            indir.append(args.common_flats)
+            indir.append(os.path.join(lvl0, self._fdt_names[2]))
+            if args.use_common_flats2:
+                indir.append(args.common_flats2)
+            return indir
 
     def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews):
         indir = self.make_inpaths(ctset[0], ctset[1])
@@ -65,8 +75,8 @@ class findCOR_cmds(object):
         return res[0] + res[2] * maximum
         
 
-    def find_axis_corr(self, ctset, vcrop, y, height, multipage):
-        indir = self.make_inpaths(ctset[0], ctset[1])
+    def find_axis_corr(self, ctset, vcrop, y, height, multipage, args):
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         """Use correlation to estimate center of rotation for tomography."""
         from scipy.signal import fftconvolve
         def flat_correct(flat, radio):

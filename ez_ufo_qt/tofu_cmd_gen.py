@@ -22,13 +22,29 @@ class tofu_cmds(object):
     def __init__(self, fol):
         self._fdt_names = fol
 
-    def make_inpaths(self,lvl0, flats2):
+    def make_inpaths(self, lvl0, flats2, args):
+        """
+        Creates a list of paths to flats/darks/tomo directories
+        :param lvl0: Root of directory containing flats/darks/tomo
+        :param flats2: The type of directory: 3 contains flats/darks/tomo 4 contains flats/darks/tomo/flats2
+        :return: List of paths to the directories containing darks/flats/tomo and flats2 (if used)
+        """
         indir = []
-        for i in self._fdt_names[:3]:
-            indir.append( os.path.join(lvl0, i) )
-        if flats2-3:
-            indir.append( os.path.join(lvl0, self._fdt_names[3]) )
-        return indir
+        # If using flats/darks/flats2 in same dir as tomo
+        if not args.common_darks_flats:
+            for i in self._fdt_names[:3]:
+                indir.append(os.path.join(lvl0, i))
+            if flats2 - 3:
+                indir.append(os.path.join(lvl0, self._fdt_names[3]))
+            return indir
+        # If using common flats/darks/flats2 across multiple reconstructions
+        elif args.common_darks_flats:
+            indir.append(args.common_darks)
+            indir.append(args.common_flats)
+            indir.append(os.path.join(lvl0, self._fdt_names[2]))
+            if args.use_common_flats2:
+                indir.append(args.common_flats2)
+            return indir
 
     def check_8bit(self, cmd, gray256, bit, hmin, hmax):
         if gray256:
@@ -53,7 +69,7 @@ class tofu_cmds(object):
     def get_1step_ct_cmd(self, ctset, out_pattern, ax, args, nviews, WH):
         #direct CT reconstruction from input dir to output dir;
         #or CT reconstruction after preprocessing only
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         #correct location of proj folder in case if prepro was done
         in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
@@ -105,8 +121,8 @@ class tofu_cmds(object):
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
 
-    def get_sinos_ffc_cmd(self,ctset, tmpdir,args, nviews, WH):
-        indir = self.make_inpaths(ctset[0], ctset[1])
+    def get_sinos_ffc_cmd(self, ctset, tmpdir, args, nviews, WH):
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,ctset[0], self._fdt_names[2], False)
         cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
         cmd += ' --darks {} --flats {} '.format(indir[0],indir[1])
@@ -145,7 +161,7 @@ class tofu_cmds(object):
         return cmd
 
     def get_sinFFC_cmd(self, ctset, args, nviews, n):
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         cmd = 'bmit_sin --fix-nan'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
@@ -159,7 +175,7 @@ class tofu_cmds(object):
         return cmd
 
     def get_pr_sinFFC_cmd(self, ctset, args, nviews, n):
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         cmd = 'bmit_sin --fix-nan'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
@@ -193,7 +209,7 @@ class tofu_cmds(object):
         # indir will format paths to flats darks and tomo2 correctly even if they were
         # pre-processed, however path to the input directory with projections
         # cannot be formatted with that command correctly
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         # so we need a separate "universal" command which considers all previous steps
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
         cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
@@ -209,7 +225,7 @@ class tofu_cmds(object):
     def get_reco_cmd(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
         #direct CT reconstruction from input dir to output dir;
         #or CT reconstruction after preprocessing only
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         #correct location of proj folder in case if prepro was done
         in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
         #in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
@@ -269,7 +285,7 @@ class tofu_cmds(object):
     def get_reco_cmd_sinFFC(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
         #direct CT reconstruction from input dir to output dir;
         #or CT reconstruction after preprocessing only
-        indir = self.make_inpaths(ctset[0], ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         #correct location of proj folder in case if prepro was done
         in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
         #in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
