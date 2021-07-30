@@ -12,7 +12,9 @@ from ez_ufo_qt.main import main_tk, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 from ez_ufo_qt.GUI.image_viewer import ImageViewerGroup
 import ez_ufo_qt.GUI.params as parameters
-
+from ez_ufo_qt.GUI.advanced import AdvancedGroup
+from ez_ufo_qt.GUI.optimization import OptimizationGroup
+from ez_ufo_qt.GUI.nlmdn import NLMDNGroup
 
 class GUI(qtw.QWidget):
     """
@@ -58,6 +60,12 @@ class GUI(qtw.QWidget):
 
         self.image_group = ImageViewerGroup()
 
+        self.advanced_group = AdvancedGroup()
+
+        self.optimization_group = OptimizationGroup()
+
+        self.nlmdn_group = NLMDNGroup()
+
         #######################################################
 
         self.set_layout()
@@ -80,19 +88,24 @@ class GUI(qtw.QWidget):
         """
         layout = qtw.QVBoxLayout(self)
 
-        pr_ffc_box = qtw.QVBoxLayout()
-        pr_ffc_box.addWidget(self.ffc_group)
-        pr_ffc_box.addWidget(self.phase_retrieval_group)
+        #pr_ffc_box = qtw.QVBoxLayout()
+        #pr_ffc_box.addWidget(self.ffc_group)
 
         main_layout = qtw.QGridLayout()
         main_layout.addWidget(self.centre_of_rotation_group, 0, 0)
         main_layout.addWidget(self.filters_group, 0, 1)
-        main_layout.addItem(pr_ffc_box, 1, 0)
+        main_layout.addWidget(self.phase_retrieval_group, 1, 0)
         main_layout.addWidget(self.binning_group, 1, 1)
         main_layout.addWidget(self.config_group, 2, 0, 2, 0)
 
         image_layout = qtw.QGridLayout()
         image_layout.addWidget(self.image_group, 0, 0)
+
+        advanced_layout = qtw.QGridLayout()
+        advanced_layout.addWidget(self.ffc_group, 0, 0)
+        advanced_layout.addWidget(self.advanced_group, 1, 0)
+        advanced_layout.addWidget(self.optimization_group, 1, 1)
+        advanced_layout.addWidget(self.nlmdn_group, 2, 0)
 
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
@@ -106,6 +119,10 @@ class GUI(qtw.QWidget):
         # Create image tab
         self.tab2.layout = image_layout
         self.tab2.setLayout(self.tab2.layout)
+
+        # Create advanced tab
+        self.tab3.layout = advanced_layout
+        self.tab3.setLayout(self.tab3.layout)
 
         # Add tabs to widget
         layout.addWidget(self.tabs)
