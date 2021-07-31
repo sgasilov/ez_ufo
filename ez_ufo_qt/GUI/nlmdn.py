@@ -13,7 +13,7 @@ class NLMDNGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.setTitle("Non-local Means De-noising")
+        self.setTitle("Non-local-means Denoising")
         self.setStyleSheet('QGroupBox {color: royalblue;}')
 
         self.input_dir_button = QPushButton("Select input directory")
