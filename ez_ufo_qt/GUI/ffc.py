@@ -63,6 +63,9 @@ class FFCGroup(QGroupBox):
 
     def init_values(self):
         self.eigen_rButton.setChecked(True)
+        self.average_rButton.setChecked(False)
+        self.ssim_rButton.setChecked(False)
+        parameters.params['e_sinFFC_method'] = "eigen"
         self.enable_sinFFC_checkbox.setChecked(False)
         self.eigen_pco_repetitions_entry.setText("4")
         self.eigen_pco_downsample_entry.setText("2")
@@ -70,6 +73,7 @@ class FFCGroup(QGroupBox):
 
     def set_values_from_params(self):
         self.enable_sinFFC_checkbox.setChecked(parameters.params['e_sinFFC'])
+        self.set_method_from_params()
         self.eigen_pco_repetitions_entry.setText(str(parameters.params['e_sinFFCEigenReps']))
         self.eigen_pco_downsample_entry.setText(str(parameters.params['e_sinFFCEigenDowns']))
         self.downsample_entry.setText(str(parameters.params['e_sinFFCDowns']))
@@ -93,10 +97,24 @@ class FFCGroup(QGroupBox):
     def set_method(self):
         if self.eigen_rButton.isChecked():
             logging.debug("Method: Eigen")
-            parameters.params['e_sinFFC_method'] = 1
+            parameters.params['e_sinFFC_method'] = "eigen"
         elif self.average_rButton.isChecked():
             logging.debug("Method: Average")
-            parameters.params['e_sinFFC_method'] = 2
+            parameters.params['e_sinFFC_method'] = "average"
         elif self.ssim_rButton.isChecked():
             logging.debug("Method: SSIM")
-            parameters.params['e_sinFFC_method'] = 3
+            parameters.params['e_sinFFC_method'] = "ssim"
+
+    def set_method_from_params(self):
+        if parameters.params['e_sinFFC_method'] == 1:
+            self.eigen_rButton.setChecked(True)
+            self.average_rButton.setChecked(False)
+            self.ssim_rButton.setChecked(False)
+        elif parameters.params['e_sinFFC_method'] == 2:
+            self.eigen_rButton.setChecked(False)
+            self.average_rButton.setChecked(True)
+            self.ssim_rButton.setChecked(False)
+        elif parameters.params['e_sinFFC_method'] == 3:
+            self.eigen_rButton.setChecked(False)
+            self.average_rButton.setChecked(False)
+            self.ssim_rButton.setChecked(True)

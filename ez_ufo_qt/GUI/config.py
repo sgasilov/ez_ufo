@@ -466,7 +466,7 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_a0'],
                             parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
                             parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
-                            parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
+                            parameters.params['e_sinFFC_method'], parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
                             parameters.params['e_common_darks_flats'], parameters.params['e_common_darks'],
                             parameters.params['e_common_flats'], parameters.params['e_use_common_flats2'], parameters.params['e_common_flats2'])
             main_tk(args, self.get_fdt_names())
@@ -615,7 +615,7 @@ class tk_args():
                 e_pre, e_pre_cmd,
                 e_a0,
                 e_crop, e_x0, e_dx, e_y0, e_dy,
-                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFCEigenReps,
+                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFC_method, e_sinFFCEigenReps,
                 e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats,
                 e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2):
         self.args={}
@@ -724,6 +724,8 @@ class tk_args():
         #sinFFC settings
         self.args['sinFFC']=bool(e_sinFFC)
         setattr(self,'sinFFC', self.args['sinFFC'])
+        self.args['sinFFC_method'] = str(e_sinFFC_method)
+        setattr(self, 'sinFFC_method', self.args['sinFFC_method'])
         self.args['sinFFCEigenReps']=int(e_sinFFCEigenReps)
         setattr(self, 'sinFFCEigenReps', self.args['sinFFCEigenReps'])
         self.args['sinFFCEigenDowns'] = int(e_sinFFCEigenDowns)
