@@ -65,6 +65,7 @@ class GUI(qtw.QWidget):
         self.optimization_group = OptimizationGroup()
 
         self.nlmdn_group = NLMDNGroup()
+        self.nlmdn_group.init_values()
 
         #######################################################
 

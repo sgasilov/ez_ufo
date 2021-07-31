@@ -1,4 +1,6 @@
 import logging
+import os
+
 from PyQt5.QtWidgets import QGridLayout, QLabel, QRadioButton, QGroupBox, QLineEdit, QCheckBox, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt
 
@@ -12,14 +14,18 @@ class NLMDNGroup(QGroupBox):
         super().__init__()
 
         self.setTitle("Non-local Means De-noising")
-        self.setStyleSheet('QGroupBox {color: red;}')
+        self.setStyleSheet('QGroupBox {color: royalblue;}')
 
         self.input_dir_button = QPushButton("Select input directory")
+        self.input_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.select_img_button = QPushButton("Select one image")
+        self.select_img_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
+
         self.input_dir_entry = QLineEdit()
 
         self.output_dir_button = QPushButton("Select output directory or filename pattern")
+        self.output_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.save_biftiff_checkbox = QCheckBox("Save in bigtiff container")
 
@@ -45,14 +51,19 @@ class NLMDNGroup(QGroupBox):
         self.sigma_checkbox = QCheckBox("Estimate sigma")
 
         self.quit_button = QPushButton("Quit")
+        self.quit_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
 
         self.help_button = QPushButton("Help")
+        self.help_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
 
         self.delete_button = QPushButton("Delete reco dir")
+        self.delete_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
 
         self.dry_button = QPushButton("Dry run")
+        self.dry_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
 
         self.apply_button = QPushButton("Apply filter")
+        self.apply_button.setStyleSheet("background-color:lightgrey;color:royalblue; font: 13pt; font-weight: bold;")
 
         self.set_layout()
 
@@ -90,7 +101,15 @@ class NLMDNGroup(QGroupBox):
         self.setLayout(layout)
 
     def init_values(self):
-        pass
+        self.input_dir_entry.setText(os.getcwd())
+        self.output_dir_entry.setText(os.getcwd() + '-nlmfilt')
+        self.similarity_radius_entry.setText("10")
+        self.patch_radius_entry.setText("3")
+        self.smoothing_entry.setText("0.0")
+        self.noise_std_entry.setText("0.0")
+        self.window_entry.setText("0.0")
+        self.fast_checkbox.setChecked(True)
+        self.sigma_checkbox.setChecked(False)
 
     def set_values_from_params(self):
         pass
