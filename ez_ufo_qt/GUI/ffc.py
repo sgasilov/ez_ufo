@@ -16,10 +16,13 @@ class FFCGroup(QGroupBox):
         self.method_label = QLabel("Method:")
 
         self.average_rButton = QRadioButton("Average")
+        self.average_rButton.clicked.connect(self.set_method)
 
         self.ssim_rButton = QRadioButton("SSIM")
+        self.ssim_rButton.clicked.connect(self.set_method)
 
         self.eigen_rButton = QRadioButton("Eigen")
+        self.eigen_rButton.clicked.connect(self.set_method)
 
         self.enable_sinFFC_checkbox = QCheckBox("Use Smart Intensity Normalization Flat Field Correction")
         self.enable_sinFFC_checkbox.stateChanged.connect(self.set_sinFFC)
@@ -43,9 +46,9 @@ class FFCGroup(QGroupBox):
 
         rbutton_layout = QHBoxLayout()
         rbutton_layout.addWidget(self.method_label)
+        rbutton_layout.addWidget(self.eigen_rButton)
         rbutton_layout.addWidget(self.average_rButton)
         rbutton_layout.addWidget(self.ssim_rButton)
-        rbutton_layout.addWidget(self.eigen_rButton)
 
         layout.addWidget(self.enable_sinFFC_checkbox, 0, 0)
         layout.addItem(rbutton_layout, 1, 0, 1, 2)
@@ -59,6 +62,7 @@ class FFCGroup(QGroupBox):
         self.setLayout(layout)
 
     def init_values(self):
+        self.eigen_rButton.setChecked(True)
         self.enable_sinFFC_checkbox.setChecked(False)
         self.eigen_pco_repetitions_entry.setText("4")
         self.eigen_pco_downsample_entry.setText("2")
@@ -85,3 +89,14 @@ class FFCGroup(QGroupBox):
     def set_downsample(self):
         logging.debug("Downsample: " + str(self.downsample_entry.text()))
         parameters.params['e_sinFFCDowns'] = str(self.downsample_entry.text())
+
+    def set_method(self):
+        if self.eigen_rButton.isChecked():
+            logging.debug("Method: Eigen")
+            parameters.params['e_sinFFC_method'] = 1
+        elif self.average_rButton.isChecked():
+            logging.debug("Method: Average")
+            parameters.params['e_sinFFC_method'] = 2
+        elif self.ssim_rButton.isChecked():
+            logging.debug("Method: SSIM")
+            parameters.params['e_sinFFC_method'] = 3
