@@ -127,7 +127,7 @@ class ImageViewerGroup(QGroupBox):
         """
         logging.debug("Open image button pressed")
         options = QFileDialog.Options()
-        filePath, _ = QFileDialog.getOpenFileName(self, 'QFileDialog.getOpenFileName()', "", "Tiff Files (*.tif)",
+        filePath, _ = QFileDialog.getOpenFileName(self, 'Open .tif Image File', "", "Tiff Files (*.tif *.tiff)",
                                                   options=options)
         if filePath:
             logging.debug("Import image path: " + filePath)
@@ -155,7 +155,7 @@ class ImageViewerGroup(QGroupBox):
         """
         logging.debug("Save image to file")
         options = QFileDialog.Options()
-        filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
+        filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif *.tiff)", options=options)
         if filepath:
             logging.debug(filepath)
             bit_depth_string = self.check_bit_depth(self.bit_depth)
@@ -173,8 +173,8 @@ class ImageViewerGroup(QGroupBox):
         """
         logging.debug("Open image stack button pressed")
         dir_explore = QFileDialog()
-        dir = dir_explore.getExistingDirectory()
-        if dir:
+        directory = dir_explore.getExistingDirectory()
+        if directory:
             try:
                 tiff_list = (".tif", ".tiff")
                 msg = QMessageBox()
@@ -182,7 +182,7 @@ class ImageViewerGroup(QGroupBox):
                 msg.setWindowTitle("Loading Images...")
                 msg.setText("Loading Images from Directory")
                 msg.show()
-                self.tiff_arr = image_read_write.read_all_images(dir, tiff_list)
+                self.tiff_arr = image_read_write.read_all_images(directory, tiff_list)
                 self.scroller.setRange(0, self.tiff_arr.shape[0] - 1)
                 self.scroller.setEnabled(True)
                 self.image_window.setImage(self.tiff_arr[0].T)
@@ -224,9 +224,9 @@ class ImageViewerGroup(QGroupBox):
         logging.debug("Save stack to directory button pressed")
         logging.debug("Saving with bitdepth: " + str(self.bit_depth))
         dir_explore = QFileDialog()
-        dir = dir_explore.getExistingDirectory()
+        directory = dir_explore.getExistingDirectory()
         logging.debug("Writing to directory: " + dir)
-        if dir:
+        if directory:
             bit_depth_string = self.check_bit_depth(self.bit_depth)
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
@@ -234,7 +234,7 @@ class ImageViewerGroup(QGroupBox):
             msg.setText("Saving Images to Directory")
             msg.show()
             self.apply_histogram_to_images()
-            image_read_write.write_all_images(self.tiff_arr, dir, bit_depth_string)
+            image_read_write.write_all_images(self.tiff_arr, directory, bit_depth_string)
             msg.close()
 
     def open_big_tiff(self):
@@ -270,7 +270,7 @@ class ImageViewerGroup(QGroupBox):
         logging.debug("Saving with bitdepth: " + str(self.bit_depth))
         dir_explore = QFileDialog()
         options = QFileDialog.Options()
-        filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif)", options=options)
+        filepath, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "Tiff Files (*.tif *.tiff)", options=options)
         if filepath:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)

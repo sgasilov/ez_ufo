@@ -23,7 +23,7 @@ class GUI(qtw.QWidget):
 
     def __init__(self, *args, **kwargs):
         super(GUI, self).__init__(*args, **kwargs)
-        self.setWindowTitle('EZ-UFO GUI')
+        self.setWindowTitle('EZ-UFO')
 
         self.setStyleSheet("font: 10pt; font-family: Arial")
 

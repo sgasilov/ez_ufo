@@ -392,7 +392,7 @@ class ConfigGroup(QGroupBox):
             if os.path.exists(str(parameters.params['e_outdir'])):
                 logging.debug("YES")
                 if parameters.params['e_outdir'] == parameters.params['e_indir']:
-                    QMessageBox.warning("Cannot delete: output directory is the same as input")
+                    logging.debug("Cannot delete: output directory is the same as input")
                 else:
                     os.system( 'rm -rf {}'.format(parameters.params['e_outdir']))
                     logging.debug("Directory with reconstructed data was removed")
