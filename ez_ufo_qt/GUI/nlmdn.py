@@ -50,9 +50,6 @@ class NLMDNGroup(QGroupBox):
 
         self.sigma_checkbox = QCheckBox("Estimate sigma")
 
-        self.quit_button = QPushButton("Quit")
-        self.quit_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
-
         self.help_button = QPushButton("Help")
         self.help_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
 
@@ -90,7 +87,6 @@ class NLMDNGroup(QGroupBox):
         layout.addWidget(self.sigma_checkbox, 9, 1, Qt.AlignCenter)
 
         hbox = QHBoxLayout()
-        hbox.addWidget(self.quit_button)
         hbox.addWidget(self.help_button)
         hbox.addWidget(self.delete_button)
         hbox.addWidget(self.dry_button)
