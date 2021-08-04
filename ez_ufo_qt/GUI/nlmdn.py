@@ -260,6 +260,16 @@ class NLMDNGroup(QGroupBox):
                        self.e_w, self.e_fast, self.e_autosig, \
                        self.e_dryrun)
         logging.debug(args.args)
+        if os.path.exists(args.outdir) and not self.e_dryrun:
+            titletext = "Warning: files can be overwritten"
+            text1 = "Output directory exists. Files can be overwritten. Proceed?"
+            dialog = QMessageBox.warning(self, titletext, text1, QMessageBox.Yes | QMessageBox.No)
+            if dialog == QMessageBox.Yes:
+                main_tk(args)
+                QMessageBox.information(self, "Finished", "Finished")
+        else:
+            main_tk(args)
+            QMessageBox.information(self, "Finished", "Finished")
 
 class tk_args():
     def __init__(self, e_indir, e_input_is_file,
