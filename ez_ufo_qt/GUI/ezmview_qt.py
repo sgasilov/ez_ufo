@@ -9,6 +9,7 @@ class EZMViewGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
+        self.args = {}
         self.e_indir = ""
         self.e_nproj = 0
         self.e_nflats = 0
@@ -102,39 +103,54 @@ class EZMViewGroup(QGroupBox):
 
     def init_values(self):
         self.input_dir_entry.setText(os.getcwd())
+        self.e_indir = os.getcwd()
         self.num_projections_entry.setText("3000")
+        self.e_nproj = 3000
         self.num_flats_entry.setText("10")
+        self.e_nflats = 10
         self.num_darks_entry.setText("10")
+        self.e_ndarks = 10
         self.num_vert_steps_entry.setText("1")
+        self.e_nviews = 1
         self.no_trailing_flats_darks_checkbox.setChecked(False)
+        self.e_noflats2 = False
         self.filenames_without_padding_checkbox.setChecked(False)
+        self.e_Andor = False
 
     def select_directory(self):
         logging.debug("Select directory button pressed")
         dir_explore = QFileDialog(self)
         directory = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(directory)
+        self.e_indir = directory
 
     def set_directory_entry(self):
         logging.debug("Directory entry: " + str(self.input_dir_entry.text()))
+        self.e_indir = str(self.input_dir_entry.text())
 
     def set_num_projections(self):
         logging.debug("Num projections: " + str(self.num_projections_entry.text()))
+        self.e_nproj = int(self.num_projections_entry.text())
 
     def set_num_flats(self):
         logging.debug("Num flats: " + str(self.num_flats_entry.text()))
+        self.e_nflats = int(self.num_flats_entry.text())
 
     def set_num_darks(self):
         logging.debug("Num darks: " + str(self.num_darks_entry.text()))
+        self.e_ndarks = int(self.num_darks_entry.text())
 
     def set_num_steps(self):
         logging.debug("Num steps: " + str(self.num_vert_steps_entry.text()))
+        self.e_nviews = int(self.num_vert_steps_entry.text())
 
     def set_trailing_checkbox(self):
         logging.debug("No trailing: " + str(self.no_trailing_flats_darks_checkbox.isChecked()))
+        self.e_noflats2 = bool(self.no_trailing_flats_darks_checkbox.isChecked())
 
     def set_file_names_checkbox(self):
         logging.debug("File names without zero padding: " + str(self.filenames_without_padding_checkbox.isChecked()))
+        self.e_Andor = bool(self.filenames_without_padding_checkbox.isChecked())
 
     def convert_button_pressed(self):
         logging.debug("Convert button pressed")
@@ -155,6 +171,7 @@ class EZMViewGroup(QGroupBox):
         self.args['Andor'] = bool(int(self.e_Andor))
         setattr(self, 'Andor', self.args['Andor'])
 
+        logging.debug(self.args)
         main_prep(self)
 
     def undo_button_pressed(self):

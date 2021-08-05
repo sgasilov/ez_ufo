@@ -110,7 +110,6 @@ class MultiStitch360Group(QGroupBox):
         self.axis_bottom_entry.setText("245")
         self.axis_top_entry.setText("245")
 
-
     def input_button_pressed(self):
         logging.debug("Input button pressed")
 
