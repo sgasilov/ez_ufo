@@ -15,6 +15,11 @@ import ez_ufo_qt.GUI.params as parameters
 from ez_ufo_qt.GUI.advanced import AdvancedGroup
 from ez_ufo_qt.GUI.optimization import OptimizationGroup
 from ez_ufo_qt.GUI.nlmdn import NLMDNGroup
+from ez_ufo_qt.GUI.ez_360_multi_stitch_qt import MultiStitch360Group
+from ez_ufo_qt.GUI.ezstitch_qt import EZStitchGroup
+from ez_ufo_qt.GUI.ezmview_qt import EZMViewGroup
+
+
 
 class GUI(qtw.QWidget):
     """
@@ -38,8 +43,10 @@ class GUI(qtw.QWidget):
         self.tab1 = qtw.QWidget()
         self.tab2 = qtw.QWidget()
         self.tab3 = qtw.QWidget()
+        self.tab4 = qtw.QWidget()
 
         # Create and setup classes for each section of GUI
+        # Main Tab
         self.centre_of_rotation_group = CentreOfRotationGroup()
         self.centre_of_rotation_group.init_values()
 
@@ -58,14 +65,24 @@ class GUI(qtw.QWidget):
         self.config_group = ConfigGroup()
         self.config_group.init_values()
 
+        # Image Viewer
         self.image_group = ImageViewerGroup()
 
+        # Advanced Tab
         self.advanced_group = AdvancedGroup()
 
         self.optimization_group = OptimizationGroup()
 
         self.nlmdn_group = NLMDNGroup()
         self.nlmdn_group.init_values()
+
+        # Helpers Tab
+        self.multi_stitch_group = MultiStitch360Group()
+
+        self.ezmview_group = EZMViewGroup()
+        self.ezmview_group.init_values()
+
+        self.ezstitch_group = EZStitchGroup()
 
         #######################################################
 
@@ -108,10 +125,16 @@ class GUI(qtw.QWidget):
         advanced_layout.addWidget(self.optimization_group, 1, 1)
         advanced_layout.addWidget(self.nlmdn_group, 2, 0)
 
+        helpers_layout = qtw.QGridLayout()
+        helpers_layout.addWidget(self.multi_stitch_group, 0, 0)
+        helpers_layout.addWidget(self.ezmview_group, 0, 1)
+        helpers_layout.addWidget(self.ezstitch_group, 1, 0)
+
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
         self.tabs.addTab(self.tab2, "Image Viewer")
         self.tabs.addTab(self.tab3, "Advanced")
+        self.tabs.addTab(self.tab4, "EZ Helpers")
 
         # Create main tab
         self.tab1.layout = main_layout
@@ -124,6 +147,9 @@ class GUI(qtw.QWidget):
         # Create advanced tab
         self.tab3.layout = advanced_layout
         self.tab3.setLayout(self.tab3.layout)
+
+        self.tab4.layout = helpers_layout
+        self.tab4.setLayout(self.tab4.layout)
 
         # Add tabs to widget
         layout.addWidget(self.tabs)
