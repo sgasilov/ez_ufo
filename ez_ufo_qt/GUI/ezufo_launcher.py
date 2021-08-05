@@ -78,11 +78,13 @@ class GUI(qtw.QWidget):
 
         # Helpers Tab
         self.multi_stitch_group = MultiStitch360Group()
+        self.multi_stitch_group.init_values()
 
         self.ezmview_group = EZMViewGroup()
         self.ezmview_group.init_values()
 
         self.ezstitch_group = EZStitchGroup()
+        self.ezstitch_group.init_values()
 
         #######################################################
 

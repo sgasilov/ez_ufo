@@ -1,11 +1,21 @@
 import sys
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout
 import logging
+import os
+import getpass
 
 class MultiStitch360Group(QGroupBox):
 
     def __init__(self):
         super().__init__()
+
+        self.e_input = ""
+        self.e_output = ""
+        self.e_tmpdir = ""
+        self.e_ax1 = 0
+        self.e_ax2 = 0
+        self.e_ax = 0
+        self.e_ax = 0
 
         self.setTitle("360 Multi Stitch")
         self.setStyleSheet('QGroupBox {color: red;}')
@@ -44,7 +54,6 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_label = QLabel()
         self.axis_top_label.setText("Axis of Rotation at top (ignored if not multi-slice):")
 
-
         self.axis_top_entry = QLineEdit()
         self.axis_top_entry.textChanged.connect(self.set_axis_top)
 
@@ -61,7 +70,6 @@ class MultiStitch360Group(QGroupBox):
         self.help_button.clicked.connect(self.help_button_pressed)
 
         self.set_layout()
-
 
     def set_layout(self):
         layout = QGridLayout()
@@ -92,8 +100,16 @@ class MultiStitch360Group(QGroupBox):
 
         self.setLayout(layout)
 
+    #TODO initialize actual parameter values
     def init_values(self):
-        pass
+        self.input_dir_entry.setText(os.getcwd())
+        tmp = os.path.join("/data", "tmp-ezstitch-" + getpass.getuser())
+        self.temp_dir_entry.setText(tmp)
+        self.output_dir_entry.setText(os.getcwd() + '-stitched')
+        self.crop_checkbox.setChecked(True)
+        self.axis_bottom_entry.setText("245")
+        self.axis_top_entry.setText("245")
+
 
     def input_button_pressed(self):
         logging.debug("Input button pressed")
@@ -130,3 +146,24 @@ class MultiStitch360Group(QGroupBox):
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")
+
+class tk_args():
+    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop):
+
+        self.args={}
+        # directories
+        self.args['input']=str(e_input)
+        setattr(self,'input',self.args['input'])
+        self.args['output']=str(e_output)
+        setattr(self,'output',self.args['output'])
+        self.args['tmpdir']=str(e_tmpdir)
+        setattr(self,'tmpdir',self.args['tmpdir'])
+        #hor stitch half acq mode
+        self.args['ax1']=int(e_ax1)
+        setattr(self,'ax1',self.args['ax1'])
+        self.args['ax2']=int(e_ax2)
+        setattr(self,'ax2',self.args['ax2'])
+        self.args['ax']=int(e_ax)
+        setattr(self,'ax',self.args['ax'])
+        self.args['crop']=int(e_crop)
+        setattr(self,'crop',self.args['crop'])

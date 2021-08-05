@@ -1,11 +1,30 @@
+import os
 import sys
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QRadioButton
 import logging
+import getpass
 
 class EZStitchGroup(QGroupBox):
 
     def __init__(self):
         super().__init__()
+
+        self.e_input = ""
+        self.e_output = ""
+        self.e_tmpdir = ""
+        self.e_typ = ""
+        self.e_ort = ""
+        self.e_slices = ""
+        self.e_flip = False
+        self.e_ipol = 0
+        self.e_ort = False
+        self.e_reprows = 0
+        self.e_gray256 = False
+        self.e_hmin = 0
+        self.e_hmax = 0
+        self.e_r2 = 0
+        self.e_r1 = 0
+        self.e_ax = 0
 
         self.setTitle("EZ Stitch")
         self.setStyleSheet('QGroupBox {color: purple;}')
@@ -161,12 +180,34 @@ class EZStitchGroup(QGroupBox):
 
         self.setLayout(layout)
 
+    #TODO Initialize actual parameter values
     def init_values(self):
-        pass
+        self.input_dir_entry.setText(os.getcwd())
+        tmpdir = os.path.join("/data", "tmp-ezstitch-" + getpass.getuser())
+        self.tmp_dir_entry.setText(tmpdir)
+        self.output_dir_entry.setText(os.getcwd() + '-stitched')
+        self.types_of_images_entry.setText("sli")
+        self.orthogonal_checkbox.setChecked(True)
+        self.start_stop_step_entry.setText("200,2000,200")
+        self.sample_moved_down_checkbox.setChecked(False)
+        self.interpolate_regions_rButton.setChecked(True)
+        self.num_overlaps_entry.setText("60")
+        self.clip_histogram_checkbox.setChecked(False)
+        self.min_value_entry.setText("-0.0003")
+        self.max_value_entry.setText("0.0002")
+        self.concatenate_rButton.setChecked(False)
+        self.first_row_entry.setText("40")
+        self.last_row_entry.setText("440")
+        self.half_acquisition_rButton.setChecked(False)
+        self.column_of_axis_entry.setText("245")
 
-    #TODO Setup rButtons
     def set_rButton(self):
-        pass
+        if self.interpolate_regions_rButton.isChecked():
+            logging.debug("Interpolate regions")
+        elif self.concatenate_rButton.isChecked():
+            logging.debug("Concatenate only")
+        elif self.half_acquisition_rButton.isChecked():
+            logging.debug("Half-acquisition mode")
 
     def input_button_pressed(self):
         logging.debug("Input button pressed")
@@ -231,3 +272,45 @@ class EZStitchGroup(QGroupBox):
     def help_button_pressed(self):
         logging.debug("Help button pressed")
 
+class tk_args():
+    def __init__(self, e_input, e_output, e_tmpdir,
+                    e_typ, e_ort, e_slices, e_flip, e_ipol,
+                    e_reprows, e_gray256, e_hmin, e_hmax,
+                    e_r1, e_r2, e_ax):
+
+        self.args={}
+        # directories
+        self.args['input']=str(e_input)
+        setattr(self, 'input', self.args['input'])
+        self.args['output']=str(e_output)
+        setattr(self, 'output', self.args['output'])
+        self.args['tmpdir']=str(e_tmpdir)
+        setattr(self, 'tmpdir', self.args['tmpdir'])
+        # parameters
+        self.args['typ']=str(e_typ)
+        setattr(self, 'typ', self.args['typ'])
+        self.args['slices']=str(e_slices)
+        setattr(self, 'slices', self.args['slices'])
+        self.args['flip']=bool(int(e_flip))
+        setattr(self, 'flip', self.args['flip'])
+        self.args['ipol']=int(e_ipol)
+        setattr(self, 'ipol', self.args['ipol'])
+        self.args['ort']=bool(int(e_ort))
+        setattr(self, 'ort', self.args['ort'])
+        # vert stitch with interp and normalization
+        self.args['reprows']=int(e_reprows)
+        setattr(self, 'reprows', self.args['reprows'])
+        self.args['gray256']=bool(int(e_gray256))
+        setattr(self, 'gray256', self.args['gray256'])
+        self.args['hmin']=float(e_hmin)
+        setattr(self, 'hmin', self.args['hmin'])
+        self.args['hmax']=float(e_hmax)
+        setattr(self, 'hmax', self.args['hmax'])
+        #simple vert stitch
+        self.args['r2']=int(e_r2)
+        setattr(self, 'r2', self.args['r2'])
+        self.args['r1']=int(e_r1)
+        setattr(self, 'r1', self.args['r1'])
+        #hor stitch half acq mode
+        self.args['ax']=int(e_ax)
+        setattr(self, 'ax', self.args['ax'])
