@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QRadioButton
+import logging
 
 class EZStitchGroup(QGroupBox):
 
@@ -11,77 +12,101 @@ class EZStitchGroup(QGroupBox):
 
         self.input_dir_button = QPushButton()
         self.input_dir_button.setText("Select input directory with a 000,001,...,00N subdirectories")
+        self.input_dir_button.clicked.connect(self.input_button_pressed)
+
         self.input_dir_entry = QLineEdit()
+        self.input_dir_entry.textChanged.connect(self.set_input_entry)
 
         self.tmp_dir_button = QPushButton()
         self.tmp_dir_button.setText("Select temporary directory - default value recommended")
+        self.tmp_dir_button.clicked.connect(self.temp_button_pressed)
+
         self.tmp_dir_entry = QLineEdit()
+        self.tmp_dir_entry.textChanged.connect(self.set_temp_entry)
 
         self.output_dir_button = QPushButton()
         self.output_dir_button.setText("Directory to save stitched images")
+        self.output_dir_button.clicked.connect(self.output_button_pressed)
+
         self.output_dir_entry = QLineEdit()
+        self.output_dir_entry.textChanged.connect(self.set_output_entry)
 
         self.types_of_images_label = QLabel()
         self.types_of_images_label.setText("Type of images to stitch (e.g. sli, tomo, proj-pr, etc.)")
+
         self.types_of_images_entry = QLineEdit()
+        self.types_of_images_entry.textChanged.connect(self.set_type_images)
 
         self.orthogonal_checkbox = QCheckBox()
         self.orthogonal_checkbox.setText("Stitch orthogonal sections")
+        self.orthogonal_checkbox.stateChanged.connect(self.set_stitch_checkbox)
 
         self.start_stop_step_label = QLabel()
         self.start_stop_step_label.setText("Which images to be stitched: start,stop,step:")
         self.start_stop_step_entry = QLineEdit()
+        self.start_stop_step_entry.textChanged.connect(self.set_start_stop_step)
 
         self.sample_moved_down_checkbox = QCheckBox()
         self.sample_moved_down_checkbox.setText("Sample was moved downwards during scan")
+        self.sample_moved_down_checkbox.stateChanged.connect(self.set_sample_moved_down)
 
         self.interpolate_regions_rButton = QRadioButton()
         self.interpolate_regions_rButton.setText("Interpolate overlapping regions and equalize intensity")
+        self.interpolate_regions_rButton.clicked.connect(self.set_rButton)
 
         self.num_overlaps_label = QLabel()
         self.num_overlaps_label.setText("Number of overlapping rows")
         self.num_overlaps_entry = QLineEdit()
+        self.num_overlaps_entry.textChanged.connect(self.set_overlap)
 
         self.clip_histogram_checkbox = QCheckBox()
         self.clip_histogram_checkbox.setText("Clip histogram and convert slices to 8-bit before saving")
+        self.clip_histogram_checkbox.stateChanged.connect(self.set_histogram_checkbox)
 
         self.min_value_label = QLabel()
         self.min_value_label.setText("Min value in 32-bit histogram")
         self.min_value_entry = QLineEdit()
+        self.min_value_entry.textChanged.connect(self.set_min_value)
 
         self.max_value_label = QLabel()
         self.max_value_label.setText("Max value in 32-bit histogram")
         self.max_value_entry = QLineEdit()
+        self.max_value_entry.textChanged.connect(self.set_max_value)
 
         self.concatenate_rButton = QRadioButton()
         self.concatenate_rButton.setText("Concatenate only")
+        self.concatenate_rButton.clicked.connect(self.set_rButton)
 
         self.first_row_label = QLabel()
         self.first_row_label.setText("First row")
         self.first_row_entry = QLineEdit()
+        self.first_row_entry.textChanged.connect(self.set_first_row)
 
         self.last_row_label = QLabel()
         self.last_row_label.setText("Last row")
         self.last_row_entry = QLineEdit()
+        self.last_row_entry.textChanged.connect(self.set_last_row)
 
         self.half_acquisition_rButton = QRadioButton()
         self.half_acquisition_rButton.setText("Half acquisition mode")
+        self.half_acquisition_rButton.clicked.connect(self.set_rButton)
 
         self.column_of_axis_label = QLabel()
         self.column_of_axis_label.setText("In which column the axis of rotation is")
         self.column_of_axis_entry = QLineEdit()
+        self.column_of_axis_entry.textChanged.connect(self.set_axis_column)
 
         self.stitch_button = QPushButton()
         self.stitch_button.setText("Stitch")
+        self.stitch_button.clicked.connect(self.stitch_button_pressed)
 
         self.delete_button = QPushButton()
         self.delete_button.setText("Delete output dir")
+        self.delete_button.clicked.connect(self.delete_button_pressed)
 
         self.help_button = QPushButton()
         self.help_button.setText("Help")
-
-        self.quit_button = QPushButton()
-        self.quit_button.setText("Quit")
+        self.help_button.clicked.connect(self.help_button_pressed)
 
         self.set_layout()
 
@@ -110,6 +135,8 @@ class EZStitchGroup(QGroupBox):
         grid.addWidget(self.clip_histogram_checkbox, 6, 0)
         grid.addWidget(self.min_value_label, 7, 0)
         grid.addWidget(self.min_value_entry, 7, 1)
+        grid.addWidget(self.max_value_label, 8, 0)
+        grid.addWidget(self.max_value_entry, 8, 1)
         layout.addItem(grid, 1, 0)
 
         grid2 = QGridLayout()
@@ -130,8 +157,77 @@ class EZStitchGroup(QGroupBox):
         hbox.addWidget(self.stitch_button)
         hbox.addWidget(self.delete_button)
         hbox.addWidget(self.help_button)
-        hbox.addWidget(self.quit_button)
         layout.addItem(hbox, 4, 0)
 
         self.setLayout(layout)
+
+    def init_values(self):
+        pass
+
+    #TODO Setup rButtons
+    def set_rButton(self):
+        pass
+
+    def input_button_pressed(self):
+        logging.debug("Input button pressed")
+
+    def set_input_entry(self):
+        logging.debug("Input: " + str(self.input_dir_entry.text()))
+
+    def temp_button_pressed(self):
+        logging.debug("Temp button pressed")
+
+    def set_temp_entry(self):
+        logging.debug("Temp: " + str(self.tmp_dir_entry.text()))
+
+    def output_button_pressed(self):
+        logging.debug("Output button pressed")
+
+    def set_output_entry(self):
+        logging.debug("Output: " + str(self.output_dir_entry.text()))
+
+    def set_type_images(self):
+        logging.debug("Type of images: " + str(self.types_of_images_entry.text()))
+
+    def set_stitch_checkbox(self):
+        logging.debug("Stitch orthogonal: " + str(self.orthogonal_checkbox.isChecked()))
+
+    def set_start_stop_step(self):
+        logging.debug("Images to be stitched: " + str(self.start_stop_step_entry.text()))
+
+    def set_sample_moved_down(self):
+        logging.debug("Sample moved down: " + str(self.sample_moved_down_checkbox.isChecked()))
+
+    def set_overlap(self):
+        logging.debug("Num overlapping rows: " + str(self.num_overlaps_entry.text()))
+
+    def set_histogram_checkbox(self):
+        logging.debug("Clip histogram:  " + str(self.clip_histogram_checkbox.isChecked()))
+
+    def set_min_value(self):
+        logging.debug("Min value: " + str(self.min_value_entry.text()))
+
+    def set_max_value(self):
+        logging.debug("Max value: " + str(self.max_value_entry.text()))
+
+    def set_concat_rButton(self):
+        pass
+
+    def set_first_row(self):
+        logging.debug("First row: " + str(self.first_row_entry.text()))
+
+    def set_last_row(self):
+        logging.debug("Last row: " + str(self.last_row_entry.text()))
+
+    def set_axis_column(self):
+        logging.debug("Column of axis: " + str(self.column_of_axis_entry.text()))
+
+    def stitch_button_pressed(self):
+        logging.debug("Stitch button pressed")
+
+    def delete_button_pressed(self):
+        logging.debug("Delete button pressed")
+
+    def help_button_pressed(self):
+        logging.debug("Help button pressed")
 

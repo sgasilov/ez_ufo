@@ -126,9 +126,10 @@ class GUI(qtw.QWidget):
         advanced_layout.addWidget(self.nlmdn_group, 2, 0)
 
         helpers_layout = qtw.QGridLayout()
-        helpers_layout.addWidget(self.multi_stitch_group, 0, 0)
-        helpers_layout.addWidget(self.ezmview_group, 0, 1)
-        helpers_layout.addWidget(self.ezstitch_group, 1, 0)
+        helpers_layout.addWidget(self.ezstitch_group, 0, 0)
+        helpers_layout.addWidget(self.multi_stitch_group, 0, 1)
+        helpers_layout.addWidget(self.ezmview_group, 1, 0)
+
 
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
