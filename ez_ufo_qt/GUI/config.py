@@ -228,22 +228,22 @@ class ConfigGroup(QGroupBox):
 
     def set_darks(self):
         logging.debug(self.darks_entry.text())
-        self.e_DIRTYP.insert(0, str(self.darks_entry.text()))
+        self.e_DIRTYP[0] = str(self.darks_entry.text())
         parameters.params['e_darks'] = str(self.darks_entry.text())
 
     def set_flats(self):
         logging.debug(self.flats_entry.text())
-        self.e_DIRTYP.insert(1, str(self.flats_entry.text()))
+        self.e_DIRTYP[1] = str(self.flats_entry.text())
         parameters.params['e_flats'] = str(self.flats_entry.text())
 
     def set_tomo(self):
         logging.debug(self.tomo_entry.text())
-        self.e_DIRTYP.insert(2, str(self.tomo_entry.text()))
+        self.e_DIRTYP[2] = str(self.tomo_entry.text())
         parameters.params['e_tomo'] = str(self.tomo_entry.text())
 
     def set_flats2(self):
         logging.debug(self.flats2_entry.text())
-        self.e_DIRTYP.insert(3, str(self.flats2_entry.text()))
+        self.e_DIRTYP[3] = str(self.flats2_entry.text())
         parameters.params['e_flats2'] = str(self.flats2_entry.text())
 
     def select_temp_dir(self):
