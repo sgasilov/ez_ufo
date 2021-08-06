@@ -27,7 +27,7 @@ class EZStitchGroup(QGroupBox):
         self.e_r1 = 0
         self.e_ax = 0
 
-        self.setTitle("EZ Stitch")
+        self.setTitle("EZ Stitch" (NOT WORKING YET))
         self.setStyleSheet('QGroupBox {color: purple;}')
 
         self.input_dir_button = QPushButton()
@@ -347,10 +347,10 @@ class EZStitchGroup(QGroupBox):
                        self.e_r1, self.e_r2, self.e_ax)
         logging.debug(args)
 
-        if os.path.exists(self.e_tmpdir.get()):
-            os.system('rm -r {}'.format(self.e_tmpdir.get()))
+        if os.path.exists(self.e_tmpdir):
+            os.system('rm -r {}'.format(self.e_tmpdir))
 
-        if os.path.exists(self.e_output.get()):
+        if os.path.exists(self.e_output):
             raise ValueError('Output directory exists')
 
         if self.e_ipol == 0:
@@ -376,6 +376,8 @@ class EZStitchGroup(QGroupBox):
         h += "to be added as options:\n"
         h += "(1) orthogonal reslicing, (2) interpolation, (3) horizontal stitching"
         QMessageBox.information(self, "Help", h)
+
+        #TODO CLEAN and quit when app closed
 
 class tk_args():
     def __init__(self, e_input, e_output, e_tmpdir,
