@@ -76,28 +76,21 @@ class EZMViewGroup(QGroupBox):
 
     def set_layout(self):
         layout = QGridLayout()
-        layout.addWidget(self.input_dir_button, 0, 0)
-        layout.addWidget(self.input_dir_entry, 1, 0)
-
-        grid = QGridLayout()
-        grid.addWidget(self.num_projections_label, 0, 0)
-        grid.addWidget(self.num_projections_entry, 0, 1)
-        grid.addWidget(self.num_flats_label, 1, 0)
-        grid.addWidget(self.num_flats_entry, 1, 1)
-        grid.addWidget(self.num_darks_label, 2, 0)
-        grid.addWidget(self.num_darks_entry, 2, 1)
-        grid.addWidget(self.num_vert_steps_label, 3, 0)
-        grid.addWidget(self.num_vert_steps_entry, 3, 1)
-        grid.addWidget(self.no_trailing_flats_darks_checkbox, 4, 0)
-        grid.addWidget(self.filenames_without_padding_checkbox, 4, 1)
-        layout.addItem(grid, 2, 0)
-
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.convert_button)
-        hbox.addWidget(self.undo_button)
-        hbox.addWidget(self.help_button)
-
-        layout.addItem(hbox, 3, 0)
+        layout.addWidget(self.input_dir_button, 0, 0, 1, 3)
+        layout.addWidget(self.input_dir_entry, 1, 0, 1, 3)
+        layout.addWidget(self.num_projections_label, 2, 0)
+        layout.addWidget(self.num_projections_entry, 2, 1, 1, 2)
+        layout.addWidget(self.num_flats_label, 3, 0)
+        layout.addWidget(self.num_flats_entry, 3, 1, 1, 2)
+        layout.addWidget(self.num_darks_label, 4, 0)
+        layout.addWidget(self.num_darks_entry, 4, 1, 1, 2)
+        layout.addWidget(self.num_vert_steps_label, 5, 0)
+        layout.addWidget(self.num_vert_steps_entry, 5, 1, 1, 2)
+        layout.addWidget(self.no_trailing_flats_darks_checkbox, 6, 0)
+        layout.addWidget(self.filenames_without_padding_checkbox, 6, 1, 1, 2)
+        layout.addWidget(self.convert_button, 7, 0, 1, 1)
+        layout.addWidget(self.undo_button, 7, 1, 1, 1)
+        layout.addWidget(self.help_button, 7, 2, 1, 1)
 
         self.setLayout(layout)
 
