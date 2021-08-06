@@ -18,6 +18,7 @@ from ez_ufo_qt.GUI.nlmdn import NLMDNGroup
 from ez_ufo_qt.GUI.ez_360_multi_stitch_qt import MultiStitch360Group
 from ez_ufo_qt.GUI.ezstitch_qt import EZStitchGroup
 from ez_ufo_qt.GUI.ezmview_qt import EZMViewGroup
+from ez_ufo_qt.GUI.ez_360_overlap_qt import Overlap360Group
 
 
 
@@ -86,6 +87,9 @@ class GUI(qtw.QWidget):
         self.ezstitch_group = EZStitchGroup()
         self.ezstitch_group.init_values()
 
+        self.overlap_group = Overlap360Group()
+        self.overlap_group.init_values()
+
         #######################################################
 
         self.set_layout()
@@ -128,10 +132,10 @@ class GUI(qtw.QWidget):
         advanced_layout.addWidget(self.nlmdn_group, 2, 0)
 
         helpers_layout = qtw.QGridLayout()
-        helpers_layout.addWidget(self.ezstitch_group, 0, 0)
-        helpers_layout.addWidget(self.multi_stitch_group, 0, 1)
-        helpers_layout.addWidget(self.ezmview_group, 1, 0)
-
+        helpers_layout.addWidget(self.ezmview_group, 0, 0)
+        helpers_layout.addWidget(self.overlap_group, 0, 1)
+        helpers_layout.addWidget(self.multi_stitch_group, 1, 0)
+        helpers_layout.addWidget(self.ezstitch_group, 1, 1)
 
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
