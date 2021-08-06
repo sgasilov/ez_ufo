@@ -1,11 +1,12 @@
 import os
 import sys
-from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QRadioButton
+from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QRadioButton, QFileDialog, QMessageBox
 import logging
 import getpass
 
-class EZStitchGroup(QGroupBox):
+from ez_ufo_qt.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
 
+class EZStitchGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
@@ -26,7 +27,7 @@ class EZStitchGroup(QGroupBox):
         self.e_r1 = 0
         self.e_ax = 0
 
-        self.setTitle("EZ Stitch (NOT WORKING YET)")
+        self.setTitle("EZ Stitch")
         self.setStyleSheet('QGroupBox {color: purple;}')
 
         self.input_dir_button = QPushButton()
@@ -213,97 +214,168 @@ class EZStitchGroup(QGroupBox):
 
         self.setLayout(layout)
 
-    #TODO Initialize actual parameter values
     def init_values(self):
-        self.input_dir_entry.setText(os.getcwd())
+        indir = os.getcwd()
+        self.input_dir_entry.setText(indir)
+        self.e_input = indir
         tmpdir = os.path.join("/data", "tmp-ezstitch-" + getpass.getuser())
         self.tmp_dir_entry.setText(tmpdir)
-        self.output_dir_entry.setText(os.getcwd() + '-stitched')
+        outdir = os.getcwd() + '-stitched'
+        self.output_dir_entry.setText(outdir)
+        self.e_output = outdir
         self.types_of_images_entry.setText("sli")
+        self.e_typ = "sli"
         self.orthogonal_checkbox.setChecked(True)
+        self.e_ort = True
         self.start_stop_step_entry.setText("200,2000,200")
+        self.e_slices = "200,2000,200"
         self.sample_moved_down_checkbox.setChecked(False)
+        self.e_flip = False
         self.interpolate_regions_rButton.setChecked(True)
+        self.e_ipol = 0
         self.num_overlaps_entry.setText("60")
+        self.e_reprows = "60"
         self.clip_histogram_checkbox.setChecked(False)
+        self.e_gray256 = False
         self.min_value_entry.setText("-0.0003")
+        self.e_hmin = "-0.0003"
         self.max_value_entry.setText("0.0002")
+        self.e_hmax = "0.0002"
         self.concatenate_rButton.setChecked(False)
         self.first_row_entry.setText("40")
+        self.e_r1 = "40"
         self.last_row_entry.setText("440")
+        self.e_r2 = "440"
         self.half_acquisition_rButton.setChecked(False)
         self.column_of_axis_entry.setText("245")
+        self.e_ax = "245"
 
     def set_rButton(self):
         if self.interpolate_regions_rButton.isChecked():
             logging.debug("Interpolate regions")
+            self.e_ipol = 0
         elif self.concatenate_rButton.isChecked():
             logging.debug("Concatenate only")
+            self.e_ipol = 1
         elif self.half_acquisition_rButton.isChecked():
             logging.debug("Half-acquisition mode")
+            self.e_ipol = 2
 
     def input_button_pressed(self):
         logging.debug("Input button pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.input_dir_entry.setText(directory)
+        self.e_input = directory
 
     def set_input_entry(self):
         logging.debug("Input: " + str(self.input_dir_entry.text()))
+        self.e_input = str(self.input_dir_entry.text())
 
     def temp_button_pressed(self):
         logging.debug("Temp button pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.tmp_dir_entry.setText(directory)
+        self.e_tmpdir = directory
 
     def set_temp_entry(self):
         logging.debug("Temp: " + str(self.tmp_dir_entry.text()))
+        self.e_tmpdir = str(self.tmp_dir_entry.text())
 
     def output_button_pressed(self):
         logging.debug("Output button pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.output_dir_entry.setText(directory)
+        self.e_output = directory
 
     def set_output_entry(self):
         logging.debug("Output: " + str(self.output_dir_entry.text()))
+        self.e_output = str(self.output_dir_entry.text())
 
     def set_type_images(self):
         logging.debug("Type of images: " + str(self.types_of_images_entry.text()))
+        self.e_typ = str(self.types_of_images_entry.text())
 
     def set_stitch_checkbox(self):
         logging.debug("Stitch orthogonal: " + str(self.orthogonal_checkbox.isChecked()))
+        self.e_ort = bool(self.orthogonal_checkbox.isChecked())
 
     def set_start_stop_step(self):
         logging.debug("Images to be stitched: " + str(self.start_stop_step_entry.text()))
+        self.e_slices = str(self.start_stop_step_entry.text())
 
     def set_sample_moved_down(self):
         logging.debug("Sample moved down: " + str(self.sample_moved_down_checkbox.isChecked()))
+        self.e_flip = bool(self.sample_moved_down_checkbox.isChecked())
 
     def set_overlap(self):
         logging.debug("Num overlapping rows: " + str(self.num_overlaps_entry.text()))
+        self.e_reprows = int(self.num_overlaps_entry.text())
 
     def set_histogram_checkbox(self):
         logging.debug("Clip histogram:  " + str(self.clip_histogram_checkbox.isChecked()))
+        self.e_gray256 = bool(self.clip_histogram_checkbox.isChecked())
 
+    #TODO Double check that this should be float
     def set_min_value(self):
         logging.debug("Min value: " + str(self.min_value_entry.text()))
+        self.e_hmin = float(self.min_value_entry.text())
 
     def set_max_value(self):
         logging.debug("Max value: " + str(self.max_value_entry.text()))
-
-    def set_concat_rButton(self):
-        pass
+        self.e_hmax = float(self.max_value_entry.text())
 
     def set_first_row(self):
         logging.debug("First row: " + str(self.first_row_entry.text()))
+        self.e_r1 = int(self.first_row_entry.text())
 
     def set_last_row(self):
         logging.debug("Last row: " + str(self.last_row_entry.text()))
+        self.e_r2 = int(self.last_row_entry.text())
 
     def set_axis_column(self):
         logging.debug("Column of axis: " + str(self.column_of_axis_entry.text()))
+        self.e_ax = int(self.column_of_axis_entry.text())
 
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
+        args = tk_args(self.e_input, self.e_output, self.e_tmpdir,
+                       self.e_typ, self.e_ort, self.e_slices, self.e_flip, self.e_ipol,
+                       self.e_reprows, self.e_gray256, self.e_hmin, self.e_hmax,
+                       self.e_r1, self.e_r2, self.e_ax)
+        logging.debug(args)
+
+        if os.path.exists(self.e_tmpdir.get()):
+            os.system('rm -r {}'.format(self.e_tmpdir.get()))
+
+        if os.path.exists(self.e_output.get()):
+            raise ValueError('Output directory exists')
+
+        if self.e_ipol == 0:
+            main_sti_mp(args)
+        elif self.e_ipol == 1:
+            main_conc_mp(args)
+        else:
+            main_360_mp_depth1(args)
 
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")
+        if os.path.exists(self.e_output):
+            os.system('rm -r {}'.format(self.e_output))
+            print("Directory with reconstructed data was removed")
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")
+        h = "Stitches images vertically\n"
+        h += "Directory structure is, f.i., Input/000, Input/001,...Input/00N\n"
+        h += "Each 000, 001, ... 00N directory must have identical subdirectory \"Type\"\n"
+        h += "Selected range of images from \"Type\" directory will be stitched vertically\n"
+        h += "across all subdirectories in the Input directory"
+        h += "to be added as options:\n"
+        h += "(1) orthogonal reslicing, (2) interpolation, (3) horizontal stitching"
+        QMessageBox.information(self, "Help", h)
 
 class tk_args():
     def __init__(self, e_input, e_output, e_tmpdir,
@@ -313,37 +385,37 @@ class tk_args():
 
         self.args={}
         # directories
-        self.args['input']=str(e_input)
+        self.args['input'] = str(e_input)
         setattr(self, 'input', self.args['input'])
-        self.args['output']=str(e_output)
+        self.args['output'] = str(e_output)
         setattr(self, 'output', self.args['output'])
-        self.args['tmpdir']=str(e_tmpdir)
+        self.args['tmpdir'] = str(e_tmpdir)
         setattr(self, 'tmpdir', self.args['tmpdir'])
         # parameters
-        self.args['typ']=str(e_typ)
+        self.args['typ'] = str(e_typ)
         setattr(self, 'typ', self.args['typ'])
-        self.args['slices']=str(e_slices)
+        self.args['slices'] = str(e_slices)
         setattr(self, 'slices', self.args['slices'])
-        self.args['flip']=bool(int(e_flip))
+        self.args['flip'] = bool(int(e_flip))
         setattr(self, 'flip', self.args['flip'])
-        self.args['ipol']=int(e_ipol)
+        self.args['ipol'] = int(e_ipol)
         setattr(self, 'ipol', self.args['ipol'])
-        self.args['ort']=bool(int(e_ort))
+        self.args['ort'] = bool(int(e_ort))
         setattr(self, 'ort', self.args['ort'])
         # vert stitch with interp and normalization
-        self.args['reprows']=int(e_reprows)
+        self.args['reprows'] = int(e_reprows)
         setattr(self, 'reprows', self.args['reprows'])
-        self.args['gray256']=bool(int(e_gray256))
+        self.args['gray256'] = bool(int(e_gray256))
         setattr(self, 'gray256', self.args['gray256'])
-        self.args['hmin']=float(e_hmin)
+        self.args['hmin'] = float(e_hmin)
         setattr(self, 'hmin', self.args['hmin'])
-        self.args['hmax']=float(e_hmax)
+        self.args['hmax'] = float(e_hmax)
         setattr(self, 'hmax', self.args['hmax'])
         #simple vert stitch
-        self.args['r2']=int(e_r2)
+        self.args['r2'] = int(e_r2)
         setattr(self, 'r2', self.args['r2'])
-        self.args['r1']=int(e_r1)
+        self.args['r1'] = int(e_r1)
         setattr(self, 'r1', self.args['r1'])
         #hor stitch half acq mode
-        self.args['ax']=int(e_ax)
+        self.args['ax'] = int(e_ax)
         setattr(self, 'ax', self.args['ax'])
