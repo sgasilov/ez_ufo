@@ -171,7 +171,7 @@ class MultiStitch360Group(QGroupBox):
         if os.path.exists(self.e_tmpdir):
             os.system('rm -r {}'.format(self.e_tmpdir))
 
-        if os.path.exists(self.e_output.get()):
+        if os.path.exists(self.e_output):
             raise ValueError('Output directory exists')
 
         main_360_mp_depth2(args)
