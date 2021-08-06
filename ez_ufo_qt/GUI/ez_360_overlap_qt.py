@@ -9,7 +9,7 @@ class Overlap360Group(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.setTitle("Find 360 Overlap")
+        self.setTitle("Find 360 Overlap (NOT WORKING YET)")
         self.setStyleSheet('QGroupBox {color: Orange;}')
 
         self.input_dir_button = QPushButton()

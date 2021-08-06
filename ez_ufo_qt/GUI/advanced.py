@@ -11,7 +11,7 @@ class AdvancedGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.setTitle("Advanced TOFU Reconstruction Settings")
+        self.setTitle("Advanced TOFU Reconstruction Settings (NOT WORKING YET)")
         self.setStyleSheet('QGroupBox {color: green;}')
 
         # TODO: THIS IS PLACEHOLDER GARBAGE FOR LAYOUT

@@ -11,7 +11,7 @@ class OptimizationGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.setTitle("Optimization Settings")
+        self.setTitle("Optimization Settings (NOT WORKING YET)")
         self.setStyleSheet('QGroupBox {color: orange;}')
 
         # TODO: THIS IS PLACEHOLDER GARBAGE FOR LAYOUT
