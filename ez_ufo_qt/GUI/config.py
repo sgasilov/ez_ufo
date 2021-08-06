@@ -80,11 +80,14 @@ class ConfigGroup(QGroupBox):
         self.use_common_flats_darks_checkbox.stateChanged.connect(self.set_flats_darks_checkbox)
 
         #TODO Implement these buttons
-        self.select_darks_button = QPushButton("Select path to darks")
+        self.select_darks_button = QPushButton("Select path to darks (or paste abs. path)")
+        self.select_darks_button.clicked.connect(self.select_darks_button_pressed)
 
-        self.select_flats_button = QPushButton("Select path to flats")
+        self.select_flats_button = QPushButton("Select path to flats (or paste abs. path)")
+        self.select_flats_button.clicked.connect(self.select_flats_button_pressed)
 
-        self.select_flats2_button = QPushButton("Select path to flats2")
+        self.select_flats2_button = QPushButton("Select path to flats2 (or paste abs. path)")
+        self.select_flats2_button.clicked.connect(self.select_flats2_button_pressed)
 
         self.darks_absolute_entry = QLineEdit()
         self.darks_absolute_entry.setText("Absolute path to darks")
@@ -177,6 +180,9 @@ class ConfigGroup(QGroupBox):
         layout.addWidget(self.preproc_checkbox, 2, 0)
         layout.addWidget(self.preproc_entry, 2, 1, 1, 3)
         layout.addWidget(self.open_image_after_reco_checkbox, 2, 4)
+        layout.addWidget(self.temp_dir_select, 3, 0)
+        layout.addWidget(self.temp_dir_entry, 3, 1, 1, 3)
+        layout.addWidget(self.keep_tmp_data_checkbox, 3, 4)
 
         fdt_groupbox = QGroupBox()
         fdt_layout = QGridLayout()
@@ -195,11 +201,8 @@ class ConfigGroup(QGroupBox):
         fdt_layout.addWidget(self.use_flats2_checkbox, 2, 3, Qt.AlignRight)
         fdt_layout.addWidget(self.flats2_absolute_entry, 2, 4)
         fdt_groupbox.setLayout(fdt_layout)
-        layout.addWidget(fdt_groupbox, 3, 0, 1, 5)
+        layout.addWidget(fdt_groupbox, 4, 0, 1, 5)
 
-        layout.addWidget(self.temp_dir_select, 4, 0)
-        layout.addWidget(self.temp_dir_entry, 4, 1, 1, 3)
-        layout.addWidget(self.keep_tmp_data_checkbox, 4, 4)
         layout.addWidget(self.open_settings_file, 5, 0, 1, 3)
         layout.addWidget(self.save_settings_file, 5, 3, 1, 2)
         layout.addWidget(self.quit_button, 6, 0)
@@ -330,6 +333,27 @@ class ConfigGroup(QGroupBox):
         logging.debug("Use same flats/darks across multiple experiments: "
                       + str(self.use_common_flats_darks_checkbox.isChecked()))
         parameters.params['e_common_darks_flats'] = bool(self.use_common_flats_darks_checkbox.isChecked())
+
+    def select_darks_button_pressed(self):
+        logging.debug("Select path to darks pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.darks_absolute_entry.setText(directory)
+        parameters.params['e_common_darks'] = directory
+
+    def select_flats_button_pressed(self):
+        logging.debug("Select path to flats pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.flats_absolute_entry.setText(directory)
+        parameters.params['e_common_flats'] = directory
+
+    def select_flats2_button_pressed(self):
+        logging.debug("Select path to flats2 pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.flats2_absolute_entry.setText(directory)
+        parameters.params['e_common_flats2'] = directory
 
     def set_common_darks(self):
         logging.debug("Common darks path: " + str(self.darks_absolute_entry.text()))
