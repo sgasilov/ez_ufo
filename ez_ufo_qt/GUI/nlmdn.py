@@ -30,18 +30,15 @@ class NLMDNGroup(QGroupBox):
         self.setStyleSheet('QGroupBox {color: royalblue;}')
 
         self.input_dir_button = QPushButton("Select input directory")
-        self.input_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.input_dir_button.clicked.connect(self.set_indir_button)
 
         self.select_img_button = QPushButton("Select one image")
-        self.select_img_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.select_img_button.clicked.connect(self.select_image)
 
         self.input_dir_entry = QLineEdit()
         self.input_dir_entry.textChanged.connect(self.set_indir_entry)
 
         self.output_dir_button = QPushButton("Select output directory or filename pattern")
-        self.output_dir_button.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.output_dir_button.clicked.connect(self.set_outdir_button)
 
         self.save_biftiff_checkbox = QCheckBox("Save in bigtiff container")
@@ -77,19 +74,15 @@ class NLMDNGroup(QGroupBox):
         self.sigma_checkbox.clicked.connect(self.set_sigma_checkbox)
 
         self.help_button = QPushButton("Help")
-        self.help_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
         self.help_button.clicked.connect(self.help_button_pressed)
 
         self.delete_button = QPushButton("Delete reco dir")
-        self.delete_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
         self.delete_button.clicked.connect(self.delete_button_pressed)
 
         self.dry_button = QPushButton("Dry run")
-        self.dry_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
         self.dry_button.clicked.connect(self.dry_button_pressed)
 
         self.apply_button = QPushButton("Apply filter")
-        self.apply_button.setStyleSheet("background-color:lightgrey;color:royalblue; font: 13pt; font-weight: bold;")
         self.apply_button.clicked.connect(self.apply_button_pressed)
 
         self.set_layout()
@@ -97,32 +90,30 @@ class NLMDNGroup(QGroupBox):
     def set_layout(self):
         layout = QGridLayout()
 
-        layout.addWidget(self.input_dir_button, 0, 0)
-        layout.addWidget(self.select_img_button, 0, 1)
-        layout.addWidget(self.input_dir_entry, 1, 0, 1, 2)
-        layout.addWidget(self.output_dir_button, 2, 0)
-        layout.addWidget(self.save_biftiff_checkbox, 2, 1, Qt.AlignCenter)
-        layout.addWidget(self.output_dir_entry, 3, 0, 1, 2)
-        layout.addWidget(self.similarity_radius_label, 4, 0)
-        layout.addWidget(self.similarity_radius_entry, 4, 1)
-        layout.addWidget(self.patch_radius_label, 5, 0)
-        layout.addWidget(self.patch_radius_entry, 5, 1)
-        layout.addWidget(self.smoothing_label, 6, 0)
-        layout.addWidget(self.smoothing_entry, 6, 1)
-        layout.addWidget(self.noise_std_label, 7, 0)
-        layout.addWidget(self.noise_std_entry, 7, 1)
-        layout.addWidget(self.window_label, 8, 0)
-        layout.addWidget(self.window_entry, 8, 1)
-        layout.addWidget(self.fast_checkbox, 9, 0, Qt.AlignCenter)
-        layout.addWidget(self.sigma_checkbox, 9, 1, Qt.AlignCenter)
+        layout.addWidget(self.input_dir_button, 0, 0, 1, 2)
+        layout.addWidget(self.select_img_button, 0, 2, 1, 2)
+        layout.addWidget(self.input_dir_entry, 1, 0, 1, 4)
+        layout.addWidget(self.output_dir_button, 2, 0, 1, 2)
+        layout.addWidget(self.save_biftiff_checkbox, 2, 2, 1, 2, Qt.AlignCenter)
+        layout.addWidget(self.output_dir_entry, 3, 0, 1, 4)
+        layout.addWidget(self.similarity_radius_label, 4, 0, 1, 2)
+        layout.addWidget(self.similarity_radius_entry, 4, 2, 1, 2)
+        layout.addWidget(self.patch_radius_label, 5, 0, 1, 2)
+        layout.addWidget(self.patch_radius_entry, 5, 2, 1, 2)
+        layout.addWidget(self.smoothing_label, 6, 0, 1, 2)
+        layout.addWidget(self.smoothing_entry, 6, 2, 1, 2)
+        layout.addWidget(self.noise_std_label, 7, 0, 1, 2)
+        layout.addWidget(self.noise_std_entry, 7, 2, 1, 2)
+        layout.addWidget(self.window_label, 8, 0, 1, 2)
+        layout.addWidget(self.window_entry, 8, 2, 1, 2)
+        layout.addWidget(self.fast_checkbox, 9, 0, 1, 2, Qt.AlignCenter)
+        layout.addWidget(self.sigma_checkbox, 9, 2, 1, 2, Qt.AlignCenter)
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.help_button)
-        hbox.addWidget(self.delete_button)
-        hbox.addWidget(self.dry_button)
-        hbox.addWidget(self.apply_button)
+        layout.addWidget(self.help_button, 10, 0, 1, 1)
+        layout.addWidget(self.delete_button, 10, 1)
+        layout.addWidget(self.dry_button, 10, 2)
+        layout.addWidget(self.apply_button, 10, 3)
 
-        layout.addItem(hbox, 10, 0, 1, 2)
 
         self.setLayout(layout)
 

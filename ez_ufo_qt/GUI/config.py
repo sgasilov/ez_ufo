@@ -79,7 +79,6 @@ class ConfigGroup(QGroupBox):
         self.use_common_flats_darks_checkbox.setText("Use common flats/darks across multiple experiments")
         self.use_common_flats_darks_checkbox.stateChanged.connect(self.set_flats_darks_checkbox)
 
-        #TODO Implement these buttons
         self.select_darks_button = QPushButton("Select path to darks (or paste abs. path)")
         self.select_darks_button.clicked.connect(self.select_darks_button_pressed)
 
