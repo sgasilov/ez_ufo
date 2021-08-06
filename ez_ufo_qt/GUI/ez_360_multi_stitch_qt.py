@@ -77,29 +77,20 @@ class MultiStitch360Group(QGroupBox):
     def set_layout(self):
         layout = QGridLayout()
 
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.input_dir_button)
-        vbox.addWidget(self.input_dir_entry)
-        vbox.addWidget(self.temp_dir_button)
-        vbox.addWidget(self.temp_dir_entry)
-        vbox.addWidget(self.output_dir_button)
-        vbox.addWidget(self.output_dir_entry)
-        layout.addItem(vbox, 0, 0)
-
-        layout.addWidget(self.crop_checkbox, 1, 0)
-
-        grid = QGridLayout()
-        grid.addWidget(self.axis_bottom_label, 0, 0)
-        grid.addWidget(self.axis_bottom_entry, 0, 1)
-        grid.addWidget(self.axis_top_label, 1, 0)
-        grid.addWidget(self.axis_top_entry, 1, 1)
-        layout.addItem(grid)
-
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.stitch_button)
-        hbox.addWidget(self.delete_button)
-        hbox.addWidget(self.help_button)
-        layout.addItem(hbox, 4, 0)
+        layout.addWidget(self.input_dir_button, 0, 0, 1, 3)
+        layout.addWidget(self.input_dir_entry, 1, 0, 1, 3)
+        layout.addWidget(self.temp_dir_button, 2, 0, 1, 3)
+        layout.addWidget(self.temp_dir_entry, 3, 0, 1, 3)
+        layout.addWidget(self.output_dir_button, 4, 0, 1, 3)
+        layout.addWidget(self.output_dir_entry, 5, 0, 1, 3)
+        layout.addWidget(self.crop_checkbox, 6, 0, 1, 3)
+        layout.addWidget(self.axis_bottom_label, 7, 0, 1, 2)
+        layout.addWidget(self.axis_bottom_entry, 7, 2, 1, 1)
+        layout.addWidget(self.axis_top_label, 8, 0, 1, 2)
+        layout.addWidget(self.axis_top_entry, 8, 2, 1, 1)
+        layout.addWidget(self.help_button, 9, 0)
+        layout.addWidget(self.delete_button, 9, 1)
+        layout.addWidget(self.stitch_button, 9, 2)
 
         self.setLayout(layout)
 
