@@ -178,6 +178,8 @@ class MultiStitch360Group(QGroupBox):
 
     #TODO Call cleanup function if application is closed
 
+    #TODO Fix Jrav bug running out of resources and add dropdown menu option
+
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")
         if os.path.exists(self.e_output.get()):
