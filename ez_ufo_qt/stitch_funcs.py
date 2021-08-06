@@ -263,7 +263,7 @@ def main_360_mp_depth2(args):
                 num_projs = len(names)
                 if num_projs < 2:
                     warnings.warn("Warning: less than 2 files")
-                print('{} files in {}').format(num_projs, sdir)
+                print('{} files in {}'.format(num_projs, sdir))
 
                 os.makedirs(os.path.join(out_dir, sdir))
                 out_fmt = os.path.join(out_dir, sdir, 'sti-{:>04}.tif')
@@ -302,7 +302,7 @@ def main_360_mp_depth2(args):
             num_projs = len(names)
             if num_projs < 2:
                 warnings.warn("Warning: less than 2 files")
-            print ('{} files in {}').format(num_projs, sdir)
+            print ('{} files in {}'.format(num_projs, sdir))
 
             os.makedirs(os.path.join(args.output, sdir))
             out_fmt = os.path.join(args.output, sdir, 'sti-{:>04}.tif')
