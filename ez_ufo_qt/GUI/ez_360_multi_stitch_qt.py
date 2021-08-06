@@ -1,14 +1,16 @@
 import sys
-from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox
 import logging
 import os
 import getpass
+from ez_ufo_qt.stitch_funcs import main_360_mp_depth2
 
 class MultiStitch360Group(QGroupBox):
 
     def __init__(self):
         super().__init__()
 
+        self.args = {}
         self.e_input = ""
         self.e_output = ""
         self.e_tmpdir = ""
@@ -16,6 +18,7 @@ class MultiStitch360Group(QGroupBox):
         self.e_ax2 = 0
         self.e_ax = 0
         self.e_ax = 0
+        self.e_crop = 0
 
         self.setTitle("360 Multi Stitch")
         self.setStyleSheet('QGroupBox {color: red;}')
@@ -100,69 +103,115 @@ class MultiStitch360Group(QGroupBox):
 
         self.setLayout(layout)
 
-    #TODO initialize actual parameter values
     def init_values(self):
         self.input_dir_entry.setText(os.getcwd())
+        self.e_input = os.getcwd()
         tmp = os.path.join("/data", "tmp-ezstitch-" + getpass.getuser())
         self.temp_dir_entry.setText(tmp)
+        self.e_tmpdir = tmp
         self.output_dir_entry.setText(os.getcwd() + '-stitched')
+        self.e_output = os.getcwd() + '-stitched'
         self.crop_checkbox.setChecked(True)
+        self.e_crop = True
         self.axis_bottom_entry.setText("245")
+        self.e_ax1 = 245
         self.axis_top_entry.setText("245")
+        self.e_ax2 = 245
+        self.e_ax = self.e_ax1
 
     def input_button_pressed(self):
         logging.debug("Input button pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.input_dir_entry.setText(directory)
+        self.e_input = directory
 
     def set_input_entry(self):
         logging.debug("Input directory: " + str(self.input_dir_entry.text()))
+        self.e_input = str(self.input_dir_entry.text())
 
     def temp_button_pressed(self):
         logging.debug("Temp button pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.temp_dir_entry.setText(directory)
+        self.e_tmpdir = directory
 
     def set_temp_entry(self):
         logging.debug("Temp directory: " + str(self.temp_dir_entry.text()))
+        self.e_tmpdir = str(self.temp_dir_entry.text())
 
     def output_button_pressed(self):
         logging.debug("Output button pressed")
+        dir_explore = QFileDialog(self)
+        directory = dir_explore.getExistingDirectory()
+        self.output_dir_entry.setText(directory)
+        self.e_output = directory
 
     def set_output_entry(self):
         logging.debug("Output directory: " + str(self.output_dir_entry.text()))
+        self.e_output = str(self.output_dir_entry.text())
 
     def set_crop_projections_checkbox(self):
         logging.debug("Crop projections: " + str(self.crop_checkbox.isChecked()))
+        self.e_crop = bool(self.crop_checkbox.isChecked())
 
     def set_axis_bottom(self):
         logging.debug("Axis Bottom : " + str(self.axis_bottom_entry.text()))
+        self.e_ax1 = int(self.axis_bottom_entry.text())
 
     def set_axis_top(self):
         logging.debug("Axis Top: " + str(self.axis_top_entry.text()))
+        self.e_ax2 = int(self.axis_top_entry.text())
 
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
+        args = tk_args(self.e_input, self.e_output, self.e_tmpdir, self.e_ax1, self.e_ax2, self.e_ax, self.e_crop)
+
+        if os.path.exists(self.e_tmpdir):
+            os.system('rm -r {}'.format(self.e_tmpdir))
+
+        if os.path.exists(self.e_output.get()):
+            raise ValueError('Output directory exists')
+
+        main_360_mp_depth2(args)
+
+    #TODO Call cleanup function if application is closed
 
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")
+        if os.path.exists(self.e_output.get()):
+            os.system('rm -r {}'.format(self.e_output.get()))
+            print("Directory with reconstructed data was removed")
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")
+        h = "Stitches images horizontally\n"
+        h += "Directory structure is, f.i., Input/000, Input/001,...Input/00N\n"
+        h += "Each 000, 001, ... 00N directory must have identical subdirectory \"Type\"\n"
+        h += "Selected range of images from \"Type\" directory will be stitched vertically\n"
+        h += "across all subdirectories in the Input directory"
+        h += "to be added as options:\n"
+        h += "(1) orthogonal reslicing, (2) interpolation, (3) horizontal stitching"
+        QMessageBox.information(self, "Help", h)
 
 class tk_args():
     def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop):
 
         self.args={}
         # directories
-        self.args['input']=str(e_input)
-        setattr(self,'input',self.args['input'])
-        self.args['output']=str(e_output)
-        setattr(self,'output',self.args['output'])
-        self.args['tmpdir']=str(e_tmpdir)
-        setattr(self,'tmpdir',self.args['tmpdir'])
+        self.args['input'] = str(e_input)
+        setattr(self, 'input', self.args['input'])
+        self.args['output'] = str(e_output)
+        setattr(self, 'output', self.args['output'])
+        self.args['tmpdir'] = str(e_tmpdir)
+        setattr(self, 'tmpdir', self.args['tmpdir'])
         #hor stitch half acq mode
-        self.args['ax1']=int(e_ax1)
-        setattr(self,'ax1',self.args['ax1'])
-        self.args['ax2']=int(e_ax2)
-        setattr(self,'ax2',self.args['ax2'])
-        self.args['ax']=int(e_ax)
-        setattr(self,'ax',self.args['ax'])
-        self.args['crop']=int(e_crop)
-        setattr(self,'crop',self.args['crop'])
+        self.args['ax1'] = int(e_ax1)
+        setattr(self, 'ax1', self.args['ax1'])
+        self.args['ax2'] = int(e_ax2)
+        setattr(self, 'ax2', self.args['ax2'])
+        self.args['ax'] = int(e_ax)
+        setattr(self, 'ax', self.args['ax'])
+        self.args['crop'] = int(e_crop)
+        setattr(self, 'crop', self.args['crop'])

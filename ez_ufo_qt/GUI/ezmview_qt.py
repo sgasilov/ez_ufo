@@ -188,4 +188,25 @@ class EZMViewGroup(QGroupBox):
         h += "Conversions happens in-place but can be undone"
         QMessageBox.information(self, "Help", h)
 
+class tk_args():
+    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop):
+
+        self.args={}
+        # directories
+        self.args['input']=str(e_input.get())
+        setattr(self, 'input', self.args['input'])
+        self.args['output'] = str(e_output.get())
+        setattr(self, 'output', self.args['output'])
+        self.args['tmpdir'] = str(e_tmpdir.get())
+        setattr(self, 'tmpdir', self.args['tmpdir'])
+        #hor stitch half acq mode
+        self.args['ax1'] = int(e_ax1.get())
+        setattr(self, 'ax1', self.args['ax1'])
+        self.args['ax2'] = int(e_ax2.get())
+        setattr(self, 'ax2', self.args['ax2'])
+        self.args['ax'] = int(e_ax.get())
+        setattr(self, 'ax', self.args['ax'])
+        self.args['crop'] = int(e_crop.get())
+        setattr(self, 'crop', self.args['crop'])
+
 
