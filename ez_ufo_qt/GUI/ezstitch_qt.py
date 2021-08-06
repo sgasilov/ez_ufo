@@ -27,7 +27,7 @@ class EZStitchGroup(QGroupBox):
         self.e_r1 = 0
         self.e_ax = 0
 
-        self.setTitle("EZ Stitch" (NOT WORKING YET))
+        self.setTitle("EZ Stitch (NOT WORKING YET)")
         self.setStyleSheet('QGroupBox {color: purple;}')
 
         self.input_dir_button = QPushButton()
