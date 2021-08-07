@@ -84,6 +84,7 @@ class NLMDNGroup(QGroupBox):
 
         self.apply_button = QPushButton("Apply filter")
         self.apply_button.clicked.connect(self.apply_button_pressed)
+        self.apply_button.setStyleSheet("color:royalblue; font-weight: bold;")
 
         self.set_layout()
 

@@ -63,9 +63,10 @@ class MultiStitch360Group(QGroupBox):
         self.stitch_button = QPushButton()
         self.stitch_button.setText("Stitch")
         self.stitch_button.clicked.connect(self.stitch_button_pressed)
+        self.stitch_button.setStyleSheet("color:royalblue;font-weight:bold")
 
         self.delete_button = QPushButton()
-        self.delete_button.setText("Delete")
+        self.delete_button.setText("Delete output dir")
         self.delete_button.clicked.connect(self.delete_button_pressed)
 
         self.help_button = QPushButton()

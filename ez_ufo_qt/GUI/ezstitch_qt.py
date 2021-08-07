@@ -119,6 +119,7 @@ class EZStitchGroup(QGroupBox):
         self.stitch_button = QPushButton()
         self.stitch_button.setText("Stitch")
         self.stitch_button.clicked.connect(self.stitch_button_pressed)
+        self.stitch_button.setStyleSheet("color:royalblue;font-weight:bold")
 
         self.delete_button = QPushButton()
         self.delete_button.setText("Delete output dir")
@@ -207,9 +208,9 @@ class EZStitchGroup(QGroupBox):
         layout.addItem(grid3, 3, 0)
 
         hbox = QHBoxLayout()
-        hbox.addWidget(self.stitch_button)
-        hbox.addWidget(self.delete_button)
         hbox.addWidget(self.help_button)
+        hbox.addWidget(self.delete_button)
+        hbox.addWidget(self.stitch_button)
         layout.addItem(hbox, 4, 0)
 
         self.setLayout(layout)

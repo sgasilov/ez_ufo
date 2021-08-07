@@ -60,17 +60,18 @@ class EZMViewGroup(QGroupBox):
         self.filenames_without_padding_checkbox.setText("File names without zero padding")
         self.filenames_without_padding_checkbox.stateChanged.connect(self.set_file_names_checkbox)
 
-        self.convert_button = QPushButton()
-        self.convert_button.setText("Convert")
-        self.convert_button.clicked.connect(self.convert_button_pressed)
+        self.help_button = QPushButton()
+        self.help_button.setText("Help")
+        self.help_button.clicked.connect(self.help_button_pressed)
 
         self.undo_button = QPushButton()
         self.undo_button.setText("Undo")
         self.undo_button.clicked.connect(self.undo_button_pressed)
 
-        self.help_button = QPushButton()
-        self.help_button.setText("Help")
-        self.help_button.clicked.connect(self.help_button_pressed)
+        self.convert_button = QPushButton()
+        self.convert_button.setText("Convert")
+        self.convert_button.clicked.connect(self.convert_button_pressed)
+        self.convert_button.setStyleSheet("color:royalblue;font-weight:bold")
 
         self.set_layout()
 
@@ -88,10 +89,9 @@ class EZMViewGroup(QGroupBox):
         layout.addWidget(self.num_vert_steps_entry, 5, 1, 1, 2)
         layout.addWidget(self.no_trailing_flats_darks_checkbox, 6, 0)
         layout.addWidget(self.filenames_without_padding_checkbox, 6, 1, 1, 2)
-        layout.addWidget(self.convert_button, 7, 0, 1, 1)
+        layout.addWidget(self.help_button, 7, 0, 1, 1)
         layout.addWidget(self.undo_button, 7, 1, 1, 1)
-        layout.addWidget(self.help_button, 7, 2, 1, 1)
-
+        layout.addWidget(self.convert_button, 7, 2, 1, 1)
         self.setLayout(layout)
 
     def init_values(self):

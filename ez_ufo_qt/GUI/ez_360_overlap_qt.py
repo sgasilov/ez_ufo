@@ -58,6 +58,7 @@ class Overlap360Group(QGroupBox):
 
         self.find_overlap_button = QPushButton("Find Overlap")
         self.find_overlap_button.clicked.connect(self.overlap_button_pressed)
+        self.find_overlap_button.setStyleSheet("color:royalblue;font-weight:bold")
 
         self.help_button = QPushButton("Help")
         self.help_button.clicked.connect(self.help_button_pressed)
@@ -81,8 +82,8 @@ class Overlap360Group(QGroupBox):
         layout.addWidget(self.step_label, 9, 0)
         layout.addWidget(self.step_entry, 9, 1)
         layout.addWidget(self.axis_on_left, 10, 0)
-        layout.addWidget(self.find_overlap_button, 11, 0)
-        layout.addWidget(self.help_button, 11, 1)
+        layout.addWidget(self.help_button, 11, 0)
+        layout.addWidget(self.find_overlap_button, 11, 1)
 
         self.setLayout(layout)
 
