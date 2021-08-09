@@ -127,6 +127,7 @@ class CentreOfRotationGroup(QGroupBox):
             logging.debug("Use image midpoint")
             parameters.params['e_axis_bypass'] = True
 
+    # TODO Fix logic for using image midpoint rButton
     def set_rButton_from_params(self):
         if parameters.params['e_ax'] == 1:
             self.auto_correlate_rButton.setChecked(True)
