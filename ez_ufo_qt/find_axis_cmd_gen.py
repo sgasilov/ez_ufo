@@ -46,8 +46,8 @@ class findCOR_cmds(object):
                 indir.append(args.common_flats2)
             return indir
 
-    def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews):
-        indir = self.make_inpaths(ctset[0], ctset[1])
+    def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews, args):
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
         image = read_image(get_filenames(indir[2])[0])
         cmd =  'tofu lamino --absorptivity --fix-nan-and-inf --overall-angle 180'\
                ' --lamino-angle 90 --height 2'

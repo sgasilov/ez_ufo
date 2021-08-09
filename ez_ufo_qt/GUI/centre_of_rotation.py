@@ -57,27 +57,33 @@ class CentreOfRotationGroup(QGroupBox):
         self.inc_axis_entry.setStyleSheet("background-color:white")
 
         self.bypass_checkbox = QCheckBox()
-        self.bypass_checkbox.setText("Bypass axis search and use image midpoint (for half-acquisition)")
+        self.bypass_checkbox.setText("Use image midpoint (for half-acquisition)")
         self.bypass_checkbox.stateChanged.connect(self.set_bypass)
+
+        #TODO Used for proper spacing - should be a better way
+        self.blank_label = QLabel("                                ")
+        self.blank_label2 = QLabel("                                ")
 
         self.set_layout()
 
     def set_layout(self):
         layout = QGridLayout()
         layout.addWidget(self.auto_correlate_rButton, 0, 0)
-        layout.addWidget(self.auto_minimize_rButton, 0, 1)
-        layout.addWidget(self.search_rotation_label, 1, 0)
-        layout.addWidget(self.search_rotation_entry, 1, 1)
-        layout.addWidget(self.search_in_slice_label, 2, 0)
-        layout.addWidget(self.search_in_slice_entry, 2, 1)
-        layout.addWidget(self.size_of_recon_label, 3, 0)
-        layout.addWidget(self.size_of_recon_entry, 3, 1)
-        layout.addWidget(self.define_axis_rButton, 4, 0)
-        layout.addWidget(self.axis_col_label, 5, 0)
-        layout.addWidget(self.axis_col_entry, 5, 1)
-        layout.addWidget(self.inc_axis_label, 6, 0)
-        layout.addWidget(self.inc_axis_entry, 6, 1)
-        layout.addWidget(self.bypass_checkbox, 7, 0)
+        layout.addWidget(self.blank_label, 0, 1)
+        layout.addWidget(self.blank_label2, 0, 2)
+        layout.addWidget(self.auto_minimize_rButton, 1, 0)
+        layout.addWidget(self.search_rotation_label, 2, 0)
+        layout.addWidget(self.search_rotation_entry, 2, 1, 1, 2)
+        layout.addWidget(self.search_in_slice_label, 3, 0)
+        layout.addWidget(self.search_in_slice_entry, 3, 1, 1, 2)
+        layout.addWidget(self.size_of_recon_label, 4, 0)
+        layout.addWidget(self.size_of_recon_entry, 4, 1, 1, 2)
+        layout.addWidget(self.define_axis_rButton, 5, 0)
+        layout.addWidget(self.axis_col_label, 6, 0)
+        layout.addWidget(self.axis_col_entry, 6, 1, 1, 2)
+        layout.addWidget(self.inc_axis_label, 7, 0)
+        layout.addWidget(self.inc_axis_entry, 7, 1, 1, 2)
+        layout.addWidget(self.bypass_checkbox, 8, 0)
 
         self.setLayout(layout)
 
