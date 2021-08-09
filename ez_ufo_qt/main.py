@@ -83,7 +83,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         cmds.append(cmd)
     if args.pre:
         cmds.append("echo \" - Applying filter(s) to images \"")
-        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir, args.dryrun)
+        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir, args.dryrun, args)
         cmds.extend(cmds_prepro)
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])

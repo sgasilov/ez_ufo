@@ -136,9 +136,9 @@ class ufo_cmds(object):
         cmd += ' ! write filename={}'.format(enquote(out_pattern))
         return cmd
 
-    def get_pre_cmd(self, ctset, pre_cmd, tmpdir, dryrun):
-        indir = self.make_inpaths(ctset[0], ctset[1])
-        outdir = self.make_inpaths(tmpdir, ctset[1])
+    def get_pre_cmd(self, ctset, pre_cmd, tmpdir, dryrun, args):
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
+        outdir = self.make_inpaths(tmpdir, ctset[1], args)
         # add index to the name of th eoutput directory with projections
         # if enabled preprocessing is always the first step
         outdir[2] = os.path.join(tmpdir, "proj-step1")
@@ -156,8 +156,8 @@ class ufo_cmds(object):
         return cmds
 
     def get_inp_cmd(self, ctset, tmpdir, args, N, nviews, any_flat):
-        indir = self.make_inpaths(ctset[0], ctset[1])
-        outdir = self.make_inpaths(tmpdir, ctset[1])
+        indir = self.make_inpaths(ctset[0], ctset[1], args)
+        outdir = self.make_inpaths(tmpdir, ctset[1], args)
         cmds = []
         ######### CREATE MASK #########
         mask_file = os.path.join(tmpdir, "mask.tif")

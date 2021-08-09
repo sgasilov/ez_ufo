@@ -569,7 +569,7 @@ class ConfigGroup(QGroupBox):
             raise InvalidInputError("Value out of range for: SNR")
 
         # Photon energy: e_energy
-        if int(parameters.params['e_energy']) < 0:
+        if float(parameters.params['e_energy']) < 0:
             raise InvalidInputError("Value out of range for: Photon energy [keV]")
 
         # Pixel size: e_pixel
