@@ -46,27 +46,41 @@ class findCOR_cmds(object):
                 indir.append(args.common_flats2)
             return indir
 
-    def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews, args):
+    def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews, args, WH):
         indir = self.make_inpaths(ctset[0], ctset[1], args)
         image = read_image(get_filenames(indir[2])[0])
-        cmd =  'tofu lamino --absorptivity --fix-nan-and-inf --overall-angle 180'\
-               ' --lamino-angle 90 --height 2'
+        cmd =  'tofu reco --absorptivity --fix-nan-and-inf --overall-angle 180'\
+               ' --axis-angle-x 0'
         cmd += ' --darks {} --flats {} --projections {}'.\
                     format(indir[0], indir[1], enquote(indir[2]))
         cmd += ' --number {}'.format(nviews)
-        cmd += ' --angle {:0.5f}'.format( np.radians(180.0/float(nviews)) )
+        #cmd += ' --angle {:0.5f}'.format( np.radians(180.0/float(nviews)) )
         if ctset[1]==4:
             cmd += ' --flats2 {}'.format(indir[3])
         out_pattern = os.path.join(tmpdir,"axis-search/sli")
         cmd += ' --output {}'.format(enquote(out_pattern))
         cmd += ' --x-region={},{},{}'.format(int(-p_width / 2), int(p_width / 2), 1)
         cmd += ' --y-region={},{},{}'.format(int(-p_width / 2), int(p_width / 2), 1)
-        cmd += ' --y {} --height 2'.format(search_row)
-        cmd += ' --z-parameter x-center'
-        cmd += ' --region={}'.format(enquote(ax_range))
-        cmd += ' --z 0'
+        #cmd += ' --y {} --height 2'.format(search_row)
+        image_width = WH[1]
+        #search_row_shifted = int(search_row) - int(image_width/2)
+        #search_row_string = str(search_row_shifted) + "," + str(search_row_shifted+1) + "," + str(1)
+        #cmd += ' --region={}'.format(search_row_string)
+        cmd += ' --z-parameter center-position-x'
+        #Split ax_range by commas
+        ax_range_list = ax_range.split(",")
+        #Subtract imagewidth/2 from range_min
+        range_min = ax_range_list[0]
+        range_min_shifted = int(range_min) - int(image_width/2)
+        #Subtract imagewidth/2 from range_max
+        range_max = ax_range_list[1]
+        range_max_shifted = int(range_max) - int(image_width/2)
+        #Create string from range_min, range_max and step separated by commas
+        range_string = str(range_min_shifted) + ',' + str(range_max_shifted) + ',' + str(ax_range_list[2])
+        cmd += ' --region={}'.format(range_string)
+        #cmd += ' --z 0'
         res = [float(num) for num in ax_range.split(',')]
-        cmd += ' --axis {},{}'.format( (res[0]+res[1])/2., 1.0) #middle of ax search range?
+        #cmd += ' --axis {},{}'.format( (res[0]+res[1])/2., 1.0) #middle of ax search range?
         cmd += " --output-bytes-per-file 0"
         # cmd += ' --delete-slice-dir'
         print(cmd)

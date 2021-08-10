@@ -534,7 +534,7 @@ class ConfigGroup(QGroupBox):
 
         # Size of reconstructed: e_ax_p_size
         if int(parameters.params['e_ax_p_size']) < 0:
-            raise InvalidInputError("Value out of range for: Size of reconstructed path [pixel]")
+            raise InvalidInputError("Value out of range for: Size of reconstructed patch [pixel]")
 
         # Axis is in column No: e_ax_fix
         if float(parameters.params['e_ax_fix']) < 0:
