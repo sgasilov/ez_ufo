@@ -76,7 +76,8 @@ class findCOR_cmds(object):
         range_max = ax_range_list[1]
         range_max_shifted = int(range_max) - int(image_width/2)
         #Create string from range_min, range_max and step separated by commas
-        range_string = str(range_min_shifted) + ',' + str(range_max_shifted) + ',' + str(ax_range_list[2])
+        step = ax_range_list[2]
+        range_string = str(range_min_shifted) + ',' + str(range_max_shifted) + ',' + str(step)
         cmd += ' --region={}'.format(range_string)
         #cmd += ' --z 0'
         res = [float(num) for num in ax_range.split(',')]
