@@ -223,6 +223,7 @@ def main_tk(args, fdt_names):
                     os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))
                     ax = FindCOR.find_axis_std(ctset, args.tmpdir, \
                                                args.ax_range, args.ax_p_size, args.ax_row, nviews, args, WH)
+                    print(ax)
                 else:
                     ax = args.ax_fix + i * args.dax
             # e_axis_bypass is ON then image midpoint forms axis of rotation

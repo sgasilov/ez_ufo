@@ -87,6 +87,7 @@ class findCOR_cmds(object):
         os.system(cmd)
         points, maximum = evaluate_images_simp(out_pattern + '*.tif', "msag")
         print(points)
+        print(maximum)
         return res[0] + res[2] * maximum
         
 
