@@ -59,8 +59,8 @@ class findCOR_cmds(object):
             cmd += ' --flats2 {}'.format(indir[3])
         out_pattern = os.path.join(tmpdir,"axis-search/sli")
         cmd += ' --output {}'.format(enquote(out_pattern))
-        cmd += ' --x-region={},{},{}'.format(-p_width / 2, p_width / 2, 1)
-        cmd += ' --y-region={},{},{}'.format(-p_width / 2, p_width / 2, 1)
+        cmd += ' --x-region={},{},{}'.format(int(-p_width / 2), int(p_width / 2), 1)
+        cmd += ' --y-region={},{},{}'.format(int(-p_width / 2), int(p_width / 2), 1)
         cmd += ' --y {} --height 2'.format(search_row)
         cmd += ' --z-parameter x-center'
         cmd += ' --region={}'.format(enquote(ax_range))
