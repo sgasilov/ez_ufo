@@ -54,38 +54,23 @@ class findCOR_cmds(object):
         cmd += ' --darks {} --flats {} --projections {}'.\
                     format(indir[0], indir[1], enquote(indir[2]))
         cmd += ' --number {}'.format(nviews)
-        #cmd += ' --angle {:0.5f}'.format( np.radians(180.0/float(nviews)) )
         if ctset[1]==4:
             cmd += ' --flats2 {}'.format(indir[3])
         out_pattern = os.path.join(tmpdir,"axis-search/sli")
         cmd += ' --output {}'.format(enquote(out_pattern))
         cmd += ' --x-region={},{},{}'.format(int(-p_width / 2), int(p_width / 2), 1)
         cmd += ' --y-region={},{},{}'.format(int(-p_width / 2), int(p_width / 2), 1)
-        #cmd += ' --y {} --height 2'.format(search_row)
-        image_width = WH[1]
         image_height = WH[0]
-        #search_row_shifted = int(search_row) - int(image_width/2)
-        #search_row_string = str(search_row_shifted) + "," + str(search_row_shifted+1) + "," + str(1)
-        #cmd += ' --region={}'.format(search_row_string)
-        #Split ax_range by commas
         ax_range_list = ax_range.split(",")
-        #Subtract imagewidth/2 from range_min
         range_min = ax_range_list[0]
-        #range_min_shifted = int(range_min) - int(image_width/2)
-        #Subtract imagewidth/2 from range_max
         range_max = ax_range_list[1]
-        #range_max_shifted = int(range_max) - int(image_width/2)
-        #Create string from range_min, range_max and step separated by commas
         step = ax_range_list[2]
         range_string = str(range_min) + ',' + str(range_max) + ',' + str(step)
         cmd += ' --region={}'.format(range_string)
-        #cmd += ' --z 0'
         res = [float(num) for num in ax_range.split(',')]
-        #cmd += ' --axis {},{}'.format( (res[0]+res[1])/2., 1.0) #middle of ax search range?
         cmd += " --output-bytes-per-file 0"
         cmd += ' --z-parameter center-position-x'
         cmd += ' --z {}'.format(int(image_height/2) - args.ax_row)
-        # cmd += ' --delete-slice-dir'
         print(cmd)
         os.system(cmd)
         points, maximum = evaluate_images_simp(out_pattern + '*.tif', "msag")
