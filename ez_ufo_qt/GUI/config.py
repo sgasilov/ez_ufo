@@ -38,6 +38,7 @@ class ConfigGroup(QGroupBox):
         self.input_dir_entry.textChanged.connect(self.set_input_dir)
         self.input_dir_select.pressed.connect(self.select_input_dir)
 
+        #Save .params checkbox
         self.save_params_checkbox = QCheckBox("Save args in .params file")
         self.save_params_checkbox.stateChanged.connect(self.set_save_args)
 
