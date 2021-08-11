@@ -257,6 +257,9 @@ def main_tk(args, fdt_names):
             os.system(cmd)
         else:
             print(cmd)
+    #TODO Clean tmpdirs if checkbox not selected
+    if not args.keep_tmp_dir:
+        clean_tmp_dirs(args.tmpdir, fdt_names)
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     print("*** Done. Total processing time {} sec.".format(int(time.time() - start)))
     print("*** Waiting for the next job...........")
