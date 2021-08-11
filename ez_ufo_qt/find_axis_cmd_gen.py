@@ -84,7 +84,7 @@ class findCOR_cmds(object):
         #cmd += ' --axis {},{}'.format( (res[0]+res[1])/2., 1.0) #middle of ax search range?
         cmd += " --output-bytes-per-file 0"
         cmd += ' --z-parameter center-position-x'
-        cmd += ' --z {}'.format(int(image_height/2 - args.ax_row))
+        cmd += ' --z {}'.format(int(image_height/2) - args.ax_row)
         # cmd += ' --delete-slice-dir'
         print(cmd)
         os.system(cmd)
