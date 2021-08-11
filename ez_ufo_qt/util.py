@@ -57,7 +57,7 @@ def make_copy_of_flat(flatdir, flat_copy_name, dryrun):
             tifffile.imsave(flat_copy_name, flat)
     return cmd
 
-
+#TODO Doesn't clean axis-search in tmp dir
 def clean_tmp_dirs(tmpdir, fdt_names):
     tmp_pattern = ['proj', 'sino', 'mask', 'flat', 'dark', 'radi']
     tmp_pattern += fdt_names
