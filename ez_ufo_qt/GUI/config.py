@@ -646,7 +646,7 @@ class ConfigGroup(QGroupBox):
 
 class tk_args():
     def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif,
-                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax, e_axis_bypass,
+                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax,
                 e_inp, e_inp_thr, e_inp_sig,
                 e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par,
                 e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
@@ -682,8 +682,6 @@ class tk_args():
         setattr(self,'ax_fix',self.args['ax_fix'])
         self.args['dax']=float(e_dax)
         setattr(self,'dax',self.args['dax'])
-        self.args['e_axis_bypass']=bool(e_axis_bypass)
-        setattr(self, 'e_axis_bypass', self.args['e_axis_bypass'])
         #ring removal
         self.args['inp']=bool(e_inp)
         setattr(self,'inp',self.args['inp'])
