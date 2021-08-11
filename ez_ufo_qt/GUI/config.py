@@ -512,7 +512,8 @@ class ConfigGroup(QGroupBox):
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
-            self.signal_reco_done.emit(parameters.params)
+            if not parameters.params['e_dryrun']:
+                self.signal_reco_done.emit(parameters.params)
         except InvalidInputError as err:
             msg = ""
             err_arg = err.args
