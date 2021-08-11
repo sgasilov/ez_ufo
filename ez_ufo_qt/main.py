@@ -47,7 +47,7 @@ def get_CTdirs_list(inpath, fdt_names, args):
             print("Invalid path to common flats/darks")
             return W.ctsets, W.lvl0
         else:
-            print("Paths to common flats/darks exist")
+            logging.debug("Paths to common flats/darks exist")
             # Check whether directories contain only .tif files
             if not W.checkCommonFDTFiles():
                 return W.ctsets, W.lvl0
