@@ -38,6 +38,9 @@ class ConfigGroup(QGroupBox):
         self.input_dir_entry.textChanged.connect(self.set_input_dir)
         self.input_dir_select.pressed.connect(self.select_input_dir)
 
+        self.save_params_checkbox = QCheckBox("Save args in .params file")
+        self.save_params_checkbox.stateChanged.connect(self.set_save_args)
+
         #Select output directory
         self.output_dir_select = QPushButton()
         self.output_dir_select.setStyleSheet("background-color:gainsboro")
@@ -171,21 +174,26 @@ class ConfigGroup(QGroupBox):
         """
         layout = QGridLayout()
 
+        checkbox_groupbox = QGroupBox()
+        checkbox_layout = QGridLayout()
+        checkbox_layout.addWidget(self.save_params_checkbox, 0, 0)
+        checkbox_layout.addWidget(self.bigtiff_checkbox, 1, 0)
+        checkbox_layout.addWidget(self.open_image_after_reco_checkbox, 2, 0)
+        checkbox_layout.addWidget(self.keep_tmp_data_checkbox, 3, 0)
+        checkbox_groupbox.setLayout(checkbox_layout)
+        layout.addWidget(checkbox_groupbox, 0, 4, 4, 1)
+
         layout.addWidget(self.input_dir_select, 0, 0)
         layout.addWidget(self.input_dir_entry, 0, 1, 1, 3)
         layout.addWidget(self.output_dir_select, 1, 0)
         layout.addWidget(self.output_dir_entry, 1, 1, 1, 3)
-        layout.addWidget(self.bigtiff_checkbox, 1, 4)
-        layout.addWidget(self.preproc_checkbox, 2, 0)
-        layout.addWidget(self.preproc_entry, 2, 1, 1, 3)
-        layout.addWidget(self.open_image_after_reco_checkbox, 2, 4)
-        layout.addWidget(self.temp_dir_select, 3, 0)
-        layout.addWidget(self.temp_dir_entry, 3, 1, 1, 3)
-        layout.addWidget(self.keep_tmp_data_checkbox, 3, 4)
+        layout.addWidget(self.temp_dir_select, 2, 0)
+        layout.addWidget(self.temp_dir_entry, 2, 1, 1, 3)
+        layout.addWidget(self.preproc_checkbox, 3, 0)
+        layout.addWidget(self.preproc_entry, 3, 1, 1, 3)
 
         fdt_groupbox = QGroupBox()
         fdt_layout = QGridLayout()
-        fdt_groupbox.setLayout(fdt_layout)
         fdt_layout.addWidget(self.dir_name_label, 0, 0)
         fdt_layout.addWidget(self.darks_entry, 0, 1)
         fdt_layout.addWidget(self.flats_entry, 0, 2)
@@ -218,6 +226,7 @@ class ConfigGroup(QGroupBox):
         """
         self.indir = os.getcwd()
         self.input_dir_entry.setText(self.indir)
+        self.save_params_checkbox.setChecked(False)
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
         self.output_dir_entry.setText(self.outdir)
         parameters.params['e_bigtif'] = False
@@ -452,8 +461,8 @@ class ConfigGroup(QGroupBox):
         parameters.params['e_dryrun'] = bool(False)
 
     def set_save_args(self):
-        logging.debug("Save args: " + str(self.save_args_checkbox.isChecked()))
-        parameters.params['e_parfile'] = bool(self.save_args_checkbox.isChecked())
+        logging.debug("Save args: " + str(self.save_params_checkbox.isChecked()))
+        parameters.params['e_parfile'] = bool(self.save_params_checkbox.isChecked())
 
     def export_settings_button_pressed(self):
         """
