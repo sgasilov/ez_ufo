@@ -206,8 +206,8 @@ def main_tk(args, fdt_names):
             # determine initial number of projections and their shape
             path2proj = os.path.join(ctset[0], fdt_names[2])
             nviews, WH, multipage = get_dims(path2proj)
-            # e_axis_bypass is OFF then find centre of rotation
-            if not args.e_axis_bypass:
+            # If args.ax == 4 then bypass axis search and use image midpoint
+            if args.ax != 4:
                 if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
                     print('{:>30}\t{}'.format('CTset', 'Axis'))
                     print('{:>30}\t{}'.format(ctset[0], 'na'))
@@ -225,8 +225,8 @@ def main_tk(args, fdt_names):
                                                args.ax_range, args.ax_p_size, args.ax_row, nviews, args, WH)
                 else:
                     ax = args.ax_fix + i * args.dax
-            # e_axis_bypass is ON then image midpoint forms axis of rotation
-            elif args.e_axis_bypass:
+            # If args.ax == 4 then bypass axis search and use image midpoint
+            elif args.ax == 4:
                 ax = FindCOR.find_axis_image_midpoint(ctset, multipage, WH)
                 print("Bypassing axis search and using image midpoint: {}".format(ax))
 

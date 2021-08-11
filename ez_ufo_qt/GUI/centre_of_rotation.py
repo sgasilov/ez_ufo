@@ -56,10 +56,6 @@ class CentreOfRotationGroup(QGroupBox):
         self.inc_axis_entry.textChanged.connect(self.set_axis_inc)
         self.inc_axis_entry.setStyleSheet("background-color:white")
 
-        self.bypass_checkbox = QCheckBox()
-        self.bypass_checkbox.setText("Use image midpoint (for half-acquisition)")
-        self.bypass_checkbox.stateChanged.connect(self.set_bypass)
-
         self.image_midpoint_rButton = QRadioButton()
         self.image_midpoint_rButton.setText("Use image midpoint (for half-acquisition)")
         self.image_midpoint_rButton.clicked.connect(self.set_rButton)
@@ -111,7 +107,6 @@ class CentreOfRotationGroup(QGroupBox):
         self.size_of_recon_entry.setText(str(parameters.params['e_ax_p_size']))
         self.axis_col_entry.setText(str(parameters.params['e_ax_fix']))
         self.inc_axis_entry.setText(str(parameters.params['e_dax']))
-        #self.bypass_checkbox.setChecked(parameters.params['e_axis_bypass'])
 
     def set_rButton(self):
         if self.auto_correlate_rButton.isChecked():
@@ -125,7 +120,7 @@ class CentreOfRotationGroup(QGroupBox):
             parameters.params['e_ax'] = 3
         elif self.image_midpoint_rButton.isChecked():
             logging.debug("Use image midpoint")
-            parameters.params['e_axis_bypass'] = True
+            parameters.params['e_ax'] = 4
 
     # TODO Fix logic for using image midpoint rButton
     def set_rButton_from_params(self):
@@ -133,14 +128,22 @@ class CentreOfRotationGroup(QGroupBox):
             self.auto_correlate_rButton.setChecked(True)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(False)
+            self.image_midpoint_rButton.setText(False)
         elif parameters.params['e_ax'] == 2:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(True)
             self.define_axis_rButton.setChecked(False)
+            self.image_midpoint_rButton.setText(False)
         elif parameters.params['e_ax'] == 3:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(True)
+            self.image_midpoint_rButton.setText(False)
+        elif parameters.params['e_ax'] == 4:
+            self.auto_correlate_rButton.setChecked(False)
+            self.auto_minimize_rButton.setChecked(False)
+            self.define_axis_rButton.setChecked(False)
+            self.image_midpoint_rButton.setText(True)
 
     def set_search_rotation(self):
         logging.debug(self.search_rotation_entry.text())
@@ -161,7 +164,3 @@ class CentreOfRotationGroup(QGroupBox):
     def set_axis_inc(self):
         logging.debug(self.inc_axis_entry.text())
         parameters.params['e_dax'] = str(self.inc_axis_entry.text())
-
-    def set_bypass(self):
-        logging.debug("Bypass Checkbox: " + str(self.bypass_checkbox.isChecked()))
-        parameters.params['e_axis_bypass'] = bool(self.bypass_checkbox.isChecked())

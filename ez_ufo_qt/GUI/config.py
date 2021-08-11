@@ -495,7 +495,7 @@ class ConfigGroup(QGroupBox):
 
             args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
                             parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],
-                            parameters.params['e_dax'], parameters.params['e_axis_bypass'],
+                            parameters.params['e_dax'],
                             parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
                             parameters.params['e_RR'],  parameters.params['e_RR_ufo'],  parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
                             parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],  parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
