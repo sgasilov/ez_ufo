@@ -59,7 +59,7 @@ def make_copy_of_flat(flatdir, flat_copy_name, dryrun):
 
 
 def clean_tmp_dirs(tmpdir, fdt_names):
-    tmp_pattern = ['proj', 'sino', 'mask', 'flat', 'dark', 'radi']
+    tmp_pattern = ['proj', 'sino', 'mask', 'flat', 'dark', 'radi', 'axis-search']
     tmp_pattern += fdt_names
     # clean directories in tmpdir if their names match pattern
     if os.path.exists(tmpdir):
