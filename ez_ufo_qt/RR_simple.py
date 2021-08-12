@@ -7,15 +7,23 @@ Created on Aug 3, 2018
 import glob
 import os
 import argparse
-from concert.storage import read_image, write_libtiff, write_tiff
+from tofu.util import read_image
 import numpy as np
 from tofu.util import get_filenames
-from scipy.signal import medfilt as medf
 import multiprocessing as mp
 from functools import partial
 from scipy.ndimage import median_filter
 from scipy.ndimage import binary_dilation
-from concert.readers import TiffSequenceReader
+import tifffile
+
+def write_tiff(file_name, data):
+    """
+    The default TIFF writer which uses :py:mod:`tifffile` module.
+    Return the written file name.
+    """
+    tifffile.imsave(file_name, data)
+
+    return file_name
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -26,12 +34,14 @@ def parse_args():
     parser.add_argument('--sort_only', type=int, help='Only sorting or both')
     return parser.parse_args()
 
+
 def RR_wide_sort(mws, mws2, snr, odir, fname):
     filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
     im = read_image(fname).astype(np.float32)
     im = remove_large_stripe(im, snr, mws2)
     im = remove_stripe_based_sorting(im, mws)
     write_tiff(filt_sin_name, im.astype(np.float32))
+
 
 def RR_sort(mws, odir, fname):
     filt_sin_name = os.path.join(odir, os.path.split(fname)[1])
@@ -69,6 +79,7 @@ def remove_stripe_based_sorting(sinogram, size, dim=1):
         [row[row[:, 0].argsort()] for row in mat_sort])
     return np.transpose(mat_sort_back[:, :, 1])
 
+
 def detect_stripe(list_data, snr):
     # taken from sarepy, Author: Nghia T. Vo https://doi.org/10.1364/OE.26.028396
     """
@@ -100,8 +111,8 @@ def detect_stripe(list_data, snr):
         list_mask[list_data <= lower_thresh] = 1.0
     return list_mask
 
-def remove_large_stripe(sinogram, size, snr=3, drop_ratio=0.1, norm=True):
 
+def remove_large_stripe(sinogram, size, snr=3, drop_ratio=0.1, norm=True):
     # taken from sarepy, Author: Nghia T. Vo https://doi.org/10.1364/OE.26.028396
     """
     Remove large stripes, algorithm 5 in Ref. [1], by: locating stripes,
@@ -152,8 +163,6 @@ def remove_large_stripe(sinogram, size, snr=3, drop_ratio=0.1, norm=True):
     sinogram[:, listx_miss] = sino_cor[:, listx_miss]
     return sinogram
 
-
-
 def main():
     args = parse_args()
     sinos=get_filenames(os.path.join(args.sinos, '*.tif'))
@@ -168,6 +177,7 @@ def main():
     else:
         exec_func = partial(RR_wide_sort, args.mws, args.mws2, args.snr, odir)
     pool.map(exec_func, sinos)
+
 
 if __name__ == '__main__':
     main()

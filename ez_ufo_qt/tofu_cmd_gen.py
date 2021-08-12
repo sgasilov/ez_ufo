@@ -3,16 +3,9 @@
 Created on Apr 6, 2018
 @author: gasilos
 '''
-import glob
 import os
-import argparse
-import sys
 import numpy as np
-from concert.storage import read_image
-from tofu.util import get_filenames, read_image
 from ez_ufo_qt.ufo_cmd_gen import fmt_in_out_path
-from ez_ufo_qt.evaluate_sharpness import process as process_metrics
-from ez_ufo_qt.util import enquote
 
 class tofu_cmds(object):
     '''
