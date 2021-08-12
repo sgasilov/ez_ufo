@@ -59,11 +59,8 @@ https://github.com/ufo-kit/concert/commit/6bb7b3436702adaa2e6df1e0c0e68de6837dd5
 	- git checkout flow	
 	- python setup.py install –-record install_manifest.txt
 
-6. Download and install Concert
-	- cd ~/my_venvs/bmit38/lib
-	- git clone https://github.com/ufo-kit/concert.git
-	- cd concert
-	- python setup.py install --record install_manifest.txt
+6. Download and install PyYaml
+	- pip install pyyaml
 
 7. Install EZ_UFO
 	- cd ~my/venvs/bmit38/lib
