@@ -225,7 +225,7 @@ class ImageViewerGroup(QGroupBox):
         logging.debug("Saving with bitdepth: " + str(self.bit_depth))
         dir_explore = QFileDialog()
         directory = dir_explore.getExistingDirectory()
-        logging.debug("Writing to directory: " + dir)
+        logging.debug("Writing to directory: " + directory)
         if directory:
             bit_depth_string = self.check_bit_depth(self.bit_depth)
             msg = QMessageBox()
@@ -306,12 +306,8 @@ class ImageViewerGroup(QGroupBox):
         Gets the histogram levels of the currently displayed image and applies them to all images in RAM
         :return: None
         """
-        for item in self.tiff_arr:
-            levels = self.histo.getLevels()
-            img = pg.ImageItem(item)
-            img.setLevels(levels, True)
-            print(img.getLevels())
-            item = img.image
+        levels = self.histo.getLevels()
+        self.tiff_arr = np.clip(self.tiff_arr, levels[0], levels[1])
 
     def check_bit_depth(self, bit_depth: int) -> str:
         """
