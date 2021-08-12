@@ -300,6 +300,7 @@ class ImageViewerGroup(QGroupBox):
         :return: None
         """
         levels = self.histo.getLevels()
+        logging.debug(levels)
         self.tiff_arr = np.clip(self.tiff_arr, levels[0], levels[1])
 
     def check_bit_depth(self, bit_depth: int) -> str:
