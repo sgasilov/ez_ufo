@@ -277,7 +277,6 @@ class ImageViewerGroup(QGroupBox):
             msg.setWindowTitle("Saving Images...")
             msg.setText("Saving Images to BigTiff")
             msg.show()
-            #self.apply_histogram_to_images()
             tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=self.bit_depth)
             msg.close()
 
