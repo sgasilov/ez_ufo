@@ -3,17 +3,17 @@ Babel==2.9.1
 backcall==0.2.0
 backports.functools-lru-cache==1.6.1
 backports.shutil-get-terminal-size==1.0.0
-bmit-sin==1.1.1
+#bmit-sin==1.1.1
 certifi==2021.5.30
 chardet==4.0.0
-concert==0.30.0.dev0
+#concert==0.30.0.dev0
 configparser==5.0.2
 coverage==5.5
 cycler==0.10.0
 decorator==4.4.2
 docutils==0.17.1
 enum34==1.1.10
-ez-ufo-qt==0.5
+#ez-ufo-qt==0.5
 futures==2.1.4
 idna==2.10
 imagecodecs==2019.12.31
@@ -54,4 +54,5 @@ PyQt5-stubs==5.15.2.0
 pyqtgraph==0.11.0
 python-dateutil==2.8.1
 pytz==2020.4
+PyYaml==5.4.1
 
