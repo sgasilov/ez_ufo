@@ -1,13 +1,9 @@
-import sys
 import os
 import logging
-import threading
 import pyqtgraph as pg
-import pyqtgraph.exporters
 import numpy as np
 import tifffile
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import ez_ufo_qt.GUI.image_read_write as image_read_write
 
@@ -285,7 +281,6 @@ class ImageViewerGroup(QGroupBox):
         Changes the levels of the histogram widget if the min spinbox has been changed
         :return: None
         """
-        histo = self.image_window.getHistogramWidget()
         levels = self.histo.getLevels()
         min_level = self.hist_min_input.value()
         self.image_window.setLevels(min_level, levels[1])
@@ -295,7 +290,6 @@ class ImageViewerGroup(QGroupBox):
         Changes the levels of the histogram widget if the max spinbox has been changed
         :return: None
         """
-        histo = self.image_window.getHistogramWidget()
         levels = self.histo.getLevels()
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
