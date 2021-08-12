@@ -301,6 +301,7 @@ class ImageViewerGroup(QGroupBox):
         """
         levels = self.histo.getLevels()
         logging.debug(levels)
+        self.tiff_arr = np.linalg.norm(self.tiff_arr)
         self.tiff_arr = np.clip(self.tiff_arr, levels[0], levels[1])
 
     def check_bit_depth(self, bit_depth: int) -> str:
