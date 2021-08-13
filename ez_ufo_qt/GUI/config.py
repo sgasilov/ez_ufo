@@ -227,7 +227,7 @@ class ConfigGroup(QGroupBox):
         """
         self.indir = os.getcwd()
         self.input_dir_entry.setText(self.indir)
-        self.save_params_checkbox.setChecked(False)
+        self.save_params_checkbox.setChecked(True)
         parameters.params['e_parfile'] = True
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
         self.output_dir_entry.setText(self.outdir)
