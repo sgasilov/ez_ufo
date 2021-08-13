@@ -28,12 +28,14 @@ def main():
     fhandler.setFormatter(formatter)
     logger.addHandler(fhandler)
 
-    #logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.DEBUG)
     # TODO: FIX THIS IN RELEASE
+    '''
     if args.debug:
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.WARNING)
+    '''
 
     # Launch PyQT Application
     app = qtw.QApplication(sys.argv)
