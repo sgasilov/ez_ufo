@@ -56,11 +56,18 @@ def find_overlap(args):
         print("Don't use flats2")
 
     # recursively create output temporary directory if it doesn't exist
+    '''
     if os.path.exists(os.path.join(proc)):
         shutil.rmtree(proc)
         os.makedirs(os.path.join(proc, 'sinos'))
     else:
         os.makedirs(os.path.join(proc, 'sinos'))
+    '''
+    if os.path.exists(proc):
+        shutil.rmtree(proc)
+        os.makedirs(proc)
+    else:
+        os.makedirs(proc)
 
     print("Finding CTDirs...")
     ctdirs = findCTdirs(root, "tomo")
@@ -71,6 +78,9 @@ def find_overlap(args):
 
     for root in ctdirs:
         print("Working on directory:" + str(root))
+        index_dir = os.path.basename(os.path.normpath(root))
+
+        os.makedirs(os.path.join(proc, index_dir, 'sinos'))
 
         tomo = open_tif_sequence(os.path.join(root, 'tomo'), row_num)
 
@@ -114,8 +124,6 @@ def find_overlap(args):
                 stitched_sino = np.concatenate(sino_halves, axis=1)
 
                 output_img = stitched_sino
-
-                index_dir = os.path.basename(os.path.normpath(root))
 
                 tifffile.imsave(os.path.join(proc, index_dir, 'sinos', 'axis-' + str(axis).zfill(4) + '.tif'),
                                 output_img.astype(np.float32))
