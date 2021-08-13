@@ -115,7 +115,8 @@ def find_overlap(args):
 
                 output_img = stitched_sino
 
-                tifffile.imsave(os.path.join(proc, 'sinos', 'axis-' + str(axis).zfill(4) + '.tif'),
+
+                tifffile.imsave(os.path.join(proc, root, 'sinos', 'axis-' + str(axis).zfill(4) + '.tif'),
                                 output_img.astype(np.float32))
 
         # perform reconstructions for each sinogram and save to output folder
@@ -126,9 +127,9 @@ def find_overlap(args):
                 current_img = np.array(read_image(os.path.join(proc, 'sinos', filename)))
                 axis = current_img.shape[1] / 2
 
-                recon_cmd = 'tofu tomo  --output-bytes-per-file 0 --sinograms ' + os.path.join(proc, 'sinos',
+                recon_cmd = 'tofu tomo  --output-bytes-per-file 0 --sinograms ' + os.path.join(proc, root,'sinos',
                                                                                                filename) + ' --output ' + os.path.join(
-                    output, filename) + ' --axis ' + str(axis)
+                    output, root, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
         shutil.rmtree(proc)
