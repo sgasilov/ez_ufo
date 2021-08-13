@@ -70,6 +70,8 @@ def find_overlap(args):
     print('Opening half-acquisition image sequence...')
 
     for root in ctdirs:
+        print("Working on directory:" + str(root))
+
         tomo = open_tif_sequence(os.path.join(root, 'tomo'), row_num)
 
         # open flats and darks and average them
@@ -111,7 +113,7 @@ def find_overlap(args):
                 sino_halves.append(tomo_first_half[:, axis:])
                 stitched_sino = np.concatenate(sino_halves, axis=1)
 
-                output_img = (stitched_sino)
+                output_img = stitched_sino
 
                 tifffile.imsave(os.path.join(proc, 'sinos', 'axis-' + str(axis).zfill(4) + '.tif'),
                                 output_img.astype(np.float32))
