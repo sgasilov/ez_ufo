@@ -49,7 +49,7 @@ e_dx: 0
 e_y0: 0
 e_dy: 0
 e_dryrun: false
-e_parfile: false
+e_parfile: true
 e_keep_tmp: false
 e_sinFFC: false
 e_sinFFC_method: 1
