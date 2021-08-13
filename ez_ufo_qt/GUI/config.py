@@ -228,6 +228,7 @@ class ConfigGroup(QGroupBox):
         self.indir = os.getcwd()
         self.input_dir_entry.setText(self.indir)
         self.save_params_checkbox.setChecked(False)
+        parameters.params['e_parfile'] = True
         self.outdir = os.path.abspath(os.getcwd() + '-rec')
         self.output_dir_entry.setText(self.outdir)
         parameters.params['e_bigtif'] = False
@@ -250,8 +251,6 @@ class ConfigGroup(QGroupBox):
         self.set_temp_dir()
         self.dry_run_button.setChecked(False)
         parameters.params['e_dryrun'] = False
-        self.save_params_checkbox.setChecked(True)
-        parameters.params['e_parfile'] = True
         parameters.params['e_openIV'] = True
         self.open_image_after_reco_checkbox.setChecked(True)
 
@@ -261,6 +260,7 @@ class ConfigGroup(QGroupBox):
         Called when .yaml file of params is loaded
         """
         self.input_dir_entry.setText(parameters.params['e_indir'])
+        self.save_params_checkbox.setChecked(parameters.params['e_parfile'])
         self.output_dir_entry.setText(parameters.params['e_outdir'])
         self.bigtiff_checkbox.setChecked(parameters.params['e_bigtif'])
         self.preproc_checkbox.setChecked(parameters.params['e_pre'])
