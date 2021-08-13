@@ -1,9 +1,13 @@
+import sys
 import os
 import logging
+import threading
 import pyqtgraph as pg
+import pyqtgraph.exporters
 import numpy as np
 import tifffile
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import ez_ufo_qt.GUI.image_read_write as image_read_write
 
@@ -273,6 +277,7 @@ class ImageViewerGroup(QGroupBox):
             msg.setWindowTitle("Saving Images...")
             msg.setText("Saving Images to BigTiff")
             msg.show()
+            #self.apply_histogram_to_images()
             tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=self.bit_depth)
             msg.close()
 
@@ -281,6 +286,7 @@ class ImageViewerGroup(QGroupBox):
         Changes the levels of the histogram widget if the min spinbox has been changed
         :return: None
         """
+        histo = self.image_window.getHistogramWidget()
         levels = self.histo.getLevels()
         min_level = self.hist_min_input.value()
         self.image_window.setLevels(min_level, levels[1])
@@ -290,6 +296,7 @@ class ImageViewerGroup(QGroupBox):
         Changes the levels of the histogram widget if the max spinbox has been changed
         :return: None
         """
+        histo = self.image_window.getHistogramWidget()
         levels = self.histo.getLevels()
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
@@ -300,10 +307,15 @@ class ImageViewerGroup(QGroupBox):
         :return: None
         """
         levels = self.histo.getLevels()
-        logging.debug(levels)
-        #Normalize range between 0 and 1
-        self.tiff_arr *= (1/self.tiff_arr.max())
         self.tiff_arr = np.clip(self.tiff_arr, levels[0], levels[1])
+        '''
+        for item in self.tiff_arr:
+            levels = self.histo.getLevels()
+            img = pg.ImageItem(item)
+            img.setLevels(levels, True)
+            print(img.getLevels())
+            item = img.image
+        '''
 
     def check_bit_depth(self, bit_depth: int) -> str:
         """
