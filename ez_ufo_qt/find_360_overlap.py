@@ -138,7 +138,7 @@ def find_overlap(args):
 
                 recon_cmd = 'tofu tomo  --output-bytes-per-file 0 --sinograms '\
                             + os.path.join(proc, index_dir, 'sinos', filename) + ' --output '\
-                            + os.path.join(output, filename) + ' --axis ' + str(axis)
+                            + os.path.join(output, index_dir, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
         shutil.rmtree(proc)
