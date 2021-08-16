@@ -44,8 +44,8 @@ class tofu_cmds(object):
             cmd += " --output-bitdepth {}".format(bit)
             #cmd += " --output-minimum \" {}\" --output-maximum \" {}\""\
                     #.format(hmin, hmax)
-            cmd += " --output-minimum {} --output-maximum {}"\
-                     .format(hmin, hmax)
+            cmd += " --output-minimum \" {}\" --output-maximum \" {}\""\
+                       .format(hmin, hmax)
         return cmd
 
     def check_vcrop(self, cmd, vcrop, y, yheight, ystep, ori_height):
