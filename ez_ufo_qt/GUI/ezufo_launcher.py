@@ -36,8 +36,8 @@ class GUI(qtw.QWidget):
         self.setStyleSheet("font: 10pt; font-family: Arial")
 
         # Call login dialog
-        #self.login_parameters = {}
-        #QTimer.singleShot(0, self.login)
+        self.login_parameters = {}
+        QTimer.singleShot(0, self.login)
 
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
@@ -227,7 +227,10 @@ class GUI(qtw.QWidget):
         if login_dialog.exec_() != qtw.QDialog.Accepted:
             self.exit()
         else:
-            self.file_writer_group.root_dir_entry.setText(self.login_parameters['expdir'])
+            #self.file_writer_group.root_dir_entry.setText(self.login_parameters['expdir'])
+            self.config_group.input_dir_entry.setText(self.login_parameters['expdir'] + "/raw")
+            self.config_group.output_dir_entry.setText(self.login_parameters['expdir'] + "/rec")
+            '''
             td = date.today()
             tdstr = "{}.{}.{}".format(td.year, td.month, td.day)
             logfname = os.path.join(self.login_parameters['expdir'], 'exp-log-' + tdstr + '.log')
@@ -240,6 +243,7 @@ class GUI(qtw.QWidget):
                 warning_message('Cannot create log file in the selected directory. \n'
                                 'Check permissions and restart.')
                 self.exit()
+            '''
 
     def exit(self):
         self.close()
