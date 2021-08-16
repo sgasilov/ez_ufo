@@ -42,8 +42,10 @@ class tofu_cmds(object):
     def check_8bit(self, cmd, gray256, bit, hmin, hmax):
         if gray256:
             cmd += " --output-bitdepth {}".format(bit)
-            cmd += " --output-minimum \" {}\" --output-maximum \" {}\""\
-                    .format(hmin, hmax)
+            #cmd += " --output-minimum \" {}\" --output-maximum \" {}\""\
+                    #.format(hmin, hmax)
+            cmd += " --output-minimum {} --output-maximum {}"\
+                     .format(hmin, hmax)
         return cmd
 
     def check_vcrop(self, cmd, vcrop, y, yheight, ystep, ori_height):
