@@ -1,9 +1,7 @@
-import sys
-from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QFileDialog, QMessageBox
 import logging
 import os
-import getpass
-from ez_ufo_qt.find_360_overlap import find_overlap
+from ez_ufo_qt.Helpers.find_360_overlap import find_overlap
 
 class Overlap360Group(QGroupBox):
     def __init__(self):

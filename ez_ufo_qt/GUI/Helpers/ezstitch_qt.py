@@ -1,10 +1,9 @@
 import os
-import sys
-from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QRadioButton, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QVBoxLayout, QHBoxLayout, QRadioButton, QFileDialog, QMessageBox
 import logging
 import getpass
 
-from ez_ufo_qt.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
+from ez_ufo_qt.Helpers.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
 
 class EZStitchGroup(QGroupBox):
     def __init__(self):

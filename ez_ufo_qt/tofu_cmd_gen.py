@@ -92,7 +92,7 @@ class tofu_cmds(object):
         cmd += ' --axis {}'.format(ax)
         cmd += ' --offset {}'.format(args.a0)
         cmd += ' --number {}'.format(nviews)
-        if args.step>0.0:
+        if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
         cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
@@ -100,7 +100,7 @@ class tofu_cmds(object):
         return cmd
 
     def get_ct_sin_cmd(self, out_pattern,ax, args, nviews, WH):
-        sinos_dir = os.path.join( args.tmpdir,'sinos-filt' )
+        sinos_dir = os.path.join( args.tmpdir, 'sinos-filt' )
         cmd = 'tofu tomo --sinograms {}'.format(sinos_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
@@ -110,7 +110,7 @@ class tofu_cmds(object):
         else:
             cmd += ' --number {}'.format(WH[0])
         cmd += ' --height {}'.format(nviews)
-        if args.step>0.0:
+        if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
         cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)

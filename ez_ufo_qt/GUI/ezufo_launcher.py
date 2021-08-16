@@ -4,21 +4,21 @@ from PyQt5 import QtWidgets as qtw
 
 from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
 from ez_ufo_qt.GUI.filters import FiltersGroup
-from ez_ufo_qt.GUI.ffc import FFCGroup
+from ez_ufo_qt.GUI.Advanced.ffc import FFCGroup
 from ez_ufo_qt.GUI.phase_retrieval import PhaseRetrievalGroup
 from ez_ufo_qt.GUI.binning import BinningGroup
 from ez_ufo_qt.GUI.config import ConfigGroup
-from ez_ufo_qt.main import main_tk, clean_tmp_dirs
+from ez_ufo_qt.main import clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 from ez_ufo_qt.GUI.image_viewer import ImageViewerGroup
 import ez_ufo_qt.GUI.params as parameters
-from ez_ufo_qt.GUI.advanced import AdvancedGroup
-from ez_ufo_qt.GUI.optimization import OptimizationGroup
-from ez_ufo_qt.GUI.nlmdn import NLMDNGroup
-from ez_ufo_qt.GUI.ez_360_multi_stitch_qt import MultiStitch360Group
-from ez_ufo_qt.GUI.ezstitch_qt import EZStitchGroup
-from ez_ufo_qt.GUI.ezmview_qt import EZMViewGroup
-from ez_ufo_qt.GUI.ez_360_overlap_qt import Overlap360Group
+from ez_ufo_qt.GUI.Advanced.advanced import AdvancedGroup
+from ez_ufo_qt.GUI.Advanced.optimization import OptimizationGroup
+from ez_ufo_qt.GUI.Advanced.nlmdn import NLMDNGroup
+from ez_ufo_qt.GUI.Helpers.ez_360_multi_stitch_qt import MultiStitch360Group
+from ez_ufo_qt.GUI.Helpers.ezstitch_qt import EZStitchGroup
+from ez_ufo_qt.GUI.Helpers.ezmview_qt import EZMViewGroup
+from ez_ufo_qt.GUI.Helpers.ez_360_overlap_qt import Overlap360Group
 
 
 

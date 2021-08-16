@@ -1,9 +1,8 @@
-import sys
-from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QWidget, QApplication, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QFileDialog, QMessageBox
 import logging
 import os
 import getpass
-from ez_ufo_qt.stitch_funcs import main_360_mp_depth2
+from ez_ufo_qt.Helpers.stitch_funcs import main_360_mp_depth2
 
 class MultiStitch360Group(QGroupBox):
 

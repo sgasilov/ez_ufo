@@ -1,8 +1,7 @@
-import sys
 import os
 import logging
-from PyQt5.QtWidgets import QGroupBox, QPushButton, QLineEdit, QLabel, QCheckBox, QGridLayout, QHBoxLayout, QApplication, QFileDialog, QMessageBox
-from ez_ufo_qt.mview_main import main_prep
+from PyQt5.QtWidgets import QGroupBox, QPushButton, QLineEdit, QLabel, QCheckBox, QGridLayout, QFileDialog, QMessageBox
+from ez_ufo_qt.Helpers.mview_main import main_prep
 
 class EZMViewGroup(QGroupBox):
 
