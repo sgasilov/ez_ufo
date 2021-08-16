@@ -1,6 +1,8 @@
 import logging
 import os
 from PyQt5 import QtWidgets as qtw
+from PyQt5.QtCore import QTimer
+from datetime import date
 
 from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
 from ez_ufo_qt.GUI.filters import FiltersGroup
@@ -19,8 +21,8 @@ from ez_ufo_qt.GUI.Helpers.ez_360_multi_stitch_qt import MultiStitch360Group
 from ez_ufo_qt.GUI.Helpers.ezstitch_qt import EZStitchGroup
 from ez_ufo_qt.GUI.Helpers.ezmview_qt import EZMViewGroup
 from ez_ufo_qt.GUI.Helpers.ez_360_overlap_qt import Overlap360Group
-
-
+from ez_ufo_qt.GUI.login_dialog import Login
+from ez_ufo_qt.GUI.message_dialog import info_message, error_message, warning_message
 
 class GUI(qtw.QWidget):
     """
@@ -32,6 +34,10 @@ class GUI(qtw.QWidget):
         self.setWindowTitle('EZ-UFO')
 
         self.setStyleSheet("font: 10pt; font-family: Arial")
+
+        # Call login dialog
+        #self.login_parameters = {}
+        #QTimer.singleShot(0, self.login)
 
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
@@ -216,3 +222,24 @@ class GUI(qtw.QWidget):
         else:
             event.ignore()
 
+    def login(self):
+        login_dialog = Login(self.login_parameters)
+        if login_dialog.exec_() != qtw.QDialog.Accepted:
+            self.exit()
+        else:
+            self.file_writer_group.root_dir_entry.setText(self.login_parameters['expdir'])
+            td = date.today()
+            tdstr = "{}.{}.{}".format(td.year, td.month, td.day)
+            logfname = os.path.join(self.login_parameters['expdir'], 'exp-log-' + tdstr + '.log')
+            if self.login_parameters.has_key('project'):
+                logfname = os.path.join(self.login_parameters['expdir'], '{}-log-{}-{}.log'.
+                                        format(self.login_parameters['project'], self.login_parameters['bl'], tdstr))
+            try:
+                open(logfname, 'a').close()
+            except:
+                warning_message('Cannot create log file in the selected directory. \n'
+                                'Check permissions and restart.')
+                self.exit()
+
+    def exit(self):
+        self.close()
