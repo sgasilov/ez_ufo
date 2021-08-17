@@ -229,7 +229,9 @@ class GUI(qtw.QWidget):
         else:
             #self.file_writer_group.root_dir_entry.setText(self.login_parameters['expdir'])
             self.config_group.input_dir_entry.setText(self.login_parameters['expdir'] + "/raw")
+            self.config_group.set_input_dir()
             self.config_group.output_dir_entry.setText(self.login_parameters['expdir'] + "/rec")
+            self.config_group.set_output_dir()
             '''
             td = date.today()
             tdstr = "{}.{}.{}".format(td.year, td.month, td.day)
