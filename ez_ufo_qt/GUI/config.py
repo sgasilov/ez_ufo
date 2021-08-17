@@ -229,7 +229,7 @@ class ConfigGroup(QGroupBox):
         self.input_dir_entry.setText(self.indir)
         self.save_params_checkbox.setChecked(True)
         parameters.params['e_parfile'] = True
-        self.outdir = os.path.abspath(os.getcwd() + '-rec')
+        self.outdir = os.path.abspath(os.getcwd() + '/rec')
         self.output_dir_entry.setText(self.outdir)
         parameters.params['e_bigtif'] = False
         self.preproc_checkbox.setChecked(False)
@@ -285,9 +285,9 @@ class ConfigGroup(QGroupBox):
         dir_explore = QFileDialog(self)
         dir = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(dir)
-        self.output_dir_entry.setText(dir + "-rec")
+        self.output_dir_entry.setText(dir + "/rec")
         parameters.params['e_indir'] = dir
-        parameters.params['e_outdir'] = dir + "-rec"
+        parameters.params['e_outdir'] = dir + "/rec"
 
     def set_input_dir(self):
         logging.debug(str(self.input_dir_entry.text()))
