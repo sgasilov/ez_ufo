@@ -11,7 +11,7 @@ and to batch process multiple data sets after an experiment.
 Distributed without warranty of any kind.
 Main Tab             |  Image Viewer
 :-------------------------:|:-------------------------:
-<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface1.png" alt="drawing" width="100%"/>  |  <img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png" alt="drawing" width="100%"/>
+<img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/tofu_ez.png" alt="drawing" width="100%"/>  |  <img src="https://github.com/sgasilov/ez_ufo/blob/ez_ufo_qt/ezufo_interface2.png" alt="drawing" width="100%"/>
 
 
   
