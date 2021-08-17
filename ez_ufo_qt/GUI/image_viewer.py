@@ -278,7 +278,8 @@ class ImageViewerGroup(QGroupBox):
             msg.setText("Saving Images to BigTiff")
             msg.show()
             #self.apply_histogram_to_images()
-            tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=self.bit_depth)
+            bit_depth_string = self.check_bit_depth(self.bit_depth)
+            tifffile.imwrite(filepath, self.tiff_arr, bigtiff=True, dtype=bit_depth_string)
             msg.close()
 
     def min_spin_changed(self):
