@@ -288,8 +288,6 @@ class ConfigGroup(QGroupBox):
         self.output_dir_entry.setText(dir + "/rec")
         parameters.params['e_indir'] = dir
         head, tail = os.path.split(dir)
-        print(head)
-        print(tail)
         parameters.params['e_outdir'] = head + "/rec"
 
     def set_input_dir(self):
