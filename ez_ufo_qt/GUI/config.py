@@ -285,9 +285,9 @@ class ConfigGroup(QGroupBox):
         dir_explore = QFileDialog(self)
         dir = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(dir)
-        self.output_dir_entry.setText(dir + "/rec")
-        parameters.params['e_indir'] = dir
         head, tail = os.path.split(dir)
+        self.output_dir_entry.setText(head + "/rec")
+        parameters.params['e_indir'] = dir
         parameters.params['e_outdir'] = head + "/rec"
 
     def set_input_dir(self):
