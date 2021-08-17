@@ -13,7 +13,7 @@ class BinningGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.setTitle("Binning")
+        self.setTitle("Region of Interest and Histogram Settings")
         self.setStyleSheet('QGroupBox {color: red;}')
 
         self.select_rows_checkbox = QCheckBox()

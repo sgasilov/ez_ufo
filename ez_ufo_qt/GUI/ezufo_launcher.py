@@ -8,7 +8,7 @@ from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
 from ez_ufo_qt.GUI.filters import FiltersGroup
 from ez_ufo_qt.GUI.Advanced.ffc import FFCGroup
 from ez_ufo_qt.GUI.phase_retrieval import PhaseRetrievalGroup
-from ez_ufo_qt.GUI.binning import BinningGroup
+from ez_ufo_qt.GUI.region_and_histogram import BinningGroup
 from ez_ufo_qt.GUI.config import ConfigGroup
 from ez_ufo_qt.main import clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
