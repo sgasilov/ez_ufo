@@ -36,6 +36,7 @@ def findCTdirs(root: str, tomo_name: str):
         for name in dirs:
             if name == tomo_name:
                 ctdirs.append(root)
+    ctdirs.sort()
     return list(set(ctdirs))
 
 def find_overlap(args):
@@ -146,4 +147,4 @@ def find_overlap(args):
                             + os.path.join(output, index_dir, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
-    shutil.rmtree(proc)
+        shutil.rmtree(os.path.join(proc, index_dir, 'sinos'))
