@@ -86,7 +86,7 @@ def write_all_images(tiff_arr: np.ndarray, target_directory: str, data_type=np.f
     length_str = str(tiff_arr.shape[0])
     num_digits = len(length_str)
     for image in tiff_arr:
-        normalize(image, 0, 1)
+        print(image.shape)
         write_image(image, target_directory, "Image_" + str(index).zfill(num_digits + 1) + ".tif", data_type)
         index += 1
     print("Finished Writing Images to Directory")
@@ -108,10 +108,3 @@ def read_all_images(image_files_path: str, supported_image_types: list, data_typ
 
     data_array = imread(valid_files_list).astype(dtype=data_type)
     return np.array(data_array)
-
-
-def normalize(image, minimum=0.0, maximum=1.0):
-    """Normalize *image* intensities to start at *minimum* and end at *maximum*."""
-    mul = (float(maximum) - minimum) / (image.max() - image.min())
-
-    return mul * (image - image.min()) + minimum
