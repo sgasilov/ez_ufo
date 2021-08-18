@@ -49,11 +49,13 @@ class ImageViewerGroup(QGroupBox):
         self.hist_max_label = QLabel("Histogram Max:")
         self.hist_max_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
-        self.hist_min_input = QSpinBox()
-        self.hist_min_input.setRange(0, 100000)
+        self.hist_min_input = QDoubleSpinBox()
+        self.hist_min_input.setDecimals(6)
+        self.hist_min_input.setRange(-100000, 100000)
         self.hist_min_input.valueChanged.connect(self.min_spin_changed)
-        self.hist_max_input = QSpinBox()
-        self.hist_max_input.setRange(0, 100000)
+        self.hist_max_input = QDoubleSpinBox()
+        self.hist_max_input.setDecimals(6)
+        self.hist_max_input.setRange(-100000, 100000)
         self.hist_max_input.valueChanged.connect(self.max_spin_changed)
 
         self.save_8bit_rButton = QRadioButton()
@@ -197,7 +199,6 @@ class ImageViewerGroup(QGroupBox):
         Read images (.tif) from directory path into RAM as 3D numpy array
         :param dir_path: Path to directory containing multiple .tiff image files
         """
-        #TODO - ADD PROGRESS BAR
         logging.debug("Open stack from path")
         try:
             tiff_list = (".tif", ".tiff")
@@ -288,7 +289,7 @@ class ImageViewerGroup(QGroupBox):
         :return: None
         """
         histo = self.image_window.getHistogramWidget()
-        levels = self.histo.getLevels()
+        levels = histo.getLevels()
         min_level = self.hist_min_input.value()
         self.image_window.setLevels(min_level, levels[1])
 
@@ -298,7 +299,7 @@ class ImageViewerGroup(QGroupBox):
         :return: None
         """
         histo = self.image_window.getHistogramWidget()
-        levels = self.histo.getLevels()
+        levels = histo.getLevels()
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
 
