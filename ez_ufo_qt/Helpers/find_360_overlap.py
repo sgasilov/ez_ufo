@@ -147,7 +147,8 @@ def find_overlap(args):
                             + os.path.join(output, index_dir, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
-        shutil.rmtree(os.path.join(proc, index_dir, 'sinos'))
+        shutil.rmtree(os.path.join(proc, index_dir))
         print("Finished processing: " + str(directory))
 
+    shutil.rmtree(proc)
     print("Finished processing: " + str(root))
