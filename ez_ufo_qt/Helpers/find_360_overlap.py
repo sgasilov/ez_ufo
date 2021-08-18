@@ -148,7 +148,7 @@ def find_overlap(args):
                 os.system(recon_cmd)
 
         shutil.rmtree(os.path.join(proc, index_dir))
-        print("Finished processing: " + str(directory))
+        print("Finished processing: " + str(index_dir))
 
     shutil.rmtree(proc)
     print("Finished processing: " + str(root))
