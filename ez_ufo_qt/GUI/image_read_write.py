@@ -89,6 +89,7 @@ def write_all_images(tiff_arr: np.ndarray, target_directory: str, data_type=np.f
         print(image.shape)
         write_image(image, target_directory, "Image_" + str(index).zfill(num_digits + 1) + ".tif", data_type)
         index += 1
+
     print("Finished Writing Images to Directory")
 
 
