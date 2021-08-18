@@ -73,26 +73,26 @@ def find_overlap(args):
     # concatenate images end-to-end and generate a sinogram
     print('Opening half-acquisition image sequence...')
 
-    for root in ctdirs:
-        print("Working on directory:" + str(root))
-        index_dir = os.path.basename(os.path.normpath(root))
+    for directory in ctdirs:
+        print("Working on directory:" + str(directory))
+        index_dir = os.path.basename(os.path.normpath(directory))
 
         os.makedirs(os.path.join(proc, index_dir, 'sinos'))
 
-        tomo = open_tif_sequence(os.path.join(root, 'tomo'), row_num)
+        tomo = open_tif_sequence(os.path.join(directory, 'tomo'), row_num)
 
         # open flats and darks and average them
-        flat = np.mean(open_tif_sequence(os.path.join(root, 'flats'), row_num) / 65535.0, axis=0)
-        dark = np.mean(open_tif_sequence(os.path.join(root, 'darks'), row_num) / 65535.0, axis=0)
+        flat = np.mean(open_tif_sequence(os.path.join(directory, 'flats'), row_num) / 65535.0, axis=0)
+        dark = np.mean(open_tif_sequence(os.path.join(directory, 'darks'), row_num) / 65535.0, axis=0)
         '''
         This is a hacky way of avoiding having user manually duplicate flats and renaming it flats2
         '''
         if use_flats2:
             print("Use flats2")
-            flat2 = np.mean(open_tif_sequence(os.path.join(root, 'flats2'), row_num) / 65535.0, axis=0)
+            flat2 = np.mean(open_tif_sequence(os.path.join(directory, 'flats2'), row_num) / 65535.0, axis=0)
         else:
             print("Don't use flats2")
-            flat2 = np.mean(open_tif_sequence(os.path.join(root, 'flats'), row_num) / 65535.0, axis=0)
+            flat2 = np.mean(open_tif_sequence(os.path.join(directory, 'flats'), row_num) / 65535.0, axis=0)
 
 
         tomo_single_row = tomo[:, tomo.shape[1] // 2, :] / 65535.0
@@ -148,3 +148,6 @@ def find_overlap(args):
                 os.system(recon_cmd)
 
         shutil.rmtree(os.path.join(proc, index_dir, 'sinos'))
+        print("Finished processing: " + str(directory))
+
+    print("Finished processing: " + str(root))
