@@ -36,7 +36,7 @@ def findCTdirs(root: str, tomo_name: str):
         for name in dirs:
             if name == tomo_name:
                 ctdirs.append(root)
-    return list(set(ctdirs)).sort()
+    return list(set(ctdirs))
 
 def find_overlap(args):
     # assign GUI arguments to variables
