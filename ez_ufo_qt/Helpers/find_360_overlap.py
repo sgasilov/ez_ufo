@@ -5,6 +5,7 @@ concatenating opposing projections together over a range of "overlap" values (i.
 at which the images are cropped and concatenated).
 The objective is to review this series of images to determine the pixel column at which the axis of rotation
 is located (much like the axis search function commonly used in reconstruction software).
+Created by Toby Bond. Modified by Iain Emslie
 '''
 
 import os
@@ -35,10 +36,10 @@ def findCTdirs(root: str, tomo_name: str):
         for name in dirs:
             if name == tomo_name:
                 ctdirs.append(root)
-    return list(set(ctdirs))
+    return list(set(ctdirs)).sort()
 
 def find_overlap(args):
-    # assign parsed command line arguments to variables
+    # assign GUI arguments to variables
 
     root = args.indir
     proc = args.tmpdir
@@ -49,11 +50,6 @@ def find_overlap(args):
     overlap_increment = args.overlap_increment
     axis_on_left = args.axis_on_left
     use_flats2 = args.use_flats2
-
-    if use_flats2:
-        print("Use flats2")
-    else:
-        print("Don't use flats2")
 
     # recursively create output temporary directory if it doesn't exist
     '''
@@ -86,8 +82,17 @@ def find_overlap(args):
 
         # open flats and darks and average them
         flat = np.mean(open_tif_sequence(os.path.join(root, 'flats'), row_num) / 65535.0, axis=0)
-        flat2 = np.mean(open_tif_sequence(os.path.join(root, 'flats2'), row_num) / 65535.0, axis=0)
         dark = np.mean(open_tif_sequence(os.path.join(root, 'darks'), row_num) / 65535.0, axis=0)
+        '''
+        This is a hacky way of avoiding having user manually duplicate flats and renaming it flats2
+        '''
+        if use_flats2:
+            print("Use flats2")
+            flat2 = np.mean(open_tif_sequence(os.path.join(root, 'flats2'), row_num) / 65535.0, axis=0)
+        else:
+            print("Don't use flats2")
+            flat2 = np.mean(open_tif_sequence(os.path.join(root, 'flats'), row_num) / 65535.0, axis=0)
+
 
         tomo_single_row = tomo[:, tomo.shape[1] // 2, :] / 65535.0
         dark_single_row = np.tile(dark[tomo.shape[1] // 2, :], (tomo.shape[0], 1))
@@ -141,4 +146,4 @@ def find_overlap(args):
                             + os.path.join(output, index_dir, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
-        shutil.rmtree(proc)
+    shutil.rmtree(proc)

@@ -84,7 +84,7 @@ class Overlap360Group(QGroupBox):
         layout.addWidget(self.step_label, 9, 0)
         layout.addWidget(self.step_entry, 9, 1)
         layout.addWidget(self.axis_on_left, 10, 0)
-        #layout.addWidget(self.use_flats2_checkbox, 10, 1)
+        layout.addWidget(self.use_flats2_checkbox, 10, 1)
         layout.addWidget(self.help_button, 11, 0)
         layout.addWidget(self.find_overlap_button, 11, 1)
 
