@@ -16,7 +16,6 @@ class Overlap360Group(QGroupBox):
         self.e_overlap_max = 0
         self.e_overlap_increment = 0
         self.e_axis_on_left = False
-        self.e_use_flats2 = True
 
         self.setTitle("Find 360 Overlap")
         self.setStyleSheet('QGroupBox {color: Orange;}')
@@ -55,9 +54,6 @@ class Overlap360Group(QGroupBox):
         self.axis_on_left = QCheckBox("Is the rotation axis on the left-hand side of the image?")
         self.axis_on_left.stateChanged.connect(self.set_axis_checkbox)
 
-        self.use_flats2_checkbox = QCheckBox("Use flats2 ")
-        self.use_flats2_checkbox.stateChanged.connect(self.set_use_flats2)
-
         self.find_overlap_button = QPushButton("Find Overlap")
         self.find_overlap_button.clicked.connect(self.overlap_button_pressed)
         self.find_overlap_button.setStyleSheet("color:royalblue;font-weight:bold")
@@ -84,7 +80,6 @@ class Overlap360Group(QGroupBox):
         layout.addWidget(self.step_label, 9, 0)
         layout.addWidget(self.step_entry, 9, 1)
         layout.addWidget(self.axis_on_left, 10, 0)
-        layout.addWidget(self.use_flats2_checkbox, 10, 1)
         layout.addWidget(self.help_button, 11, 0)
         layout.addWidget(self.find_overlap_button, 11, 1)
 
@@ -110,7 +105,6 @@ class Overlap360Group(QGroupBox):
         self.step_entry.setText(str(self.e_overlap_increment))
         self.e_axis_on_left = True
         self.axis_on_left.setChecked(bool(self.e_axis_on_left))
-        self.use_flats2_checkbox.setChecked(bool(self.e_use_flats2))
 
     def input_button_pressed(self):
         logging.debug("Select input button pressed")
@@ -165,10 +159,6 @@ class Overlap360Group(QGroupBox):
         logging.debug("Is rotation axis on left-hand-side?: " + str(self.axis_on_left.isChecked()))
         self.e_axis_on_left = bool(self.axis_on_left.isChecked())
 
-    def set_use_flats2(self):
-        logging.debug("Use flats2: " + str(self.use_flats2_checkbox.isChecked()))
-        self.e_use_flats2 = bool(self.use_flats2_checkbox.isChecked())
-
     def overlap_button_pressed(self):
         logging.debug("Find overlap button pressed")
 
@@ -210,5 +200,4 @@ class qt_args():
         setattr(self, 'overlap_increment', self.args['overlap_increment'])
         self.args['axis_on_left'] = bool(e_axis_on_left)
         setattr(self, 'axis_on_left', self.args['axis_on_left'])
-        self.args['use_flats2'] = bool(e_use_flats2)
-        setattr(self, 'use_flats2', self.args['use_flats2'])
+

@@ -84,15 +84,10 @@ def find_overlap(args):
         # open flats and darks and average them
         flat = np.mean(open_tif_sequence(os.path.join(directory, 'flats'), row_num) / 65535.0, axis=0)
         dark = np.mean(open_tif_sequence(os.path.join(directory, 'darks'), row_num) / 65535.0, axis=0)
-        '''
-        This is a hacky way of avoiding having user manually duplicate flats and renaming it flats2
-        '''
-        if use_flats2:
-            print("Use flats2")
+        if os.path.exists(os.path.join(directory, 'flats2')):
             flat2 = np.mean(open_tif_sequence(os.path.join(directory, 'flats2'), row_num) / 65535.0, axis=0)
         else:
-            print("Don't use flats2")
-            flat2 = np.mean(open_tif_sequence(os.path.join(directory, 'flats'), row_num) / 65535.0, axis=0)
+            flat2 = flat
 
 
         tomo_single_row = tomo[:, tomo.shape[1] // 2, :] / 65535.0

@@ -29,6 +29,9 @@ class NLMDNGroup(QGroupBox):
         self.setTitle("Non-local-means Denoising")
         self.setStyleSheet('QGroupBox {color: royalblue;}')
 
+        self.apply_to_reco_checkbox = QCheckBox("Automatically apply NLMDN to reconstructed slices")
+        self.apply_to_reco_checkbox.stateChanged.connect(self.set_apply_to_reco)
+
         self.input_dir_button = QPushButton("Select input directory")
         self.input_dir_button.clicked.connect(self.set_indir_button)
 
@@ -84,31 +87,32 @@ class NLMDNGroup(QGroupBox):
 
         self.apply_button = QPushButton("Apply filter")
         self.apply_button.clicked.connect(self.apply_button_pressed)
-        self.apply_button.setStyleSheet("color:royalblue; font-weight: bold;")
+        #self.apply_button.setStyleSheet("color:royalblue; font-weight: bold;")
 
         self.set_layout()
 
     def set_layout(self):
         layout = QGridLayout()
 
-        layout.addWidget(self.input_dir_button, 0, 0, 1, 2)
-        layout.addWidget(self.select_img_button, 0, 2, 1, 2)
-        layout.addWidget(self.input_dir_entry, 1, 0, 1, 4)
-        layout.addWidget(self.output_dir_button, 2, 0, 1, 2)
-        layout.addWidget(self.save_biftiff_checkbox, 2, 2, 1, 2, Qt.AlignCenter)
-        layout.addWidget(self.output_dir_entry, 3, 0, 1, 4)
-        layout.addWidget(self.similarity_radius_label, 4, 0, 1, 2)
-        layout.addWidget(self.similarity_radius_entry, 4, 2, 1, 2)
-        layout.addWidget(self.patch_radius_label, 5, 0, 1, 2)
-        layout.addWidget(self.patch_radius_entry, 5, 2, 1, 2)
-        layout.addWidget(self.smoothing_label, 6, 0, 1, 2)
-        layout.addWidget(self.smoothing_entry, 6, 2, 1, 2)
-        layout.addWidget(self.noise_std_label, 7, 0, 1, 2)
-        layout.addWidget(self.noise_std_entry, 7, 2, 1, 2)
-        layout.addWidget(self.window_label, 8, 0, 1, 2)
-        layout.addWidget(self.window_entry, 8, 2, 1, 2)
-        layout.addWidget(self.fast_checkbox, 9, 0, 1, 2, Qt.AlignCenter)
-        layout.addWidget(self.sigma_checkbox, 9, 2, 1, 2, Qt.AlignCenter)
+        layout.addWidget(self.apply_to_reco_checkbox, 0, 0, 1, 1)
+        layout.addWidget(self.input_dir_button, 1, 0, 1, 2)
+        layout.addWidget(self.select_img_button, 1, 2, 1, 2)
+        layout.addWidget(self.input_dir_entry, 2, 0, 1, 4)
+        layout.addWidget(self.output_dir_button, 3, 0, 1, 2)
+        layout.addWidget(self.save_biftiff_checkbox, 3, 2, 1, 2, Qt.AlignCenter)
+        layout.addWidget(self.output_dir_entry, 4, 0, 1, 4)
+        layout.addWidget(self.similarity_radius_label, 5, 0, 1, 2)
+        layout.addWidget(self.similarity_radius_entry, 5, 2, 1, 2)
+        layout.addWidget(self.patch_radius_label, 6, 0, 1, 2)
+        layout.addWidget(self.patch_radius_entry, 6, 2, 1, 2)
+        layout.addWidget(self.smoothing_label, 7, 0, 1, 2)
+        layout.addWidget(self.smoothing_entry, 7, 2, 1, 2)
+        layout.addWidget(self.noise_std_label, 8, 0, 1, 2)
+        layout.addWidget(self.noise_std_entry, 8, 2, 1, 2)
+        layout.addWidget(self.window_label, 9, 0, 1, 2)
+        layout.addWidget(self.window_entry, 9, 2, 1, 2)
+        layout.addWidget(self.fast_checkbox, 10, 0, 1, 2, Qt.AlignCenter)
+        layout.addWidget(self.sigma_checkbox, 10, 2, 1, 2, Qt.AlignCenter)
 
         layout.addWidget(self.help_button, 10, 0, 1, 1)
         layout.addWidget(self.delete_button, 10, 1)
@@ -135,6 +139,21 @@ class NLMDNGroup(QGroupBox):
 
     def set_values_from_params(self):
         pass
+
+    def set_apply_to_reco(self):
+        logging.debug("Apply NLMDN to reconstructed slices checkbox: " + str(self.apply_to_reco_checkbox.isChecked()))
+        if self.apply_to_reco_checkbox.isChecked():
+            self.input_dir_button.setDisabled(True)
+            self.select_img_button.setDisabled(True)
+            self.input_dir_entry.setDisabled(True)
+            self.dry_button.setDisabled(True)
+            self.apply_button.setDisabled(True)
+        elif not self.apply_to_reco_checkbox.isChecked():
+            self.input_dir_button.setDisabled(False)
+            self.select_img_button.setDisabled(False)
+            self.input_dir_entry.setDisabled(False)
+            self.dry_button.setDisabled(False)
+            self.apply_button.setDisabled(False)
 
     def set_indir_button(self):
         """
