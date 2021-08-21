@@ -28,16 +28,16 @@ def open_tif_sequence(dir_name, row):
 
 def findCTdirs(root: str, tomo_name: str):
     """
-    Walks directories rooted at "Input Directory" location
-    Appends their absolute path to ctdir if they contain a directory with same name as "tomo" entry in GUI
+    Walks directories rooted at "Input ctset" location
+    Appends their absolute path to ctdir if they contain a ctset with same name as "tomo" entry in GUI
     """
+    lvl0 = os.path.abspath(root)
     ctdirs = []
-    for root, dirs, files in os.walk(root):
+    for root, dirs, files in os.walk(lvl0):
         for name in dirs:
             if name == tomo_name:
                 ctdirs.append(root)
-    ctdirs.sort()
-    return ctdirs
+    return ctdirs, lvl0
 
 def find_overlap(args):
     # assign GUI arguments to variables
@@ -51,7 +51,7 @@ def find_overlap(args):
     overlap_increment = args.overlap_increment
     axis_on_left = args.axis_on_left
 
-    # recursively create output temporary directory if it doesn't exist
+    # recursively create output temporary ctset if it doesn't exist
     if os.path.exists(proc):
         shutil.rmtree(proc)
         os.makedirs(proc)
@@ -59,25 +59,25 @@ def find_overlap(args):
         os.makedirs(proc)
 
     print("Finding CTDirs...")
-    ctdirs = findCTdirs(root, "tomo")
+    ctdirs, lvl0 = findCTdirs(root, "tomo")
     print(ctdirs)
 
     # concatenate images end-to-end and generate a sinogram
     print('Opening half-acquisition image sequence...')
 
-    for directory in ctdirs:
-        print("Working on directory:" + str(directory))
-        index_dir = os.path.basename(os.path.normpath(directory))
+    for ctset in ctdirs:
+        print("Working on ctset:" + str(ctset))
+        index_dir = os.path.basename(os.path.normpath(ctset))
 
         os.makedirs(os.path.join(proc, index_dir, 'sinos'))
 
-        tomo = open_tif_sequence(os.path.join(directory, 'tomo'), row_num)
+        tomo = open_tif_sequence(os.path.join(ctset, 'tomo'), row_num)
 
         # open flats and darks and average them
-        flat = np.mean(open_tif_sequence(os.path.join(directory, 'flats'), row_num) / 65535.0, axis=0)
-        dark = np.mean(open_tif_sequence(os.path.join(directory, 'darks'), row_num) / 65535.0, axis=0)
-        if os.path.exists(os.path.join(directory, 'flats2')):
-            flat2 = np.mean(open_tif_sequence(os.path.join(directory, 'flats2'), row_num) / 65535.0, axis=0)
+        flat = np.mean(open_tif_sequence(os.path.join(ctset, 'flats'), row_num) / 65535.0, axis=0)
+        dark = np.mean(open_tif_sequence(os.path.join(ctset, 'darks'), row_num) / 65535.0, axis=0)
+        if os.path.exists(os.path.join(ctset, 'flats2')):
+            flat2 = np.mean(open_tif_sequence(os.path.join(ctset, 'flats2'), row_num) / 65535.0, axis=0)
         else:
             flat2 = flat
 
@@ -123,6 +123,10 @@ def find_overlap(args):
         # perform reconstructions for each sinogram and save to output folder
         print('Reconstructing stitched sinograms:')
 
+        setid = ctset[len(lvl0)+1:]
+        #print("setid: " + setid)
+        out_pattern = os.path.join(args.outdir, setid)
+
         for filename in os.listdir(os.path.join(proc, index_dir, 'sinos')):
             if '.tif' in filename:
                 current_img = np.array(read_image(os.path.join(proc, index_dir, 'sinos', filename)))
@@ -130,7 +134,7 @@ def find_overlap(args):
 
                 recon_cmd = 'tofu tomo  --output-bytes-per-file 0 --sinograms '\
                             + os.path.join(proc, index_dir, 'sinos', filename) + ' --output '\
-                            + os.path.join(output, index_dir, filename) + ' --axis ' + str(axis)
+                            + os.path.join(out_pattern, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
         shutil.rmtree(os.path.join(proc, index_dir))
