@@ -247,6 +247,10 @@ def main_tk(args, fdt_names):
             print("Number of projections: {}, dimensions: {}".format(nviews, WH))
             # tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
             # cmds.append("echo \"{}\"".format(tmp))
+            # TODO: IF AUTO NLMDN IS CHECKED THEN TAKE OUTPUT /sli and feed to NLMDN Call
+            if args.e_nlmdn_apply_after_reco:
+                print("Using Non-Local Means Denoising")
+
         else:
             print('{} has been already reconstructed'.format(ctset[0]))
     # execute commands = start reconstruction
@@ -259,8 +263,6 @@ def main_tk(args, fdt_names):
             print(cmd)
     if not args.keep_tmp:
         clean_tmp_dirs(args.tmpdir, fdt_names)
-    #TODO: IF AUTO NLMDN IS CHECKED THEN TAKE OUTPUT /sli and feed to NLMDN Call
-
 
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     print("*** Done. Total processing time {} sec.".format(int(time.time() - start)))

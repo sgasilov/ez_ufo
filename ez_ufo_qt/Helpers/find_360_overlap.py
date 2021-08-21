@@ -52,13 +52,6 @@ def find_overlap(args):
     axis_on_left = args.axis_on_left
 
     # recursively create output temporary directory if it doesn't exist
-    '''
-    if os.path.exists(os.path.join(proc)):
-        shutil.rmtree(proc)
-        os.makedirs(os.path.join(proc, 'sinos'))
-    else:
-        os.makedirs(os.path.join(proc, 'sinos'))
-    '''
     if os.path.exists(proc):
         shutil.rmtree(proc)
         os.makedirs(proc)
@@ -87,7 +80,6 @@ def find_overlap(args):
             flat2 = np.mean(open_tif_sequence(os.path.join(directory, 'flats2'), row_num) / 65535.0, axis=0)
         else:
             flat2 = flat
-
 
         tomo_single_row = tomo[:, tomo.shape[1] // 2, :] / 65535.0
         dark_single_row = np.tile(dark[tomo.shape[1] // 2, :], (tomo.shape[0], 1))
