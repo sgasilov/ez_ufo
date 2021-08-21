@@ -59,4 +59,19 @@ e_common_darks: "Absolute path to darks - TEST"
 e_common_flats: "Absolute path to flats - TEST"
 e_use_common_flats2: False
 e_common_flats2: "Absolute path to flats2 - TEST"
+#NLMDN Settings
+e_nlmdn_apply_after_reco: False
+e_nlmdn_indir: "hello"
+e_nlmdn_input_is_file: True
+e_nlmdn_outdir: "my/name/is/Bob"
+e_nlmdn_bigtif: False
+e_nlmdn_r: 42
+e_nlmdn_dx: 24
+e_nlmdn_h: 6.9
+e_nlmdn_sig: 4.20
+e_nlmdn_w: 88
+e_nlmdn_fast: True
+e_nlmdn_autosig: True
+e_nlmdn_dryrun: False
+...
 ...

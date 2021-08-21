@@ -4,6 +4,7 @@ import os
 from PyQt5.QtWidgets import QGridLayout, QLabel, QRadioButton, QGroupBox, QLineEdit, QCheckBox, QPushButton, QHBoxLayout, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
 
+import ez_ufo_qt.GUI.params as parameters
 from ez_ufo_qt.main_nlm import main_tk
 
 class NLMDNGroup(QGroupBox):
@@ -12,19 +13,6 @@ class NLMDNGroup(QGroupBox):
     """
     def __init__(self):
         super().__init__()
-
-        self.e_indir = ""
-        self.e_input_is_file = False
-        self.e_outdir = ""
-        self.e_bigtif = False
-        self.e_r = 0
-        self.e_dx = 0
-        self.e_h = 0
-        self.e_sig = 0
-        self.e_w = 0
-        self.e_fast = False
-        self.e_autosig = False
-        self.e_dryrun = False
 
         self.setTitle("Non-local-means Denoising")
         self.setStyleSheet('QGroupBox {color: royalblue;}')
@@ -44,8 +32,8 @@ class NLMDNGroup(QGroupBox):
         self.output_dir_button = QPushButton("Select output directory or filename pattern")
         self.output_dir_button.clicked.connect(self.set_outdir_button)
 
-        self.save_biftiff_checkbox = QCheckBox("Save in bigtiff container")
-        self.save_biftiff_checkbox.clicked.connect(self.set_save_bigtiff)
+        self.save_bigtif_checkbox = QCheckBox("Save in bigtif container")
+        self.save_bigtif_checkbox.clicked.connect(self.set_save_bigtif)
 
         self.output_dir_entry = QLineEdit()
         self.output_dir_entry.textChanged.connect(self.set_outdir_entry)
@@ -99,7 +87,7 @@ class NLMDNGroup(QGroupBox):
         layout.addWidget(self.select_img_button, 1, 2, 1, 2)
         layout.addWidget(self.input_dir_entry, 2, 0, 1, 4)
         layout.addWidget(self.output_dir_button, 3, 0, 1, 2)
-        layout.addWidget(self.save_biftiff_checkbox, 3, 2, 1, 2, Qt.AlignCenter)
+        layout.addWidget(self.save_bigtif_checkbox, 3, 2, 1, 2, Qt.AlignCenter)
         layout.addWidget(self.output_dir_entry, 4, 0, 1, 4)
         layout.addWidget(self.similarity_radius_label, 5, 0, 1, 2)
         layout.addWidget(self.similarity_radius_entry, 5, 2, 1, 2)
@@ -114,18 +102,22 @@ class NLMDNGroup(QGroupBox):
         layout.addWidget(self.fast_checkbox, 10, 0, 1, 2, Qt.AlignCenter)
         layout.addWidget(self.sigma_checkbox, 10, 2, 1, 2, Qt.AlignCenter)
 
-        layout.addWidget(self.help_button, 10, 0, 1, 1)
-        layout.addWidget(self.delete_button, 10, 1)
-        layout.addWidget(self.dry_button, 10, 2)
-        layout.addWidget(self.apply_button, 10, 3)
-
+        layout.addWidget(self.help_button, 11, 0, 1, 1)
+        layout.addWidget(self.delete_button, 11, 1)
+        layout.addWidget(self.dry_button, 11, 2)
+        layout.addWidget(self.apply_button, 11, 3)
 
         self.setLayout(layout)
 
     def init_values(self):
+        self.apply_to_reco_checkbox.setChecked(False)
+        parameters.params['e_nlmdn_apply_after_reco'] = False
         self.input_dir_entry.setText(os.getcwd())
+        parameters.params['e_nlmdn_indir'] = os.getcwd()
         self.output_dir_entry.setText(os.getcwd() + '-nlmfilt')
+        parameters.params['e_nlmdn_outdir'] = os.getcwd() + '-nlmfilt'
         self.e_bigtif = False
+        parameters.params['e_nlmdn_bigtif'] = False
         self.similarity_radius_entry.setText("10")
         self.patch_radius_entry.setText("3")
         self.smoothing_entry.setText("0.0")
@@ -138,10 +130,21 @@ class NLMDNGroup(QGroupBox):
         self.e_dryrun = False
 
     def set_values_from_params(self):
-        pass
+        self.apply_to_reco_checkbox.setChecked(bool(parameters.params['e_nlmdn_apply_after_reco']))
+        self.input_dir_entry.setText(str(parameters.params['e_nlmdn_indir']))
+        self.output_dir_entry.setText(str(parameters.params['e_nlmdn_outdir']))
+        self.save_bigtif_checkbox.setChecked(bool(parameters.params['e_nlmdn_bigtif']))
+        self.similarity_radius_entry.setText(str(parameters.params['e_nlmdn_r']))
+        self.patch_radius_entry.setText(str(parameters.params['e_nlmdn_dx']))
+        self.smoothing_entry.setText(str(parameters.params['e_nlmdn_h']))
+        self.noise_std_entry.setText(str(parameters.params['e_nlmdn_sig']))
+        self.window_entry.setText(str(parameters.params['e_nlmdn_w']))
+        self.fast_checkbox.setChecked(bool(parameters.params['e_nlmdn_fast']))
+        self.sigma_checkbox.setChecked(bool(parameters.params['e_nlmdn_autosig']))
 
     def set_apply_to_reco(self):
         logging.debug("Apply NLMDN to reconstructed slices checkbox: " + str(self.apply_to_reco_checkbox.isChecked()))
+        parameters.params['e_nlmdn_apply_after_reco'] = bool(self.apply_to_reco_checkbox.isChecked())
         if self.apply_to_reco_checkbox.isChecked():
             self.input_dir_button.setDisabled(True)
             self.select_img_button.setDisabled(True)
@@ -163,14 +166,14 @@ class NLMDNGroup(QGroupBox):
         dir_explore = QFileDialog(self)
         directory = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(directory)
+        parameters.params['e_nlmdn_indir'] = directory
         self.output_dir_entry.setText(directory + "-nlmfilt")
-        self.e_indir = directory
-        self.e_outdir = directory + "-nlmfilt"
-        self.e_input_is_file = False
+        parameters.params['e_nlmdn_outdir'] = directory + "-nlmfilt"
+        parameters.params['e_nlmdn_input_is_file'] = False
 
     def set_indir_entry(self):
         logging.debug("Indir entry: " + str(self.input_dir_entry.text()))
-        self.e_indir = str(self.input_dir_entry.text())
+        parameters.params['e_nlmdn_indir'] = str(self.input_dir_entry.text())
 
     def select_image(self):
         logging.debug("Select one image button pressed")
@@ -182,51 +185,52 @@ class NLMDNGroup(QGroupBox):
             tmp = img_name + '-nlmfilt-%05i'+ img_ext
             self.input_dir_entry.setText(file_path)
             self.output_dir_entry.setText(tmp)
-            self.e_indir = file_path
-            self.e_outdir = tmp
-            self.e_input_is_file = True
+            parameters.params['e_nlmdn_indir'] = file_path
+            parameters.params['e_nlmdn_outdir'] = tmp
+            parameters.params['e_nlmdn_input_is_file'] = True
 
     def set_outdir_button(self):
         logging.debug("Select output directory pressed")
         dir_explore = QFileDialog(self)
         directory = dir_explore.getExistingDirectory()
         self.output_dir_entry.setText(directory)
+        parameters.params['e_nlmdn_outdir'] = directory
 
-    def set_save_bigtiff(self):
-        logging.debug("Save bigtiff checkbox: " + str(self.save_biftiff_checkbox.isChecked()))
-        self.e_bigtif = bool(self.save_biftiff_checkbox.isChecked())
+    def set_save_bigtif(self):
+        logging.debug("Save bigtif checkbox: " + str(self.save_bigtif_checkbox.isChecked()))
+        parameters.params['e_nlmdn_bigtif'] = bool(self.save_bigtif_checkbox.isChecked())
 
     def set_outdir_entry(self):
         logging.debug("Outdir entry: " + str(self.output_dir_entry.text()))
-        self.e_outdir = str(self.output_dir_entry.text())
+        parameters.params['e_nlmdn_outdir'] = str(self.output_dir_entry.text())
 
     def set_rad_sim_entry(self):
         logging.debug("Radius for similarity: " + str(self.similarity_radius_entry.text()))
-        self.e_r = int(self.similarity_radius_entry.text())
+        parameters.params['e_nlmdn_r'] = str(self.similarity_radius_entry.text())
 
     def set_rad_patch_entry(self):
         logging.debug("Radius of patches: " + str(self.patch_radius_entry.text()))
-        self.e_dx = int(self.patch_radius_entry.text())
+        parameters.params['e_nlmdn_dx'] = str(self.patch_radius_entry.text())
 
     def set_smoothing_entry(self):
         logging.debug("Smoothing control: " + str(self.smoothing_entry.text()))
-        self.e_h = float(self.smoothing_entry.text())
+        parameters.params['e_nlmdn_h'] = str(self.smoothing_entry.text())
 
     def set_noise_entry(self):
         logging.debug("Noise std: " + str(self.noise_std_entry.text()))
-        self.e_sig = float(self.noise_std_entry.text())
+        parameters.params['e_nlmdn_sig'] = str(self.noise_std_entry.text())
 
     def set_window_entry(self):
         logging.debug("Window: " + str(self.window_entry.text()))
-        self.e_w = float(self.window_entry.text())
+        parameters.params['e_nlmdn_w'] = str(self.window_entry.text())
 
     def set_fast_checkbox(self):
         logging.debug("Fast: " + str(self.fast_checkbox.isChecked()))
-        self.e_fast = bool(self.fast_checkbox.isChecked())
+        parameters.params['e_nlmdn_fast'] = bool(self.fast_checkbox.isChecked())
 
     def set_sigma_checkbox(self):
         logging.debug("Estimate sigma: " + str(self.sigma_checkbox.isChecked()))
-        self.e_autosig = bool(self.sigma_checkbox.isChecked())
+        parameters.params['e_nlmdn_autosig'] = bool(self.sigma_checkbox.isChecked())
 
     def help_button_pressed(self):
         logging.debug("Help Button Pressed")
@@ -245,12 +249,12 @@ class NLMDNGroup(QGroupBox):
         dialog = QMessageBox.warning(self, "Warning: data can be lost", msg, QMessageBox.Yes | QMessageBox.No)
 
         if dialog == QMessageBox.Yes:
-            if os.path.exists(str(self.e_outdir)):
+            if os.path.exists(str(parameters.params['e_nlmdn_outdir'])):
                 logging.debug("YES")
-                if self.e_outdir == self.e_indir:
+                if parameters.params['e_nlmdn_outdir'] == parameters.params['e_nlmdn_indir']:
                     logging.debug("Cannot delete: output directory is the same as input")
                 else:
-                    os.system( 'rm -rf {}'.format(self.e_outdir))
+                    os.system( 'rm -rf {}'.format(parameters.params['e_nlmdn_outdir']))
                     logging.debug("Directory with reconstructed data was removed")
             else:
                 logging.debug("Directory does not exist")
@@ -259,22 +263,24 @@ class NLMDNGroup(QGroupBox):
 
     def dry_button_pressed(self):
         logging.debug("Dry Run Button Pressed")
-        self.e_dryrun = True
+        parameters.params['e_nlmdn_dryrun'] = True
         self.apply_button_pressed()
-        self.e_dryrun = False
+        parameters.params['e_nlmdn_dryrun'] = False
 
     def apply_button_pressed(self):
         logging.debug("Apply Filter Button Pressed")
-        args = tk_args(self.e_indir, self.e_input_is_file, \
-                       self.e_outdir, self.e_bigtif, \
-                       self.e_r, self.e_dx, self.e_h, self.e_sig, \
-                       self.e_w, self.e_fast, self.e_autosig, \
-                       self.e_dryrun)
+        args = tk_args(parameters.params['e_nlmdn_apply_after_reco'],
+                       parameters.params['e_nlmdn_indir'], parameters.params['e_nlmdn_input_is_file'],
+                       parameters.params['e_nlmdn_outdir'], parameters.params['e_nlmdn_bigtif'],
+                       parameters.params['e_nlmdn_r'], parameters.params['e_nlmdn_dx'],
+                       parameters.params['e_nlmdn_h'], parameters.params['e_nlmdn_sig'],
+                       parameters.params['e_nlmdn_w'], parameters.params['e_nlmdn_fast'],
+                       parameters.params['e_nlmdn_autosig'], parameters.params['e_nlmdn_dryrun'])
         logging.debug(args.args)
-        if os.path.exists(args.outdir) and not self.e_dryrun:
-            titletext = "Warning: files can be overwritten"
+        if os.path.exists(args.outdir) and not args.dryrun:
+            title_text = "Warning: files can be overwritten"
             text1 = "Output directory exists. Files can be overwritten. Proceed?"
-            dialog = QMessageBox.warning(self, titletext, text1, QMessageBox.Yes | QMessageBox.No)
+            dialog = QMessageBox.warning(self, title_text, text1, QMessageBox.Yes | QMessageBox.No)
             if dialog == QMessageBox.Yes:
                 main_tk(args)
                 QMessageBox.information(self, "Finished", "Finished")
@@ -282,14 +288,18 @@ class NLMDNGroup(QGroupBox):
             main_tk(args)
             QMessageBox.information(self, "Finished", "Finished")
 
+
 class tk_args():
-    def __init__(self, e_indir, e_input_is_file,
+    def __init__(self, e_apply_after_reco,
+                 e_indir, e_input_is_file,
                  e_outdir, e_bigtif,
                  e_r, e_dx, e_h, e_sig,
-                 e_w, e_fast, e_autosig,
-                  e_dryrun):
+                 e_w, e_fast, e_autosig, e_dryrun):
+
         self.args = {}
         # PATHS
+        self.args['apply_after_reco'] = str(e_apply_after_reco)
+        setattr(self, 'apply_after_reco', self.args['apply_after_reco'])
         self.args['indir'] = str(e_indir)
         setattr(self, 'indir', self.args['indir'])
         self.args['input_is_file'] = e_input_is_file
@@ -317,5 +327,5 @@ class tk_args():
         # setattr(self, 'inplace', self.args['inplace'])
         self.args['bigtif'] = bool(e_bigtif)
         setattr(self, 'bigtif', self.args['bigtif'])
-        self.args['dryrun']=bool(e_dryrun)
-        setattr(self,'dryrun',self.args['dryrun'])
+        self.args['dryrun'] = bool(e_dryrun)
+        setattr(self, 'dryrun', self.args['dryrun'])

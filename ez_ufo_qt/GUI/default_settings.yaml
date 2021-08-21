@@ -62,4 +62,18 @@ e_common_darks: "Absolute path to darks"
 e_common_flats: "Absolute path to flats"
 e_use_common_flats2: False
 e_common_flats2: "Absolute path to flats2"
+#NLMDN Settings
+e_nlmdn_apply_after_reco: False
+e_nlmdn_indir: ""
+e_nlmdn_input_is_file: False
+e_nlmdn_outdir: ""
+e_nlmdn_bigtif: False
+e_nlmdn_r: 10
+e_nlmdn_dx: 3
+e_nlmdn_h: 0.0
+e_nlmdn_sig: 0.0
+e_nlmdn_w: 0.0
+e_nlmdn_fast: True
+e_nlmdn_autosig: False
+e_nlmdn_dryrun: False
 ...

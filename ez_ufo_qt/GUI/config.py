@@ -509,22 +509,39 @@ class ConfigGroup(QGroupBox):
         try:
             self.validate_input()
 
-            args = tk_args( parameters.params['e_indir'],  parameters.params['e_tmpdir'],  parameters.params['e_outdir'],  parameters.params['e_bigtif'],
-                            parameters.params['e_ax'],  parameters.params['e_ax_range'],  parameters.params['e_ax_row'],  parameters.params['e_ax_p_size'],  parameters.params['e_ax_fix'],
-                            parameters.params['e_dax'],
-                            parameters.params['e_inp'],  parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
-                            parameters.params['e_RR'],  parameters.params['e_RR_ufo'],  parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
-                            parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],  parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
-                            parameters.params['e_PR'],  parameters.params['e_energy'],  parameters.params['e_pixel'],  parameters.params['e_z'],  parameters.params['e_log10db'],
-                            parameters.params['e_vcrop'],  parameters.params['e_y'],  parameters.params['e_yheight'],  parameters.params['e_ystep'],
-                            parameters.params['e_gray256'],  parameters.params['e_bit'],  parameters.params['e_hmin'],  parameters.params['e_hmax'],
-                            parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
-                            parameters.params['e_a0'],
-                            parameters.params['e_crop'],  parameters.params['e_x0'],  parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
-                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],  parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
-                            parameters.params['e_sinFFC_method'], parameters.params['e_sinFFCEigenReps'], parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
+            args = tk_args( parameters.params['e_indir'], parameters.params['e_tmpdir'],
+                            parameters.params['e_outdir'], parameters.params['e_bigtif'],
+                            parameters.params['e_ax'],  parameters.params['e_ax_range'],
+                            parameters.params['e_ax_row'], parameters.params['e_ax_p_size'],
+                            parameters.params['e_ax_fix'], parameters.params['e_dax'], parameters.params['e_inp'],
+                            parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
+                            parameters.params['e_RR'],  parameters.params['e_RR_ufo'],
+                            parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
+                            parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],
+                            parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
+                            parameters.params['e_PR'],  parameters.params['e_energy'],  parameters.params['e_pixel'],
+                            parameters.params['e_z'],  parameters.params['e_log10db'], parameters.params['e_vcrop'],
+                            parameters.params['e_y'],  parameters.params['e_yheight'],  parameters.params['e_ystep'],
+                            parameters.params['e_gray256'],  parameters.params['e_bit'],  parameters.params['e_hmin'],
+                            parameters.params['e_hmax'], parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
+                            parameters.params['e_a0'], parameters.params['e_crop'],  parameters.params['e_x0'],
+                            parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
+                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],
+                            parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
+                            parameters.params['e_sinFFC_method'], parameters.params['e_sinFFCEigenReps'],
+                            parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
                             parameters.params['e_common_darks_flats'], parameters.params['e_common_darks'],
-                            parameters.params['e_common_flats'], parameters.params['e_use_common_flats2'], parameters.params['e_common_flats2'])
+                            parameters.params['e_common_flats'], parameters.params['e_use_common_flats2'],
+                            parameters.params['e_common_flats2'],
+                            #NLMDN Parameters
+                            parameters.params['e_nlmdn_apply_after_reco'],
+                            parameters.params['e_nlmdn_indir'], parameters.params['e_nlmdn_input_is_file'],
+                            parameters.params['e_nlmdn_outdir'], parameters.params['e_nlmdn_bigtif'],
+                            parameters.params['e_nlmdn_r'], parameters.params['e_nlmdn_dx'],
+                            parameters.params['e_nlmdn_h'], parameters.params['e_nlmdn_sig'],
+                            parameters.params['e_nlmdn_w'], parameters.params['e_nlmdn_fast'],
+                            parameters.params['e_nlmdn_autosig'], parameters.params['e_nlmdn_dryrun']
+                            )
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
@@ -663,18 +680,17 @@ class ConfigGroup(QGroupBox):
 class tk_args():
     def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif,
                 e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax,
-                e_inp, e_inp_thr, e_inp_sig,
-                e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par,
+                e_inp, e_inp_thr, e_inp_sig, e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par,
                 e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
                 e_PR, e_energy, e_pixel, e_z, e_log10db,
-                e_vcrop, e_y, e_yheight, e_ystep,
-                e_gray256, e_bit, e_hmin, e_hmax,
-                e_pre, e_pre_cmd,
-                e_a0,
-                e_crop, e_x0, e_dx, e_y0, e_dy,
+                e_vcrop, e_y, e_yheight, e_ystep, e_gray256, e_bit, e_hmin, e_hmax,
+                e_pre, e_pre_cmd, e_a0, e_crop, e_x0, e_dx, e_y0, e_dy,
                 e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFC_method, e_sinFFCEigenReps,
                 e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats,
-                e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2):
+                e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2,
+                e_nlmdn_apply_after_reco, e_nlmdn_indir, e_nlmdn_input_is_file, e_nlmdn_outdir, e_nlmdn_bigtif,
+                e_nlmdn_r, e_nlmdn_dx, e_nlmdn_h, e_nlmdn_sig,
+                e_nlmdn_w, e_nlmdn_fast, e_nlmdn_autosig, e_nlmdn_dryrun):
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -798,6 +814,33 @@ class tk_args():
         setattr(self, 'use_common_flats2', self.args['use_common_flats2'])
         self.args['common_flats2'] = str(e_common_flats2)
         setattr(self, 'common_flats2', self.args['common_flats2'])
+        #NLMDN Settings
+        self.args['nlmdn_apply_after_reco'] = bool(e_nlmdn_apply_after_reco)
+        setattr(self, 'nlmdn_apply_after_reco', self.args['nlmdn_apply_after_reco'])
+        self.args['nlmdn_indir'] = str(e_nlmdn_indir)
+        setattr(self, 'nlmdn_indir', self.args['nlmdn_indir'])
+        self.args['nlmdn_input_is_file'] = bool(e_nlmdn_input_is_file)
+        setattr(self, 'nlmdn_input_is_file', self.args['nlmdn_input_is_file'])
+        self.args['nlmdn_outdir'] = str(e_nlmdn_outdir)
+        setattr(self, 'nlmdn_outdir', self.args['nlmdn_outdir'])
+        self.args['nlmdn_bigtif'] = bool(e_nlmdn_bigtif)
+        setattr(self, 'nlmdn_bigtif', self.args['nlmdn_bigtif'])
+        self.args['nlmdn_r'] = str(e_nlmdn_r)
+        setattr(self, 'nlmdn_r', self.args['nlmdn_r'])
+        self.args['nlmdn_dx'] = str(e_nlmdn_dx)
+        setattr(self, 'nlmdn_dx', self.args['nlmdn_dx'])
+        self.args['nlmdn_h'] = str(e_nlmdn_h)
+        setattr(self, 'nlmdn_h', self.args['nlmdn_h'])
+        self.args['nlmdn_sig'] = str(e_nlmdn_sig)
+        setattr(self, 'nlmdn_sig', self.args['nlmdn_sig'])
+        self.args['nlmdn_w'] = str(e_nlmdn_w)
+        setattr(self, 'nlmdn_w', self.args['nlmdn_w'])
+        self.args['nlmdn_fast'] = bool(e_nlmdn_fast)
+        setattr(self, 'nlmdn_fast', self.args['nlmdn_fast'])
+        self.args['nlmdn_autosig'] = bool(e_nlmdn_autosig)
+        setattr(self, 'nlmdn_autosig', self.args['nlmdn_fast'])
+        self.args['nlmdn_dryrun'] = bool(e_nlmdn_dryrun)
+        setattr(self, 'nlmdn_dryrun', self.args['nlmdn_dryrun'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())

@@ -180,6 +180,7 @@ class GUI(qtw.QWidget):
         self.phase_retrieval_group.set_values_from_params()
         self.binning_group.set_values_from_params()
         self.config_group.set_values_from_params()
+        self.nlmdn_group.set_values_from_params()
 
     def switch_to_image_tab(self):
         """

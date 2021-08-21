@@ -122,28 +122,27 @@ class CentreOfRotationGroup(QGroupBox):
             logging.debug("Use image midpoint")
             parameters.params['e_ax'] = 4
 
-    # TODO Fix logic for using image midpoint rButton
     def set_rButton_from_params(self):
         if parameters.params['e_ax'] == 1:
             self.auto_correlate_rButton.setChecked(True)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(False)
-            self.image_midpoint_rButton.setText(False)
+            self.image_midpoint_rButton.setChecked(False)
         elif parameters.params['e_ax'] == 2:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(True)
             self.define_axis_rButton.setChecked(False)
-            self.image_midpoint_rButton.setText(False)
+            self.image_midpoint_rButton.setChecked(False)
         elif parameters.params['e_ax'] == 3:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(True)
-            self.image_midpoint_rButton.setText(False)
+            self.image_midpoint_rButton.setChecked(False)
         elif parameters.params['e_ax'] == 4:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(False)
-            self.image_midpoint_rButton.setText(True)
+            self.image_midpoint_rButton.setChecked(True)
 
     def set_search_rotation(self):
         logging.debug(self.search_rotation_entry.text())
