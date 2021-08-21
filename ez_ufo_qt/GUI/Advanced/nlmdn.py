@@ -151,12 +151,16 @@ class NLMDNGroup(QGroupBox):
             self.input_dir_entry.setDisabled(True)
             self.dry_button.setDisabled(True)
             self.apply_button.setDisabled(True)
+            self.output_dir_button.setDisabled(True)
+            self.output_dir_entry.setDisabled(True)
         elif not self.apply_to_reco_checkbox.isChecked():
             self.input_dir_button.setDisabled(False)
             self.select_img_button.setDisabled(False)
             self.input_dir_entry.setDisabled(False)
             self.dry_button.setDisabled(False)
             self.apply_button.setDisabled(False)
+            self.output_dir_button.setDisabled(False)
+            self.output_dir_entry.setDisabled(False)
 
     def set_indir_button(self):
         """
