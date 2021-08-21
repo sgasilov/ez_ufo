@@ -170,6 +170,25 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
 
     return nviews, WH
 
+def fmt_nlmdn_ufo_cmd(inpath: str, outpath: str, args):
+    """
+    :param inp: Path to input directory before NLMDN applied
+    :param out: Path to output directory after NLMDN applied
+    :param args: List of args
+    :return:
+    """
+    cmd = 'ufo-launch read path={}'.format(inpath)
+    cmd += ' ! non-local-means patch-radius={}'.format(args.nlmdn_dx)
+    cmd += ' search-radius={}'.format(args.nlmdn_r)
+    cmd += ' h={}'.format(args.nlmdn_h)
+    cmd += ' sigma={}'.format(args.nlmdn_sig)
+    cmd += ' window={}'.format(args.nlmdn_w)
+    cmd += ' fast={}'.format(args.nlmdn_fast)
+    cmd += ' estimate-sigma={}'.format(args.nlmdn_autosig)
+    cmd += ' ! write filename={}'.format(enquote(outpath))
+    if not args.nlmdn_bigtif:
+        cmd += " bytes-per-file=0 tiff-bigtiff=False"
+    return cmd
 
 def main_tk(args, fdt_names):
     # array with the list of commands
@@ -250,7 +269,9 @@ def main_tk(args, fdt_names):
             # TODO: IF AUTO NLMDN IS CHECKED THEN TAKE OUTPUT /sli and feed to NLMDN Call
             if args.nlmdn_apply_after_reco:
                 print("Using Non-Local Means Denoising")
-
+                nlmdn_input = out_pattern
+                nlmdn_output = os.path.join(out_pattern, "-nlmdn")
+                cmds.append(fmt_nlmdn_ufo_cmd(nlmdn_input, nlmdn_output, args))
         else:
             print('{} has been already reconstructed'.format(ctset[0]))
     # execute commands = start reconstruction
