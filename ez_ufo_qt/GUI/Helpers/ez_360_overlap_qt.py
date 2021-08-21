@@ -163,8 +163,7 @@ class Overlap360Group(QGroupBox):
         logging.debug("Find overlap button pressed")
 
         args = qt_args(self.e_root, self.e_proc, self.e_output, self.e_row_num,
-                self.e_overlap_min, self.e_overlap_max, self.e_overlap_increment, self.e_axis_on_left,
-                self.e_use_flats2)
+                self.e_overlap_min, self.e_overlap_max, self.e_overlap_increment, self.e_axis_on_left)
         find_overlap(args)
 
     def help_button_pressed(self):
@@ -179,7 +178,7 @@ class Overlap360Group(QGroupBox):
 
 class qt_args():
     def __init__(self, e_root, e_proc, e_output, e_row_num,
-                 e_overlap_min, e_overlap_max, e_overlap_increment, e_axis_on_left, e_use_flats2):
+                 e_overlap_min, e_overlap_max, e_overlap_increment, e_axis_on_left):
 
         self.args = {}
         # Directories

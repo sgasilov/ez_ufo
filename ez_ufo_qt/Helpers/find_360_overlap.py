@@ -37,7 +37,7 @@ def findCTdirs(root: str, tomo_name: str):
             if name == tomo_name:
                 ctdirs.append(root)
     ctdirs.sort()
-    return list(set(ctdirs))
+    return ctdirs
 
 def find_overlap(args):
     # assign GUI arguments to variables
@@ -50,7 +50,6 @@ def find_overlap(args):
     overlap_max = args.overlap_max
     overlap_increment = args.overlap_increment
     axis_on_left = args.axis_on_left
-    use_flats2 = args.use_flats2
 
     # recursively create output temporary directory if it doesn't exist
     '''
