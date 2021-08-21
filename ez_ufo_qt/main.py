@@ -248,7 +248,7 @@ def main_tk(args, fdt_names):
             # tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
             # cmds.append("echo \"{}\"".format(tmp))
             # TODO: IF AUTO NLMDN IS CHECKED THEN TAKE OUTPUT /sli and feed to NLMDN Call
-            if args.e_nlmdn_apply_after_reco:
+            if args.nlmdn_apply_after_reco:
                 print("Using Non-Local Means Denoising")
 
         else:
