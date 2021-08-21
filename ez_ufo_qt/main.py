@@ -266,13 +266,11 @@ def main_tk(args, fdt_names):
             print("Number of projections: {}, dimensions: {}".format(nviews, WH))
             # tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
             # cmds.append("echo \"{}\"".format(tmp))
-            # TODO: IF AUTO NLMDN IS CHECKED THEN TAKE OUTPUT /sli and feed to NLMDN Call
             if args.nlmdn_apply_after_reco:
-                print("Using Non-Local Means Denoising")
+                logging.debug("Using Non-Local Means Denoising")
                 nlmdn_input = out_pattern
-                #nlmdn_output = os.path.join(out_pattern, "-nlmdn")
-                nlmdn_output = str(out_pattern)
-                nlmdn_output = nlmdn_output.join('-nlmdn')
+                head, tail = os.path.split(out_pattern)
+                nlmdn_output = os.path.join(head, 'sli-nlmdn')
                 cmds.append(fmt_nlmdn_ufo_cmd(nlmdn_input, nlmdn_output, args))
         else:
             print('{} has been already reconstructed'.format(ctset[0]))
