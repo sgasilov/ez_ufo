@@ -173,8 +173,8 @@ class MultiStitch360Group(QGroupBox):
 
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")
-        if os.path.exists(self.e_output.get()):
-            os.system('rm -r {}'.format(self.e_output.get()))
+        if os.path.exists(self.e_output):
+            os.system('rm -r {}'.format(self.e_output))
             print("Directory with reconstructed data was removed")
 
     def help_button_pressed(self):
