@@ -60,6 +60,7 @@ def find_overlap(args):
 
     print("Finding CTDirs...")
     ctdirs, lvl0 = findCTdirs(root, "tomo")
+    ctdirs.sort()
     print(ctdirs)
 
     # concatenate images end-to-end and generate a sinogram
