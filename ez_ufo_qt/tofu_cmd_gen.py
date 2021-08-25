@@ -130,6 +130,10 @@ class tofu_cmds(object):
         if not args.RR_ufo:
         # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
+        if not args.adv_dark_scale == "":
+            cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
+        if not args.adv_flat_scale == "":
+            cmd += ' --flat-scale {}'.format(args.adv_flat_scale)
         return cmd
 
     def get_sinos_noffc_cmd(self, ctsetpath, tmpdir, args, nviews, WH):
@@ -217,6 +221,10 @@ class tofu_cmds(object):
         cmd += ' --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
             .format(args.energy, args.z, args.pixel, args.log10db)
+        if not args.adv_dark_scale == "":
+            cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
+        if not args.adv_flat_scale == "":
+            cmd += ' --flat-scale {}'.format(args.adv_flat_scale)
         return cmd
 
     def get_reco_cmd(self, ctset, out_pattern, ax, args, nviews, WH, ffc, PR):
@@ -239,6 +247,10 @@ class tofu_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             if not PR:
                 cmd += ' --absorptivity'
+            if not args.adv_dark_scale == "":
+                cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
+            if not args.adv_flat_scale == "":
+                cmd += ' --flat-scale {}'.format(args.adv_flat_scale)
         if PR:
             cmd += ' --disable-projection-crop' \
                    ' --delta 1e-6' \

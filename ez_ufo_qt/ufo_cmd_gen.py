@@ -133,10 +133,10 @@ class ufo_cmds(object):
     def get_pre_cmd(self, ctset, pre_cmd, tmpdir, dryrun, args):
         indir = self.make_inpaths(ctset[0], ctset[1], args)
         outdir = self.make_inpaths(tmpdir, ctset[1], args)
-        # add index to the name of th eoutput directory with projections
+        # add index to the name of the output directory with projections
         # if enabled preprocessing is always the first step
         outdir[2] = os.path.join(tmpdir, "proj-step1")
-        # we also must create this directory to format pathes correcly
+        # we also must create this directory to format paths correctly
         if not os.path.exists(outdir[2]):
             os.makedirs(outdir[2])
         cmds = []
@@ -187,6 +187,10 @@ class ufo_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             if not args.PR:
                 cmd += ' --absorptivity'
+            if not args.adv_dark_scale == "":
+                cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
+            if not args.adv_flat_scale == "":
+                cmd += ' --flat-scale {}'.format(args.adv_flat_scale)
             cmds.append(cmd)
         if not args.keep_tmp and args.pre:
             cmds.append('rm -rf {}'.format(indir[0]))
