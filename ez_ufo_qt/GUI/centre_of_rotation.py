@@ -27,7 +27,7 @@ class CentreOfRotationGroup(QGroupBox):
         self.define_axis_rButton.clicked.connect(self.set_rButton)
 
         self.search_rotation_label = QLabel()
-        self.search_rotation_label.setText("Search rotation axis in start, stop, step interval:")
+        self.search_rotation_label.setText("Search rotation axis in start, stop, step interval")
         self.search_rotation_entry = QLineEdit()
         self.search_rotation_entry.textChanged.connect(self.set_search_rotation)
         self.search_rotation_entry.setStyleSheet("background-color:white")
