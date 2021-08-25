@@ -674,6 +674,7 @@ class ConfigGroup(QGroupBox):
         # Optional: rotate volume: e_a0
         #if float(parameters.params['e_a0']) < 0:
         #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
+        #TODO ADD CHECKING FOR ADVANCED AND NLMDN SETTINGS
 
     def get_fdt_names(self):
         DIRTYP = []
@@ -696,7 +697,11 @@ class tk_args():
                 e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2,
                 e_nlmdn_apply_after_reco, e_nlmdn_indir, e_nlmdn_input_is_file, e_nlmdn_outdir, e_nlmdn_bigtif,
                 e_nlmdn_r, e_nlmdn_dx, e_nlmdn_h, e_nlmdn_sig,
-                e_nlmdn_w, e_nlmdn_fast, e_nlmdn_autosig, e_nlmdn_dryrun):
+                e_nlmdn_w, e_nlmdn_fast, e_nlmdn_autosig, e_nlmdn_dryrun,
+                e_adv_rotation_range, e_adv_lamino_angle, e_adv_beam_rotation,
+                e_adv_verticle_rotation, e_adv_dark_scale, e_adv_flat_scale,
+                e_adv_slice_mem_coeff, e_adv_num_gpu, e_adv_slices_per_device):
+
         self.args={}
         # PATHS
         self.args['indir']=str(e_indir)
@@ -847,6 +852,25 @@ class tk_args():
         setattr(self, 'nlmdn_autosig', self.args['nlmdn_fast'])
         self.args['nlmdn_dryrun'] = bool(e_nlmdn_dryrun)
         setattr(self, 'nlmdn_dryrun', self.args['nlmdn_dryrun'])
+        #Advanced Settings
+        self.args['adv_rotation_range'] = str(e_adv_rotation_range)
+        setattr(self, 'adv_rotation_range', self.args['adv_rotation_range'])
+        self.args['adv_lamino_angle'] = str(e_adv_lamino_angle)
+        setattr(self, 'adv_lamino_angle', self.args['adv_lamino_angle'])
+        self.args['adv_beam_rotation'] = str(e_adv_beam_rotation)
+        setattr(self, 'adv_beam_rotation', self.args['adv_beam_rotation'])
+        self.args['adv_verticle_rotation'] = str(e_adv_verticle_rotation)
+        setattr(self, 'adv_verticle_rotation', self.args['adv_verticle_rotation'])
+        self.args['adv_dark_scale'] = str(e_adv_dark_scale)
+        setattr(self, 'adv_dark_scale', self.args['adv_dark_scale'])
+        self.args['adv_flat_scale'] = str(e_adv_flat_scale)
+        setattr(self, 'adv_flat_scale', self.args['adv_flat_scale'])
+        self.args['adv_slice_mem_coeff'] = str(e_adv_slice_mem_coeff)
+        setattr(self, 'adv_slice_mem_coeff', self.args['adv_slice_mem_coeff'])
+        self.args['adv_num_gpu'] = str(e_adv_num_gpu)
+        setattr(self, 'adv_num_gpu', self.args['adv_num_gpu'])
+        self.args['adv_slices_per_device'] = str(e_adv_slices_per_device)
+        setattr(self, 'adv_slices_per_device', self.args['adv_slices_per_device'])
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
