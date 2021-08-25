@@ -540,7 +540,13 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_nlmdn_r'], parameters.params['e_nlmdn_dx'],
                             parameters.params['e_nlmdn_h'], parameters.params['e_nlmdn_sig'],
                             parameters.params['e_nlmdn_w'], parameters.params['e_nlmdn_fast'],
-                            parameters.params['e_nlmdn_autosig'], parameters.params['e_nlmdn_dryrun']
+                            parameters.params['e_nlmdn_autosig'], parameters.params['e_nlmdn_dryrun'],
+                            #Advanced Parameters
+                            parameters.params['e_adv_rotation_range'], parameters.params['e_adv_lamino_angle'],
+                            parameters.params['e_adv_beam_rotation'], parameters.params['e_adv_verticle_rotation'],
+                            parameters.params['e_adv_dark_scale'], parameters.params['e_adv_flat_scale'],
+                            parameters.params['e_adv_slice_mem_coeff'], parameters.params['e_adv_num_gpu'],
+                            parameters.params['e_adv_slices_per_device']
                             )
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."

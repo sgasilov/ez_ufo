@@ -62,9 +62,12 @@ class OptimizationGroup(QGroupBox):
 
     def set_slice(self):
         logging.debug(self.slice_memory_entry.text())
+        parameters.params['e_adv_slice_mem_coeff'] = str(self.slice_memory_entry.text())
 
     def set_num_gpu(self):
         logging.debug(self.num_GPU_entry.text())
+        parameters.params['e_adv_num_gpu'] = str(self.num_GPU_entry.text())
 
     def set_slices_per_device(self):
         logging.debug(self.slices_per_device_entry.text())
+        parameters.params['e_adv_slices_per_device'] = str(self.slices_per_device_entry.text())

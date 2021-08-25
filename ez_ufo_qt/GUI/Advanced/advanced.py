@@ -98,18 +98,24 @@ class AdvancedGroup(QGroupBox):
 
     def set_rotation_range(self):
         logging.debug(self.rotation_range_entry.text())
+        parameters.params['e_adv_rotation_range'] = str(self.rotation_range_entry.text())
 
     def set_lamino_angle(self):
         logging.debug(self.lamino_angle_entry.text())
+        parameters.params['e_adv_lamino_angle'] = str(self.lamino_angle_entry.text())
 
     def set_sample_beam_rotation(self):
         logging.debug(self.sample_rotation_beam_entry.text())
+        parameters.params['e_adv_beam_rotation'] = str(self.sample_rotation_beam_entry.text())
 
     def set_sample_vert_rotation(self):
         logging.debug(self.sample_rotation_vert_entry.text())
+        parameters.params['e_adv_verticle_rotation'] = str(self.sample_rotation_vert_entry.text())
 
     def set_dark_scale(self):
         logging.debug(self.dark_scale_entry.text())
+        parameters.params['e_adv_dark_scale'] = str(self.dark_scale_entry.text())
 
     def set_flat_scale(self):
         logging.debug(self.flat_scale_entry.text())
+        parameters.params['e_adv_flat_scale'] = str(self.flat_scale_entry.text())
