@@ -287,7 +287,11 @@ class tofu_cmds(object):
         #cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
-        cmd += ' --slice-memory-coeff=0.5'
+        cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
+        if not args.adv_num_gpu == '':
+            cmd += ' --gpus {}'.format(args.adv_num_gpu)
+        if not args.adv_slices_per_device == '':
+            cmd += ' --slices-per-device {}'.format(args.adv_slices_per_device)
         return cmd
 
 
@@ -340,5 +344,9 @@ class tofu_cmds(object):
         #cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
-        cmd += ' --slice-memory-coeff=0.5'
+        cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
+        if not args.adv_num_gpu == '':
+            cmd += ' --gpus {}'.format(args.adv_num_gpu)
+        if not args.adv_slices_per_device == '':
+            cmd += ' --slices-per-device {}'.format(args.adv_slices_per_device)
         return cmd
