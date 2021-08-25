@@ -183,6 +183,8 @@ class GUI(qtw.QWidget):
         self.binning_group.set_values_from_params()
         self.config_group.set_values_from_params()
         self.nlmdn_group.set_values_from_params()
+        self.advanced_group.set_values_from_params()
+        self.optimization_group.set_values_from_params()
 
     def switch_to_image_tab(self):
         """

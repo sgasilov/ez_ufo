@@ -76,4 +76,14 @@ e_nlmdn_w: 0.0
 e_nlmdn_fast: True
 e_nlmdn_autosig: False
 e_nlmdn_dryrun: False
+#ADVANCED TOFU Settings
+e_adv_rotation_range: 180
+e_adv_lamino_angle: 0
+e_adv_beam_rotation: ""
+e_adv_verticle_rotation: ""
+e_adv_dark_scale: ""
+e_adv_flat_scale: ""
+e_adv_slice_mem_coeff: 0.5
+e_adv_num_gpu: ""
+e_adv_slices_per_device: ""
 ...

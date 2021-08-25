@@ -70,13 +70,22 @@ class AdvancedGroup(QGroupBox):
 
     def init_values(self):
         self.rotation_range_entry.setText("180")
+        parameters.params['e_adv_rotation_range'] = "180"
         self.lamino_angle_entry.setText("0")
+        parameters.params['e_adv_lamino_angle'] = "0"
         self.sample_rotation_beam_entry.setText("")
+        parameters.params['e_adv_beam_rotation'] = ""
         self.sample_rotation_vert_entry.setText("")
-
+        parameters.params['e_adv_verticle_rotation'] = ""
         self.dark_scale_entry.setText("")
+        parameters.params['e_adv_dark_scale'] = ""
         self.flat_scale_entry.setText("")
+        parameters.params['e_adv_flat_scale'] = ""
 
     def set_values_from_params(self):
-        pass
-
+        self.rotation_range_entry.setText(str(parameters.params['e_adv_rotation_range']))
+        self.lamino_angle_entry.setText(str(parameters.params['e_adv_lamino_angle']))
+        self.sample_rotation_beam_entry.setText(str(parameters.params['e_adv_beam_rotation']))
+        self.sample_rotation_vert_entry.setText(str(parameters.params['e_adv_verticle_rotation']))
+        self.dark_scale_entry.setText(str(parameters.params['e_adv_dark_scale']))
+        self.flat_scale_entry.setText(str(parameters.params['e_adv_flat_scale']))

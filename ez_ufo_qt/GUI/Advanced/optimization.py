@@ -46,8 +46,13 @@ class OptimizationGroup(QGroupBox):
 
     def init_values(self):
         self.slice_memory_entry.setText("0.5")
+        parameters.params['e_adv_slice_mem_coeff'] = "0.5"
         self.num_GPU_entry.setText("")
+        parameters.params['e_adv_num_gpu'] = ""
         self.slices_per_device_entry.setText("")
+        parameters.params['e_adv_slices_per_device'] = ""
 
     def set_values_from_params(self):
-        pass
+        self.slice_memory_entry.setText(str(parameters.params['e_adv_slice_mem_coeff']))
+        self.num_GPU_entry.setText(str(parameters.params['e_adv_num_gpu']))
+        self.slices_per_device_entry.setText(str(parameters.params['e_adv_slices_per_device']))
