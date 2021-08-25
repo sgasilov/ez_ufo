@@ -77,8 +77,10 @@ class GUI(qtw.QWidget):
 
         # Advanced Tab
         self.advanced_group = AdvancedGroup()
+        self.advanced_group.init_values()
 
         self.optimization_group = OptimizationGroup()
+        self.optimization_group.init_values()
 
         self.nlmdn_group = NLMDNGroup()
         self.nlmdn_group.init_values()
