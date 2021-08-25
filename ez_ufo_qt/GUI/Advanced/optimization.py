@@ -16,12 +16,15 @@ class OptimizationGroup(QGroupBox):
 
         self.slice_memory_label = QLabel("Slice memory coefficient")
         self.slice_memory_entry = QLineEdit()
+        self.slice_memory_entry.textChanged.connect(self.set_slice)
 
         self.num_GPU_label = QLabel("Number of GPUs")
         self.num_GPU_entry = QLineEdit()
+        self.num_GPU_entry.textChanged.connect(self.set_num_gpu)
 
         self.slices_per_device_label = QLabel("Slices per device")
         self.slices_per_device_entry = QLineEdit()
+        self.slices_per_device_entry.textChanged.connect(self.set_slices_per_device)
 
         self.set_layout()
 
@@ -56,3 +59,12 @@ class OptimizationGroup(QGroupBox):
         self.slice_memory_entry.setText(str(parameters.params['e_adv_slice_mem_coeff']))
         self.num_GPU_entry.setText(str(parameters.params['e_adv_num_gpu']))
         self.slices_per_device_entry.setText(str(parameters.params['e_adv_slices_per_device']))
+
+    def set_slice(self):
+        logging.debug(self.slice_memory_entry.text())
+
+    def set_num_gpu(self):
+        logging.debug(self.num_GPU_entry.text())
+
+    def set_slices_per_device(self):
+        logging.debug(self.slices_per_device_entry.text())

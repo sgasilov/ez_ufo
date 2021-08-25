@@ -17,22 +17,28 @@ class AdvancedGroup(QGroupBox):
         #LAMINO
         self.rotation_range_label = QLabel("Rotation range")
         self.rotation_range_entry = QLineEdit()
+        self.rotation_range_entry.textChanged.connect(self.set_rotation_range)
 
         self.lamino_angle_label = QLabel("Lamino angle")
         self.lamino_angle_entry = QLineEdit()
+        self.lamino_angle_entry.textChanged.connect(self.set_lamino_angle)
 
         self.sample_rotation_beam_label = QLabel("Sample rotation around the beam axis")
         self.sample_rotation_beam_entry = QLineEdit()
+        self.sample_rotation_beam_entry.textChanged.connect(self.set_sample_beam_rotation)
 
         self.sample_rotation_vert_label = QLabel("Sample rotation around the vertical axis")
         self.sample_rotation_vert_entry = QLineEdit()
+        self.sample_rotation_vert_entry.textChanged.connect(self.set_sample_vert_rotation)
 
         #AUXILIARY FFC
         self.dark_scale_label = QLabel("Dark scale                              ")
         self.dark_scale_entry = QLineEdit()
+        self.dark_scale_entry.textChanged.connect(self.set_dark_scale)
 
         self.flat_scale_label = QLabel("Flat scale                              ")
         self.flat_scale_entry = QLineEdit()
+        self.flat_scale_entry.textChanged.connect(self.set_flat_scale)
 
         self.set_layout()
 
@@ -89,3 +95,21 @@ class AdvancedGroup(QGroupBox):
         self.sample_rotation_vert_entry.setText(str(parameters.params['e_adv_verticle_rotation']))
         self.dark_scale_entry.setText(str(parameters.params['e_adv_dark_scale']))
         self.flat_scale_entry.setText(str(parameters.params['e_adv_flat_scale']))
+
+    def set_rotation_range(self):
+        logging.debug(self.rotation_range_entry.text())
+
+    def set_lamino_angle(self):
+        logging.debug(self.lamino_angle_entry.text())
+
+    def set_sample_beam_rotation(self):
+        logging.debug(self.sample_rotation_beam_entry.text())
+
+    def set_sample_vert_rotation(self):
+        logging.debug(self.sample_rotation_vert_entry.text())
+
+    def set_dark_scale(self):
+        logging.debug(self.dark_scale_entry.text())
+
+    def set_flat_scale(self):
+        logging.debug(self.flat_scale_entry.text())
