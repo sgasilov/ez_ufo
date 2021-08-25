@@ -23,7 +23,7 @@ class MultiStitch360Group(QGroupBox):
         self.setStyleSheet('QGroupBox {color: red;}')
 
         self.input_dir_button = QPushButton()
-        self.input_dir_button.setText("Select input directory with 000,001,...,00N subdirectories")
+        self.input_dir_button.setText("Select input directory")
         self.input_dir_button.clicked.connect(self.input_button_pressed)
 
         self.input_dir_entry = QLineEdit()
