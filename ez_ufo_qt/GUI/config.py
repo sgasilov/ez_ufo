@@ -674,7 +674,16 @@ class ConfigGroup(QGroupBox):
         # Optional: rotate volume: e_a0
         #if float(parameters.params['e_a0']) < 0:
         #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
-        #TODO ADD CHECKING FOR ADVANCED AND NLMDN SETTINGS
+        #TODO ADD CHECKING NLMDN SETTINGS
+        #TODO ADD CHECKING FOR ADVANCED SETTINGS
+        if int(parameters.params['e_adv_rotation_range']) < 0:
+            raise InvalidInputError("Advanced: Rotation range must be greater than or equal to zero")
+
+        if float(parameters.params['e_adv_lamino_angle']) < 0 or float(parameters.params['e_adv_lamino_angle']) > 90:
+            raise InvalidInputError("Advanced: Lamino angle must be a float between 0 and 90")
+
+        if float(parameters.params['e_adv_slice_mem_coeff']) < 0 or float(parameters.params['e_adv_slice_mem_coeff']) > 1:
+            raise InvalidInputError("Advanced: Slice memory coefficient must be between 0 and 1")
 
     def get_fdt_names(self):
         DIRTYP = []
