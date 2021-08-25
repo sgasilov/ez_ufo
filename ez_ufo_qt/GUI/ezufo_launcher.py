@@ -36,8 +36,8 @@ class GUI(qtw.QWidget):
         self.setStyleSheet("font: 10pt; font-family: Arial")
 
         # Call login dialog
-        #self.login_parameters = {}
-        #QTimer.singleShot(0, self.login)
+        self.login_parameters = {}
+        QTimer.singleShot(0, self.login)
 
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
