@@ -318,7 +318,6 @@ class EZStitchGroup(QGroupBox):
         logging.debug("Clip histogram:  " + str(self.clip_histogram_checkbox.isChecked()))
         self.e_gray256 = bool(self.clip_histogram_checkbox.isChecked())
 
-    #TODO Double check that this should be float
     def set_min_value(self):
         logging.debug("Min value: " + str(self.min_value_entry.text()))
         self.e_hmin = float(self.min_value_entry.text())

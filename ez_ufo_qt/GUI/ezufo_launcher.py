@@ -120,9 +120,6 @@ class GUI(qtw.QWidget):
         """
         layout = qtw.QVBoxLayout(self)
 
-        #pr_ffc_box = qtw.QVBoxLayout()
-        #pr_ffc_box.addWidget(self.ffc_group)
-
         main_layout = qtw.QGridLayout()
         main_layout.addWidget(self.centre_of_rotation_group, 0, 0)
         main_layout.addWidget(self.filters_group, 0, 1)

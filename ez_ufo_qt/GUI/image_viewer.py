@@ -1,13 +1,9 @@
-import sys
 import os
 import logging
-import threading
 import pyqtgraph as pg
-import pyqtgraph.exporters
 import numpy as np
 import tifffile
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import ez_ufo_qt.GUI.image_read_write as image_read_write
 
@@ -310,14 +306,6 @@ class ImageViewerGroup(QGroupBox):
         """
         levels = self.histo.getLevels()
         self.tiff_arr = np.clip(self.tiff_arr, levels[0], levels[1])
-        '''
-        for item in self.tiff_arr:
-            levels = self.histo.getLevels()
-            img = pg.ImageItem(item)
-            img.setLevels(levels, True)
-            print(img.getLevels())
-            item = img.image
-        '''
 
     def check_bit_depth(self, bit_depth: int) -> str:
         """

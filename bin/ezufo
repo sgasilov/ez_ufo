@@ -17,8 +17,6 @@ def main():
 
     # Save logging file in the directory above the executable
     head = os.path.expanduser("~")
-    #head, tail = os.path.split(os.path.dirname(__file__))
-    #head, tail = os.path.split(head)
     # Setup logging for debugging
     logger = logging.getLogger()
     logger_path = os.path.join(head, 'ezufo.log')
@@ -29,7 +27,6 @@ def main():
     logger.addHandler(fhandler)
 
     #logger.setLevel(logging.DEBUG)
-    # TODO: FIX THIS IN RELEASE
 
     if args.debug:
         logger.setLevel(logging.DEBUG)
