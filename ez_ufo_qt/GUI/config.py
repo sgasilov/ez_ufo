@@ -433,7 +433,7 @@ class ConfigGroup(QGroupBox):
         h += "and then execute them sequentially. These commands can be also printed on the screen.\n"
         h += "Note2: if you bin in preprocess the center of rotation will change a lot; \n"
         h += "Note4: set to \"flats\" if \"flats2\" exist but you need to ignore them; \n"
-        h += "SerG, BMIT CLS, Dec. 2018."
+        h += "Created by Sergei Gasilov, BMIT CLS, Dec. 2018. Extended by Iain Emslie, 2021."
         QMessageBox.information(self, "Help", h)
 
     def delete_button_pressed(self):
