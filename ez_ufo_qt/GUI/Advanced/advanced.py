@@ -15,21 +15,24 @@ class AdvancedGroup(QGroupBox):
         self.setStyleSheet('QGroupBox {color: green;}')
 
         #LAMINO
-        self.rotation_range_label = QLabel("Rotation range")
-        self.rotation_range_entry = QLineEdit()
-        self.rotation_range_entry.textChanged.connect(self.set_rotation_range)
+        self.lamino_group = QGroupBox("Extended Settings of Reconstruction Algorithms")
+        self.lamino_group.clicked.connect(self.set_lamino_group)
 
-        self.lamino_angle_label = QLabel("Lamino angle")
+        self.lamino_angle_label = QLabel("Laminographic angle                              ")
         self.lamino_angle_entry = QLineEdit()
         self.lamino_angle_entry.textChanged.connect(self.set_lamino_angle)
 
-        self.sample_rotation_beam_label = QLabel("Sample rotation around the beam axis")
-        self.sample_rotation_beam_entry = QLineEdit()
-        self.sample_rotation_beam_entry.textChanged.connect(self.set_sample_beam_rotation)
+        self.overall_rotation_label = QLabel("Overall rotation range about CT Z-axis")
+        self.overall_rotation_entry = QLineEdit()
+        self.overall_rotation_entry.textChanged.connect(self.set_overall_rotation)
 
-        self.sample_rotation_vert_label = QLabel("Sample rotation around the vertical axis")
-        self.sample_rotation_vert_entry = QLineEdit()
-        self.sample_rotation_vert_entry.textChanged.connect(self.set_sample_vert_rotation)
+        self.center_position_z_label = QLabel("Center Position Z                              ")
+        self.center_position_z_entry = QLineEdit()
+        self.center_position_z_entry.textChanged.connect(self.set_center_position_z)
+
+        self.axis_rotation_y_label = QLabel("Sample rotation about the beam Y-axis                             ")
+        self.axis_rotation_y_entry = QLineEdit()
+        self.axis_rotation_y_entry.textChanged.connect(self.set_rotation_about_beam)
 
         #AUXILIARY FFC
         self.dark_scale_label = QLabel("Dark scale                              ")
@@ -45,19 +48,19 @@ class AdvancedGroup(QGroupBox):
     def set_layout(self):
         layout = QGridLayout()
 
-        lamino_group = QGroupBox("Laminography Settings")
-        lamino_group.setCheckable(True)
-        lamino_group.setChecked(False)
+
+        self.lamino_group.setCheckable(True)
+        self.lamino_group.setChecked(False)
         lamino_layout = QGridLayout()
-        lamino_layout.addWidget(self.rotation_range_label, 0, 0)
-        lamino_layout.addWidget(self.rotation_range_entry, 0, 1)
-        lamino_layout.addWidget(self.lamino_angle_label, 1, 0)
-        lamino_layout.addWidget(self.lamino_angle_entry, 1, 1)
-        lamino_layout.addWidget(self.sample_rotation_beam_label, 2, 0)
-        lamino_layout.addWidget(self.sample_rotation_beam_entry, 2, 1)
-        lamino_layout.addWidget(self.sample_rotation_vert_label, 3, 0)
-        lamino_layout.addWidget(self.sample_rotation_vert_entry, 3, 1)
-        lamino_group.setLayout(lamino_layout)
+        lamino_layout.addWidget(self.lamino_angle_label, 0, 0)
+        lamino_layout.addWidget(self.lamino_angle_entry, 0, 1)
+        lamino_layout.addWidget(self.overall_rotation_label, 1, 0)
+        lamino_layout.addWidget(self.overall_rotation_entry, 1, 1)
+        lamino_layout.addWidget(self.center_position_z_label, 2, 0)
+        lamino_layout.addWidget(self.center_position_z_entry, 2, 1)
+        lamino_layout.addWidget(self.axis_rotation_y_label, 3, 0)
+        lamino_layout.addWidget(self.axis_rotation_y_entry, 3, 1)
+        self.lamino_group.setLayout(lamino_layout)
 
         aux_group = QGroupBox("Auxiliary FFC Settings")
         aux_group.setCheckable(True)
@@ -69,48 +72,55 @@ class AdvancedGroup(QGroupBox):
         aux_layout.addWidget(self.flat_scale_entry, 1, 1)
         aux_group.setLayout(aux_layout)
 
-        layout.addWidget(lamino_group)
+        layout.addWidget(self.lamino_group)
         layout.addWidget(aux_group)
 
         self.setLayout(layout)
 
     def init_values(self):
-        self.rotation_range_entry.setText("180")
-        parameters.params['e_adv_rotation_range'] = "180"
-        self.lamino_angle_entry.setText("0")
-        parameters.params['e_adv_lamino_angle'] = "0"
-        self.sample_rotation_beam_entry.setText("")
-        parameters.params['e_adv_beam_rotation'] = ""
-        self.sample_rotation_vert_entry.setText("")
-        parameters.params['e_adv_verticle_rotation'] = ""
+        self.lamino_group.setChecked(False)
+        parameters.params['e_adv_lamino_group'] = False
+        self.lamino_angle_entry.setText("30")
+        parameters.params['e_adv_lamino_angle'] = 30
+        self.overall_rotation_entry.setText("360")
+        parameters.params['e_adv_overall_rotation'] = 360
+        self.center_position_z_entry.setText("")
+        parameters.params['e_adv_center_pos_z'] = ""
+        self.axis_rotation_y_entry.setText("")
+        parameters.params['e_adv_axis_rotation_y'] = ""
         self.dark_scale_entry.setText("")
         parameters.params['e_adv_dark_scale'] = ""
         self.flat_scale_entry.setText("")
         parameters.params['e_adv_flat_scale'] = ""
 
     def set_values_from_params(self):
-        self.rotation_range_entry.setText(str(parameters.params['e_adv_rotation_range']))
+        self.lamino_group.setChecked(parameters.params['e_adv_lamino_group'])
         self.lamino_angle_entry.setText(str(parameters.params['e_adv_lamino_angle']))
-        self.sample_rotation_beam_entry.setText(str(parameters.params['e_adv_beam_rotation']))
-        self.sample_rotation_vert_entry.setText(str(parameters.params['e_adv_verticle_rotation']))
+        self.overall_rotation_entry.setText(str(parameters.params['e_adv_overall_rotation']))
+        self.center_position_z_entry.setText(str(parameters.params['e_adv_center_pos_z']))
+        self.axis_rotation_y_entry.setText(str(parameters.params['e_adv_axis_rotation_y']))
         self.dark_scale_entry.setText(str(parameters.params['e_adv_dark_scale']))
         self.flat_scale_entry.setText(str(parameters.params['e_adv_flat_scale']))
 
-    def set_rotation_range(self):
-        logging.debug(self.rotation_range_entry.text())
-        parameters.params['e_adv_rotation_range'] = str(self.rotation_range_entry.text())
+    def set_lamino_group(self):
+        logging.debug("Lamino: " + str(self.lamino_group.isChecked()))
+        parameters.params['e_adv_lamino_group'] = bool(self.lamino_group.isChecked())
 
     def set_lamino_angle(self):
         logging.debug(self.lamino_angle_entry.text())
         parameters.params['e_adv_lamino_angle'] = str(self.lamino_angle_entry.text())
 
-    def set_sample_beam_rotation(self):
-        logging.debug(self.sample_rotation_beam_entry.text())
-        parameters.params['e_adv_beam_rotation'] = str(self.sample_rotation_beam_entry.text())
+    def set_overall_rotation(self):
+        logging.debug(self.overall_rotation_entry.text())
+        parameters.params['e_adv_overall_rotation'] = str(self.overall_rotation_entry.text())
 
-    def set_sample_vert_rotation(self):
-        logging.debug(self.sample_rotation_vert_entry.text())
-        parameters.params['e_adv_verticle_rotation'] = str(self.sample_rotation_vert_entry.text())
+    def set_center_position_z(self):
+        logging.debug(self.center_position_z_entry.text())
+        parameters.params['e_adv_center_pos_z'] = str(self.center_position_z_entry.text())
+
+    def set_rotation_about_beam(self):
+        logging.debug(self.axis_rotation_y_entry.text())
+        parameters.params['e_adv_axis_rotation_y'] = str(self.axis_rotation_y_entry.text())
 
     def set_dark_scale(self):
         logging.debug(self.dark_scale_entry.text())

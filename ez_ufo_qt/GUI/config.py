@@ -542,11 +542,12 @@ class ConfigGroup(QGroupBox):
                             parameters.params['e_nlmdn_w'], parameters.params['e_nlmdn_fast'],
                             parameters.params['e_nlmdn_autosig'], parameters.params['e_nlmdn_dryrun'],
                             #Advanced Parameters
-                            parameters.params['e_adv_rotation_range'], parameters.params['e_adv_lamino_angle'],
-                            parameters.params['e_adv_beam_rotation'], parameters.params['e_adv_verticle_rotation'],
+                            parameters.params['e_adv_lamino_group'],
+                            parameters.params['e_adv_lamino_angle'], parameters.params['e_adv_overall_rotation'],
+                            parameters.params['e_adv_center_pos_z'], parameters.params['e_adv_axis_rotation_y'],
                             parameters.params['e_adv_dark_scale'], parameters.params['e_adv_flat_scale'],
-                            parameters.params['e_adv_slice_mem_coeff'], parameters.params['e_adv_num_gpu'],
-                            parameters.params['e_adv_slices_per_device']
+                            parameters.params['e_adv_verbose'], parameters.params['e_adv_slice_mem_coeff'],
+                            parameters.params['e_adv_num_gpu'], parameters.params['e_adv_slices_per_device']
                             )
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
@@ -676,6 +677,7 @@ class ConfigGroup(QGroupBox):
         #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
         #TODO ADD CHECKING NLMDN SETTINGS
         #TODO ADD CHECKING FOR ADVANCED SETTINGS
+        '''
         if int(parameters.params['e_adv_rotation_range']) < 0:
             raise InvalidInputError("Advanced: Rotation range must be greater than or equal to zero")
 
@@ -684,6 +686,7 @@ class ConfigGroup(QGroupBox):
 
         if float(parameters.params['e_adv_slice_mem_coeff']) < 0 or float(parameters.params['e_adv_slice_mem_coeff']) > 1:
             raise InvalidInputError("Advanced: Slice memory coefficient must be between 0 and 1")
+        '''
 
     def get_fdt_names(self):
         DIRTYP = []
@@ -707,9 +710,10 @@ class tk_args():
                 e_nlmdn_apply_after_reco, e_nlmdn_indir, e_nlmdn_input_is_file, e_nlmdn_outdir, e_nlmdn_bigtif,
                 e_nlmdn_r, e_nlmdn_dx, e_nlmdn_h, e_nlmdn_sig,
                 e_nlmdn_w, e_nlmdn_fast, e_nlmdn_autosig, e_nlmdn_dryrun,
-                e_adv_rotation_range, e_adv_lamino_angle, e_adv_beam_rotation,
-                e_adv_verticle_rotation, e_adv_dark_scale, e_adv_flat_scale,
-                e_adv_slice_mem_coeff, e_adv_num_gpu, e_adv_slices_per_device):
+                e_adv_lamino_group,
+                e_adv_lamino_angle, e_adv_overall_rotation, e_adv_center_pos_z, e_adv_axis_rotation_y,
+                e_adv_dark_scale, e_adv_flat_scale,
+                e_adv_verbose, e_adv_slice_mem_coeff, e_adv_num_gpu, e_adv_slices_per_device):
 
         self.args={}
         # PATHS
@@ -862,18 +866,23 @@ class tk_args():
         self.args['nlmdn_dryrun'] = bool(e_nlmdn_dryrun)
         setattr(self, 'nlmdn_dryrun', self.args['nlmdn_dryrun'])
         #Advanced Settings
-        self.args['adv_rotation_range'] = str(e_adv_rotation_range)
-        setattr(self, 'adv_rotation_range', self.args['adv_rotation_range'])
+        self.args['adv_lamino_group'] = str(e_adv_lamino_group)
+        setattr(self, 'adv_lamino_group', self.args['adv_lamino_group'])
         self.args['adv_lamino_angle'] = str(e_adv_lamino_angle)
         setattr(self, 'adv_lamino_angle', self.args['adv_lamino_angle'])
-        self.args['adv_beam_rotation'] = str(e_adv_beam_rotation)
-        setattr(self, 'adv_beam_rotation', self.args['adv_beam_rotation'])
-        self.args['adv_verticle_rotation'] = str(e_adv_verticle_rotation)
-        setattr(self, 'adv_verticle_rotation', self.args['adv_verticle_rotation'])
+        self.args['adv_overall_rotation'] = str(e_adv_overall_rotation)
+        setattr(self, 'adv_overall_rotation', self.args['adv_overall_rotation'])
+        self.args['adv_center_pos_z'] = str(e_adv_center_pos_z)
+        setattr(self, 'adv_center_pos_z', self.args['adv_center_pos_z'])
+        self.args['adv_axis_rotation_y'] = str(e_adv_axis_rotation_y)
+        setattr(self, 'adv_axis_rotation_y', self.args['adv_axis_rotation_y'])
         self.args['adv_dark_scale'] = str(e_adv_dark_scale)
         setattr(self, 'adv_dark_scale', self.args['adv_dark_scale'])
         self.args['adv_flat_scale'] = str(e_adv_flat_scale)
         setattr(self, 'adv_flat_scale', self.args['adv_flat_scale'])
+        #Optimization
+        self.args['adv_verbose'] = str(e_adv_verbose)
+        setattr(self, 'adv_verbose', self.args['adv_verbose'])
         self.args['adv_slice_mem_coeff'] = str(e_adv_slice_mem_coeff)
         setattr(self, 'adv_slice_mem_coeff', self.args['adv_slice_mem_coeff'])
         self.args['adv_num_gpu'] = str(e_adv_num_gpu)

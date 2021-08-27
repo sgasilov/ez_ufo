@@ -1,7 +1,8 @@
 import logging
 import os
 from PyQt5 import QtWidgets as qtw
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QPixmap
 from datetime import date
 
 from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
@@ -36,8 +37,8 @@ class GUI(qtw.QWidget):
         self.setStyleSheet("font: 10pt; font-family: Arial")
 
         # Call login dialog
-        self.login_parameters = {}
-        QTimer.singleShot(0, self.login)
+        #self.login_parameters = {}
+        #QTimer.singleShot(0, self.login)
 
         # Read in default parameter settings from yaml file
         settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
@@ -132,6 +133,12 @@ class GUI(qtw.QWidget):
 
         advanced_layout = qtw.QGridLayout()
         advanced_layout.addWidget(self.ffc_group, 0, 0)
+        '''
+        image = QPixmap("/home/emsliei/Documents/4Iain/tofu-reco-notations.png")
+        image_label = qtw.QLabel()
+        image_label.setPixmap(image.scaled(600, 600, Qt.KeepAspectRatio, Qt.FastTransformation))
+        advanced_layout.addWidget(image_label, 0, 1)
+        '''
         advanced_layout.addWidget(self.advanced_group, 1, 0)
         advanced_layout.addWidget(self.optimization_group, 1, 1)
         advanced_layout.addWidget(self.nlmdn_group, 2, 0)

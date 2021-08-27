@@ -39,6 +39,18 @@ class tofu_cmds(object):
                 indir.append(args.common_flats2)
             return indir
 
+    def check_lamino(self, cmd, args):
+        cmd = 'tofu reco'
+        if not args.adv_lamino_angle == '':
+            cmd += ' --axis-angle-x {}'.format(args.adv_lamino_angle)
+        if not args.adv_overall_rotation == '':
+            cmd += ' --overall-angle {}'.format(args.adv_overall_rotation)
+        if not args.adv_center_pos_z == '':
+            cmd += ' --center-position-z {}'.format(args.adv_center_pos_z)
+        if not args.adv_axis_rotation_y == '':
+            cmd += ' --axis-angle-y {}'.format(args.adv_axis_rotation_y)
+        return cmd
+
     def check_8bit(self, cmd, gray256, bit, hmin, hmax):
         if gray256:
             cmd += " --output-bitdepth {}".format(bit)
@@ -236,15 +248,14 @@ class tofu_cmds(object):
         #in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.indir, self._fdt_names[2], False)
         #indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         #format command
-        cmd = 'tofu reco'
-        cmd += ' --overall-angle {}'.format(args.adv_rotation_range)
-        #Laminography
-        cmd += ' --axis-angle-x {}'.format(args.adv_lamino_angle)
-        if not args.adv_beam_rotation == '':
-            cmd += ' --axis-angle-y {}'.format(args.adv_beam_rotation)
-        if not args.adv_verticle_rotation == '':
-            cmd += ' --axis-angle-z {}'.format(args.adv_verticle_rotation)
-
+        # Laminography
+        if args.adv_lamino_group == "True":
+            cmd = ""
+            cmd += self.check_lamino(cmd, args)
+        else:
+            cmd = 'tofu reco'
+            cmd += ' --overall-angle 180'
+        ##############
         cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if ffc:
@@ -294,13 +305,13 @@ class tofu_cmds(object):
         #cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
+        # Optimization
         cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
-        #GPU Optimization
+        cmd += ' --verbose {}'.format(args.adv_verbose)
         if not args.adv_num_gpu == '':
             cmd += ' --gpus {}'.format(args.adv_num_gpu)
         if not args.adv_slices_per_device == '':
             cmd += ' --slices-per-device {}'.format(args.adv_slices_per_device)
-
         return cmd
 
 
@@ -314,14 +325,12 @@ class tofu_cmds(object):
         #indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         #format command
         cmd = 'tofu reco'
-        cmd += ' --overall-angle {}'.format(args.adv_rotation_range)
         # Laminography
-        cmd += ' --axis-angle-x {}'.format(args.adv_lamino_angle)
-        if not args.adv_beam_rotation == '':
-            cmd += ' --axis-angle-y {}'.format(args.adv_beam_rotation)
-        if not args.adv_verticle_rotation == '':
-            cmd += ' --axis-angle-z {}'.format(args.adv_verticle_rotation)
-
+        if args.adv_lamino_group:
+            cmd += self.check_lamino(cmd, args)
+        else:
+            cmd += ' --overall-angle 180'
+        ##############
         cmd += '  --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         if PR:
@@ -360,7 +369,9 @@ class tofu_cmds(object):
         #cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
         cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
+        # Optimization
         cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
+        cmd += ' --verbose {}'.format(args.adv_verbose)
         if not args.adv_num_gpu == '':
             cmd += ' --gpus {}'.format(args.adv_num_gpu)
         if not args.adv_slices_per_device == '':
