@@ -881,7 +881,7 @@ class tk_args():
         self.args['adv_flat_scale'] = str(e_adv_flat_scale)
         setattr(self, 'adv_flat_scale', self.args['adv_flat_scale'])
         #Optimization
-        self.args['adv_verbose'] = str(e_adv_verbose)
+        self.args['adv_verbose'] = bool(e_adv_verbose)
         setattr(self, 'adv_verbose', self.args['adv_verbose'])
         self.args['adv_slice_mem_coeff'] = str(e_adv_slice_mem_coeff)
         setattr(self, 'adv_slice_mem_coeff', self.args['adv_slice_mem_coeff'])
