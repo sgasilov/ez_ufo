@@ -307,7 +307,8 @@ class tofu_cmds(object):
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         # Optimization
         cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
-        cmd += ' --verbose {}'.format(args.adv_verbose)
+        if args.adv_verbose == "True":
+            cmd += ' --verbose'
         if not args.adv_num_gpu == '':
             cmd += ' --gpus {}'.format(args.adv_num_gpu)
         if not args.adv_slices_per_device == '':
@@ -371,7 +372,8 @@ class tofu_cmds(object):
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         # Optimization
         cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
-        cmd += ' --verbose {}'.format(args.adv_verbose)
+        if args.adv_verbose == "True":
+            cmd += ' --verbose'
         if not args.adv_num_gpu == '':
             cmd += ' --gpus {}'.format(args.adv_num_gpu)
         if not args.adv_slices_per_device == '':
