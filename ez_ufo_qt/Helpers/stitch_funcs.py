@@ -87,19 +87,23 @@ def main_sti_mp(args):
     print(subdirs)
     rec_path = os.path.join(args.input, subdirs[0], 'sli')
     print(rec_path)
-    image_list = os.listdir(rec_path)
-    print(image_list)
+    try:
+        image_list = os.listdir(rec_path)
+        # print(image_list)
+    except:
+        # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
+        ctdirs = subdirs
+        print(ctdirs)
+        subdirs = os.listdir(os.path.join(args.input, ctdirs[0]))
+        print(subdirs)
+        rec_path = os.path.join(args.input, ctdirs[0], subdirs[0], 'sli', '*.tif')
+        print(rec_path)
+        if os.path.isfile(rec_path):
+            print("Working in directory containing CTdirs each of which contains slices z00-z0N")
+
     if os.path.isfile(os.path.join(rec_path, image_list[0])):
         print("Working in directory containing slices z00-z0N")
-    # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
-    ctdirs = subdirs
-    print(ctdirs)
-    subdirs = os.listdir(os.path.join(args.input, ctdirs[0]))
-    print(subdirs)
-    rec_path = os.path.join(args.input, ctdirs[0], subdirs[0], 'sli', '*.tif')
-    print(rec_path)
-    if os.path.isfile(rec_path):
-        print("Working in directory containing CTdirs each of which contains slices z00-z0N")
+
 
     '''
     if args.ort:
