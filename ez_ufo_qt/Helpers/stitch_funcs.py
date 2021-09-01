@@ -89,7 +89,7 @@ def main_sti_mp(args):
     print(rec_path)
     image_list = os.listdir(rec_path)
     print(image_list)
-    if os.path.isfile(rec_path):
+    if os.path.isfile(os.path.join(rec_path, image_list[0])):
         print("Working in directory containing slices z00-z0N")
     # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
     ctdirs = subdirs
