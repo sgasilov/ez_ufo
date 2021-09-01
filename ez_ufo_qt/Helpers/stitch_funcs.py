@@ -87,7 +87,7 @@ def main_sti_mp(args):
     print(subdirs)
     rec_path = os.path.join(args.input, subdirs[0], 'sli')
     print(rec_path)
-    image_list = glob.glob(rec_path)
+    image_list = os.listdir(rec_path)
     print(image_list)
     if os.path.isfile(rec_path):
         print("Working in directory containing slices z00-z0N")
