@@ -83,6 +83,11 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
 def main_sti_mp(args):
     #Check whether indir is CTdir or parent containing CTdirs
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
+    subdirs = sorted(os.listdir(args.input))
+    if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
+        print("Using CTdirectory containing slices")
+
+    '''
     subdirs = os.listdir(args.input)
     print(subdirs)
     rec_path = os.path.join(args.input, subdirs[0], 'sli')
@@ -105,7 +110,7 @@ def main_sti_mp(args):
     if os.path.isfile(os.path.join(rec_path, image_list[0])):
         print("Working in directory containing slices z00-z0N")
 
-
+    '''
     '''
     if args.ort:
         print("Creating orthogonal sections")
