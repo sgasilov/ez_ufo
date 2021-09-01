@@ -81,6 +81,7 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
         tifffile.imsave(pout, Large.astype(np.uint8))
 
 def main_sti_mp(args):
+    '''
     #Check whether indir is CTdir or parent containing CTdirs
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
     subdirs = os.listdir(args.input)
@@ -115,7 +116,7 @@ def main_sti_mp(args):
     #start = time.time()
     pool.map(exec_func, J)
     print("========== Done ==========")
-    '''
+
 
 def make_buf(tmp,l,a,b):
     first=read_image(tmp)
