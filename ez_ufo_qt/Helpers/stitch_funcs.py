@@ -18,7 +18,7 @@ import time
 def prepare(args):
     hmin, hmax = 0.0, 0.0
     if args.gray256:
-        if args.hmin==args.hmax:
+        if args.hmin == args.hmax:
             raise ValueError('Define hmin and hmax correctly in order to convert to 8bit')
         else:
             hmin, hmax = args.hmin, args.hmax
@@ -81,26 +81,41 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
         tifffile.imsave(pout, Large.astype(np.uint8))
 
 def main_sti_mp(args):
+    #Check whether indir is CTdir or parent containing CTdirs
+    #if indir + some z00 subdir + sli + *.tif does not exist then use original
+    subdirs = os.listdir(args.input)
+    rec_path = os.path.join(args.input, subdirs[0], 'sli', '*.tif')
+    if os.path.isfile(rec_path):
+        print("Working in directory containing slices z00-z0N")
+    # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
+    ctdirs = subdirs
+    subdirs = os.listdir(os.path.join(args.indir, ctdirs[0]))
+    rec_path = os.path.join(args.input, ctdirs[0], subdirs[0], 'sli', '*.tif')
+    if os.path.isfile(rec_path):
+        print("Working in directory containing CTdirs each of which contains slices z00-z0N")
+
+    '''
     if args.ort:
         print("Creating orthogonal sections")
     indir, hmin, hmax, start, stop, step, indtype = prepare(args)
-    dx=int(args.reprows)
+    dx = int(args.reprows)
     #second: stitch them
-    Vsteps=sorted( os.listdir( indir ))
-    tmp=glob.glob(os.path.join(indir,Vsteps[0],args.typ, '*.tif'))[0]
-    first=read_image(tmp)
-    N,M=first.shape
-    Nnew=N-dx
+    Vsteps = sorted(os.listdir(indir))
+    tmp = glob.glob(os.path.join(indir, Vsteps[0], args.typ, '*.tif'))[0]
+    first = read_image(tmp)
+    N,M = first.shape
+    Nnew = N-dx
     ramp = np.linspace(0, 1, dx)
 
-    J=range(int((stop-start)/step))
+    J = range(int((stop-start)/step))
     pool = mp.Pool(processes=mp.cpu_count())
     exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-            Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype)
+            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype)
     print("Adjusting and stitching")
     #start = time.time()
     pool.map(exec_func, J)
     print("========== Done ==========")
+    '''
 
 def make_buf(tmp,l,a,b):
     first=read_image(tmp)
@@ -182,7 +197,7 @@ def st_mp_idx(offst, ax, crop, in_fmt, out_fmt, idx):
 def main_360_mp_depth1(args):
     if not os.path.exists(args.output):
         os.makedirs(args.output)
-    #subdirs=sorted(os.listdir(args.input))
+
     subdirs = [dI for dI in os.listdir(args.input) \
             if os.path.isdir(os.path.join(args.input,dI))]
     for i, sdir in enumerate(subdirs):
@@ -190,7 +205,7 @@ def main_360_mp_depth1(args):
         num_projs = len(names)
         if num_projs<2:
             warnings.warn("Warning: less than 2 files")
-        print('{} files in {}').format(num_projs, sdir)
+        print(str(num_projs) + ' files in ' + str(sdir))
 
         os.makedirs(os.path.join(args.output,sdir))
         out_fmt = os.path.join(args.output, sdir, 'sti-{:>04}.tif')
