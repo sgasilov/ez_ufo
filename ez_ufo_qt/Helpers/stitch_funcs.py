@@ -81,17 +81,21 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
         tifffile.imsave(pout, Large.astype(np.uint8))
 
 def main_sti_mp(args):
-    '''
     #Check whether indir is CTdir or parent containing CTdirs
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
     subdirs = os.listdir(args.input)
+    print("subdirs" + subdirs)
     rec_path = os.path.join(args.input, subdirs[0], 'sli', '*.tif')
+    print("rec_path" + rec_path)
     if os.path.isfile(rec_path):
         print("Working in directory containing slices z00-z0N")
     # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
     ctdirs = subdirs
+    print("ctdirs" + ctdirs)
     subdirs = os.listdir(os.path.join(args.input, ctdirs[0]))
+    print("subdirs" + subdirs)
     rec_path = os.path.join(args.input, ctdirs[0], subdirs[0], 'sli', '*.tif')
+    print("rec_path " + rec_path)
     if os.path.isfile(rec_path):
         print("Working in directory containing CTdirs each of which contains slices z00-z0N")
 
@@ -116,7 +120,7 @@ def main_sti_mp(args):
     #start = time.time()
     pool.map(exec_func, J)
     print("========== Done ==========")
-
+    '''
 
 def make_buf(tmp,l,a,b):
     first=read_image(tmp)
