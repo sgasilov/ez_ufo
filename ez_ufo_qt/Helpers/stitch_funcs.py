@@ -85,8 +85,10 @@ def main_sti_mp(args):
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
     subdirs = os.listdir(args.input)
     print(subdirs)
-    rec_path = os.path.join(args.input, subdirs[0], 'sli', '*.tif')
+    rec_path = os.path.join(args.input, subdirs[0], 'sli')
     print(rec_path)
+    image_list = glob.glob(rec_path)
+    print(image_list)
     if os.path.isfile(rec_path):
         print("Working in directory containing slices z00-z0N")
     # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
