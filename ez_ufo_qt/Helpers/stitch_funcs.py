@@ -87,10 +87,11 @@ def main_sti_mp(args):
     print(subdirs)
     rec_path = os.path.join(args.input, subdirs[0], 'sli')
     print(rec_path)
+    image_list = []
     try:
         image_list = os.listdir(rec_path)
         # print(image_list)
-    except:
+    except FileNotFoundError:
         # elif indir + some subdir + some z00 subdir + sli + *.tif exists then use new
         ctdirs = subdirs
         print(ctdirs)
