@@ -27,8 +27,12 @@ def prepare(args, dir_type: int, ctdir: str):
         os.makedirs(args.output)
     Vsteps = sorted(os.listdir(args.input))
     #determine input data type
-    tmp = os.path.join(args.input, Vsteps[0], args.typ, '*.tif')
-    tmp = sorted(glob.glob(tmp))[0]
+    if dir_type == 1:
+        tmp = os.path.join(args.input, Vsteps[0], args.typ, '*.tif')
+        tmp = sorted(glob.glob(tmp))[0]
+    elif dir_type == 2:
+        tmp = os.path.join(args.input, ctdir, Vsteps[0], args.typ, '*.tif')
+        tmp = sorted(glob.glob(tmp))[0]
     indtype = type(read_image(tmp)[0][0])
 
     if args.ort:
