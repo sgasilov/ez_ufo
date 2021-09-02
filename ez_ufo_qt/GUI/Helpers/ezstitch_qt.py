@@ -30,7 +30,7 @@ class EZStitchGroup(QGroupBox):
         self.setStyleSheet('QGroupBox {color: purple;}')
 
         self.input_dir_button = QPushButton()
-        self.input_dir_button.setText("Select input directory with a 000,001,...,00N subdirectories")
+        self.input_dir_button.setText("Select input directory")
         self.input_dir_button.clicked.connect(self.input_button_pressed)
 
         self.input_dir_entry = QLineEdit()

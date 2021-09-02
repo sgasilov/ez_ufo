@@ -54,7 +54,9 @@ def prepare(args, dir_type: int, ctdir: str):
     return indir, hmin, hmax, start, stop, step, indtype
 
 
-def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, j, ctdir: str):
+def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype, j, ctdir: str):
+    print(start)
+    print(j)
     index = int(start)+int(j)*step
     Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
