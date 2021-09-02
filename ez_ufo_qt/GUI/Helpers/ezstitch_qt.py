@@ -359,7 +359,7 @@ class EZStitchGroup(QGroupBox):
             main_conc_mp(args)
         else:
             main_360_mp_depth1(args)
-        print("=== Waiting for Next Task ===")
+        print("==== Waiting for Next Task ====")
 
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")

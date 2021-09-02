@@ -215,7 +215,7 @@ def main_conc_mp(args):
         #print "Images stitched in {:.01f} sec".format(time.time()-start)
         print("========== Done ==========")
     else:
-        print("Using parent directory containing CTdirectories, each of which contains slices")
+        print(" - Using parent directory containing CTdirectories, each of which contains slices")
 
 
 ############################## HALF ACQ ##############################
