@@ -113,7 +113,7 @@ def main_sti_mp(args):
         J = range(int((stop - start) / step))
         pool = mp.Pool(processes=mp.cpu_count())
         exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, "")
+                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, dir_type, "")
         print("Adjusting and stitching")
         # start = time.time()
         pool.map(exec_func, J)
