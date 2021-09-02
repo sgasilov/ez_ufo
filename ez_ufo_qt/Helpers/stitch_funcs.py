@@ -223,7 +223,7 @@ def main_conc_mp(args):
                 if not os.path.exists(os.path.join(args.output, ctdir)):
                     os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
-                    print(" - Creating orthogonal sections")
+                    print("   - Creating orthogonal sections")
                 # start = time.time()
                 indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
                 # if args.ort:
@@ -233,14 +233,13 @@ def main_conc_mp(args):
                 tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
-                print(tmp)
-                print(tmp[0])
                 exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
-                print(" - Concatenating")
+                print("   - Concatenating")
                 # start = time.time()
                 pool.map(exec_func, J)
                 # print "Images stitched in {:.01f} sec".format(time.time()-start)
                 print("============ Done ============")
+    complete_message()
 
 
 ############################## HALF ACQ ##############################
