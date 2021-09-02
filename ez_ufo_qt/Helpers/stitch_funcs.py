@@ -88,7 +88,7 @@ def main_sti_mp(args):
         print("Using CTdirectory containing slices")
     else:
         second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
-        if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.type)):
+        if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
             print("Using parent directory containing CTdirectories, each of which contains slices")
         else:
             print("Invalid input directory")
