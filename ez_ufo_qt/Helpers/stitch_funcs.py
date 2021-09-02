@@ -123,8 +123,8 @@ def main_sti_mp(args):
                 indir, hmin, hmax, start, stop, step, indtype = prepare(args, 2, ctdir)
                 dx = int(args.reprows)
                 # second: stitch them
-                Vsteps = sorted(os.listdir(indir))
-                tmp = glob.glob(os.path.join(indir, Vsteps[0], args.typ, '*.tif'))[0]
+                Vsteps = sorted(os.listdir(os.path.join(indir, ctdir)))
+                tmp = glob.glob(os.path.join(indir, ctdir, Vsteps[0], args.typ, '*.tif'))[0]
                 first = read_image(tmp)
                 N, M = first.shape
                 Nnew = N - dx
