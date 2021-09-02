@@ -251,8 +251,8 @@ class ConfigGroup(QGroupBox):
         self.set_temp_dir()
         self.dry_run_button.setChecked(False)
         parameters.params['e_dryrun'] = False
-        parameters.params['e_openIV'] = True
-        self.open_image_after_reco_checkbox.setChecked(True)
+        parameters.params['e_openIV'] = False
+        self.open_image_after_reco_checkbox.setChecked(False)
 
     def set_values_from_params(self):
         """
