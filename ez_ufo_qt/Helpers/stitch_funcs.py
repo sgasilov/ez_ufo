@@ -33,12 +33,8 @@ def prepare(args, dir_type: int, ctdir: str):
         indtype = type(read_image(tmp)[0][0])
     elif dir_type == 2:
         tmp = os.path.join(args.input, ctdir, Vsteps[0], args.typ, '*.tif')
-        print(tmp)
         tmp = sorted(glob.glob(tmp))[0]
-        print(tmp)
         indtype = type(read_image(tmp)[0][0])
-
-    print("indtype" + str(indtype))
 
     if args.ort:
         for vstep in Vsteps:
