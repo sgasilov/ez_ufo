@@ -86,6 +86,26 @@ def main_sti_mp(args):
     subdirs = sorted(os.listdir(args.input))
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         print("Using CTdirectory containing slices")
+        if args.ort:
+            print("Creating orthogonal sections")
+        indir, hmin, hmax, start, stop, step, indtype = prepare(args)
+        dx = int(args.reprows)
+        # second: stitch them
+        Vsteps = sorted(os.listdir(indir))
+        tmp = glob.glob(os.path.join(indir, Vsteps[0], args.typ, '*.tif'))[0]
+        first = read_image(tmp)
+        N, M = first.shape
+        Nnew = N - dx
+        ramp = np.linspace(0, 1, dx)
+
+        J = range(int((stop - start) / step))
+        pool = mp.Pool(processes=mp.cpu_count())
+        exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
+                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype)
+        print("Adjusting and stitching")
+        # start = time.time()
+        pool.map(exec_func, J)
+        print("========== Done ==========")
     else:
         second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
         if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
