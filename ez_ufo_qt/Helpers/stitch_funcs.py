@@ -84,7 +84,9 @@ def main_sti_mp(args):
     #Check whether indir is CTdir or parent containing CTdirs
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
     subdirs = sorted(os.listdir(args.input))
-    if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
+    rec_path = os.path.join(args.input, subdirs[0], args.typ)
+    print(rec_path)
+    if os.path.exists(rec_path):
         print("Using CTdirectory containing slices")
 
     '''
