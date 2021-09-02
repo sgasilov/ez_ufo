@@ -55,7 +55,7 @@ def prepare(args, dir_type: int, ctdir: str):
 
 
 def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, j, ctdir: str):
-    index = start+j*step
+    index = int(start)+int(j)*step
     Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
         tmp = os.path.join(indir,Vsteps[i], args.typ, '*.tif')
