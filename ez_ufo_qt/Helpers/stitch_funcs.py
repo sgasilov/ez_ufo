@@ -17,6 +17,12 @@ import time
 
 
 def prepare(args, dir_type: int, ctdir: str):
+    """
+    :param args:
+    :param dir_type 1 if CTDir containing Z00-Z0N slices - 2 if parent directory containing CTdirs each containing Z slices:
+    :param ctdir Name of the ctdir - blank string if not using multiple ctdirs:
+    :return:
+    """
     hmin, hmax = 0.0, 0.0
     if args.gray256:
         if args.hmin == args.hmax:
@@ -183,25 +189,32 @@ def exec_conc_mp(start, step, example_im, l, args, zfold, indir, j):
 
 
 def main_conc_mp(args):
-    if args.ort:
-        print("Creating orthogonal sections")
-    #start = time.time()
-    indir, hmin, hmax, start, stop, step, indtype = prepare(args, 1, "")
-    #if args.ort:
-    #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
-    subdirs = [dI for dI in os.listdir(args.input) \
-            if os.path.isdir(os.path.join(args.input,dI))]
-    zfold=sorted(subdirs)
-    l=len(zfold)
-    tmp=glob.glob(os.path.join(indir,zfold[0], args.typ, '*.tif'))
-    J=range(int((stop-start)/step))
-    pool = mp.Pool(processes=mp.cpu_count())
-    exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir )
-    print("Concatenating")
-    #start = time.time()
-    pool.map(exec_func, J)
-    #print "Images stitched in {:.01f} sec".format(time.time()-start)
-    print("========== Done ==========")
+    # Check whether indir is CTdir or parent containing CTdirs
+    # if indir + some z00 subdir + sli + *.tif does not exist then use original
+    subdirs = sorted(os.listdir(args.input))
+    if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
+        dir_type = 1
+        ctdir = ""
+        if args.ort:
+            print("Creating orthogonal sections")
+        #start = time.time()
+        indir, hmin, hmax, start, stop, step, indtype = prepare(args, 1, "")
+        #if args.ort:
+        #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
+        subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
+        zfold = sorted(subdirs)
+        l = len(zfold)
+        tmp = glob.glob(os.path.join(indir, zfold[0], args.typ, '*.tif'))
+        J = range(int((stop-start)/step))
+        pool = mp.Pool(processes=mp.cpu_count())
+        exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir)
+        print("Concatenating")
+        #start = time.time()
+        pool.map(exec_func, J)
+        #print "Images stitched in {:.01f} sec".format(time.time()-start)
+        print("========== Done ==========")
+    else:
+        pass
 
 
 ############################## HALF ACQ ##############################
