@@ -219,7 +219,7 @@ def main_conc_mp(args):
             print(" - Using parent directory containing CT directories, each of which contains slices")
             dir_type = 2
             for ctdir in subdirs:
-                print(" - Working on " + str(ctdir))
+                print(" == Working on " + str(ctdir) + " ==")
                 if not os.path.exists(os.path.join(args.output, ctdir)):
                     os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
