@@ -371,7 +371,7 @@ def main_360_mp_depth2(args):
                     # pool.map(exec_func, names[0:num_projs/2])
                     pool.map(exec_func, idxs)
 
-                print("========== Done ==========")
+                print("=========== Done ===========")
 
         else:
             if not os.path.exists(args.output):
@@ -410,7 +410,7 @@ def main_360_mp_depth2(args):
                 # pool.map(exec_func, names[0:num_projs/2])
                 pool.map(exec_func, idxs)
 
-            print("========== Done ==========")
+            print("=========== Done ===========")
     print("Finished processing all directories.")
 
 

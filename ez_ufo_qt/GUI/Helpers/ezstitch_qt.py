@@ -352,7 +352,7 @@ class EZStitchGroup(QGroupBox):
         if os.path.exists(self.e_output):
             raise ValueError('Output directory exists')
 
-        print("====== Begin Stitch ======")
+        print("======= Begin Stitching =======")
         if self.e_ipol == 0:
             main_sti_mp(args)
         elif self.e_ipol == 1:
@@ -365,7 +365,7 @@ class EZStitchGroup(QGroupBox):
         logging.debug("Delete button pressed")
         if os.path.exists(self.e_output):
             os.system('rm -r {}'.format(self.e_output))
-            print("Directory with reconstructed data was removed")
+            print(" - Directory with reconstructed data was removed")
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")
