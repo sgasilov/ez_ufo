@@ -60,11 +60,11 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
     Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
         if dir_type == 1:
-            tmp = os.path.join(indir, ctdir, Vsteps[i], args.typ, '*.tif')
-            tmp1 = os.path.join(indir, ctdir, Vsteps[i+1], args.typ, '*.tif')
-        elif dir_type == 2:
             tmp = os.path.join(indir, Vsteps[i], args.typ, '*.tif')
-            tmp1 = os.path.join(indir, Vsteps[i + 1], args.typ, '*.tif')
+            tmp1 = os.path.join(indir, Vsteps[i+1], args.typ, '*.tif')
+        elif dir_type == 2:
+            tmp = os.path.join(indir, ctdir, Vsteps[i], args.typ, '*.tif')
+            tmp1 = os.path.join(indir, ctdir, Vsteps[i + 1], args.typ, '*.tif')
         if args.ort:
             tmp = sorted(glob.glob(tmp))[j]
             tmp1 = sorted(glob.glob(tmp1))[j]
