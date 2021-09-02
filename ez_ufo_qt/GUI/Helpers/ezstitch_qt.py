@@ -352,12 +352,14 @@ class EZStitchGroup(QGroupBox):
         if os.path.exists(self.e_output):
             raise ValueError('Output directory exists')
 
+        print("====== Begin Stitch ======")
         if self.e_ipol == 0:
             main_sti_mp(args)
         elif self.e_ipol == 1:
             main_conc_mp(args)
         else:
             main_360_mp_depth1(args)
+        print("=== Waiting for Next Task ===")
 
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")

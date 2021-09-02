@@ -195,9 +195,9 @@ def main_conc_mp(args):
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         dir_type = 1
         ctdir = ""
-        print("Using CTdirectory containing slices")
+        print(" - Using CTdirectory containing slices")
         if args.ort:
-            print("Creating orthogonal sections")
+            print(" - Creating orthogonal sections")
         #start = time.time()
         indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
         #if args.ort:
@@ -209,7 +209,7 @@ def main_conc_mp(args):
         J = range(int((stop-start)/step))
         pool = mp.Pool(processes=mp.cpu_count())
         exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir)
-        print("Concatenating")
+        print(" - Concatenating")
         #start = time.time()
         pool.map(exec_func, J)
         #print "Images stitched in {:.01f} sec".format(time.time()-start)
