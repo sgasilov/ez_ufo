@@ -59,12 +59,12 @@ def prepare(args, dir_type: int, ctdir: str):
     return indir, hmin, hmax, start, stop, step, indtype
 
 
-def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype, j):
-    index = int(start)+int(j)*step
+def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype, ctdir, j):
+    index = start+j*step
     Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
-        tmp = os.path.join(indir,Vsteps[i], args.typ, '*.tif')
-        tmp1 = os.path.join(indir,Vsteps[i+1], args.typ,'*.tif')
+        tmp = os.path.join(indir, Vsteps[i], args.typ, '*.tif')
+        tmp1 = os.path.join(indir, Vsteps[i+1], args.typ, '*.tif')
         if args.ort:
             tmp = sorted(glob.glob(tmp))[j]
             tmp1 = sorted(glob.glob(tmp1))[j]
@@ -84,7 +84,7 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
         Large[b:b+dx,:] = np.transpose(np.transpose(first[N-dx:,:]) * (1 - ramp) + np.transpose(second[:dx,:]) * ramp)
         Large[b+dx:c+dx,:] = second[dx:,:]
 
-    pout = os.path.join(args.output, args.ctdir, args.typ+'-sti-{:>04}.tif'.format(index))
+    pout = os.path.join(args.output, ctdir, args.typ+'-sti-{:>04}.tif'.format(index))
     if not args.gray256:
         tifffile.imsave(pout, Large.astype(indtype))
     else:
@@ -111,10 +111,8 @@ def main_sti_mp(args):
 
         J = range(int((stop - start) / step))
         pool = mp.Pool(processes=mp.cpu_count())
-        ctdir = ""
-        args.append(ctdir)
         exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype)
+                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, "")
         print("Adjusting and stitching")
         # start = time.time()
         pool.map(exec_func, J)
@@ -142,7 +140,7 @@ def main_sti_mp(args):
                 pool = mp.Pool(processes=mp.cpu_count())
                 args.append(ctdir)
                 exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                                    Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype)
+                                    Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir)
                 print("Adjusting and stitching")
                 # start = time.time()
                 pool.map(exec_func, J)
