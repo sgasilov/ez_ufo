@@ -55,12 +55,16 @@ def prepare(args, dir_type: int, ctdir: str):
     return indir, hmin, hmax, start, stop, step, indtype
 
 
-def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype, ctdir, j):
+def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype, ctdir, dir_type, j):
     index = start+j*step
     Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
-        tmp = os.path.join(indir, Vsteps[i], args.typ, '*.tif')
-        tmp1 = os.path.join(indir, Vsteps[i+1], args.typ, '*.tif')
+        if dir_type == 1:
+            tmp = os.path.join(indir, ctdir, Vsteps[i], args.typ, '*.tif')
+            tmp1 = os.path.join(indir, ctdir, Vsteps[i+1], args.typ, '*.tif')
+        elif dir_type == 2:
+            tmp = os.path.join(indir, Vsteps[i], args.typ, '*.tif')
+            tmp1 = os.path.join(indir, Vsteps[i + 1], args.typ, '*.tif')
         if args.ort:
             tmp = sorted(glob.glob(tmp))[j]
             tmp1 = sorted(glob.glob(tmp1))[j]
@@ -92,10 +96,11 @@ def main_sti_mp(args):
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
     subdirs = sorted(os.listdir(args.input))
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
+        dir_type = 1
         print("Using CTdirectory containing slices")
         if args.ort:
             print("Creating orthogonal sections")
-        indir, hmin, hmax, start, stop, step, indtype = prepare(args, 1, "")
+        indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, "")
         dx = int(args.reprows)
         # second: stitch them
         Vsteps = sorted(os.listdir(indir))
@@ -117,12 +122,13 @@ def main_sti_mp(args):
         second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
         if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
             print("Using parent directory containing CTdirectories, each of which contains slices")
+            dir_type = 2
             #For each subdirectory do the same thing
             for ctdir in subdirs:
                 print("Working on " + str(ctdir))
                 if args.ort:
                     print("Creating orthogonal sections")
-                indir, hmin, hmax, start, stop, step, indtype = prepare(args, 2, ctdir)
+                indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
                 dx = int(args.reprows)
                 # second: stitch them
                 Vsteps = sorted(os.listdir(os.path.join(indir, ctdir)))
@@ -135,7 +141,7 @@ def main_sti_mp(args):
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
                 exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                                    Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir)
+                                    Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type)
                 print("Adjusting and stitching")
                 # start = time.time()
                 pool.map(exec_func, J)
