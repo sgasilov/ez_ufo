@@ -37,10 +37,11 @@ def prepare(args, dir_type: int, ctdir: str):
 
     if args.ort:
         for vstep in Vsteps:
-            in_name = os.path.join(args.input, vstep, args.typ)
             if dir_type == 1:
+                in_name = os.path.join(args.input, vstep, args.typ)
                 out_name = os.path.join(args.tmpdir, vstep, args.typ, 'sli-%04i.tif')
             elif dir_type == 2:
+                in_name = os.path.join(args.input, ctdir, vstep, args.typ)
                 out_name = os.path.join(args.tmpdir, ctdir, vstep, args.typ, 'sli-%04i.tif')
             cmd = 'tofu sinos --projections {} --output {}'.format(in_name, out_name)
             cmd += " --y {} --height {} --y-step {}".format(start, stop-start, step)
