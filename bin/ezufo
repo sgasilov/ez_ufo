@@ -40,6 +40,7 @@ def main():
     print("       |  __|   / / | |  | |  __|| |  | |")
     print("       | |____ / /__| |__| | |   | |__| |")
     print("       |______/_____|\____/|_|    \____/ ")
+    print("")
 
     # Launch PyQT Application
     app = qtw.QApplication(sys.argv)
