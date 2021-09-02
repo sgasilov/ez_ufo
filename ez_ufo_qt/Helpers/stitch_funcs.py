@@ -1,7 +1,8 @@
-'''
+"""
 Last modified on Dec 2, 2020
 @author: sergei gasilov
-'''
+"""
+
 import glob
 import os
 import numpy as np
@@ -88,7 +89,7 @@ def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax
     if not args.gray256:
         tifffile.imsave(pout, Large.astype(indtype))
     else:
-        Large =  255.0/(hmax-hmin) * (np.clip(Large, hmin, hmax) - hmin)
+        Large = 255.0/(hmax-hmin) * (np.clip(Large, hmin, hmax) - hmin)
         tifffile.imsave(pout, Large.astype(np.uint8))
 
 def main_sti_mp(args):
@@ -152,67 +153,34 @@ def main_sti_mp(args):
         else:
             print("Invalid input directory")
         #print("====== Stitching Complete ======")
-        print("             __.-/|")
-        print("             \\`o_O'")
-        print("              =( )=  +-----+")
-        print("                U|   | FIN |")
-        print("      /\\  /\\   / |   +-----+")
-        print("     ) /^\\) ^\\/ _)\\     |")
-        print("     )   /^\\/   _) \\    |")
-        print("     )   _ /  / _)  \\___|_")
-        print(" /\\  )/\\/ ||  | )_)\\___,|))")
-        print("<  >      |(,,) )__)    |")
-        print(" ||      /    \\)___)\\")
-        print(" | \\____(      )___) )____")
-        print("  \\______(_______;;;)__;;;)")
+        complete_message()
 
 
-    '''
-    if args.ort:
-        print("Creating orthogonal sections")
-    indir, hmin, hmax, start, stop, step, indtype = prepare(args)
-    dx = int(args.reprows)
-    #second: stitch them
-    Vsteps = sorted(os.listdir(indir))
-    tmp = glob.glob(os.path.join(indir, Vsteps[0], args.typ, '*.tif'))[0]
+def make_buf(tmp, l, a, b):
     first = read_image(tmp)
-    N,M = first.shape
-    Nnew = N-dx
-    ramp = np.linspace(0, 1, dx)
+    N, M = first[a:b, :].shape
+    return np.empty((N*l, M), dtype=first.dtype), N, first.dtype
 
-    J = range(int((stop-start)/step))
-    pool = mp.Pool(processes=mp.cpu_count())
-    exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype)
-    print("Adjusting and stitching")
-    #start = time.time()
-    pool.map(exec_func, J)
-    print("========== Done ==========")
-    '''
-
-def make_buf(tmp,l,a,b):
-    first=read_image(tmp)
-    N,M=first[a:b,:].shape
-    return np.empty((N*l,M),dtype=first.dtype), N, first.dtype
 
 def exec_conc_mp(start, step, example_im, l, args, zfold, indir, j):
-    index=start+j*step
-    Large, N, dtype = make_buf( example_im, l, args.r1, args.r2)
+    index = start+j*step
+    Large, N, dtype = make_buf(example_im, l, args.r1, args.r2)
     for i, vert in enumerate(zfold):
-        tmp = os.path.join(indir,vert,args.typ, '*.tif')
+        tmp = os.path.join(indir, vert, args.typ, '*.tif')
         if args.ort:
             fname=sorted(glob.glob(tmp))[j]
         else:
             fname=sorted(glob.glob(tmp))[index]
-        frame=read_image(fname)[args.r1:args.r2,:]
+        frame = read_image(fname)[args.r1:args.r2, :]
         if args.flip: #sample moved downwards
-            Large[i*N:N*(i+1),:]=np.flipud(frame)
+            Large[i*N:N*(i+1), :] = np.flipud(frame)
         else:
-            Large[i*N:N*(i+1),:]=frame
+            Large[i*N:N*(i+1), :] = frame
 
     pout = os.path.join(args.output, args.typ+'-sti-{:>04}.tif'.format(index))
     #print "input data type {:}".format(dtype)
     tifffile.imsave(pout, Large)
+
 
 def main_conc_mp(args):
     if args.ort:
@@ -260,12 +228,14 @@ def stitch(first, second, axis, crop):
 
     return result[:,slice(int(crop),int(2*(w - axis) - crop),1)]
 
+
 def st_mp_idx(offst, ax, crop, in_fmt, out_fmt, idx):
     #we pass index and formats as argument
     first = read_image(in_fmt.format(idx))
     second = read_image(in_fmt.format(idx+offst))[:, ::-1]
     stitched = stitch(first, second, ax, crop)
     tifffile.imsave(out_fmt.format(idx), stitched)
+
 
 def main_360_mp_depth1(args):
     if not os.path.exists(args.output):
@@ -428,3 +398,19 @@ def main_360_mp_depth2(args):
 
             print("========== Done ==========")
     print("Finished processing all directories.")
+
+
+def complete_message():
+    print("             __.-/|")
+    print("             \\`o_O'")
+    print("              =( )=  +-----+")
+    print("                U|   | FIN |")
+    print("      /\\  /\\   / |   +-----+")
+    print("     ) /^\\) ^\\/ _)\\     |")
+    print("     )   /^\\/   _) \\    |")
+    print("     )   _ /  / _)  \\___|_")
+    print(" /\\  )/\\/ ||  | )_)\\___,|))")
+    print("<  >      |(,,) )__)    |")
+    print(" ||      /    \\)___)\\")
+    print(" | \\____(      )___) )____")
+    print("  \\______(_______;;;)__;;;)")
