@@ -234,6 +234,8 @@ def main_conc_mp(args):
                 tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
+                print(tmp)
+                print(tmp[0])
                 exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
                 print(" - Concatenating")
                 # start = time.time()
