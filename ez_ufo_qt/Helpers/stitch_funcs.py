@@ -126,6 +126,8 @@ def main_sti_mp(args):
             #For each subdirectory do the same thing
             for ctdir in subdirs:
                 print("Working on " + str(ctdir))
+                if not os.path.exists(os.path.join(args.output, ctdir)):
+                    os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
                     print("Creating orthogonal sections")
                 indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
