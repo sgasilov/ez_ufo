@@ -30,10 +30,13 @@ def prepare(args, dir_type: int, ctdir: str):
     if dir_type == 1:
         tmp = os.path.join(args.input, Vsteps[0], args.typ, '*.tif')
         tmp = sorted(glob.glob(tmp))[0]
+        indtype = type(read_image(tmp)[0][0])
     elif dir_type == 2:
         tmp = os.path.join(args.input, ctdir, Vsteps[0], args.typ, '*.tif')
         tmp = sorted(glob.glob(tmp))[0]
-    indtype = type(read_image(tmp)[0][0])
+        indtype = type(read_image(tmp)[0][0][0])
+
+    print("indtype" + indtype)
 
     if args.ort:
         for vstep in Vsteps:
@@ -55,8 +58,6 @@ def prepare(args, dir_type: int, ctdir: str):
 
 
 def exec_sti_mp(start, step, N,Nnew, Vsteps, indir, dx,M, args, ramp, hmin, hmax, indtype, j, ctdir: str):
-    print(start)
-    print(j)
     index = int(start)+int(j)*step
     Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
@@ -135,8 +136,8 @@ def main_sti_mp(args):
 
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
-                exec_func = partial(exec_sti_mp, start, step, N, Nnew,
-                                    Vsteps, os.path.join(indir, ctdir), dx, M, args, ramp, hmin, hmax, indtype, ctdir)
+                exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
+                                    Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir)
                 print("Adjusting and stitching")
                 # start = time.time()
                 pool.map(exec_func, J)
