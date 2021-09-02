@@ -150,6 +150,21 @@ def main_sti_mp(args):
                 print("========== Done ==========")
         else:
             print("Invalid input directory")
+        #print("====== Stitching Complete ======")
+        print("             __.-/|")
+        print("             \\`o_O'")
+        print("              =( )=  +-----+")
+        print("                U|   | FIN |")
+        print("      /\\  /\\   / |   +-----+")
+        print("     ) /^\\) ^\\/ _)\\     |")
+        print("     )   /^\\/   _) \\    |")
+        print("     )   _ /  / _)  \\___|_")
+        print(" /\\  )/\\/ ||  | )_)\\___,|))")
+        print("<  >      |(,,) )__)    |")
+        print(" ||      /    \\)___)\\")
+        print(" | \\____(      )___) )____")
+        print("  \\______(_______;;;)__;;;)")
+
 
     '''
     if args.ort:
