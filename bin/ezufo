@@ -34,6 +34,15 @@ def main():
     else:
         logger.setLevel(logging.WARNING)
 
+    welcome_message()
+
+    # Launch PyQT Application
+    app = qtw.QApplication(sys.argv)
+    window = ezufo_launcher.GUI()
+    sys.exit(app.exec_())
+
+
+def welcome_message():
     print("        ______ _______    _ ______ ____  ")
     print("       |  ____|___  / |  | |  ____/ __ \ ")
     print("       | |__     / /| |  | | |__ | |  | |")
@@ -41,11 +50,6 @@ def main():
     print("       | |____ / /__| |__| | |   | |__| |")
     print("       |______/_____|\____/|_|    \____/ ")
     print("")
-
-    # Launch PyQT Application
-    app = qtw.QApplication(sys.argv)
-    window = ezufo_launcher.GUI()
-    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

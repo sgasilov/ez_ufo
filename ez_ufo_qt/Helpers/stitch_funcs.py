@@ -195,10 +195,11 @@ def main_conc_mp(args):
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         dir_type = 1
         ctdir = ""
+        print("Using CTdirectory containing slices")
         if args.ort:
             print("Creating orthogonal sections")
         #start = time.time()
-        indir, hmin, hmax, start, stop, step, indtype = prepare(args, 1, "")
+        indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
         #if args.ort:
         #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
         subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
@@ -214,7 +215,7 @@ def main_conc_mp(args):
         #print "Images stitched in {:.01f} sec".format(time.time()-start)
         print("========== Done ==========")
     else:
-        pass
+        print("Using parent directory containing CTdirectories, each of which contains slices")
 
 
 ############################## HALF ACQ ##############################
