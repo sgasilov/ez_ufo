@@ -201,9 +201,10 @@ def main_conc_mp(args):
         indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
         #if args.ort:
         #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
-        zfold = sorted(os.listdir(os.path.join(indir, ctdir)))
+        subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
+        zfold = sorted(subdirs)
         l = len(zfold)
-        tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
+        tmp = glob.glob(os.path.join(indir, zfold[0], args.typ, '*.tif'))
         J = range(int((stop-start)/step))
         pool = mp.Pool(processes=mp.cpu_count())
         exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
@@ -227,9 +228,7 @@ def main_conc_mp(args):
                 indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
                 # if args.ort:
                 #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
-                subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
-                print(subdirs)
-                zfold = sorted(subdirs)
+                zfold = sorted(os.listdir(os.path.join(indir, ctdir)))
                 l = len(zfold)
                 tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
                 J = range(int((stop - start) / step))
