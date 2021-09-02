@@ -26,7 +26,7 @@ def prepare(args, dir_type: int, ctdir: str):
     hmin, hmax = 0.0, 0.0
     if args.gray256:
         if args.hmin == args.hmax:
-            raise ValueError('Define hmin and hmax correctly in order to convert to 8bit')
+            raise ValueError(' - Define hmin and hmax correctly in order to convert to 8bit')
         else:
             hmin, hmax = args.hmin, args.hmax
     start, stop, step = [int(value) for value in args.slices.split(',')]
@@ -105,9 +105,9 @@ def main_sti_mp(args):
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         dir_type = 1
         ctdir = ""
-        print("Using CTdirectory containing slices")
+        print(" - Using CTdirectory containing slices")
         if args.ort:
-            print("Creating orthogonal sections")
+            print(" - Creating orthogonal sections")
         indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, "")
         dx = int(args.reprows)
         # second: stitch them
@@ -122,14 +122,14 @@ def main_sti_mp(args):
         pool = mp.Pool(processes=mp.cpu_count())
         exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
                             Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type)
-        print("Adjusting and stitching")
+        print(" - Adjusting and stitching")
         # start = time.time()
         pool.map(exec_func, J)
         print("========== Done ==========")
     else:
         second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
         if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
-            print("Using parent directory containing CTdirectories, each of which contains slices")
+            print(" - Using parent directory containing CTdirectories, each of which contains slices")
             dir_type = 2
             #For each subdirectory do the same thing
             for ctdir in subdirs:
@@ -137,7 +137,7 @@ def main_sti_mp(args):
                 if not os.path.exists(os.path.join(args.output, ctdir)):
                     os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
-                    print("Creating orthogonal sections")
+                    print(" - Creating orthogonal sections")
                 indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
                 dx = int(args.reprows)
                 # second: stitch them
@@ -158,7 +158,6 @@ def main_sti_mp(args):
                 print("========== Done ==========")
         else:
             print("Invalid input directory")
-        #print("====== Stitching Complete ======")
         complete_message()
 
 
@@ -168,11 +167,11 @@ def make_buf(tmp, l, a, b):
     return np.empty((N*l, M), dtype=first.dtype), N, first.dtype
 
 
-def exec_conc_mp(start, step, example_im, l, args, zfold, indir, j):
+def exec_conc_mp(start, step, example_im, l, args, zfold, indir, ctdir, j):
     index = start+j*step
     Large, N, dtype = make_buf(example_im, l, args.r1, args.r2)
     for i, vert in enumerate(zfold):
-        tmp = os.path.join(indir, vert, args.typ, '*.tif')
+        tmp = os.path.join(indir, ctdir, vert, args.typ, '*.tif')
         if args.ort:
             fname=sorted(glob.glob(tmp))[j]
         else:
@@ -183,7 +182,7 @@ def exec_conc_mp(start, step, example_im, l, args, zfold, indir, j):
         else:
             Large[i*N:N*(i+1), :] = frame
 
-    pout = os.path.join(args.output, args.typ+'-sti-{:>04}.tif'.format(index))
+    pout = os.path.join(args.output, ctdir, args.typ+'-sti-{:>04}.tif'.format(index))
     #print "input data type {:}".format(dtype)
     tifffile.imsave(pout, Large)
 
@@ -208,14 +207,39 @@ def main_conc_mp(args):
         tmp = glob.glob(os.path.join(indir, zfold[0], args.typ, '*.tif'))
         J = range(int((stop-start)/step))
         pool = mp.Pool(processes=mp.cpu_count())
-        exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir)
+        exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
         print(" - Concatenating")
         #start = time.time()
         pool.map(exec_func, J)
         #print "Images stitched in {:.01f} sec".format(time.time()-start)
-        print("========== Done ==========")
+        print("============ Done ============")
     else:
-        print(" - Using parent directory containing CTdirectories, each of which contains slices")
+        second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
+        if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
+            print(" - Using parent directory containing CTdirectories, each of which contains slices")
+            dir_type = 2
+            for ctdir in subdirs:
+                print("Working on " + str(ctdir))
+                if not os.path.exists(os.path.join(args.output, ctdir)):
+                    os.makedirs(os.path.join(args.output, ctdir))
+                if args.ort:
+                    print(" - Creating orthogonal sections")
+                # start = time.time()
+                indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
+                # if args.ort:
+                #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
+                subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
+                zfold = sorted(subdirs)
+                l = len(zfold)
+                tmp = glob.glob(os.path.join(indir, zfold[0], args.typ, '*.tif'))
+                J = range(int((stop - start) / step))
+                pool = mp.Pool(processes=mp.cpu_count())
+                exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
+                print(" - Concatenating")
+                # start = time.time()
+                pool.map(exec_func, J)
+                # print "Images stitched in {:.01f} sec".format(time.time()-start)
+                print("============ Done ============")
 
 
 ############################## HALF ACQ ##############################
