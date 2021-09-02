@@ -25,7 +25,7 @@ def prepare(args, dir_type: int, ctdir: str):
     start, stop, step = [int(value) for value in args.slices.split(',')]
     if not os.path.exists(args.output):
         os.makedirs(args.output)
-    Vsteps = sorted(os.listdir(args.input))
+    Vsteps = sorted(os.listdir(os.path.join(args.input, ctdir)))
     #determine input data type
     if dir_type == 1:
         tmp = os.path.join(args.input, Vsteps[0], args.typ, '*.tif')
