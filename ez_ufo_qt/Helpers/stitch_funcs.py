@@ -97,6 +97,7 @@ def main_sti_mp(args):
     subdirs = sorted(os.listdir(args.input))
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         dir_type = 1
+        ctdir = ""
         print("Using CTdirectory containing slices")
         if args.ort:
             print("Creating orthogonal sections")
@@ -113,7 +114,7 @@ def main_sti_mp(args):
         J = range(int((stop - start) / step))
         pool = mp.Pool(processes=mp.cpu_count())
         exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, dir_type, "")
+                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type)
         print("Adjusting and stitching")
         # start = time.time()
         pool.map(exec_func, J)
