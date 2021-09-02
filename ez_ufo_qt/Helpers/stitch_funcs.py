@@ -105,7 +105,7 @@ def main_sti_mp(args):
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         dir_type = 1
         ctdir = ""
-        print(" - Using CTdirectory containing slices")
+        print(" - Using CT directory containing slices")
         if args.ort:
             print(" - Creating orthogonal sections")
         indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, "")
@@ -129,11 +129,11 @@ def main_sti_mp(args):
     else:
         second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
         if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
-            print(" - Using parent directory containing CTdirectories, each of which contains slices")
+            print(" - Using parent directory containing CT directories, each of which contains slices")
             dir_type = 2
             #For each subdirectory do the same thing
             for ctdir in subdirs:
-                print("Working on " + str(ctdir))
+                print(" - Working on " + str(ctdir))
                 if not os.path.exists(os.path.join(args.output, ctdir)):
                     os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
@@ -194,7 +194,7 @@ def main_conc_mp(args):
     if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
         dir_type = 1
         ctdir = ""
-        print(" - Using CTdirectory containing slices")
+        print(" - Using CT directory containing slices")
         if args.ort:
             print(" - Creating orthogonal sections")
         #start = time.time()
@@ -216,10 +216,10 @@ def main_conc_mp(args):
     else:
         second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
         if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
-            print(" - Using parent directory containing CTdirectories, each of which contains slices")
+            print(" - Using parent directory containing CT directories, each of which contains slices")
             dir_type = 2
             for ctdir in subdirs:
-                print("Working on " + str(ctdir))
+                print(" - Working on " + str(ctdir))
                 if not os.path.exists(os.path.join(args.output, ctdir)):
                     os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
@@ -231,7 +231,7 @@ def main_conc_mp(args):
                 subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
                 zfold = sorted(subdirs)
                 l = len(zfold)
-                tmp = glob.glob(os.path.join(indir, zfold[0], args.typ, '*.tif'))
+                tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
                 exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
