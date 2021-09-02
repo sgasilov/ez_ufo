@@ -209,12 +209,6 @@ def main_tk(args, fdt_names):
     '''
     # get list of all good CT directories to be reconstructed
 
-    print("        ______ _______    _ ______ ____  ")
-    print("       |  ____|___  / |  | |  ____/ __ \ ")
-    print("       | |__     / /| |  | | |__ | |  | |")
-    print("       |  __|   / / | |  | |  __|| |  | |")
-    print("       | |____ / /__| |__| | |   | |__| |")
-    print("       |______/_____|\____/|_|    \____/ ")
     print('*********** Analyzing input directory ************')
     W, lvl0 = get_CTdirs_list(args.indir, fdt_names, args)
     # W is an array of tuples (path, type)
