@@ -38,7 +38,7 @@ def prepare(args, dir_type: int, ctdir: str):
         print(tmp)
         indtype = type(read_image(tmp)[0][0])
 
-    print("indtype" + indtype)
+    print("indtype" + str(indtype))
 
     if args.ort:
         for vstep in Vsteps:
