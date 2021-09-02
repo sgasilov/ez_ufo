@@ -113,6 +113,7 @@ def main_sti_mp(args):
             print("Using parent directory containing CTdirectories, each of which contains slices")
             #For each subdirectory do the same thing
             for ctdir in subdirs:
+                print("Working on " + str(ctdir))
                 if args.ort:
                     print("Creating orthogonal sections")
                 indir, hmin, hmax, start, stop, step, indtype = prepare(args, 2, ctdir)
