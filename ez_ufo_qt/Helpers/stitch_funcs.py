@@ -229,6 +229,7 @@ def main_conc_mp(args):
                 # if args.ort:
                 #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
                 subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
+                print(subdirs)
                 zfold = sorted(subdirs)
                 l = len(zfold)
                 tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
