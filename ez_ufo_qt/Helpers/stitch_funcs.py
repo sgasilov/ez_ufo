@@ -5,6 +5,8 @@ Last modified on Dec 2, 2020
 
 import glob
 import os
+import shutil
+
 import numpy as np
 import tifffile
 from ez_ufo_qt.Helpers.helper_util import read_image
@@ -444,10 +446,8 @@ def main_360_mp_depth2(args):
 def clear_tmp(args):
     tmp_dirs = os.listdir(args.tmpdir)
     for tmp_dir in tmp_dirs:
-        try:
-            os.rmdir(os.path.join(args.tmpdir, tmp_dir))
-        except FileNotFoundError:
-            print("Could not delete tmpdir: It does not exist")
+        shutil.rmtree(os.path.join(args.tmpdir, tmp_dir))
+
 
 def complete_message():
     print("             __.-/|")
