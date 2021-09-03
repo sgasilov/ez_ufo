@@ -443,10 +443,9 @@ def main_360_mp_depth2(args):
 
 def clear_tmp(args):
     tmp_dirs = os.listdir(args.tmpdir)
-    print(tmp_dirs)
     for tmp_dir in tmp_dirs:
         try:
-            os.rmdir(tmp_dir)
+            os.rmdir(os.path.join(args.tmpdir, tmp_dir))
         except FileNotFoundError:
             print("Could not delete tmpdir: It does not exist")
 
