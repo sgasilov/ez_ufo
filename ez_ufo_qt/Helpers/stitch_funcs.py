@@ -133,7 +133,7 @@ def main_sti_mp(args):
             dir_type = 2
             #For each subdirectory do the same thing
             for ctdir in subdirs:
-                print(" - Working on " + str(ctdir))
+                print("-> Working on " + str(ctdir))
                 if not os.path.exists(os.path.join(args.output, ctdir)):
                     os.makedirs(os.path.join(args.output, ctdir))
                 if args.ort:
@@ -152,10 +152,12 @@ def main_sti_mp(args):
                 pool = mp.Pool(processes=mp.cpu_count())
                 exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
                                     Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type)
-                print("Adjusting and stitching")
+                print(" - Adjusting and stitching")
                 # start = time.time()
                 pool.map(exec_func, J)
                 print("========== Done ==========")
+                # Clear temp directory
+                clear_tmp(args)
         else:
             print("Invalid input directory")
         complete_message()
@@ -239,6 +241,8 @@ def main_conc_mp(args):
                 pool.map(exec_func, J)
                 # print "Images stitched in {:.01f} sec".format(time.time()-start)
                 print("============ Done ============")
+                #Clear temp directory
+                clear_tmp(args)
     complete_message()
 
 
@@ -437,6 +441,13 @@ def main_360_mp_depth2(args):
             print("=========== Done ===========")
     print("Finished processing all directories.")
 
+def clear_tmp(args):
+    tmp_dirs = os.listdir(args.tmpdir)
+    for tmp_dir in tmp_dirs:
+        try:
+            os.rmdir(tmp_dir)
+        except FileNotFoundError:
+            print("Could not delete tmpdir: It does not exist")
 
 def complete_message():
     print("             __.-/|")
