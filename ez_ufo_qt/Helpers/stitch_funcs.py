@@ -334,10 +334,12 @@ def main_360_mp_depth2(args):
     print("Found the following directories:", ctlist)
 
     for ctdir in ctlist:
-        print("-> WORKING ON: " + str(ctdir))
+        print("")
+        print("================================")
+        print(" -> Working On: " + str(ctdir))
         subdirs = [dI for dI in os.listdir(ctdir) if os.path.isdir(os.path.join(ctdir, dI))]
-        print("Contents -> ", end="")
-        print(subdirs)
+        print(" -> Contents: ", end="")
+        print(sorted(subdirs))
 
         if len(glob.glob(os.path.join(ctdir, 'z??'))) > 0:
 
@@ -443,7 +445,7 @@ def main_360_mp_depth2(args):
                 pool.map(exec_func, idxs)
 
             print("=========== Done ===========")
-        print("-> FINISHED: " + str(ctdir))
+        print("-> Finished: " + str(ctdir))
     print("==== Finished processing all directories. ====")
 
 def clear_tmp(args):
