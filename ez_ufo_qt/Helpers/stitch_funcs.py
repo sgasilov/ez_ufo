@@ -323,18 +323,20 @@ def main_360_mp_depth1(args):
 
 
 def main_360_mp_depth2(args):
+
     ctdirs, lvl0 = findCTdirs(args.input, "tomo")
 
     ctlist = []
     for item in ctdirs:
         head, tail = os.path.split(item)
         ctlist.append(head)
-    ctlist = list(set(ctlist))
+    ctlist = sorted(ctlist)
     print("Found the following directories:", ctlist)
 
     for ctdir in ctlist:
-        print("WORKING ON: " + str(ctdir))
+        print("-> WORKING ON: " + str(ctdir))
         subdirs = [dI for dI in os.listdir(ctdir) if os.path.isdir(os.path.join(ctdir, dI))]
+        print("Contents -> ", end="")
         print(subdirs)
 
         if len(glob.glob(os.path.join(ctdir, 'z??'))) > 0:
@@ -342,7 +344,7 @@ def main_360_mp_depth2(args):
             num_slices = len(glob.glob(os.path.join(ctdir, 'z??')))
             axis_incr = float((args.ax2 - args.ax1) / float(num_slices - 1))
 
-            print (str(num_slices) + " slices detected. stitching all slices...")
+            print(str(num_slices) + " slices detected. stitching all slices...")
 
             for j in range(0, num_slices):
                 head, tail = os.path.split(ctdir)
@@ -441,7 +443,8 @@ def main_360_mp_depth2(args):
                 pool.map(exec_func, idxs)
 
             print("=========== Done ===========")
-    print("Finished processing all directories.")
+        print("-> FINISHED: " + str(ctdir))
+    print("==== Finished processing all directories. ====")
 
 def clear_tmp(args):
     tmp_dirs = os.listdir(args.tmpdir)
