@@ -330,7 +330,7 @@ def main_360_mp_depth2(args):
     for item in ctdirs:
         head, tail = os.path.split(item)
         ctlist.append(head)
-    ctlist = sorted(ctlist)
+    ctlist = sorted(list(set(ctlist)))
     print("Found the following directories:", ctlist)
 
     for ctdir in ctlist:
