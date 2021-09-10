@@ -324,6 +324,7 @@ def main_360_mp_depth1(args):
 
 def main_360_mp_depth2(args, axis_list):
 
+    print("Axis values: ", end='')
     print(axis_list)
 
     ctdirs, lvl0 = findCTdirs(args.input, "tomo")

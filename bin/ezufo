@@ -30,12 +30,12 @@ def main():
     logger.addHandler(fhandler)
 
     logger.setLevel(logging.DEBUG)
-    '''
+
     if args.debug:
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.WARNING)
-    '''
+
     # Launch PyQT Application
     app = qtw.QApplication(sys.argv)
     window = ezufo_launcher.GUI()

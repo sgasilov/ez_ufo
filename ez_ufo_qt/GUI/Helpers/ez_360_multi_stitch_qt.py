@@ -329,8 +329,6 @@ class MultiStitch360Group(QGroupBox):
         args = tk_args(self.e_input, self.e_output, self.e_tmpdir,
                        self.e_ax1, self.e_ax2, self.e_ax, self.e_crop, self.e_manual_axis)
 
-        print("Axis values: ", end='')
-        print(self.axis_dict)
         #TODO: pass axis_dict to function and use it to determine axis
 
         if os.path.exists(self.e_tmpdir):
@@ -341,12 +339,13 @@ class MultiStitch360Group(QGroupBox):
 
         print("")
         print("======= Begin 360 Multi-Stitch =======")
-        main_360_mp_depth2(args, list(self.axis_dict))
+        main_360_mp_depth2(args, self.axis_dict.values())
         print("==== Waiting for Next Task ====")
 
     #TODO Call cleanup function if application is closed
 
     def delete_button_pressed(self):
+        print("---- Un momento por favor - Deleting Data From Output Directory ----")
         logging.debug("Delete button pressed")
         if os.path.exists(self.e_output):
             os.system('rm -r {}'.format(self.e_output))
