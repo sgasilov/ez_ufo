@@ -16,8 +16,10 @@ class MultiStitch360Group(QGroupBox):
         self.e_ax1 = 0
         self.e_ax2 = 0
         self.e_ax = 0
-        self.e_ax = 0
         self.e_crop = 0
+        self.e_manual = False
+        self.axis_dict = dict.fromkeys(['z00', 'z01', 'z02', 'z03', 'z04', 'z05',
+                                        'z06', 'z07', 'z08', 'z09', 'z010', 'z011'])
 
         self.setTitle("360 Multi Stitch")
         self.setStyleSheet('QGroupBox {color: red;}')
@@ -64,39 +66,51 @@ class MultiStitch360Group(QGroupBox):
 
         self.axis_z00_label = QLabel("Axis of Rotation (z00):")
         self.axis_z00_entry = QLineEdit()
+        self.axis_z00_entry.textChanged.connect(self.set_z00)
 
         self.axis_z01_label = QLabel("Axis of Rotation (z01):")
         self.axis_z01_entry = QLineEdit()
+        self.axis_z01_entry.textChanged.connect(self.set_z01)
 
         self.axis_z02_label = QLabel("Axis of Rotation (z02):")
         self.axis_z02_entry = QLineEdit()
+        self.axis_z02_entry.textChanged.connect(self.set_z02)
 
         self.axis_z03_label = QLabel("Axis of Rotation (z03):")
         self.axis_z03_entry = QLineEdit()
+        self.axis_z03_entry.textChanged.connect(self.set_z03)
 
         self.axis_z04_label = QLabel("Axis of Rotation (z04):")
         self.axis_z04_entry = QLineEdit()
+        self.axis_z04_entry.textChanged.connect(self.set_z04)
 
         self.axis_z05_label = QLabel("Axis of Rotation (z05):")
         self.axis_z05_entry = QLineEdit()
+        self.axis_z05_entry.textChanged.connect(self.set_z05)
 
         self.axis_z06_label = QLabel("Axis of Rotation (z06):")
         self.axis_z06_entry = QLineEdit()
+        self.axis_z06_entry.textChanged.connect(self.set_z06)
 
         self.axis_z07_label = QLabel("Axis of Rotation (z07):")
         self.axis_z07_entry = QLineEdit()
+        self.axis_z07_entry.textChanged.connect(self.set_z07)
 
         self.axis_z08_label = QLabel("Axis of Rotation (z08):")
         self.axis_z08_entry = QLineEdit()
+        self.axis_z08_entry.textChanged.connect(self.set_z08)
 
         self.axis_z09_label = QLabel("Axis of Rotation (z09):")
         self.axis_z09_entry = QLineEdit()
+        self.axis_z09_entry.textChanged.connect(self.set_z09)
 
         self.axis_z010_label = QLabel("Axis of Rotation (z010):")
         self.axis_z010_entry = QLineEdit()
+        self.axis_z010_entry.textChanged.connect(self.set_z010)
 
         self.axis_z011_label = QLabel("Axis of Rotation (z011):")
         self.axis_z011_entry = QLineEdit()
+        self.axis_z011_entry.textChanged.connect(self.set_z011)
 
         self.stitch_button = QPushButton()
         self.stitch_button.setText("Stitch")
@@ -187,6 +201,7 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_entry.setText("245")
         self.e_ax2 = 245
         self.e_ax = self.e_ax1
+        self.e_manual = False
 
     def input_button_pressed(self):
         logging.debug("Input button pressed")
@@ -239,17 +254,70 @@ class MultiStitch360Group(QGroupBox):
             self.axis_bottom_entry.setEnabled(False)
             self.axis_top_label.setEnabled(False)
             self.axis_top_entry.setEnabled(False)
+            self.e_manual = True
+            logging.debug("Enter axis of rotation manually: " + str(self.e_manual))
         else:
             self.axis_bottom_label.setEnabled(True)
             self.axis_bottom_entry.setEnabled(True)
             self.axis_top_label.setEnabled(True)
             self.axis_top_entry.setEnabled(True)
+            self.e_manual = False
+            logging.debug("Enter axis of rotation manually: " + str(self.e_manual))
 
+    def set_z00(self):
+        logging.debug("z00 axis: " + str(self.axis_z00_entry.text()))
+        self.axis_dict['z00'] = int(self.axis_z00_entry.text())
+
+    def set_z01(self):
+        logging.debug("z01 axis: " + str(self.axis_z01_entry.text()))
+        self.axis_dict['z01'] = int(self.axis_z01_entry.text())
+
+    def set_z02(self):
+        logging.debug("z02 axis: " + str(self.axis_z02_entry.text()))
+        self.axis_dict['z02'] = int(self.axis_z02_entry.text())
+
+    def set_z03(self):
+        logging.debug("z03 axis: " + str(self.axis_z03_entry.text()))
+        self.axis_dict['z03'] = int(self.axis_z03_entry.text())
+
+    def set_z04(self):
+        logging.debug("z04 axis: " + str(self.axis_z04_entry.text()))
+        self.axis_dict['z04'] = int(self.axis_z04_entry.text())
+
+    def set_z05(self):
+        logging.debug("z05 axis: " + str(self.axis_z05_entry.text()))
+        self.axis_dict['z05'] = int(self.axis_z05_entry.text())
+
+    def set_z06(self):
+        logging.debug("z06 axis: " + str(self.axis_z06_entry.text()))
+        self.axis_dict['z06'] = int(self.axis_z06_entry.text())
+
+    def set_z07(self):
+        logging.debug("z07 axis: " + str(self.axis_z07_entry.text()))
+        self.axis_dict['z07'] = int(self.axis_z07_entry.text())
+
+    def set_z08(self):
+        logging.debug("z08 axis: " + str(self.axis_z08_entry.text()))
+        self.axis_dict['z08'] = int(self.axis_z08_entry.text())
+
+    def set_z09(self):
+        logging.debug("z09 axis: " + str(self.axis_z09_entry.text()))
+        self.axis_dict['z09'] = int(self.axis_z09_entry.text())
+
+    def set_z010(self):
+        logging.debug("z010 axis: " + str(self.axis_z010_entry.text()))
+        self.axis_dict['z010'] = int(self.axis_z010_entry.text())
+
+    def set_z011(self):
+        logging.debug("z011 axis: " + str(self.axis_z011_entry.text()))
+        self.axis_dict['z011'] = int(self.axis_z011_entry.text())
 
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
-        args = tk_args(self.e_input, self.e_output, self.e_tmpdir, self.e_ax1, self.e_ax2, self.e_ax, self.e_crop)
+        args = tk_args(self.e_input, self.e_output, self.e_tmpdir,
+                       self.e_ax1, self.e_ax2, self.e_ax, self.e_crop, self.e_manual)
 
+        print(self.axis_dict)
         if os.path.exists(self.e_tmpdir):
             os.system('rm -r {}'.format(self.e_tmpdir))
 
@@ -262,8 +330,6 @@ class MultiStitch360Group(QGroupBox):
         print("==== Waiting for Next Task ====")
 
     #TODO Call cleanup function if application is closed
-
-    #TODO Add JRavs dropdown menu option
 
     def delete_button_pressed(self):
         logging.debug("Delete button pressed")
@@ -283,7 +349,7 @@ class MultiStitch360Group(QGroupBox):
         QMessageBox.information(self, "Help", h)
 
 class tk_args():
-    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop):
+    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop, e_manual):
 
         self.args={}
         # directories
@@ -302,3 +368,5 @@ class tk_args():
         setattr(self, 'ax', self.args['ax'])
         self.args['crop'] = int(e_crop)
         setattr(self, 'crop', self.args['crop'])
+        self.args['manual'] = bool(e_manual)
+        setattr(self, 'manual', self.args['manual'])
