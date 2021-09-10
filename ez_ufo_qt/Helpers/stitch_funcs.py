@@ -334,8 +334,7 @@ def main_360_mp_depth2(args):
     print("Found the following directories:", ctlist)
 
     for ctdir in ctlist:
-        print("")
-        print("================================")
+        print("================================================================")
         print(" -> Working On: " + str(ctdir))
         subdirs = [dI for dI in os.listdir(ctdir) if os.path.isdir(os.path.join(ctdir, dI))]
         print(" -> Contents: ", end="")

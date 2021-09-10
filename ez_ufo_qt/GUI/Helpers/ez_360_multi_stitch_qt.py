@@ -165,6 +165,7 @@ class MultiStitch360Group(QGroupBox):
         if os.path.exists(self.e_output):
             raise ValueError('Output directory exists')
 
+        print("")
         print("======= Begin 360 Multi-Stitch =======")
         main_360_mp_depth2(args)
         print("==== Waiting for Next Task ====")
