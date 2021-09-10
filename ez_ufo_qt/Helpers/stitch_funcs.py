@@ -359,7 +359,7 @@ def main_360_mp_depth2(args, axis_dict):
                 out_dir = os.path.join(args.output, tail, "z" + str(j).zfill(2))
 
                 if args.manual_axis:
-                    curr_ax = int(axis_list[j])
+                    curr_ax = int(list(axis_list)[j])
                 else:
                     curr_ax = args.ax1 + j * axis_incr
 
