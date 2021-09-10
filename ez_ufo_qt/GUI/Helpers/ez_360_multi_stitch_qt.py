@@ -338,7 +338,7 @@ class MultiStitch360Group(QGroupBox):
             raise ValueError('Output directory exists')
 
         print("======= Begin 360 Multi-Stitch =======")
-        main_360_mp_depth2(args, self.axis_dict.values())
+        main_360_mp_depth2(args, self.axis_dict)
         print("==== Waiting for Next Task ====")
 
     #TODO Call cleanup function if application is closed
