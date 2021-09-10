@@ -360,6 +360,8 @@ def main_360_mp_depth2(args, axis_dict):
 
                 if args.manual_axis:
                     curr_ax = int(list(axis_list)[j])
+                    args.ax1 = int(list(axis_list)[0])
+                    args.ax2 = int(list(axis_list)[list(axis_list).__len__()-1])
                 else:
                     curr_ax = args.ax1 + j * axis_incr
 
