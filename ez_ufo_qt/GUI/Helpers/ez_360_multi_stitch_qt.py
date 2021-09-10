@@ -278,51 +278,51 @@ class MultiStitch360Group(QGroupBox):
 
     def set_z00(self):
         logging.debug("z00 axis: " + str(self.axis_z00_entry.text()))
-        self.axis_dict['z00'] = int(self.axis_z00_entry.text())
+        self.axis_dict['z00'] = str(self.axis_z00_entry.text())
 
     def set_z01(self):
         logging.debug("z01 axis: " + str(self.axis_z01_entry.text()))
-        self.axis_dict['z01'] = int(self.axis_z01_entry.text())
+        self.axis_dict['z01'] = str(self.axis_z01_entry.text())
 
     def set_z02(self):
         logging.debug("z02 axis: " + str(self.axis_z02_entry.text()))
-        self.axis_dict['z02'] = int(self.axis_z02_entry.text())
+        self.axis_dict['z02'] = str(self.axis_z02_entry.text())
 
     def set_z03(self):
         logging.debug("z03 axis: " + str(self.axis_z03_entry.text()))
-        self.axis_dict['z03'] = int(self.axis_z03_entry.text())
+        self.axis_dict['z03'] = str(self.axis_z03_entry.text())
 
     def set_z04(self):
         logging.debug("z04 axis: " + str(self.axis_z04_entry.text()))
-        self.axis_dict['z04'] = int(self.axis_z04_entry.text())
+        self.axis_dict['z04'] = str(self.axis_z04_entry.text())
 
     def set_z05(self):
         logging.debug("z05 axis: " + str(self.axis_z05_entry.text()))
-        self.axis_dict['z05'] = int(self.axis_z05_entry.text())
+        self.axis_dict['z05'] = str(self.axis_z05_entry.text())
 
     def set_z06(self):
         logging.debug("z06 axis: " + str(self.axis_z06_entry.text()))
-        self.axis_dict['z06'] = int(self.axis_z06_entry.text())
+        self.axis_dict['z06'] = str(self.axis_z06_entry.text())
 
     def set_z07(self):
         logging.debug("z07 axis: " + str(self.axis_z07_entry.text()))
-        self.axis_dict['z07'] = int(self.axis_z07_entry.text())
+        self.axis_dict['z07'] = str(self.axis_z07_entry.text())
 
     def set_z08(self):
         logging.debug("z08 axis: " + str(self.axis_z08_entry.text()))
-        self.axis_dict['z08'] = int(self.axis_z08_entry.text())
+        self.axis_dict['z08'] = str(self.axis_z08_entry.text())
 
     def set_z09(self):
         logging.debug("z09 axis: " + str(self.axis_z09_entry.text()))
-        self.axis_dict['z09'] = int(self.axis_z09_entry.text())
+        self.axis_dict['z09'] = str(self.axis_z09_entry.text())
 
     def set_z010(self):
         logging.debug("z010 axis: " + str(self.axis_z010_entry.text()))
-        self.axis_dict['z010'] = int(self.axis_z010_entry.text())
+        self.axis_dict['z010'] = str(self.axis_z010_entry.text())
 
     def set_z011(self):
         logging.debug("z011 axis: " + str(self.axis_z011_entry.text()))
-        self.axis_dict['z011'] = int(self.axis_z011_entry.text())
+        self.axis_dict['z011'] = str(self.axis_z011_entry.text())
 
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
