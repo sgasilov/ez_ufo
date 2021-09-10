@@ -23,6 +23,7 @@ def main():
     logger = logging.getLogger()
     logger_path = os.path.join(head, 'ezufo.log')
     print("Logging file stored at: " + logger_path)
+    print("")
 
     fhandler = logging.FileHandler(filename=logger_path, mode='w')
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

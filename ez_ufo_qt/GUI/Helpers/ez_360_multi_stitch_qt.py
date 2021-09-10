@@ -17,7 +17,7 @@ class MultiStitch360Group(QGroupBox):
         self.e_ax2 = 0
         self.e_ax = 0
         self.e_crop = 0
-        self.e_manual = False
+        self.e_manual_axis = False
         self.axis_dict = dict.fromkeys(['z00', 'z01', 'z02', 'z03', 'z04', 'z05',
                                         'z06', 'z07', 'z08', 'z09', 'z010', 'z011'])
 
@@ -337,7 +337,6 @@ class MultiStitch360Group(QGroupBox):
         if os.path.exists(self.e_output):
             raise ValueError('Output directory exists')
 
-        print("")
         print("======= Begin 360 Multi-Stitch =======")
         main_360_mp_depth2(args, self.axis_dict.values())
         print("==== Waiting for Next Task ====")
