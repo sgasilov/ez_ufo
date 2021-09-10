@@ -266,15 +266,15 @@ class MultiStitch360Group(QGroupBox):
             self.axis_bottom_entry.setEnabled(False)
             self.axis_top_label.setEnabled(False)
             self.axis_top_entry.setEnabled(False)
-            self.e_manual = True
-            logging.debug("Enter axis of rotation manually: " + str(self.e_manual))
+            self.e_manual_axis = True
+            logging.debug("Enter axis of rotation manually: " + str(self.e_manual_axis))
         else:
             self.axis_bottom_label.setEnabled(True)
             self.axis_bottom_entry.setEnabled(True)
             self.axis_top_label.setEnabled(True)
             self.axis_top_entry.setEnabled(True)
-            self.e_manual = False
-            logging.debug("Enter axis of rotation manually: " + str(self.e_manual))
+            self.e_manual_axis = False
+            logging.debug("Enter axis of rotation manually: " + str(self.e_manual_axis))
 
     def set_z00(self):
         logging.debug("z00 axis: " + str(self.axis_z00_entry.text()))
@@ -327,8 +327,9 @@ class MultiStitch360Group(QGroupBox):
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
         args = tk_args(self.e_input, self.e_output, self.e_tmpdir,
-                       self.e_ax1, self.e_ax2, self.e_ax, self.e_crop, self.e_manual)
+                       self.e_ax1, self.e_ax2, self.e_ax, self.e_crop, self.e_manual_axis)
 
+        print("Axis values: ", end='')
         print(self.axis_dict)
         #TODO: pass axis_dict to function and use it to determine axis
 
@@ -340,7 +341,7 @@ class MultiStitch360Group(QGroupBox):
 
         print("")
         print("======= Begin 360 Multi-Stitch =======")
-        main_360_mp_depth2(args)
+        main_360_mp_depth2(args, list(self.axis_dict))
         print("==== Waiting for Next Task ====")
 
     #TODO Call cleanup function if application is closed
@@ -363,7 +364,7 @@ class MultiStitch360Group(QGroupBox):
         QMessageBox.information(self, "Help", h)
 
 class tk_args():
-    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop, e_manual):
+    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop, e_manual_axis):
 
         self.args={}
         # directories
@@ -382,5 +383,5 @@ class tk_args():
         setattr(self, 'ax', self.args['ax'])
         self.args['crop'] = int(e_crop)
         setattr(self, 'crop', self.args['crop'])
-        self.args['manual'] = bool(e_manual)
-        setattr(self, 'manual', self.args['manual'])
+        self.args['manual_axis'] = bool(e_manual_axis)
+        setattr(self, 'manual_axis', self.args['manual_axis'])

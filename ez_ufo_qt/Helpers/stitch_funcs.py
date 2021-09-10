@@ -322,7 +322,9 @@ def main_360_mp_depth1(args):
     print("========== Done ==========")
 
 
-def main_360_mp_depth2(args):
+def main_360_mp_depth2(args, axis_list):
+
+    print(axis_list)
 
     ctdirs, lvl0 = findCTdirs(args.input, "tomo")
 
@@ -353,7 +355,10 @@ def main_360_mp_depth2(args):
                     os.makedirs(os.path.join(args.output, tail, "z" + str(j).zfill(2)))
                 out_dir = os.path.join(args.output, tail, "z" + str(j).zfill(2))
 
-                curr_ax = args.ax1 + j * axis_incr
+                if args.manual_axis:
+                    curr_ax = axis_list[j]
+                else:
+                    curr_ax = args.ax1 + j * axis_incr
 
                 if args.crop == True:
                     if axis_incr < 0:
