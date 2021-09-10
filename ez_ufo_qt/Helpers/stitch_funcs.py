@@ -327,7 +327,8 @@ def main_360_mp_depth2(args, axis_dict):
     print("Axis values: ", end='')
     print(axis_dict)
 
-    axis_list = axis_dict.values()
+    axis_list = list(axis_dict.values())
+    last_index = check_last_index(axis_list)
 
     ctdirs, lvl0 = findCTdirs(args.input, "tomo")
 
@@ -361,7 +362,7 @@ def main_360_mp_depth2(args, axis_dict):
                 if args.manual_axis:
                     curr_ax = int(list(axis_list)[j])
                     args.ax1 = int(list(axis_list)[0])
-                    args.ax2 = int(list(axis_list)[list(axis_list).__len__()-1])
+                    args.ax2 = int(list(axis_list)[last_index])
                 else:
                     curr_ax = args.ax1 + j * axis_incr
 
@@ -462,6 +463,21 @@ def clear_tmp(args):
     for tmp_dir in tmp_dirs:
         shutil.rmtree(os.path.join(args.tmpdir, tmp_dir))
 
+
+def check_last_index(axis_list):
+    """
+    Return the index of item in list immediately before first 'None' type
+    :param axis_list:
+    :return: the index of last non-None value
+    """
+    last_index = 0
+    for index, item in enumerate(axis_list):
+        if item is None:
+            last_index = index - 1
+            break
+        else:
+            last_index = axis_list.__len__() - 1
+    return last_index
 
 def complete_message():
     print("             __.-/|")
