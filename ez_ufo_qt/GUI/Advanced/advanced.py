@@ -48,7 +48,6 @@ class AdvancedGroup(QGroupBox):
     def set_layout(self):
         layout = QGridLayout()
 
-
         self.lamino_group.setCheckable(True)
         self.lamino_group.setChecked(False)
         lamino_layout = QGridLayout()

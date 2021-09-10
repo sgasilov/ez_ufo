@@ -48,55 +48,16 @@ class MultiStitch360Group(QGroupBox):
         self.crop_checkbox.clicked.connect(self.set_crop_projections_checkbox)
 
         self.axis_bottom_label = QLabel()
-        self.axis_bottom_label.setText("Bottom Axis of Rotation (z00):")
+        self.axis_bottom_label.setText("Axis of Rotation at bottom (z00):")
 
         self.axis_bottom_entry = QLineEdit()
         self.axis_bottom_entry.textChanged.connect(self.set_axis_bottom)
 
         self.axis_top_label = QLabel()
-        self.axis_top_label.setText("Top Axis of Rotation (z0N):")
-
-        self.axis_group = QGroupBox("Enter axis of rotation manually")
-        self.axis_group.clicked.connect(self.set_axis_group)
+        self.axis_top_label.setText("Axis of Rotation at top (ignored if not multi-slice):")
 
         self.axis_top_entry = QLineEdit()
         self.axis_top_entry.textChanged.connect(self.set_axis_top)
-
-        self.axis_z00_label = QLabel("Axis of Rotation (z00):")
-        self.axis_z00_entry = QLineEdit()
-
-        self.axis_z01_label = QLabel("Axis of Rotation (z01):")
-        self.axis_z01_entry = QLineEdit()
-
-        self.axis_z02_label = QLabel("Axis of Rotation (z02):")
-        self.axis_z02_entry = QLineEdit()
-
-        self.axis_z03_label = QLabel("Axis of Rotation (z03):")
-        self.axis_z03_entry = QLineEdit()
-
-        self.axis_z04_label = QLabel("Axis of Rotation (z04):")
-        self.axis_z04_entry = QLineEdit()
-
-        self.axis_z05_label = QLabel("Axis of Rotation (z05):")
-        self.axis_z05_entry = QLineEdit()
-
-        self.axis_z06_label = QLabel("Axis of Rotation (z06):")
-        self.axis_z06_entry = QLineEdit()
-
-        self.axis_z07_label = QLabel("Axis of Rotation (z07):")
-        self.axis_z07_entry = QLineEdit()
-
-        self.axis_z08_label = QLabel("Axis of Rotation (z08):")
-        self.axis_z08_entry = QLineEdit()
-
-        self.axis_z09_label = QLabel("Axis of Rotation (z09):")
-        self.axis_z09_entry = QLineEdit()
-
-        self.axis_z010_label = QLabel("Axis of Rotation (z010):")
-        self.axis_z010_entry = QLineEdit()
-
-        self.axis_z011_label = QLabel("Axis of Rotation (z011):")
-        self.axis_z011_entry = QLineEdit()
 
         self.stitch_button = QPushButton()
         self.stitch_button.setText("Stitch")
@@ -116,59 +77,20 @@ class MultiStitch360Group(QGroupBox):
     def set_layout(self):
         layout = QGridLayout()
 
-        layout.addWidget(self.input_dir_button, 0, 0, 1, 4)
-        layout.addWidget(self.input_dir_entry, 1, 0, 1, 4)
-        layout.addWidget(self.temp_dir_button, 2, 0, 1, 4)
-        layout.addWidget(self.temp_dir_entry, 3, 0, 1, 4)
-        layout.addWidget(self.output_dir_button, 4, 0, 1, 4)
-        layout.addWidget(self.output_dir_entry, 5, 0, 1, 4)
-        layout.addWidget(self.crop_checkbox, 6, 0, 1, 4)
-
-        layout.addWidget(self.axis_bottom_label, 7, 0)
-        layout.addWidget(self.axis_bottom_entry, 7, 1)
-        layout.addWidget(self.axis_top_label, 7, 2)
-        layout.addWidget(self.axis_top_entry, 7, 3)
-
-        self.axis_group.setCheckable(True)
-        self.axis_group.setChecked(False)
-        axis_layout = QGridLayout()
-
-        axis_layout.addWidget(self.axis_z00_label, 0, 0)
-        axis_layout.addWidget(self.axis_z00_entry, 0, 1)
-        axis_layout.addWidget(self.axis_z06_label, 0, 2)
-        axis_layout.addWidget(self.axis_z06_entry, 0, 3)
-
-        axis_layout.addWidget(self.axis_z01_label, 1, 0)
-        axis_layout.addWidget(self.axis_z01_entry, 1, 1)
-        axis_layout.addWidget(self.axis_z07_label, 1, 2)
-        axis_layout.addWidget(self.axis_z07_entry, 1, 3)
-
-        axis_layout.addWidget(self.axis_z02_label, 2, 0)
-        axis_layout.addWidget(self.axis_z02_entry, 2, 1)
-        axis_layout.addWidget(self.axis_z08_label, 2, 2)
-        axis_layout.addWidget(self.axis_z08_entry, 2, 3)
-
-        axis_layout.addWidget(self.axis_z03_label, 3, 0)
-        axis_layout.addWidget(self.axis_z03_entry, 3, 1)
-        axis_layout.addWidget(self.axis_z09_label, 3, 2)
-        axis_layout.addWidget(self.axis_z09_entry, 3, 3)
-
-        axis_layout.addWidget(self.axis_z04_label, 4, 0)
-        axis_layout.addWidget(self.axis_z04_entry, 4, 1)
-        axis_layout.addWidget(self.axis_z010_label, 4, 2)
-        axis_layout.addWidget(self.axis_z010_entry, 4, 3)
-
-        axis_layout.addWidget(self.axis_z05_label, 5, 0)
-        axis_layout.addWidget(self.axis_z05_entry, 5, 1)
-        axis_layout.addWidget(self.axis_z011_label, 5, 2)
-        axis_layout.addWidget(self.axis_z011_entry, 5, 3)
-        self.axis_group.setLayout(axis_layout)
-
-        layout.addWidget(self.axis_group, 8, 0, 1, 4)
-
+        layout.addWidget(self.input_dir_button, 0, 0, 1, 3)
+        layout.addWidget(self.input_dir_entry, 1, 0, 1, 3)
+        layout.addWidget(self.temp_dir_button, 2, 0, 1, 3)
+        layout.addWidget(self.temp_dir_entry, 3, 0, 1, 3)
+        layout.addWidget(self.output_dir_button, 4, 0, 1, 3)
+        layout.addWidget(self.output_dir_entry, 5, 0, 1, 3)
+        layout.addWidget(self.crop_checkbox, 6, 0, 1, 3)
+        layout.addWidget(self.axis_bottom_label, 7, 0, 1, 2)
+        layout.addWidget(self.axis_bottom_entry, 7, 2, 1, 1)
+        layout.addWidget(self.axis_top_label, 8, 0, 1, 2)
+        layout.addWidget(self.axis_top_entry, 8, 2, 1, 1)
         layout.addWidget(self.help_button, 9, 0)
         layout.addWidget(self.delete_button, 9, 1)
-        layout.addWidget(self.stitch_button, 9, 2, 1, 2)
+        layout.addWidget(self.stitch_button, 9, 2)
 
         self.setLayout(layout)
 
@@ -232,19 +154,6 @@ class MultiStitch360Group(QGroupBox):
     def set_axis_top(self):
         logging.debug("Axis Top: " + str(self.axis_top_entry.text()))
         self.e_ax2 = int(self.axis_top_entry.text())
-
-    def set_axis_group(self):
-        if self.axis_group.isChecked():
-            self.axis_bottom_label.setEnabled(False)
-            self.axis_bottom_entry.setEnabled(False)
-            self.axis_top_label.setEnabled(False)
-            self.axis_top_entry.setEnabled(False)
-        else:
-            self.axis_bottom_label.setEnabled(True)
-            self.axis_bottom_entry.setEnabled(True)
-            self.axis_top_label.setEnabled(True)
-            self.axis_top_entry.setEnabled(True)
-
 
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
