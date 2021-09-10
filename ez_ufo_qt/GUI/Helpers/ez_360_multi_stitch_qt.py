@@ -178,6 +178,18 @@ class MultiStitch360Group(QGroupBox):
         axis_layout.addWidget(self.axis_z011_entry, 5, 3)
         self.axis_group.setLayout(axis_layout)
 
+        self.axis_group.setTabOrder(self.axis_z00_entry, self.axis_z01_entry)
+        self.axis_group.setTabOrder(self.axis_z01_entry, self.axis_z02_entry)
+        self.axis_group.setTabOrder(self.axis_z02_entry, self.axis_z03_entry)
+        self.axis_group.setTabOrder(self.axis_z03_entry, self.axis_z04_entry)
+        self.axis_group.setTabOrder(self.axis_z04_entry, self.axis_z05_entry)
+        self.axis_group.setTabOrder(self.axis_z05_entry, self.axis_z06_entry)
+        self.axis_group.setTabOrder(self.axis_z06_entry, self.axis_z07_entry)
+        self.axis_group.setTabOrder(self.axis_z07_entry, self.axis_z08_entry)
+        self.axis_group.setTabOrder(self.axis_z08_entry, self.axis_z09_entry)
+        self.axis_group.setTabOrder(self.axis_z09_entry, self.axis_z010_entry)
+        self.axis_group.setTabOrder(self.axis_z010_entry, self.axis_z011_entry)
+
         layout.addWidget(self.axis_group, 8, 0, 1, 4)
 
         layout.addWidget(self.help_button, 9, 0)
@@ -318,6 +330,8 @@ class MultiStitch360Group(QGroupBox):
                        self.e_ax1, self.e_ax2, self.e_ax, self.e_crop, self.e_manual)
 
         print(self.axis_dict)
+        #TODO: pass axis_dict to function and use it to determine axis
+
         if os.path.exists(self.e_tmpdir):
             os.system('rm -r {}'.format(self.e_tmpdir))
 
