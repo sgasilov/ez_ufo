@@ -344,7 +344,7 @@ class MultiStitch360Group(QGroupBox):
     #TODO Call cleanup function if application is closed
 
     def delete_button_pressed(self):
-        print("---- Un momento por favor - Deleting Data From Output Directory ----")
+        print("---- Deleting Data From Output Directory ----")
         logging.debug("Delete button pressed")
         if os.path.exists(self.e_output):
             os.system('rm -r {}'.format(self.e_output))
