@@ -356,8 +356,8 @@ def main_360_mp_depth2(args, axis_dict):
             for j in range(0, num_slices):
                 head, tail = os.path.split(ctdir)
                 if not os.path.exists(os.path.join(args.output, tail)):
-                    os.makedirs(os.path.join(args.output, "z" + str(j).zfill(2)))
-                out_dir = os.path.join(args.output, "z" + str(j).zfill(2))
+                    os.makedirs(os.path.join(args.output, tail, "z" + str(j).zfill(2)))
+                out_dir = os.path.join(args.output, tail, "z" + str(j).zfill(2))
                 print("Output directory: " + out_dir)
 
                 if args.manual_axis:
