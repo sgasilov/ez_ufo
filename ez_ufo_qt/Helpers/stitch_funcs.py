@@ -324,11 +324,11 @@ def main_360_mp_depth1(args):
 
 def main_360_mp_depth2(args, axis_dict):
 
-    print("Axis values: ", end='')
-    print(axis_dict)
-
-    axis_list = list(axis_dict.values())
-    last_index = check_last_index(axis_list)
+    if args.manual_axis:
+        print("Axis values: ", end='')
+        print(axis_dict)
+        axis_list = list(axis_dict.values())
+        last_index = check_last_index(axis_list)
 
     ctdirs, lvl0 = findCTdirs(args.input, "tomo")
 
@@ -356,8 +356,9 @@ def main_360_mp_depth2(args, axis_dict):
             for j in range(0, num_slices):
                 head, tail = os.path.split(ctdir)
                 if not os.path.exists(os.path.join(args.output, tail)):
-                    os.makedirs(os.path.join(args.output, tail, "z" + str(j).zfill(2)))
-                out_dir = os.path.join(args.output, tail, "z" + str(j).zfill(2))
+                    os.makedirs(os.path.join(args.output, "z" + str(j).zfill(2)))
+                out_dir = os.path.join(args.output, "z" + str(j).zfill(2))
+                print("Output directory: " + out_dir)
 
                 if args.manual_axis:
                     curr_ax = int(list(axis_list)[j])
