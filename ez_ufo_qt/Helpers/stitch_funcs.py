@@ -351,7 +351,7 @@ def main_360_mp_depth2(args, axis_dict):
             num_slices = len(glob.glob(os.path.join(ctdir, 'z??')))
             axis_incr = float((args.ax2 - args.ax1) / float(num_slices - 1))
 
-            print(str(num_slices) + " slices detected. stitching all slices...")
+            print(str(num_slices) + " slices detected. stitching all slices....")
 
             for j in range(0, num_slices):
                 head, tail = os.path.split(ctdir)
