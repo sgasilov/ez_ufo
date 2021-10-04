@@ -264,9 +264,10 @@ def stitch(first, second, axis, crop):
     # Mean values of the overlapping regions must match, which corrects flat-field inconsistency
     # between the two projections
     # TODO
-    # This is commented out to deal with saturated pixel problem
-    #k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
-    #second = second * k
+    # We take the minimum of second*k and max_val to deal with saturated pixel problem
+    k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
+    max_val = np.amax(k)
+    second = np.minimum(second * k, max_val)
 
     result[:, :w - dx] = first[:, :w - dx]
     result[:, w - dx:w] = first[:, w - dx:] * (1 - ramp) + second[:, :dx] * ramp
