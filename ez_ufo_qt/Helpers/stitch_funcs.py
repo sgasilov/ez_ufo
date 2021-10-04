@@ -268,6 +268,7 @@ def stitch(first, second, axis, crop):
     print(second.dtype)
     k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
     second = second * k
+    print(second.dtype)
 
     result[:, :w - dx] = first[:, :w - dx]
     result[:, w - dx:w] = first[:, w - dx:] * (1 - ramp) + second[:, :dx] * ramp
