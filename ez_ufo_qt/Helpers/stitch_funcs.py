@@ -265,9 +265,9 @@ def stitch(first, second, axis, crop):
     # between the two projections
     # TODO
     # We commented out these lines to deal with saturated pixel problem
+    print(second.dtype)
     k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
-    print(str(k))
-    #second = second * k
+    second = second * k
 
     result[:, :w - dx] = first[:, :w - dx]
     result[:, w - dx:w] = first[:, w - dx:] * (1 - ramp) + second[:, :dx] * ramp
