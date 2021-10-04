@@ -335,7 +335,8 @@ class MultiStitch360Group(QGroupBox):
             os.system('rm -r {}'.format(self.e_tmpdir))
 
         if os.path.exists(self.e_output):
-            raise ValueError('Output directory exists')
+            #raise ValueError('Output directory exists')
+            print("Output directory exists - delete before stitching")
 
         print("======= Begin 360 Multi-Stitch =======")
         main_360_mp_depth2(args, self.axis_dict)

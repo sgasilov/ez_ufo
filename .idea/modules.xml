@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/EZ_UFO_QT_GIT.iml" filepath="$PROJECT_DIR$/.idea/EZ_UFO_QT_GIT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ez_ufo.iml" filepath="$PROJECT_DIR$/.idea/ez_ufo.iml" />
     </modules>
   </component>
 </project>
