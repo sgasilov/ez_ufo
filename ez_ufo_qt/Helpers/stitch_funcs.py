@@ -265,10 +265,11 @@ def stitch(first, second, axis, crop):
     # between the two projections
     # TODO
     # We commented out these lines to deal with saturated pixel problem
-    print(second.dtype)
+    #print(second.dtype)
     k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
     second = second * k
-    print(second.dtype)
+    #print(second.dtype)
+    second = second.astype(np.uint16)
 
     result[:, :w - dx] = first[:, :w - dx]
     result[:, w - dx:w] = first[:, w - dx:] * (1 - ramp) + second[:, :dx] * ramp
@@ -282,7 +283,7 @@ def st_mp_idx(offst, ax, crop, in_fmt, out_fmt, idx):
     first = read_image(in_fmt.format(idx))
     second = read_image(in_fmt.format(idx+offst))[:, ::-1]
     stitched = stitch(first, second, ax, crop)
-    tifffile.imsave(out_fmt.format(idx), stitched)
+    tifffile.imwrite(out_fmt.format(idx), stitched)
 
 
 def main_360_mp_depth1(args):
