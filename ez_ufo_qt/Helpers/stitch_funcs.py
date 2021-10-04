@@ -267,7 +267,8 @@ def stitch(first, second, axis, crop):
     # We commented out these lines to deal with saturated pixel problem
     #print(second.dtype)
     k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
-    second = second * k
+    second = second.astype(np.float64)
+    second = np.clip(second * k, np.finfo(np.float64).min, np.finfo(np.float64).max)
     #print(second.dtype)
     second = second.astype(np.uint16)
 
