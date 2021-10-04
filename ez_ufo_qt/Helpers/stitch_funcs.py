@@ -263,8 +263,8 @@ def stitch(first, second, axis, crop):
 
     # Mean values of the overlapping regions must match, which corrects flat-field inconsistency
     # between the two projections
-    k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
-    second = second * k
+    #k = np.mean(first[:, w - dx:]) / np.mean(second[:, :dx])
+    #second = second * k
 
     result[:, :w - dx] = first[:, :w - dx]
     result[:, w - dx:w] = first[:, w - dx:] * (1 - ramp) + second[:, :dx] * ramp
