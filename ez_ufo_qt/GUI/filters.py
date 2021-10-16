@@ -146,7 +146,7 @@ class FiltersGroup(QGroupBox):
         self.enable_RR_checkbox.setChecked(parameters.params['e_RR'])
         if parameters.params['e_RR_ufo'] == True:
             self.use_LPF_rButton.setChecked(True)
-        elif parameters.params['e_RR_ufo]'] == False:
+        elif parameters.params['e_RR_ufo'] == False:
             self.use_LPF_rButton.setChecked(False)
         if parameters.params['e_RR_ufo_1d'] == True:
             self.one_dimens_rButton.setChecked(True)
