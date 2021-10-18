@@ -1,11 +1,9 @@
 import logging
 import os
 from PyQt5 import QtWidgets as qtw
-from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QPixmap
 from datetime import date
 
-from ez_ufo_qt.GUI.centre_of_rotation import CentreOfRotationGroup
+from ez_ufo_qt.GUI.Main.centre_of_rotation import CentreOfRotationGroup
 from ez_ufo_qt.GUI.filters import FiltersGroup
 from ez_ufo_qt.GUI.Advanced.ffc import FFCGroup
 from ez_ufo_qt.GUI.phase_retrieval import PhaseRetrievalGroup
@@ -23,7 +21,7 @@ from ez_ufo_qt.GUI.Helpers.ezstitch_qt import EZStitchGroup
 from ez_ufo_qt.GUI.Helpers.ezmview_qt import EZMViewGroup
 from ez_ufo_qt.GUI.Helpers.ez_360_overlap_qt import Overlap360Group
 from ez_ufo_qt.GUI.login_dialog import Login
-from ez_ufo_qt.GUI.message_dialog import info_message, error_message, warning_message
+
 
 class GUI(qtw.QWidget):
     """
