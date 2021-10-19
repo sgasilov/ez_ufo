@@ -4,11 +4,11 @@ from PyQt5 import QtWidgets as qtw
 from datetime import date
 
 from ez_ufo_qt.GUI.Main.centre_of_rotation import CentreOfRotationGroup
-from ez_ufo_qt.GUI.filters import FiltersGroup
+from ez_ufo_qt.GUI.Main.filters import FiltersGroup
 from ez_ufo_qt.GUI.Advanced.ffc import FFCGroup
-from ez_ufo_qt.GUI.phase_retrieval import PhaseRetrievalGroup
-from ez_ufo_qt.GUI.region_and_histogram import BinningGroup
-from ez_ufo_qt.GUI.config import ConfigGroup
+from ez_ufo_qt.GUI.Main.phase_retrieval import PhaseRetrievalGroup
+from ez_ufo_qt.GUI.Main.region_and_histogram import BinningGroup
+from ez_ufo_qt.GUI.Main.config import ConfigGroup
 from ez_ufo_qt.main import clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 from ez_ufo_qt.GUI.image_viewer import ImageViewerGroup
