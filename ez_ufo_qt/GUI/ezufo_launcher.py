@@ -44,6 +44,7 @@ class GUI(qtw.QWidget):
         self.yaml_io = Yaml_IO()
         self.yaml_data = self.yaml_io.read_yaml(settings_path)
         parameters.params = dict(self.yaml_data)
+        parameters.params['parameters_type'] = 'ez_ufo_reco'
 
         # Initialize tab screen
         self.tabs = qtw.QTabWidget()

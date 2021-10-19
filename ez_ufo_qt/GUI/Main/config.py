@@ -472,6 +472,7 @@ class ConfigGroup(QGroupBox):
         parameters.params['e_parfile'] = bool(self.save_params_checkbox.isChecked())
 
     def export_settings_button_pressed(self):
+        # TODO: Fix this so that parameters files automatically have .yaml extension added - rename to params not settings
         """
         Saves currently displayed GUI settings
         to an external .yaml file specified by user
