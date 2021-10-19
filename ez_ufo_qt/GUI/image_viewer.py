@@ -3,8 +3,9 @@ import logging
 import pyqtgraph as pg
 import numpy as np
 import tifffile
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QPushButton, QGroupBox, QLabel, QDoubleSpinBox, QRadioButton, QScrollBar, \
+                            QVBoxLayout, QGridLayout, QFileDialog, QMessageBox
+from PyQt5.QtCore import Qt
 import ez_ufo_qt.GUI.image_read_write as image_read_write
 
 

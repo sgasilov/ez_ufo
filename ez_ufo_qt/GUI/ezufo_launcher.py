@@ -20,6 +20,7 @@ from ez_ufo_qt.GUI.Helpers.ez_360_multi_stitch_qt import MultiStitch360Group
 from ez_ufo_qt.GUI.Helpers.ezstitch_qt import EZStitchGroup
 from ez_ufo_qt.GUI.Helpers.ezmview_qt import EZMViewGroup
 from ez_ufo_qt.GUI.Helpers.ez_360_overlap_qt import Overlap360Group
+from ez_ufo_qt.GUI.batch_process import BatchProcessGroup
 from ez_ufo_qt.GUI.login_dialog import Login
 
 
@@ -50,6 +51,8 @@ class GUI(qtw.QWidget):
         self.tab2 = qtw.QWidget()
         self.tab3 = qtw.QWidget()
         self.tab4 = qtw.QWidget()
+        self.tab5 = qtw.QWidget()
+        self.tab6 = qtw.QWidget()
 
         # Create and setup classes for each section of GUI
         # Main Tab
@@ -97,6 +100,9 @@ class GUI(qtw.QWidget):
         self.overlap_group = Overlap360Group()
         self.overlap_group.init_values()
 
+        # Batch Process Tab
+        self.batch_process_group = BatchProcessGroup()
+
         #######################################################
 
         self.set_layout()
@@ -131,12 +137,7 @@ class GUI(qtw.QWidget):
 
         advanced_layout = qtw.QGridLayout()
         advanced_layout.addWidget(self.ffc_group, 0, 0)
-        '''
-        image = QPixmap("/home/emsliei/Documents/4Iain/tofu-reco-notations.png")
-        image_label = qtw.QLabel()
-        image_label.setPixmap(image.scaled(600, 600, Qt.KeepAspectRatio, Qt.FastTransformation))
-        advanced_layout.addWidget(image_label, 0, 1)
-        '''
+
         advanced_layout.addWidget(self.advanced_group, 1, 0)
         advanced_layout.addWidget(self.optimization_group, 1, 1)
         advanced_layout.addWidget(self.nlmdn_group, 2, 0)
@@ -147,11 +148,16 @@ class GUI(qtw.QWidget):
         helpers_layout.addWidget(self.multi_stitch_group, 1, 0)
         helpers_layout.addWidget(self.ezstitch_group, 1, 1)
 
+        batch_layout = qtw.QGridLayout()
+        batch_layout.addWidget(self.batch_process_group, 0, 0)
+
         # Add tabs
         self.tabs.addTab(self.tab1, "Main")
         self.tabs.addTab(self.tab2, "Image Viewer")
         self.tabs.addTab(self.tab3, "Advanced")
         self.tabs.addTab(self.tab4, "EZ Helpers")
+        self.tabs.addTab(self.tab5, "EZ Stitch Tools")
+        self.tabs.addTab(self.tab6, "EZ Batch Process")
 
         # Create main tab
         self.tab1.layout = main_layout
@@ -165,8 +171,15 @@ class GUI(qtw.QWidget):
         self.tab3.layout = advanced_layout
         self.tab3.setLayout(self.tab3.layout)
 
+        # Create helpers tab
         self.tab4.layout = helpers_layout
         self.tab4.setLayout(self.tab4.layout)
+
+        # Create EZ stitch tab
+
+        # Create batch process tab
+        self.tab6.layout = batch_layout
+        self.tab6.setLayout(self.tab6.layout)
 
         # Add tabs to widget
         layout.addWidget(self.tabs)

@@ -55,4 +55,7 @@ pyqtgraph==0.11.0
 python-dateutil==2.8.1
 pytz==2020.4
 PyYaml==5.4.1
-
+setuptools~=28.8.0
+tifffile~=2021.4.8
+tofu~=0.9
+scipy~=1.6.3
