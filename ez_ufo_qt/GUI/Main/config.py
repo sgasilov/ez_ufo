@@ -122,13 +122,13 @@ class ConfigGroup(QGroupBox):
 
         #IMPORT SETTINGS FROM FILE
         self.open_settings_file = QPushButton()
-        self.open_settings_file.setText("Import settings from file")
+        self.open_settings_file.setText("Import parameters from file")
         self.open_settings_file.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.open_settings_file.pressed.connect(self.import_settings_button_pressed)
 
         #EXPORT SETTINGS TO FILE
         self.save_settings_file = QPushButton()
-        self.save_settings_file.setText("Export settings to file")
+        self.save_settings_file.setText("Export parameters to file")
         self.save_settings_file.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.save_settings_file.pressed.connect(self.export_settings_button_pressed)
 
@@ -506,55 +506,57 @@ class ConfigGroup(QGroupBox):
         """
         logging.debug("RECO")
         logging.debug(parameters.params)
+        self.run_reconstruction(parameters.params)
 
+    def run_reconstruction(self, params):
         try:
             self.validate_input()
 
-            args = tk_args( parameters.params['e_indir'], parameters.params['e_tmpdir'],
-                            parameters.params['e_outdir'], parameters.params['e_bigtif'],
-                            parameters.params['e_ax'],  parameters.params['e_ax_range'],
-                            parameters.params['e_ax_row'], parameters.params['e_ax_p_size'],
-                            parameters.params['e_ax_fix'], parameters.params['e_dax'], parameters.params['e_inp'],
-                            parameters.params['e_inp_thr'],  parameters.params['e_inp_sig'],
-                            parameters.params['e_RR'],  parameters.params['e_RR_ufo'],
-                            parameters.params['e_RR_ufo_1d'],  parameters.params['e_RR_par'],
-                            parameters.params['e_rr_srp_wind_sort'],  parameters.params['e_rr_srp_wide'],
-                            parameters.params['e_rr_srp_wind_wide'],  parameters.params['e_rr_srp_snr'],
-                            parameters.params['e_PR'],  parameters.params['e_energy'],  parameters.params['e_pixel'],
-                            parameters.params['e_z'],  parameters.params['e_log10db'], parameters.params['e_vcrop'],
-                            parameters.params['e_y'],  parameters.params['e_yheight'],  parameters.params['e_ystep'],
-                            parameters.params['e_gray256'],  parameters.params['e_bit'],  parameters.params['e_hmin'],
-                            parameters.params['e_hmax'], parameters.params['e_pre'],  parameters.params['e_pre_cmd'],
-                            parameters.params['e_a0'], parameters.params['e_crop'],  parameters.params['e_x0'],
-                            parameters.params['e_dx'],  parameters.params['e_y0'],  parameters.params['e_dy'],
-                            parameters.params['e_dryrun'],  parameters.params['e_parfile'],
-                            parameters.params['e_keep_tmp'], parameters.params['e_sinFFC'],
-                            parameters.params['e_sinFFC_method'], parameters.params['e_sinFFCEigenReps'],
-                            parameters.params['e_sinFFCEigenDowns'], parameters.params['e_sinFFCDowns'],
-                            parameters.params['e_common_darks_flats'], parameters.params['e_common_darks'],
-                            parameters.params['e_common_flats'], parameters.params['e_use_common_flats2'],
-                            parameters.params['e_common_flats2'],
-                            #NLMDN Parameters
-                            parameters.params['e_nlmdn_apply_after_reco'],
-                            parameters.params['e_nlmdn_indir'], parameters.params['e_nlmdn_input_is_file'],
-                            parameters.params['e_nlmdn_outdir'], parameters.params['e_nlmdn_bigtif'],
-                            parameters.params['e_nlmdn_r'], parameters.params['e_nlmdn_dx'],
-                            parameters.params['e_nlmdn_h'], parameters.params['e_nlmdn_sig'],
-                            parameters.params['e_nlmdn_w'], parameters.params['e_nlmdn_fast'],
-                            parameters.params['e_nlmdn_autosig'], parameters.params['e_nlmdn_dryrun'],
-                            #Advanced Parameters
-                            parameters.params['e_adv_lamino_group'],
-                            parameters.params['e_adv_lamino_angle'], parameters.params['e_adv_overall_rotation'],
-                            parameters.params['e_adv_center_pos_z'], parameters.params['e_adv_axis_rotation_y'],
-                            parameters.params['e_adv_dark_scale'], parameters.params['e_adv_flat_scale'],
-                            parameters.params['e_adv_verbose'], parameters.params['e_adv_slice_mem_coeff'],
-                            parameters.params['e_adv_num_gpu'], parameters.params['e_adv_slices_per_device']
-                            )
+            args = tk_args(params['e_indir'], params['e_tmpdir'],
+                           params['e_outdir'], params['e_bigtif'],
+                           params['e_ax'], params['e_ax_range'],
+                           params['e_ax_row'], params['e_ax_p_size'],
+                           params['e_ax_fix'], params['e_dax'], params['e_inp'],
+                           params['e_inp_thr'], params['e_inp_sig'],
+                           params['e_RR'], params['e_RR_ufo'],
+                           params['e_RR_ufo_1d'], params['e_RR_par'],
+                           params['e_rr_srp_wind_sort'], params['e_rr_srp_wide'],
+                           params['e_rr_srp_wind_wide'], params['e_rr_srp_snr'],
+                           params['e_PR'], params['e_energy'], params['e_pixel'],
+                           params['e_z'], params['e_log10db'], params['e_vcrop'],
+                           params['e_y'], params['e_yheight'], params['e_ystep'],
+                           params['e_gray256'], params['e_bit'], params['e_hmin'],
+                           params['e_hmax'], params['e_pre'], params['e_pre_cmd'],
+                           params['e_a0'], params['e_crop'], params['e_x0'],
+                           params['e_dx'], params['e_y0'], params['e_dy'],
+                           params['e_dryrun'], params['e_parfile'],
+                           params['e_keep_tmp'], params['e_sinFFC'],
+                           params['e_sinFFC_method'], params['e_sinFFCEigenReps'],
+                           params['e_sinFFCEigenDowns'], params['e_sinFFCDowns'],
+                           params['e_common_darks_flats'], params['e_common_darks'],
+                           params['e_common_flats'], params['e_use_common_flats2'],
+                           params['e_common_flats2'],
+                           # NLMDN Parameters
+                           params['e_nlmdn_apply_after_reco'],
+                           params['e_nlmdn_indir'], params['e_nlmdn_input_is_file'],
+                           params['e_nlmdn_outdir'], params['e_nlmdn_bigtif'],
+                           params['e_nlmdn_r'], params['e_nlmdn_dx'],
+                           params['e_nlmdn_h'], params['e_nlmdn_sig'],
+                           params['e_nlmdn_w'], params['e_nlmdn_fast'],
+                           params['e_nlmdn_autosig'], params['e_nlmdn_dryrun'],
+                           # Advanced Parameters
+                           params['e_adv_lamino_group'],
+                           params['e_adv_lamino_angle'], params['e_adv_overall_rotation'],
+                           params['e_adv_center_pos_z'], params['e_adv_axis_rotation_y'],
+                           params['e_adv_dark_scale'], params['e_adv_flat_scale'],
+                           params['e_adv_verbose'], params['e_adv_slice_mem_coeff'],
+                           params['e_adv_num_gpu'], params['e_adv_slices_per_device']
+                           )
             main_tk(args, self.get_fdt_names())
             msg = "Done. See output in terminal for details."
             QMessageBox.information(self, "Finished", msg)
-            if not parameters.params['e_dryrun']:
-                self.signal_reco_done.emit(parameters.params)
+            if not params['e_dryrun']:
+                self.signal_reco_done.emit(params)
         except InvalidInputError as err:
             msg = ""
             err_arg = err.args
