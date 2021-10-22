@@ -176,7 +176,6 @@ class FiltersGroup(QGroupBox):
         logging.debug("RR: " + str(self.enable_RR_checkbox.isChecked()))
         parameters.params['e_RR'] = bool(self.enable_RR_checkbox.isChecked())
 
-    ## THIS IS WEIRD DOUBLE CHECK
     def select_rButton(self):
         if self.use_LPF_rButton.isChecked():
             logging.debug("Use LPF")

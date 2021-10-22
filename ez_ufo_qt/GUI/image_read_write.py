@@ -44,7 +44,7 @@ def get_valid_files_list(files_path: str, supported_file_types: list) -> list:
         for file_name in files_list
         if os.path.splitext(file_name)[1] in supported_file_types
     ]
-    return valid_files_list
+    return sorted(valid_files_list)
 
 
 def read_image(image_file_path: str, data_type=np.float32) -> np.ndarray:
