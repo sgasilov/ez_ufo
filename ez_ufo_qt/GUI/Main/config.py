@@ -30,7 +30,6 @@ class ConfigGroup(QGroupBox):
 
         #Select input directory
         self.input_dir_select = QPushButton()
-        self.input_dir_select.setStyleSheet("background-color:gainsboro")
         self.input_dir_select.setText("Select input directory (or paste abs. path)")
         self.input_dir_select.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
@@ -44,7 +43,6 @@ class ConfigGroup(QGroupBox):
 
         #Select output directory
         self.output_dir_select = QPushButton()
-        self.output_dir_select.setStyleSheet("background-color:gainsboro")
         self.output_dir_select.setText("Select output directory (or paste abs. path)")
         self.output_dir_select.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
@@ -283,7 +281,7 @@ class ConfigGroup(QGroupBox):
         Saves directory specified by user in file-dialog for input tomographic data
         """
         dir_explore = QFileDialog(self)
-        dir = dir_explore.getExistingDirectory()
+        dir = dir_explore.getExistingDirectory(directory="/")
         self.input_dir_entry.setText(dir)
         parameters.params['e_indir'] = dir
         head, tail = os.path.split(dir)
@@ -300,7 +298,7 @@ class ConfigGroup(QGroupBox):
 
     def select_output_dir(self):
         dir_explore = QFileDialog(self)
-        dir = dir_explore.getExistingDirectory()
+        dir = dir_explore.getExistingDirectory(directory="/")
         self.output_dir_entry.setText(dir)
         parameters.params['e_outdir'] = dir
 
