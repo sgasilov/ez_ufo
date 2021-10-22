@@ -41,20 +41,6 @@ class ImageViewerGroup(QGroupBox):
         self.save_big_tiff_button.clicked.connect(self.save_stack_to_big_tiff)
         self.save_big_tiff_button.setStyleSheet("background-color: lightgrey; font: 11pt")
 
-        self.hist_min_label = QLabel("Histogram Min:")
-        self.hist_min_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        self.hist_max_label = QLabel("Histogram Max:")
-        self.hist_max_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-
-        self.hist_min_input = QDoubleSpinBox()
-        self.hist_min_input.setDecimals(6)
-        self.hist_min_input.setRange(-100000, 100000)
-        self.hist_min_input.valueChanged.connect(self.min_spin_changed)
-        self.hist_max_input = QDoubleSpinBox()
-        self.hist_max_input.setDecimals(6)
-        self.hist_max_input.setRange(-100000, 100000)
-        self.hist_max_input.valueChanged.connect(self.max_spin_changed)
-
         self.save_8bit_rButton = QRadioButton()
         self.save_8bit_rButton.setText("Save as 8-bit")
         self.save_8bit_rButton.clicked.connect(self.set_8bit)
@@ -69,6 +55,23 @@ class ImageViewerGroup(QGroupBox):
         self.save_32bit_rButton.setText("Save as 32-bit")
         self.save_32bit_rButton.clicked.connect(self.set_32bit)
         self.save_32bit_rButton.setChecked(True)
+
+        self.hist_min_label = QLabel("Histogram Min:")
+        self.hist_min_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.hist_max_label = QLabel("Histogram Max:")
+        self.hist_max_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        self.hist_min_input = QDoubleSpinBox()
+        self.hist_min_input.setDecimals(6)
+        self.hist_min_input.setRange(-100000, 100000)
+        self.hist_min_input.valueChanged.connect(self.min_spin_changed)
+        self.hist_max_input = QDoubleSpinBox()
+        self.hist_max_input.setDecimals(6)
+        self.hist_max_input.setRange(-100000, 100000)
+        self.hist_max_input.valueChanged.connect(self.max_spin_changed)
+
+        self.apply_histogram_button = QPushButton("Apply Histogram to Image Stack")
+        self.apply_histogram_button.clicked.connect(self.apply_histogram_button_clicked)
 
         self.image_window = pg.ImageView()
 
@@ -103,7 +106,8 @@ class ImageViewerGroup(QGroupBox):
         layout.addWidget(self.save_big_tiff_button, 1, 2)
         layout.addItem(vbox, 0, 3, 2, 1)
         layout.addItem(gridbox, 0, 4, 2, 1)
-        layout.addWidget(self.image_window, 2, 0, 1, 5)
+        layout.addWidget(self.apply_histogram_button, 0, 5)
+        layout.addWidget(self.image_window, 2, 0, 1, 6)
         layout.addWidget(self.scroller, 4, 0, 1, 5)
 
         self.setLayout(layout)
@@ -299,6 +303,11 @@ class ImageViewerGroup(QGroupBox):
         levels = histo.getLevels()
         max_level = self.hist_max_input.value()
         self.image_window.setLevels(levels[0], max_level)
+
+    def apply_histogram_button_clicked(self):
+        logging.debug("Apply Histogram Button Clicked")
+        print("Applying histogram to images. This may take a moment.")
+        self.apply_histogram_to_images()
 
     def apply_histogram_to_images(self):
         """
