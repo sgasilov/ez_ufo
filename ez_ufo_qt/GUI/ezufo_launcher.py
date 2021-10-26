@@ -49,7 +49,6 @@ class GUI(qtw.QWidget):
         except FileNotFoundError:
             print("Could not load default settings from: " + str(settings_path))
 
-
         # Initialize tab screen
         self.tabs = qtw.QTabWidget()
         self.tab1 = qtw.QWidget()
