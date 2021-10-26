@@ -22,20 +22,21 @@ def main():
     # Setup logging for debugging
     logger = logging.getLogger()
     logger_path = os.path.join(head, 'ezufo.log')
-    print("Logging file stored at: " + logger_path)
-    print("")
 
-    fhandler = logging.FileHandler(filename=logger_path, mode='w')
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fhandler.setFormatter(formatter)
-    logger.addHandler(fhandler)
+    try:
+        fhandler = logging.FileHandler(filename=logger_path, mode='w')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fhandler.setFormatter(formatter)
+        logger.addHandler(fhandler)
+        print("Logging file stored at: " + logger_path)
+        print("")
+    except FileNotFoundError:
+        print("Could not create logging file at: " + str(logger_path))
 
-    logger.setLevel(logging.DEBUG)
-
-    #if args.debug:
-    #    logger.setLevel(logging.DEBUG)
-    #else:
-    #    logger.setLevel(logging.WARNING)
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.WARNING)
 
     # Launch PyQT Application
     app = qtw.QApplication(sys.argv)
