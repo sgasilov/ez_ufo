@@ -470,7 +470,6 @@ class ConfigGroup(QGroupBox):
         parameters.params['e_parfile'] = bool(self.save_params_checkbox.isChecked())
 
     def export_settings_button_pressed(self):
-        # TODO: Fix this so that parameters files automatically have .yaml extension added - rename to params not settings
         """
         Saves currently displayed GUI settings
         to an external .yaml file specified by user
@@ -870,7 +869,7 @@ class tk_args():
         self.args['nlmdn_dryrun'] = bool(e_nlmdn_dryrun)
         setattr(self, 'nlmdn_dryrun', self.args['nlmdn_dryrun'])
         #Advanced Settings
-        self.args['adv_lamino_group'] = str(e_adv_lamino_group)
+        self.args['adv_lamino_group'] = bool(e_adv_lamino_group)
         setattr(self, 'adv_lamino_group', self.args['adv_lamino_group'])
         self.args['adv_lamino_angle'] = str(e_adv_lamino_angle)
         setattr(self, 'adv_lamino_angle', self.args['adv_lamino_angle'])

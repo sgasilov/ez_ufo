@@ -42,7 +42,7 @@ class tofu_cmds(object):
             return indir
 
     def check_lamino(self, cmd, args):
-        # cmd = 'tofu reco'
+        cmd += 'tofu reco'
         if not args.adv_lamino_angle == '':
             cmd += ' --axis-angle-x {}'.format(args.adv_lamino_angle)
         if not args.adv_overall_rotation == '':
@@ -251,11 +251,11 @@ class tofu_cmds(object):
         # indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         # format command
         # Laminography
-        if bool(args.adv_lamino_group):
-            cmd = "tofu reco"
+        cmd = ''
+        if args.adv_lamino_group is True:
             cmd += self.check_lamino(cmd, args)
-        else:
-            cmd = 'tofu reco'
+        elif args.adv_lamino_group is False:
+            cmd = "tofu reco"
             cmd += ' --overall-angle 180'
         ##############
         cmd += '  --projections {}'.format(in_proj_dir)
@@ -328,7 +328,7 @@ class tofu_cmds(object):
         # format command
         cmd = 'tofu reco'
         # Laminography
-        if bool(args.adv_lamino_group):
+        if args.adv_lamino_group:
             cmd += self.check_lamino(cmd, args)
         else:
             cmd += ' --overall-angle 180'
