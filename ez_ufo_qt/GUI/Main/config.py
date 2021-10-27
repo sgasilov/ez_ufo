@@ -480,6 +480,9 @@ class ConfigGroup(QGroupBox):
         fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "YAML Files (*.yaml);; All Files (*)", options=options)
         if fileName:
             logging.debug("Export YAML Path: " + fileName)
+        file_extension = os.path.splitext(fileName)
+        if file_extension[-1] == "":
+            fileName = fileName + '.yaml'
         #Create and write to YAML file based on given fileName
         self.yaml_io.write_yaml(fileName, parameters.params)
 
