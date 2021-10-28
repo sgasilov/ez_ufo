@@ -353,10 +353,13 @@ class EZStitchGroup(QGroupBox):
             raise ValueError('Output directory exists')
 
         print("======= Begin Stitching =======")
+        # Interpolate overlapping regions and equalize intensity
         if self.e_ipol == 0:
             main_sti_mp(args)
+        # Concatenate only
         elif self.e_ipol == 1:
             main_conc_mp(args)
+        # Half acquisition mode
         else:
             main_360_mp_depth1(args)
         print("==== Waiting for Next Task ====")

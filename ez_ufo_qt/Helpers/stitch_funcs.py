@@ -66,7 +66,7 @@ def prepare(args, dir_type: int, ctdir: str):
 
 def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type, j):
     index = start+j*step
-    Large = np.empty(( Nnew*len(Vsteps)+dx,M), dtype=np.float32)
+    Large = np.empty((Nnew*len(Vsteps)+dx, M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
         if dir_type == 1:
             tmp = os.path.join(indir, Vsteps[i], args.typ, '*.tif')
@@ -80,18 +80,19 @@ def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hm
         else:
             tmp = sorted(glob.glob(tmp))[index]
             tmp1 = sorted(glob.glob(tmp1))[index]
-        first=read_image(tmp)
-        second=read_image(tmp1)
-        if args.flip: #sample moved downwards
+        first = read_image(tmp)
+        second = read_image(tmp1)
+        # sample moved downwards
+        if args.flip:
             first, second = np.flipud(first), np.flipud(second)
 
         k = np.mean(first[N - dx:, :]) / np.mean(second[:dx, :])
         second = second * k
 
         a, b, c = i*Nnew, (i+1)*Nnew, (i+2)*Nnew
-        Large[a:b,:] = first[:N-dx,:]
-        Large[b:b+dx,:] = np.transpose(np.transpose(first[N-dx:,:]) * (1 - ramp) + np.transpose(second[:dx,:]) * ramp)
-        Large[b+dx:c+dx,:] = second[dx:,:]
+        Large[a:b, :] = first[:N-dx, :]
+        Large[b:b+dx, :] = np.transpose(np.transpose(first[N-dx:, :])*(1 - ramp) + np.transpose(second[:dx, :]) * ramp)
+        Large[b+dx:c+dx, :] = second[dx:, :]
 
     pout = os.path.join(args.output, ctdir, args.typ+'-sti-{:>04}.tif'.format(index))
     if not args.gray256:

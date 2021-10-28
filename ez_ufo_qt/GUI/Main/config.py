@@ -556,8 +556,8 @@ class ConfigGroup(QGroupBox):
             if batch_run is False:
                 msg = "Done. See output in terminal for details."
                 QMessageBox.information(self, "Finished", msg)
-            if not params['e_dryrun']:
-                self.signal_reco_done.emit(params)
+                if not params['e_dryrun']:
+                    self.signal_reco_done.emit(params)
         except InvalidInputError as err:
             msg = ""
             err_arg = err.args
