@@ -87,7 +87,7 @@ class BatchProcessGroup(QGroupBox):
                 elif params_type == "ez_ufo_reco":
                     # Call functions to begin ezufo reco and pass params
                     self.config_group = ConfigGroup()
-                    self.config_group.run_reconstruction(params)
+                    self.config_group.run_reconstruction(params, batch_run=True)
                 elif params_type == "auto_vertical_stitch":
                     pass
                     # Call functions to begin auto horizontal stitch and pass params

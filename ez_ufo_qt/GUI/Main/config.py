@@ -506,9 +506,9 @@ class ConfigGroup(QGroupBox):
         """
         logging.debug("RECO")
         logging.debug(parameters.params)
-        self.run_reconstruction(parameters.params)
+        self.run_reconstruction(parameters.params, batch_run=False)
 
-    def run_reconstruction(self, params):
+    def run_reconstruction(self, params, batch_run):
         try:
             self.validate_input()
 
@@ -553,8 +553,9 @@ class ConfigGroup(QGroupBox):
                            params['e_adv_num_gpu'], params['e_adv_slices_per_device']
                            )
             main_tk(args, self.get_fdt_names())
-            msg = "Done. See output in terminal for details."
-            QMessageBox.information(self, "Finished", msg)
+            if batch_run is False:
+                msg = "Done. See output in terminal for details."
+                QMessageBox.information(self, "Finished", msg)
             if not params['e_dryrun']:
                 self.signal_reco_done.emit(params)
         except InvalidInputError as err:
