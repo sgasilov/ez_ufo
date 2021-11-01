@@ -29,8 +29,7 @@ class ConfigGroup(QGroupBox):
         self.yaml_io = Yaml_IO()
 
         #Select input directory
-        self.input_dir_select = QPushButton()
-        self.input_dir_select.setText("Select input directory (or paste abs. path)")
+        self.input_dir_select = QPushButton("Select input directory (or paste abs. path)")
         self.input_dir_select.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
         self.input_dir_entry = QLineEdit()
@@ -223,12 +222,20 @@ class ConfigGroup(QGroupBox):
         """
         Sets the initial default values of config group
         """
-        self.indir = os.getcwd()
-        self.input_dir_entry.setText(self.indir)
+        # If we're on a computer with access to network
+        indir = "/beamlinedata/BMIT/projects/"
+        if os.path.isdir(indir):
+            self.input_dir_entry.setText(indir)
+            outdir = os.path.abspath(indir + "/rec")
+            self.output_dir_entry.setText(outdir)
+        # Otherwise use this as default
+        else:
+            indir = "/"
+            self.input_dir_entry.setText(indir)
+            outdir = os.path.abspath(indir + "rec")
+            self.output_dir_entry.setText(outdir)
         self.save_params_checkbox.setChecked(True)
         parameters.params['e_parfile'] = True
-        self.outdir = os.path.abspath(os.getcwd() + '/rec')
-        self.output_dir_entry.setText(self.outdir)
         parameters.params['e_bigtif'] = False
         self.preproc_checkbox.setChecked(False)
         self.set_preproc()
@@ -280,25 +287,37 @@ class ConfigGroup(QGroupBox):
         """
         Saves directory specified by user in file-dialog for input tomographic data
         """
+        if os.path.isdir("/beamlinedata/BMIT/projects"):
+            indir = "/beamlinedata/BMIT/projects"
+        else:
+            indir = "/"
         dir_explore = QFileDialog(self)
-        dir = dir_explore.getExistingDirectory(directory="/")
+        dir = dir_explore.getExistingDirectory(directory=indir)
         self.input_dir_entry.setText(dir)
         parameters.params['e_indir'] = dir
+        # Set the output directory to be base of input dir appended with /rec
         head, tail = os.path.split(dir)
-        if tail == "raw":
-            self.output_dir_entry.setText(head + "/rec")
-            parameters.params['e_outdir'] = head + "/rec"
-        else:
-            self.output_dir_entry.setText(dir + "/rec")
-            parameters.params['e_outdir'] = dir + "/rec"
+        while head != '/':
+            head, tail = os.path.split(head)
+            if tail == 'raw':
+                self.output_dir_entry.setText(os.path.join(head, "rec"))
+                parameters.params['e_outdir'] = os.path.join(head, "rec")
+                break
+        if head == '/':
+            self.output_dir_entry.setText(os.path.join(dir, "rec"))
+            parameters.params['e_outdir'] = os.path.join(dir, "rec")
+
 
     def set_input_dir(self):
         logging.debug(str(self.input_dir_entry.text()))
         parameters.params['e_indir'] = str(self.input_dir_entry.text())
 
     def select_output_dir(self):
+        outdir = "/"
+        if os.path.isdir("/beamlinedata/BMIT/projects"):
+            outdir = "/beamlinedata/BMIT/projects"
         dir_explore = QFileDialog(self)
-        dir = dir_explore.getExistingDirectory(directory="/")
+        dir = dir_explore.getExistingDirectory(directory=outdir)
         self.output_dir_entry.setText(dir)
         parameters.params['e_outdir'] = dir
 
@@ -350,21 +369,21 @@ class ConfigGroup(QGroupBox):
     def select_darks_button_pressed(self):
         logging.debug("Select path to darks pressed")
         dir_explore = QFileDialog(self)
-        directory = dir_explore.getExistingDirectory()
+        directory = dir_explore.getExistingDirectory(directory=parameters.params['e_indir'])
         self.darks_absolute_entry.setText(directory)
         parameters.params['e_common_darks'] = directory
 
     def select_flats_button_pressed(self):
         logging.debug("Select path to flats pressed")
         dir_explore = QFileDialog(self)
-        directory = dir_explore.getExistingDirectory()
+        directory = dir_explore.getExistingDirectory(directory=parameters.params['e_indir'])
         self.flats_absolute_entry.setText(directory)
         parameters.params['e_common_flats'] = directory
 
     def select_flats2_button_pressed(self):
         logging.debug("Select path to flats2 pressed")
         dir_explore = QFileDialog(self)
-        directory = dir_explore.getExistingDirectory()
+        directory = dir_explore.getExistingDirectory(directory=parameters.params['e_indir'])
         self.flats2_absolute_entry.setText(directory)
         parameters.params['e_common_flats2'] = directory
 
