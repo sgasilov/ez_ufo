@@ -223,7 +223,6 @@ class ConfigGroup(QGroupBox):
         Sets the initial default values of config group
         """
         # If we're on a computer with access to network
-        print("Hello")
         indir = "/beamlinedata/BMIT/projects/"
         if os.path.isdir(indir):
             self.input_dir_entry.setText(indir)
