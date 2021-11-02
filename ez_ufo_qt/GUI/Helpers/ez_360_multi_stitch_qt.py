@@ -4,8 +4,8 @@ import os
 import getpass
 from ez_ufo_qt.Helpers.stitch_funcs import main_360_mp_depth2
 
-class MultiStitch360Group(QGroupBox):
 
+class MultiStitch360Group(QGroupBox):
     def __init__(self):
         super().__init__()
 

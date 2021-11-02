@@ -23,6 +23,7 @@ from ez_ufo_qt.GUI.Helpers.ez_360_overlap_qt import Overlap360Group
 from ez_ufo_qt.GUI.batch_process import BatchProcessGroup
 from ez_ufo_qt.GUI.login_dialog import Login
 
+from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_gui import AutoHorizontalStitchGUI
 
 class GUI(qtw.QWidget):
     """
@@ -104,6 +105,9 @@ class GUI(qtw.QWidget):
         self.overlap_group = Overlap360Group()
         self.overlap_group.init_values()
 
+        # Auto horizontal and vertical stitch
+        self.horizontal_stitch_group = AutoHorizontalStitchGUI()
+
         # Batch Process Tab
         self.batch_process_group = BatchProcessGroup()
 
@@ -152,6 +156,9 @@ class GUI(qtw.QWidget):
         helpers_layout.addWidget(self.multi_stitch_group, 1, 0)
         helpers_layout.addWidget(self.ezstitch_group, 1, 1)
 
+        ez_stitch_layout = qtw.QGridLayout()
+        ez_stitch_layout.addWidget(self.horizontal_stitch_group, 0, 0)
+
         batch_layout = qtw.QGridLayout()
         batch_layout.addWidget(self.batch_process_group, 0, 0)
 
@@ -180,6 +187,8 @@ class GUI(qtw.QWidget):
         self.tab4.setLayout(self.tab4.layout)
 
         # Create EZ stitch tab
+        self.tab5.layout = ez_stitch_layout
+        self.tab5.setLayout(self.tab5.layout)
 
         # Create batch process tab
         self.tab6.layout = batch_layout
