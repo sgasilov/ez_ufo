@@ -314,7 +314,9 @@ class ConfigGroup(QGroupBox):
 
     def select_output_dir(self):
         outdir = "/"
-        if os.path.isdir("/beamlinedata/BMIT/projects"):
+        if os.path.isdir(parameters.params['e_outdir']):
+            outdir = parameters.params['e_outdir']
+        elif os.path.isdir("/beamlinedata/BMIT/projects"):
             outdir = "/beamlinedata/BMIT/projects"
         dir_explore = QFileDialog(self)
         dir = dir_explore.getExistingDirectory(directory=outdir)
