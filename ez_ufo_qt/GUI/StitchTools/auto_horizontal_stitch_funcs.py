@@ -6,6 +6,7 @@ import multiprocessing as mp
 from functools import partial
 from scipy.stats import gmean
 import math
+import yaml
 
 
 class AutoHorizontalStitchFunctions:
@@ -20,6 +21,10 @@ class AutoHorizontalStitchFunctions:
         """
         Main function that calls all other functions
         """
+        # Write parameters to .yaml file - quit if something goes wrong
+        if self.write_yaml_params() == -1:
+            return -1
+
         self.print_parameters()
 
         # Check input directory and find structure
@@ -54,6 +59,19 @@ class AutoHorizontalStitchFunctions:
             print("\n--> Stitching Images...")
             self.find_and_stitch_images()
             print("--> Finished Stitching")
+
+    def write_yaml_params(self):
+        try:
+            # Create the output directory root and save the parameters.yaml file
+            os.makedirs(self.parameters['output_dir'], mode=0o777)
+            file_path = os.path.join(self.parameters['output_dir'], 'auto_vertical_stitch_parameters.yaml')
+            file_out = open(file_path, 'w')
+            yaml.dump(self.parameters, file_out)
+            print("Parameters file saved at: " + str(file_path))
+            return 0
+        except FileExistsError:
+            print("--> Output Directory Exists - Delete Before Proceeding")
+            return -1
 
     def find_ct_dirs(self):
         """
@@ -263,27 +281,32 @@ class AutoHorizontalStitchFunctions:
         Creates a log file with extension .info at the root of the output_dir tree structure
         Log file contains directory path and axis value
         '''
+        if not os.path.isdir(self.parameters['output_dir']):
+            os.makedirs(self.parameters['output_dir'], mode=0o777)
         file_path = os.path.join(self.parameters['output_dir'], 'axis_values.info')
         print("Axis values log file stored at: " + file_path)
-        file_handle = open(file_path, 'w')
-        # Print input parameters
-        file_handle.write("======================== Parameters ========================" + "\n")
-        file_handle.write("Input Directory: " + self.parameters['input_dir'] + "\n")
-        file_handle.write("Output Directory: " + self.parameters['output_dir'] + "\n")
-        file_handle.write("Using common set of flats and darks: " + str(self.parameters['common_flats_darks']) + "\n")
-        file_handle.write("Flats Directory: " + self.parameters['flats_dir'] + "\n")
-        file_handle.write("Darks Directory: " + self.parameters['darks_dir'] + "\n")
-        file_handle.write("Overlap Region Size: " + self.parameters['overlap_region'] + "\n")
-        file_handle.write("Sample on right: " + str(self.parameters['sample_on_right']) + "\n")
+        try:
+            file_handle = open(file_path, 'w')
+            # Print input parameters
+            file_handle.write("======================== Parameters ========================" + "\n")
+            file_handle.write("Input Directory: " + self.parameters['input_dir'] + "\n")
+            file_handle.write("Output Directory: " + self.parameters['output_dir'] + "\n")
+            file_handle.write("Using common set of flats and darks: " + str(self.parameters['common_flats_darks']) + "\n")
+            file_handle.write("Flats Directory: " + self.parameters['flats_dir'] + "\n")
+            file_handle.write("Darks Directory: " + self.parameters['darks_dir'] + "\n")
+            file_handle.write("Overlap Region Size: " + self.parameters['overlap_region'] + "\n")
+            file_handle.write("Sample on right: " + str(self.parameters['sample_on_right']) + "\n")
 
-        # Print z-directory and corresponding axis value
-        file_handle.write("\n======================== Axis Values ========================\n")
-        for key in self.ct_axis_dict:
-            key_value_str = str(key) + " : " + str(self.ct_axis_dict[key])
-            print(key_value_str)
-            file_handle.write(key_value_str + '\n')
+            # Print z-directory and corresponding axis value
+            file_handle.write("\n======================== Axis Values ========================\n")
+            for key in self.ct_axis_dict:
+                key_value_str = str(key) + " : " + str(self.ct_axis_dict[key])
+                print(key_value_str)
+                file_handle.write(key_value_str + '\n')
 
-        file_handle.write("\nGreatest axis value: " + str(self.greatest_axis_value))
+            file_handle.write("\nGreatest axis value: " + str(self.greatest_axis_value))
+        except FileNotFoundError:
+            print("Error: Could not write log file")
 
     def correct_outliers(self):
         """
