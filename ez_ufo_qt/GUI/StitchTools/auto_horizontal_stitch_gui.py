@@ -12,7 +12,7 @@ from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_funcs import AutoHorizonta
 class AutoHorizontalStitchGUI(QGroupBox):
     def __init__(self):
         super().__init__()
-        #self.setTitle('Auto Horizontal Stitch')
+        self.setTitle('Auto Horizontal Stitch')
 
         #logger = logging.getLogger()
         #logger.setLevel(logging.DEBUG)
@@ -69,13 +69,13 @@ class AutoHorizontalStitchGUI(QGroupBox):
         self.dry_run_checkbox.stateChanged.connect(self.set_dry_run_checkbox)
 
         self.set_layout()
-        #self.resize(800, 0)
-        #self.setFixedSize(800, 0)
 
         self.init_values()
         self.show()
 
     def set_layout(self):
+        self.setMaximumSize(800, 300)
+
         layout = QGridLayout()
         layout.addWidget(self.input_button, 0, 0, 1, 2)
         layout.addWidget(self.input_entry, 0, 2, 1, 4)

@@ -20,19 +20,23 @@ class BatchProcessGroup(QGroupBox):
         self.set_info_label()
 
         self.input_dir_button = QPushButton("Select input directory")
+        self.input_dir_button.setFixedWidth(500)
         self.input_dir_button.clicked.connect(self.input_dir_button_pressed)
 
         self.input_dir_entry = QLineEdit("...Enter the path to the input directory")
+        self.input_dir_entry.setFixedWidth(450)
         self.input_dir_entry.textChanged.connect(self.set_input_entry)
 
         self.batch_proc_button = QPushButton("Begin Batch Process")
         self.batch_proc_button.clicked.connect(self.batch_proc_button_pressed)
-        self.batch_proc_button.setStyleSheet("background-color:red")
-        self.batch_proc_button.setFixedHeight(200)
+        self.batch_proc_button.setStyleSheet("background-color:orangered; font-size:24px")
+        self.batch_proc_button.setFixedHeight(100)
 
         self.set_layout()
 
     def set_layout(self):
+        self.setMaximumSize(1000, 400)
+
         layout = QGridLayout()
 
         layout.addWidget(self.input_dir_button, 0, 0)
@@ -47,8 +51,8 @@ class BatchProcessGroup(QGroupBox):
 
     def set_info_label(self):
         info_str = "EZ Batch Process allows for batch reconstruction and processing of images.\n\n"
-        info_str += "The program reads a list of .yaml parameter files from the input directory and executes them" \
-                    "sequentially in alpha-numeric order.\n"
+        info_str += "The program reads a list of .yaml parameter files from the input directory and executes\n" \
+                    "them sequentially in alpha-numeric order.\n"
         info_str += "It is the user's responsibility to name files so that they are executed in the desired order.\n"
         info_str += "It is suggested to prepend descriptive filenames with numbers to indicate the order.\n" \
                     "For example: \n\n"
@@ -72,27 +76,33 @@ class BatchProcessGroup(QGroupBox):
         logging.debug("Batch Process Button Pressed")
         try:
             param_files_list = sorted(glob.glob(os.path.join(self.parameters['input_dir'], "*.yaml")))
-            print("=> Found the following .yaml files:")
-            for file in param_files_list:
-                print("-->  " + file)
-                # Open .yaml file and store the parameters
-                try:
-                    file_in = open(file, 'r')
-                    params = yaml.load(file_in, Loader=yaml.FullLoader)
-                except FileNotFoundError:
-                    print("Something went wrong")
-                params_type = params['parameters_type']
-                print("       type: " + params_type)
-                if params_type == "auto_horizontal_stitch":
-                    # Call functions to begin auto horizontal stitch and pass params
-                    self.auto_stitch_funcs = AutoHorizontalStitchFunctions(params)
-                    self.auto_stitch_funcs.run_horizontal_auto_stitch()
-                elif params_type == "ez_ufo_reco":
-                    # Call functions to begin ezufo reco and pass params
-                    self.config_group = ConfigGroup()
-                    self.config_group.run_reconstruction(params, batch_run=True)
-                elif params_type == "auto_vertical_stitch":
-                    pass
-                    # Call functions to begin auto horizontal stitch and pass params
+            if len(param_files_list) == 0:
+                print("=> Error: Did not find any .yaml files in the input directory. Please try again.")
+            else:
+                print("*************************************************************************")
+                print("************************** Begin Batch Process **************************")
+                print("*************************************************************************\n")
+                print("=> Found the following .yaml files:")
+                for file in param_files_list:
+                    print("-->  " + file)
+                    # Open .yaml file and store the parameters
+                    try:
+                        file_in = open(file, 'r')
+                        params = yaml.load(file_in, Loader=yaml.FullLoader)
+                    except FileNotFoundError:
+                        print("Something went wrong")
+                    params_type = params['parameters_type']
+                    print("       type: " + params_type)
+                    if params_type == "auto_horizontal_stitch":
+                        # Call functions to begin auto horizontal stitch and pass params
+                        self.auto_stitch_funcs = AutoHorizontalStitchFunctions(params)
+                        self.auto_stitch_funcs.run_horizontal_auto_stitch()
+                    elif params_type == "ez_ufo_reco":
+                        # Call functions to begin ezufo reco and pass params
+                        self.config_group = ConfigGroup()
+                        self.config_group.run_reconstruction(params, batch_run=True)
+                    elif params_type == "auto_vertical_stitch":
+                        pass
+                        # Call functions to begin auto horizontal stitch and pass params
         except KeyError:
             print("Please select an input directory")
