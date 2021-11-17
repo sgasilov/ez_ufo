@@ -3,10 +3,13 @@ Created on Apr 20, 2020
 
 @author: gasilos
 '''
-import os, logging
+import os
 from tofu.util import (get_filenames, get_first_filename, get_image_shape, read_image)
 import tifffile
+import yaml
 import numpy as np
+
+import ez_ufo_qt.GUI.params as parameters
 
 def get_dims(pth):
     # get number of projections and projections dimensions
@@ -79,6 +82,15 @@ def save_params(args, ctsetname, ax, nviews, WH):
     if not args.dryrun and not os.path.exists(tmp):
         os.makedirs(tmp)
     if not args.dryrun and args.parfile:
+        # Dump the params .yaml file
+        try:
+            yaml_output_filepath = os.path.join(tmp, 'parameters.yaml')
+            yaml_output = open(yaml_output_filepath, 'w')
+            yaml.dump(parameters.params, yaml_output)
+        except FileNotFoundError:
+            print("Something went wrong when exporting the .yaml parameters file")
+
+        # Dump the reco.params output file 
         fname = os.path.join(tmp, 'reco.params')
         f = open(fname, 'w')
         f.write('*** General ***\n')
@@ -115,10 +127,12 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('*** Ring removal ***\n')
         if args.RR:
             if args.RR_ufo:
-                tmp = '2d'
+                tmp = '2D'
                 if args.RR_ufo_1d:
-                    tmp = '1d'
-                f.write('  RR with ufo {} stripes filter, sigma {}\n'.format(tmp, args.RR_par))
+                    tmp = '1D'
+                f.write('  RR with ufo {} stripes filter\n'.format(tmp))
+                f.write(f'   sigma horizontal {args.RR_sig_hor}')
+                f.write(f'   sigma vertical {args.RR_sig_ver}')
             else:
                 if args.RR_srp_wide:
                     tmp = '  RR with ufo sarepy remove wide filter, '

@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QGroupBox, QLabel, QGridLayout, QPushButton, QFileDi
 from ez_ufo_qt.GUI.Main.config import ConfigGroup
 from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_funcs import AutoHorizontalStitchFunctions
 
+
 class BatchProcessGroup(QGroupBox):
     def __init__(self):
         super().__init__()
@@ -29,7 +30,7 @@ class BatchProcessGroup(QGroupBox):
 
         self.batch_proc_button = QPushButton("Begin Batch Process")
         self.batch_proc_button.clicked.connect(self.batch_proc_button_pressed)
-        self.batch_proc_button.setStyleSheet("background-color:orangered; font-size:24px")
+        self.batch_proc_button.setStyleSheet("background-color:orangered; font-size:26px")
         self.batch_proc_button.setFixedHeight(100)
 
         self.set_layout()

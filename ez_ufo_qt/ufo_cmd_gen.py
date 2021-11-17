@@ -113,7 +113,7 @@ class ufo_cmds(object):
         cmd += ' ! write filename={}'.format(enquote(out_pattern))
         return cmd
 
-    def get_filter2d_sinos_cmd(self, tmpdir, RR, nviews, w):
+    def get_filter2d_sinos_cmd(self, tmpdir, sig_hor, sig_ver, nviews, w):
         sin_in = os.path.join(tmpdir, 'sinos')
         out_pattern = os.path.join(tmpdir, 'sinos-filt/sin-%04i.tif')
         pad_height = next_power_of_two(nviews + 50)
@@ -122,8 +122,9 @@ class ufo_cmds(object):
         pad_x = (pad_width - w) / 2
         cmd = 'ufo-launch read path={}'.format(sin_in)
         cmd += ' ! pad x={} width={} y={} height={}'.format(pad_x, pad_width, pad_y, pad_height)
-        cmd += ' addressing-mode=clamp_to_edge'
-        cmd += ' ! fft dimensions=2 ! filter-stripes sigma={}'.format(RR)
+        cmd += ' addressing-mode=mirrored_repeat'
+        cmd += ' ! fft dimensions=2 ! filter-stripes horizontal-sigma={} vertical-sigma={}'\
+            .format(sig_hor, sig_ver)
         cmd += ' ! ifft dimensions=2 crop-width={} crop-height={}' \
             .format(pad_width, pad_height)
         cmd += ' ! crop x={} width={} y={} height={}'.format(pad_x, w, pad_y, nviews)

@@ -52,11 +52,18 @@ class ConfigGroup(QGroupBox):
         #Save in separate files or in one huge tiff file
         self.bigtiff_checkbox = QCheckBox()
         self.bigtiff_checkbox.setText("Save slices in multipage tiffs")
+        self.bigtiff_checkbox.setToolTip("Will save images in bigtiff containers. \n"
+                                         "Note that some temporary data is always saved in bigtiffs.\n"
+                                         "Use bio-formats importer plugin for imagej or fiji to open the bigtiffs.")
         self.bigtiff_checkbox.stateChanged.connect(self.set_big_tiff)
 
         #Crop in the reconstruction plane
         self.preproc_checkbox = QCheckBox()
         self.preproc_checkbox.setText("Preprocess with a generic ufo-launch pipeline, f.i.")
+        self.preproc_checkbox.setToolTip("Selected ufo filters will be applied to each "
+                                         "image before reconstruction begins. \n"
+                                         "To print the list of filters use \"ufo-query -l\" command. \n"
+                                         "Parameters of each filter can be seen with \"ufo-query -p filtername\".")
         self.preproc_checkbox.stateChanged.connect(self.set_preproc)
 
         self.preproc_entry = QLineEdit()
@@ -81,12 +88,18 @@ class ConfigGroup(QGroupBox):
         self.use_common_flats_darks_checkbox.stateChanged.connect(self.set_flats_darks_checkbox)
 
         self.select_darks_button = QPushButton("Select path to darks (or paste abs. path)")
+        self.select_darks_button.setToolTip("Background detector noise")
         self.select_darks_button.clicked.connect(self.select_darks_button_pressed)
 
         self.select_flats_button = QPushButton("Select path to flats (or paste abs. path)")
+        self.select_flats_button.setToolTip("Images without sample in the beam")
         self.select_flats_button.clicked.connect(self.select_flats_button_pressed)
 
         self.select_flats2_button = QPushButton("Select path to flats2 (or paste abs. path)")
+        self.select_flats2_button.setToolTip("If selected, it will be assumed that flats were \n"
+                                             "acquired before projections while flats2 after \n"
+                                             "and interpolation will be used to compute intensity of flat image \n"
+                                             "for each projection between flats and flats2")
         self.select_flats2_button.clicked.connect(self.select_flats2_button_pressed)
 
         self.darks_absolute_entry = QLineEdit()
@@ -107,6 +120,8 @@ class ConfigGroup(QGroupBox):
         #Select temporary directory
         self.temp_dir_select = QPushButton()
         self.temp_dir_select.setText("Select temporary directory (or paste abs. path)")
+        self.temp_dir_select.setToolTip("Temporary data will be saved there.\n"
+                                        "note that the size of temporary data can exceed 300 GB in some cases.")
         self.temp_dir_select.pressed.connect(self.select_temp_dir)
         self.temp_dir_select.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.temp_dir_entry = QLineEdit()
@@ -115,6 +130,7 @@ class ConfigGroup(QGroupBox):
         #Keep temp data selection
         self.keep_tmp_data_checkbox = QCheckBox()
         self.keep_tmp_data_checkbox.setText("Keep all temp data till the end of reconstruction")
+        self.keep_tmp_data_checkbox.setToolTip("Useful option to inspect how images change at each step")
         self.keep_tmp_data_checkbox.stateChanged.connect(self.set_keep_tmp_data)
 
         #IMPORT SETTINGS FROM FILE
@@ -540,7 +556,7 @@ class ConfigGroup(QGroupBox):
                            params['e_ax_fix'], params['e_dax'], params['e_inp'],
                            params['e_inp_thr'], params['e_inp_sig'],
                            params['e_RR'], params['e_RR_ufo'],
-                           params['e_RR_ufo_1d'], params['e_RR_par'],
+                           params['e_RR_ufo_1d'], params['e_RR_sig_hor'], params['e_RR_sig_ver'],
                            params['e_rr_srp_wind_sort'], params['e_rr_srp_wide'],
                            params['e_rr_srp_wind_wide'], params['e_rr_srp_snr'],
                            params['e_PR'], params['e_energy'], params['e_pixel'],
@@ -618,9 +634,13 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['e_inp_sig']) < 0:
             raise InvalidInputError("Value out of range for: Spot blur. sigma [pixels]")
 
-        # Sigma: e_RR_par
-        if int(parameters.params['e_RR_par']) < 0:
-            raise InvalidInputError("Value out of range for: sigma")
+        # Sigma: e_sig_hor
+        if int(parameters.params['e_RR_sig_hor']) < 0:
+            raise InvalidInputError("Value out of range for: ufo ring-removal sigma horizontal")
+
+        # Sigma: e_sig_ver
+        if int(parameters.params['e_RR_sig_ver']) < 0:
+            raise InvalidInputError("Value out of range for: ufo ring-removal sigma vertical")
 
         # Window size: e_rr_srp_wind_sort
         if int(parameters.params['e_rr_srp_wind_sort']) < 0:
@@ -724,7 +744,8 @@ class ConfigGroup(QGroupBox):
 class tk_args():
     def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif,
                 e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax,
-                e_inp, e_inp_thr, e_inp_sig, e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_par,
+                e_inp, e_inp_thr, e_inp_sig,
+                e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_sig_hor, e_RR_sig_ver,
                 e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
                 e_PR, e_energy, e_pixel, e_z, e_log10db,
                 e_vcrop, e_y, e_yheight, e_ystep, e_gray256, e_bit, e_hmin, e_hmax,
@@ -776,8 +797,10 @@ class tk_args():
         setattr(self, 'RR_ufo', self.args['RR_ufo'])
         self.args['RR_ufo_1d'] = bool(e_RR_ufo_1d)
         setattr(self, 'RR_ufo_1d', self.args['RR_ufo_1d'])
-        self.args['RR_par']=int(e_RR_par)
-        setattr(self,'RR_par',self.args['RR_par'])
+        self.args['RR_sig_hor']=int(e_RR_sig_hor)
+        setattr(self,'RR_sig_hor',self.args['RR_sig_hor'])
+        self.args['RR_sig_ver'] = int(e_RR_sig_ver)
+        setattr(self, 'RR_sig_ver', self.args['RR_sig_ver'])
         self.args['RR_srp_wind_sort'] = int(e_rr_srp_wind_sort)
         setattr(self, 'RR_srp_wind_sort', self.args['RR_srp_wind_sort'])
         self.args['RR_srp_wide'] = bool(e_rr_srp_wide)
