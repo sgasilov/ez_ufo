@@ -22,6 +22,7 @@ class BinningGroup(QGroupBox):
 
         self.first_row_label = QLabel()
         self.first_row_label.setText("First row in projections")
+        self.first_row_label.setToolTip("Counting from the top")
         self.first_row_entry = QLineEdit()
         self.first_row_entry.textChanged.connect(self.set_first_row)
 
@@ -64,6 +65,7 @@ class BinningGroup(QGroupBox):
 
         self.x_val_label = QLabel()
         self.x_val_label.setText("x")
+        self.x_val_label.setToolTip("First column (counting from left)")
         self.x_val_entry = QLineEdit()
         self.x_val_entry.textChanged.connect(self.set_x)
 
@@ -74,6 +76,7 @@ class BinningGroup(QGroupBox):
 
         self.y_val_label = QLabel()
         self.y_val_label.setText("y")
+        self.y_val_label.setToolTip("First row (counting from top)")
         self.y_val_entry = QLineEdit()
         self.y_val_entry.textChanged.connect(self.set_y)
 
@@ -83,7 +86,7 @@ class BinningGroup(QGroupBox):
         self.height_val_entry.textChanged.connect(self.set_height)
 
         self.rotate_vol_label = QLabel()
-        self.rotate_vol_label.setText("Optional: rotate volume clock by [deg]")
+        self.rotate_vol_label.setText("Rotate volume clockwise by [deg]")
         self.rotate_vol_entry = QLineEdit()
         self.rotate_vol_entry.textChanged.connect(self.set_rotate_volume)
 

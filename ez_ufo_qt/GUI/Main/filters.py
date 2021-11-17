@@ -17,29 +17,37 @@ class FiltersGroup(QGroupBox):
 
         self.remove_spots_checkBox = QCheckBox()
         self.remove_spots_checkBox.setText("Remove large spots from projections")
+        self.remove_spots_checkBox.setToolTip("Efficiently suppresses"
+                                              " very intense rings \n stemming from defects in scintillator")
         self.remove_spots_checkBox.stateChanged.connect(self.set_remove_spots)
 
         self.threshold_label = QLabel()
         self.threshold_label.setText("Threshold (prominence of the spot) [counts]")
+        self.threshold_label.setToolTip("Outliers which will be considered as the part of the large spot")
         self.threshold_entry = QLineEdit()
         self.threshold_entry.textChanged.connect(self.set_threshold)
 
         self.spot_blur_label = QLabel()
         self.spot_blur_label.setText("Spot blur. sigma [pixels]")
+        self.spot_blur_label.setToolTip("Regulates extent of the masked region around the detected outlier")
         self.spot_blur_entry = QLineEdit()
         self.spot_blur_entry.textChanged.connect(self.set_spot_blur)
 
         self.enable_RR_checkbox = QCheckBox()
         self.enable_RR_checkbox.setText("Enable ring removal")
+        self.remove_spots_checkBox.setToolTip("To suppress ring artifacts"
+                                              " stemming from intensity fluctuations and detector nonlinearities")
         self.enable_RR_checkbox.stateChanged.connect(self.set_ring_removal)
 
         self.use_LPF_rButton = QRadioButton()
-        self.use_LPF_rButton.setText("Use ufo low-pass Fourier filter")
+        self.use_LPF_rButton.setText("Use ufo Fourier-transform based filter")
         self.use_LPF_rButton.clicked.connect(self.select_rButton)
 
         self.sarepy_rButton = QRadioButton()
         self.sarepy_rButton.setText("Use sarepy sorting: ")
         self.sarepy_rButton.clicked.connect(self.select_rButton)
+        self.sarepy_rButton.setToolTip("Non-FFT based algorithms from \n /"
+                                       "Nghia T. Vo et al, Opt. Express 26, 28396 (2018)")
 
         self.filter_rButton_group = QButtonGroup(self)
         self.filter_rButton_group.addButton(self.use_LPF_rButton)
@@ -48,36 +56,54 @@ class FiltersGroup(QGroupBox):
         self.one_dimens_rButton = QRadioButton()
         self.one_dimens_rButton.setText("1D")
         self.one_dimens_rButton.clicked.connect(self.select_dimens_rButton)
+        self.one_dimens_rButton.setToolTip("Only low-pass filter along the lines of sinogram")
 
         self.two_dimens_rButton = QRadioButton()
         self.two_dimens_rButton.setText("2D")
         self.two_dimens_rButton.clicked.connect(self.select_dimens_rButton)
+        self.two_dimens_rButton.setToolTip(
+                    "Low-pass filter along the lines and high-pass filter along the columns")
 
         self.dimens_rButton_group = QButtonGroup(self)
         self.dimens_rButton_group.addButton(self.one_dimens_rButton)
         self.dimens_rButton_group.addButton(self.two_dimens_rButton)
 
-        self.sigma_label = QLabel()
-        self.sigma_label.setText("sigma")
-        self.sigma_entry = QLineEdit()
-        self.sigma_entry.textChanged.connect(self.set_sigma)
+        self.sigma_horizontal_label = QLabel()
+        self.sigma_horizontal_label.setText("sigma horizontal")
+        self.sigma_horizontal_label.setToolTip("Width [pixels] of Gaussian-shaped low-pass filter "
+                                               "in frequency domain")
+        self.sigma_horizontal_entry = QLineEdit()
+        self.sigma_horizontal_entry.textChanged.connect(self.set_sigma_horizontal)
+
+        self.sigma_vertical_label = QLabel()
+        self.sigma_vertical_label.setText("sigma vertical")
+        self.sigma_vertical_label.setToolTip("Width [pixels] of Gaussian-shaped high-pass filter"
+                                               "in frequency domain")
+        self.sigma_vertical_entry = QLineEdit()
+        self.sigma_vertical_entry.textChanged.connect(self.set_sigma_vertical)
 
         self.wind_size_label = QLabel()
         self.wind_size_label.setText("window size")
+        self.wind_size_label.setToolTip("Window size in remove_stripe_based_sorting algorithm")
         self.wind_size_entry = QLineEdit()
         self.wind_size_entry.textChanged.connect(self.set_window_size)
+        self.wind_size_entry.setToolTip("Typically in the range 31..51 ")
+
 
         self.remove_wide_checkbox = QCheckBox()
-        self.remove_wide_checkbox.setText("Remove wide;")
+        self.remove_wide_checkbox.setText("Remove wide")
+        self.remove_wide_checkbox.setToolTip("Window size in remove_large_stripe algorithm")
         self.remove_wide_checkbox.stateChanged.connect(self.set_remove_wide)
 
         self.remove_wide_label = QLabel()
-        self.remove_wide_label.setText("wind")
+        self.remove_wide_label.setText("window")
+        self.remove_wide_label.setToolTip("Typically in the range 51..131 ")
         self.remove_wide_entry = QLineEdit()
         self.remove_wide_entry.textChanged.connect(self.set_wind)
 
         self.SNR_label = QLabel()
         self.SNR_label.setText("SNR")
+        self.SNR_label.setToolTip("SNR param in remove_large_stripe algorithm")
         self.SNR_entry = QLineEdit()
         self.SNR_entry.textChanged.connect(self.set_SNR)
 
@@ -102,8 +128,10 @@ class FiltersGroup(QGroupBox):
         rr_layout.addWidget(self.use_LPF_rButton, 4, 0)
         rr_layout.addWidget(self.one_dimens_rButton, 4, 1)
         rr_layout.addWidget(self.two_dimens_rButton, 4, 2)
-        rr_layout.addWidget(self.sigma_label, 4, 3, Qt.AlignRight)
-        rr_layout.addWidget(self.sigma_entry, 4, 4)
+        rr_layout.addWidget(self.sigma_horizontal_label, 4, 3, Qt.AlignRight)
+        rr_layout.addWidget(self.sigma_horizontal_entry, 4, 4)
+        rr_layout.addWidget(self.sigma_vertical_label, 4, 5, Qt.AlignRight)
+        rr_layout.addWidget(self.sigma_vertical_entry, 4, 6)
         rr_layout.addWidget(self.sarepy_rButton, 5, 0)
         rr_layout.addWidget(self.wind_size_label, 5, 1)
         rr_layout.addWidget(self.wind_size_entry, 5, 2)
@@ -130,9 +158,10 @@ class FiltersGroup(QGroupBox):
         self.use_LPF_rButton.setChecked(True)
         self.select_rButton()
         self.sarepy_rButton.setChecked(False)
-        self.one_dimens_rButton.setChecked(True)
-        parameters.params['e_RR_ufo_1d'] = True
-        self.sigma_entry.setText("2")
+        self.two_dimens_rButton.setChecked(True)
+        parameters.params['e_RR_ufo_1d'] = False
+        self.sigma_horizontal_entry.setText("60")
+        self.sigma_vertical_entry.setText("1")
         self.wind_size_entry.setText("21")
         self.remove_wide_checkbox.setChecked(False)
         parameters.params['e_rr_srp_wide'] = False
@@ -154,7 +183,8 @@ class FiltersGroup(QGroupBox):
         elif parameters.params['e_RR_ufo_1d'] == False:
             self.two_dimens_rButton.setChecked(True)
             self.one_dimens_rButton.setChecked(False)
-        self.sigma_entry.setText(str(parameters.params['e_RR_par']))
+        self.sigma_horizontal_entry.setText(str(parameters.params['e_RR_sig_hor']))
+        self.sigma_vertical_entry.setText(str(parameters.params['e_RR_sig_ver']))
         self.wind_size_entry.setText(str(parameters.params['e_rr_srp_wind_sort']))
         self.remove_wide_checkbox.setChecked(parameters.params['e_rr_srp_wide'])
         self.remove_wide_entry.setText(str(parameters.params['e_rr_srp_wind_wide']))
@@ -192,9 +222,13 @@ class FiltersGroup(QGroupBox):
             logging.debug("Two dimensions")
             parameters.params['e_RR_ufo_1d'] = bool(False)
 
-    def set_sigma(self):
-        logging.debug(self.sigma_entry.text())
-        parameters.params['e_RR_par'] = str(self.sigma_entry.text())
+    def set_sigma_horizontal(self):
+        logging.debug(self.sigma_horizontal_entry.text())
+        parameters.params['e_RR_sig_hor'] = str(self.sigma_horizontal_entry.text())
+
+    def set_sigma_vertical(self):
+        logging.debug(self.sigma_vertical_entry.text())
+        parameters.params['e_RR_sig_ver'] = str(self.sigma_vertical_entry.text())
 
     def set_window_size(self):
         logging.debug(self.wind_size_entry.text())

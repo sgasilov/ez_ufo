@@ -115,10 +115,12 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('*** Ring removal ***\n')
         if args.RR:
             if args.RR_ufo:
-                tmp = '2d'
+                tmp = '2D'
                 if args.RR_ufo_1d:
-                    tmp = '1d'
-                f.write('  RR with ufo {} stripes filter, sigma {}\n'.format(tmp, args.RR_par))
+                    tmp = '1D'
+                f.write('  RR with ufo {} stripes filter\n'.format(tmp))
+                f.write(f'   sigma horizontal {args.RR_sig_hor}')
+                f.write(f'   sigma vertical {args.RR_sig_ver}')
             else:
                 if args.RR_srp_wide:
                     tmp = '  RR with ufo sarepy remove wide filter, '

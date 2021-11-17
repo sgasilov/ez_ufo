@@ -135,10 +135,11 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         if args.RR_ufo:
             if args.RR_ufo_1d:
                 cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
-                cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir, args.RR_par, nviews))
+                cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir, args.RR_sig_hor, nviews))
             else:
                 cmds.append("echo \" - Ring removal - ufo 2d stripes filter\"")
-                cmds.append(Ufo.get_filter2d_sinos_cmd(args.tmpdir, args.RR_par, nviews, WH[1]))
+                cmds.append(Ufo.get_filter2d_sinos_cmd(args.tmpdir, \
+                                        args.RR_sig_hor, args.RR_sig_ver, nviews, WH[1]))
         else:
             cmds.append("echo \" - Ring removal - sarepy filter(s)\"")
             # note - calling an external program, not an ufo-kit script

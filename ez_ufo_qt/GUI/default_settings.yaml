@@ -22,7 +22,8 @@ e_inp_sig: 2
 e_RR: false
 e_RR_ufo: true
 e_RR_ufo_1d: true
-e_RR_par: 2
+e_RR_sig_hor: 3
+e_RR_sig_ver: 2
 e_rr_srp_wind_sort: 21
 e_rr_srp_wide: false
 e_rr_srp_wind_wide: 91
