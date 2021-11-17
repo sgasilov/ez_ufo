@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QGroupBox, QLabel, QGridLayout, QPushButton, QFileDi
 from ez_ufo_qt.GUI.Main.config import ConfigGroup
 from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_funcs import AutoHorizontalStitchFunctions
 
+
 class BatchProcessGroup(QGroupBox):
     def __init__(self):
         super().__init__()

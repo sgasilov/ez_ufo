@@ -3,10 +3,13 @@ Created on Apr 20, 2020
 
 @author: gasilos
 '''
-import os, logging
+import os
 from tofu.util import (get_filenames, get_first_filename, get_image_shape, read_image)
 import tifffile
+import yaml
 import numpy as np
+
+import ez_ufo_qt.GUI.params as parameters
 
 def get_dims(pth):
     # get number of projections and projections dimensions
@@ -79,6 +82,15 @@ def save_params(args, ctsetname, ax, nviews, WH):
     if not args.dryrun and not os.path.exists(tmp):
         os.makedirs(tmp)
     if not args.dryrun and args.parfile:
+        # Dump the params .yaml file
+        try:
+            yaml_output_filepath = os.path.join(tmp, 'parameters.yaml')
+            yaml_output = open(yaml_output_filepath, 'w')
+            yaml.dump(parameters.params, yaml_output)
+        except FileNotFoundError:
+            print("Something went wrong when exporting the .yaml parameters file")
+
+        # Dump the reco.params output file 
         fname = os.path.join(tmp, 'reco.params')
         f = open(fname, 'w')
         f.write('*** General ***\n')
