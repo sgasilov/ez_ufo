@@ -141,7 +141,7 @@ class tofu_cmds(object):
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
         cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        if not args.RR_ufo:
+        if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
         if not args.adv_dark_scale == "":
@@ -157,7 +157,7 @@ class tofu_cmds(object):
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
         cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        if not args.RR_ufo:
+        if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
         return cmd
@@ -214,7 +214,8 @@ class tofu_cmds(object):
         cmd = 'tofu preprocess --delta 1e-6'
         cmd += ' --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
-            .format(args.energy, args.z, args.pixel, args.log10db)
+            .format(args.main_pr_photon_energy, args.args.main_pr_detector_distance,
+                    args.main_pr_pixel_size, args.main_pr_delta_beta_ratio)
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --projection-crop-after filter'
@@ -234,7 +235,8 @@ class tofu_cmds(object):
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
-            .format(args.energy, args.z, args.pixel, args.log10db)
+            .format(args.main_pr_photon_energy, args.main_pr_detector_distance,
+                    args.main_pr_pixel_size, args.main_pr_delta_beta_ratio)
         if not args.adv_dark_scale == "":
             cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
         if not args.adv_flat_scale == "":
@@ -276,7 +278,8 @@ class tofu_cmds(object):
                    ' --delta 1e-6' \
                    ' --energy {} --propagation-distance {}' \
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
-                .format(args.energy, args.z, args.pixel, args.log10db)
+                .format(args.main_pr_photon_energy, args.main_pr_detector_distance,
+                        args.main_pr_pixel_size, args.main_pr_delta_beta_ratio)
         cmd += ' --center-position-x {}'.format(ax)
         # if args.nviews==0:
         cmd += ' --number {}'.format(nviews)
@@ -289,7 +292,7 @@ class tofu_cmds(object):
         a = -int(WH[0] / 2.0)
         c = 1
         if args.vcrop:
-            if args.RR:
+            if args.main_filters_ring_removal:
                 h2 = args.yheight / args.ystep / 2.0
                 b = np.ceil(h2)
                 a = -int(h2)
@@ -340,7 +343,8 @@ class tofu_cmds(object):
                    ' --delta 1e-6' \
                    ' --energy {} --propagation-distance {}' \
                    ' --pixel-size {} --regularization-rate {:0.2f}' \
-                .format(args.energy, args.z, args.pixel, args.log10db)
+                .format(args.main_pr_photon_energy, args.main_pr_detector_distance,
+                        args.main_pr_pixel_size, args.main_pr_delta_beta_ratio)
         cmd += ' --center-position-x {}'.format(ax)
         # if args.nviews==0:
         cmd += ' --number {}'.format(nviews)
@@ -353,7 +357,7 @@ class tofu_cmds(object):
         a = -int(WH[0] / 2.0)
         c = 1
         if args.vcrop:
-            if args.RR:
+            if args.main_filters_ring_removal:
                 h2 = args.yheight / args.ystep / 2.0
                 b = np.ceil(h2)
                 a = -int(h2)

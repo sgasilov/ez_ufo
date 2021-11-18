@@ -41,7 +41,11 @@ class GUI(qtw.QWidget):
         #self.login_parameters = {}
         #QTimer.singleShot(0, self.login)
 
+        #self.parameters = {'parameters_type': 'ez_ufo_reco'}
+
+        # TODO: Don't do this, default parameters are hard-coded
         # Read in default parameter settings from yaml file
+
         try:
             settings_path = os.path.dirname(os.path.abspath(__file__)) + '/default_settings.yaml'
             self.yaml_io = Yaml_IO()
@@ -50,6 +54,7 @@ class GUI(qtw.QWidget):
             parameters.params['parameters_type'] = 'ez_ufo_reco'
         except FileNotFoundError:
             print("Could not load default settings from: " + str(settings_path))
+
 
         # Initialize tab screen
         self.tabs = qtw.QTabWidget()
