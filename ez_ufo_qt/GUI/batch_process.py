@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QGroupBox, QLabel, QGridLayout, QPushButton, QFileDi
 
 from ez_ufo_qt.GUI.Main.config import ConfigGroup
 from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_funcs import AutoHorizontalStitchFunctions
-
+from ez_ufo_qt.GUI.StitchTools.auto_vertical_stitch_funcs import AutoVerticalStitchFunctions
 
 class BatchProcessGroup(QGroupBox):
     def __init__(self):
@@ -15,7 +15,8 @@ class BatchProcessGroup(QGroupBox):
 
         self.parameters = {}
         self.config_group = None
-        self.auto_stitch_funcs = None
+        self.auto_horizontal_stitch_funcs = None
+        self.auto_vertical_stitch_funcs = None
 
         self.info_label = QLabel()
         self.set_info_label()
@@ -96,14 +97,15 @@ class BatchProcessGroup(QGroupBox):
                     print("       type: " + params_type)
                     if params_type == "auto_horizontal_stitch":
                         # Call functions to begin auto horizontal stitch and pass params
-                        self.auto_stitch_funcs = AutoHorizontalStitchFunctions(params)
-                        self.auto_stitch_funcs.run_horizontal_auto_stitch()
+                        self.auto_horizontal_stitch_funcs = AutoHorizontalStitchFunctions(params)
+                        self.auto_horizontal_stitch_funcs.run_horizontal_auto_stitch()
                     elif params_type == "ez_ufo_reco":
                         # Call functions to begin ezufo reco and pass params
                         self.config_group = ConfigGroup()
                         self.config_group.run_reconstruction(params, batch_run=True)
                     elif params_type == "auto_vertical_stitch":
-                        pass
+                        self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(params)
+                        self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
                         # Call functions to begin auto horizontal stitch and pass params
         except KeyError:
             print("Please select an input directory")

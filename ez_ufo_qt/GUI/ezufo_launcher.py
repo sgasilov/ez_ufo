@@ -24,6 +24,7 @@ from ez_ufo_qt.GUI.batch_process import BatchProcessGroup
 from ez_ufo_qt.GUI.login_dialog import Login
 
 from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_gui import AutoHorizontalStitchGUI
+from ez_ufo_qt.GUI.StitchTools.auto_vertical_stitch_gui import AutoVerticalStitchGUI
 
 class GUI(qtw.QWidget):
     """
@@ -107,6 +108,7 @@ class GUI(qtw.QWidget):
 
         # Auto horizontal and vertical stitch
         self.horizontal_stitch_group = AutoHorizontalStitchGUI()
+        self.vertical_stitch_group = AutoVerticalStitchGUI()
 
         # Batch Process Tab
         self.batch_process_group = BatchProcessGroup()
@@ -158,6 +160,7 @@ class GUI(qtw.QWidget):
 
         ez_stitch_layout = qtw.QGridLayout()
         ez_stitch_layout.addWidget(self.horizontal_stitch_group, 0, 0)
+        ez_stitch_layout.addWidget(self.vertical_stitch_group, 1, 0)
 
         batch_layout = qtw.QGridLayout()
         batch_layout.addWidget(self.batch_process_group, 0, 0)

@@ -74,7 +74,7 @@ class AutoHorizontalStitchGUI(QGroupBox):
         self.show()
 
     def set_layout(self):
-        self.setMaximumSize(800, 300)
+        self.setMaximumSize(900, 450)
 
         layout = QGridLayout()
         layout.addWidget(self.input_button, 0, 0, 1, 2)
