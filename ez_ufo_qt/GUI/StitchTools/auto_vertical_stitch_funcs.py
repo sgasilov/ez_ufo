@@ -298,7 +298,8 @@ class AutoVerticalStitchFunctions:
         """
         for ct_dir in self.ct_dirs:
             stitch_input_dir_path, start, stop, step, input_dir_type, ct_path = self.prepare(ct_dir)
-            dx = int(self.ct_stitch_pixel_dict[ct_dir])
+            # We multiply this by two when using interpolation and intensity equalization
+            dx = 2 * int(self.ct_stitch_pixel_dict[ct_dir])
             # second: stitch them
             if self.parameters['stitch_reconstructed_slices']:
                 if self.parameters['reslice']:
@@ -434,12 +435,12 @@ class AutoVerticalStitchFunctions:
         :return: None - writes stitched images to output directory
         """
         index = start + j * step
-        # r1 stitch pixel value
+        # r1 stitch pixel value - we just concatenate here by appending one image to the other
         r1 = self.ct_stitch_pixel_dict[ct_dir]
         # r2 image height - stitch pixel value
         example_image_array = self.read_image(example_image_path, flip_image=False)
         image_height = np.shape(example_image_array)[0]
-        r2 = image_height - self.ct_stitch_pixel_dict[ct_dir]
+        r2 = 2 * image_height - self.ct_stitch_pixel_dict[ct_dir]
 
         large_stitch_buffer, image_rows, dtype = self.make_buf(example_image_path, num_z_dirs, r1, r2)
         for i, z_dir in enumerate(z_fold):
