@@ -134,7 +134,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         swiFFC = False
         # Filter sinograms
         if args.main_filters_ring_removal_ufo_lpf:
-            if args.main_filters_ufo_lpf_1d_or_2d:
+            if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
                 cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
                 cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir,
                                                        args.main_filters_ring_removal_ufo_lpf_sigma_horizontal, nviews))
@@ -152,7 +152,8 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
                 tmp = os.path.join(args.tmpdir, "sinos")
                 cmdtmp = 'python {} --sinos {} --mws {} --mws2 {} --snr {} --sort_only {}' \
                     .format(path_to_filt, tmp, args.RR_srp_wind_sort,
-                            args.RR_srp_wide_wind, args.RR_srp_wide_snr, int(not args.RR_srp_wide))
+                            args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR,
+                            int(not args.main_filters_ring_removal_sarepy_wide))
                 cmds.append(cmdtmp)
             else:
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")

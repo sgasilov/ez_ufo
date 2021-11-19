@@ -128,15 +128,15 @@ def save_params(args, ctsetname, ax, nviews, WH):
         if args.main_filters_ring_removal:
             if args.main_filters_ring_removal_ufo_lpf:
                 tmp = '2D'
-                if args.main_filters_ufo_lpf_1d_or_2d:
+                if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
                     tmp = '1D'
                 f.write('  RR with ufo {} stripes filter\n'.format(tmp))
                 f.write(f'   sigma horizontal {args.main_filters_ring_removal_ufo_lpf_sigma_horizontal}')
                 f.write(f'   sigma vertical {args.main_filters_ring_removal_ufo_lpf_sigma_vertical}')
             else:
-                if args.RR_srp_wide:
+                if args.main_filters_ring_removal_sarepy_wide:
                     tmp = '  RR with ufo sarepy remove wide filter, '
-                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.RR_srp_wide_snr)
+                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR)
                     f.write(tmp)
                 f.write('  RR with ufo sarepy sorting filter, window {}\n'.format(args.RR_srp_wind_sort))
         else:

@@ -159,12 +159,12 @@ class FiltersGroup(QGroupBox):
         self.select_rButton()
         self.sarepy_rButton.setChecked(False)
         self.two_dimens_rButton.setChecked(True)
-        parameters.params['main_filters_ufo_lpf_1d_or_2d'] = False
+        parameters.params['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = False
         self.sigma_horizontal_entry.setText("60")
         self.sigma_vertical_entry.setText("1")
         self.wind_size_entry.setText("21")
         self.remove_wide_checkbox.setChecked(False)
-        parameters.params['e_rr_srp_wide'] = False
+        parameters.params['main_filters_ring_removal_sarepy_wide'] = False
         self.remove_wide_entry.setText("91")
         self.SNR_entry.setText("3")
 
@@ -177,17 +177,17 @@ class FiltersGroup(QGroupBox):
             self.use_LPF_rButton.setChecked(True)
         elif parameters.params['main_filters_ring_removal_ufo_lpf'] == False:
             self.use_LPF_rButton.setChecked(False)
-        if parameters.params['main_filters_ufo_lpf_1d_or_2d'] == True:
+        if parameters.params['main_filters_ring_removal_ufo_lpf_1d_or_2d'] == True:
             self.one_dimens_rButton.setChecked(True)
             self.two_dimens_rButton.setChecked(False)
-        elif parameters.params['main_filters_ufo_lpf_1d_or_2d'] == False:
+        elif parameters.params['main_filters_ring_removal_ufo_lpf_1d_or_2d'] == False:
             self.two_dimens_rButton.setChecked(True)
             self.one_dimens_rButton.setChecked(False)
         self.sigma_horizontal_entry.setText(str(parameters.params['main_filters_ring_removal_ufo_lpf_sigma_horizontal']))
         self.sigma_vertical_entry.setText(str(parameters.params['main_filters_ring_removal_ufo_lpf_sigma_vertical']))
-        self.wind_size_entry.setText(str(parameters.params['e_rr_srp_wind_sort']))
-        self.remove_wide_checkbox.setChecked(parameters.params['e_rr_srp_wide'])
-        self.remove_wide_entry.setText(str(parameters.params['e_rr_srp_wind_wide']))
+        self.wind_size_entry.setText(str(parameters.params['main_filters_ring_removal_sarepy_window_size']))
+        self.remove_wide_checkbox.setChecked(parameters.params['main_filters_ring_removal_sarepy_wide'])
+        self.remove_wide_entry.setText(str(parameters.params['main_filters_ring_removal_sarepy_window']))
         self.SNR_entry.setText(str(parameters.params['main_filters_ring_removal_sarepy_SNR']))
 
     def set_remove_spots(self):
@@ -217,10 +217,10 @@ class FiltersGroup(QGroupBox):
     def select_dimens_rButton(self):
         if self.one_dimens_rButton.isChecked():
             logging.debug("One dimension")
-            parameters.params['main_filters_ufo_lpf_1d_or_2d'] = bool(True)
+            parameters.params['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = bool(True)
         elif self.two_dimens_rButton.isChecked():
             logging.debug("Two dimensions")
-            parameters.params['main_filters_ufo_lpf_1d_or_2d'] = bool(False)
+            parameters.params['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = bool(False)
 
     def set_sigma_horizontal(self):
         logging.debug(self.sigma_horizontal_entry.text())
@@ -232,15 +232,15 @@ class FiltersGroup(QGroupBox):
 
     def set_window_size(self):
         logging.debug(self.wind_size_entry.text())
-        parameters.params['e_rr_srp_wind_sort'] = str(self.wind_size_entry.text())
+        parameters.params['main_filters_ring_removal_sarepy_window_size'] = str(self.wind_size_entry.text())
 
     def set_remove_wide(self):
         logging.debug("Wide: " + str(self.remove_wide_checkbox.isChecked()))
-        parameters.params['e_rr_srp_wide'] = bool(self.remove_wide_checkbox.isChecked())
+        parameters.params['main_filters_ring_removal_sarepy_wide'] = bool(self.remove_wide_checkbox.isChecked())
 
     def set_wind(self):
         logging.debug(self.remove_wide_entry.text())
-        parameters.params['e_rr_srp_wind_wide'] = str(self.remove_wide_entry.text())
+        parameters.params['main_filters_ring_removal_sarepy_window'] = str(self.remove_wide_entry.text())
 
     def set_SNR(self):
         logging.debug(self.SNR_entry.text())

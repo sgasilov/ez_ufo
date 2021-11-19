@@ -556,11 +556,11 @@ class ConfigGroup(QGroupBox):
                            params['main_cor_axis_column'], params['main_cor_axis_increment_step'],
                            params['main_filters_remove_spots'], params['main_filters_remove_spots_threshold'],
                            params['main_filters_remove_spots_blur_sigma'], params['main_filters_ring_removal'],
-                           params['main_filters_ring_removal_ufo_lpf'], params['main_filters_ufo_lpf_1d_or_2d'],
+                           params['main_filters_ring_removal_ufo_lpf'], params['main_filters_ring_removal_ufo_lpf_1d_or_2d'],
                            params['main_filters_ring_removal_ufo_lpf_sigma_horizontal'],
                            params['main_filters_ring_removal_ufo_lpf_sigma_vertical'],
-                           params['e_rr_srp_wind_sort'], params['e_rr_srp_wide'],
-                           params['e_rr_srp_wind_wide'],
+                           params['main_filters_ring_removal_sarepy_window_size'], params['main_filters_ring_removal_sarepy_wide'],
+                           params['main_filters_ring_removal_sarepy_window'],
                            params['main_filters_ring_removal_sarepy_SNR'],
                            params['main_pr_phase_retrieval'], params['main_pr_photon_energy'],
                            params['main_pr_pixel_size'],
@@ -646,12 +646,12 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['main_filters_ring_removal_ufo_lpf_sigma_vertical']) < 0:
             raise InvalidInputError("Value out of range for: ufo ring-removal sigma vertical")
 
-        # Window size: e_rr_srp_wind_sort
-        if int(parameters.params['e_rr_srp_wind_sort']) < 0:
+        # Window size: main_filters_ring_removal_sarepy_window_size
+        if int(parameters.params['main_filters_ring_removal_sarepy_window_size']) < 0:
             raise InvalidInputError("Value out of range for: window size")
 
-        # Wind: e_rr_srp_wind_wide
-        if int(parameters.params['e_rr_srp_wind_wide']) < 0:
+        # Wind: main_filters_ring_removal_sarepy_window
+        if int(parameters.params['main_filters_ring_removal_sarepy_window']) < 0:
             raise InvalidInputError("Value out of range for: wind")
 
         # SNR: main_filters_ring_removal_sarepy_SNR
@@ -750,9 +750,10 @@ class tk_args():
                 main_cor_axis_search_method, main_cor_axis_search_interval, main_cor_search_row_start,
                 main_cor_recon_patch_size, main_cor_axis_column, main_cor_axis_increment_step,
                 main_filters_remove_spots, main_filters_remove_spots_threshold, main_filters_remove_spots_blur_sigma,
-                main_filters_ring_removal, main_filters_ring_removal_ufo_lpf, main_filters_ufo_lpf_1d_or_2d,
+                main_filters_ring_removal, main_filters_ring_removal_ufo_lpf, main_filters_ring_removal_ufo_lpf_1d_or_2d,
                 main_filters_ring_removal_ufo_lpf_sigma_horizontal, main_filters_ring_removal_ufo_lpf_sigma_vertical,
-                e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, main_filters_ring_removal_sarepy_SNR,
+                main_filters_ring_removal_sarepy_window_size, main_filters_ring_removal_sarepy_wide, e_rr_srp_wide_wind,
+                main_filters_ring_removal_sarepy_SNR,
                 main_pr_phase_retrieval, main_pr_photon_energy, main_pr_pixel_size, main_pr_detector_distance,
                 main_pr_delta_beta_ratio, e_vcrop, e_y, e_yheight, e_ystep, e_gray256, e_bit, e_hmin, e_hmax,
                 e_pre, e_pre_cmd, e_a0, e_crop, e_x0, e_dx, e_y0, e_dy,
@@ -801,16 +802,16 @@ class tk_args():
         setattr(self,'main_filters_ring_removal',self.args['main_filters_ring_removal'])
         self.args['main_filters_ring_removal_ufo_lpf'] = bool(main_filters_ring_removal_ufo_lpf)
         setattr(self, 'main_filters_ring_removal_ufo_lpf', self.args['main_filters_ring_removal_ufo_lpf'])
-        self.args['main_filters_ufo_lpf_1d_or_2d'] = bool(main_filters_ufo_lpf_1d_or_2d)
-        setattr(self, 'main_filters_ufo_lpf_1d_or_2d', self.args['main_filters_ufo_lpf_1d_or_2d'])
+        self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = bool(main_filters_ring_removal_ufo_lpf_1d_or_2d)
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_1d_or_2d', self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'])
         self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'] = int(main_filters_ring_removal_ufo_lpf_sigma_horizontal)
         setattr(self,'main_filters_ring_removal_ufo_lpf_sigma_horizontal',self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'])
         self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'] = int(main_filters_ring_removal_ufo_lpf_sigma_vertical)
         setattr(self, 'main_filters_ring_removal_ufo_lpf_sigma_vertical', self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'])
-        self.args['RR_srp_wind_sort'] = int(e_rr_srp_wind_sort)
-        setattr(self, 'RR_srp_wind_sort', self.args['RR_srp_wind_sort'])
-        self.args['RR_srp_wide'] = bool(e_rr_srp_wide)
-        setattr(self, 'RR_srp_wide', self.args['RR_srp_wide'])
+        self.args['main_filters_ring_removal_sarepy_window_size'] = int(main_filters_ring_removal_sarepy_window_size)
+        setattr(self, 'main_filters_ring_removal_sarepy_window_size', self.args['main_filters_ring_removal_sarepy_window_size'])
+        self.args['main_filters_ring_removal_sarepy_wide'] = bool(main_filters_ring_removal_sarepy_wide)
+        setattr(self, 'main_filters_ring_removal_sarepy_wide', self.args['main_filters_ring_removal_sarepy_wide'])
         self.args['RR_srp_wide_wind'] = int(e_rr_srp_wide_wind)
         setattr(self, 'RR_srp_wide_wind', self.args['RR_srp_wide_wind'])
         self.args['main_filters_ring_removal_sarepy_SNR'] = int(main_filters_ring_removal_sarepy_SNR)
