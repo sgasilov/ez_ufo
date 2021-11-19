@@ -564,12 +564,14 @@ class ConfigGroup(QGroupBox):
                            params['main_filters_ring_removal_sarepy_SNR'],
                            params['main_pr_phase_retrieval'], params['main_pr_photon_energy'],
                            params['main_pr_pixel_size'],
-                           params['main_pr_detector_distance'], params['main_pr_delta_beta_ratio'], params['e_vcrop'],
-                           params['e_y'], params['e_yheight'], params['e_ystep'],
-                           params['e_gray256'], params['e_bit'], params['e_hmin'],
-                           params['e_hmax'], params['e_pre'], params['e_pre_cmd'],
-                           params['e_a0'], params['e_crop'], params['e_x0'],
-                           params['e_dx'], params['e_y0'], params['e_dy'],
+                           params['main_pr_detector_distance'], params['main_pr_delta_beta_ratio'],
+                           params['main_region_select_rows'], params['main_region_first_row'],
+                           params['main_region_number_rows'], params['main_region_nth_row'],
+                           params['main_region_clip_histogram'], params['main_region_bit_depth'], params['main_region_histogram_min'],
+                           params['main_region_histogram_max'], params['e_pre'], params['e_pre_cmd'],
+                           params['main_region_rotate_volume_clock'], params['main_region_crop_slices'],
+                           params['main_region_crop_x'],
+                           params['main_region_crop_width'], params['main_region_crop_y'], params['main_region_crop_height'],
                            params['e_dryrun'], params['e_parfile'],
                            params['e_keep_tmp'], params['e_sinFFC'],
                            params['e_sinFFC_method'], params['e_sinFFCEigenReps'],
@@ -674,41 +676,41 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['main_pr_delta_beta_ratio']) < 0:
             raise InvalidInputError("Value out of range for: Delta/beta ratio: (try default if unsure)")
 
-        # First row in projections: e_y
-        if int(parameters.params['e_y']) < 0:
+        # First row in projections: main_region_first_row
+        if int(parameters.params['main_region_first_row']) < 0:
             raise InvalidInputError("Value out of range for: First row in projections")
 
-        # Number of rows: e_yheight
-        if int(parameters.params['e_yheight']) < 0:
+        # Number of rows: main_region_number_rows
+        if int(parameters.params['main_region_number_rows']) < 0:
             raise InvalidInputError("Value out of range for: Number of rows (ROI height)")
 
-        # Reconstruct every Nth row: e_ystep
-        if int(parameters.params['e_ystep']) < 0:
+        # Reconstruct every Nth row: main_region_nth_row
+        if int(parameters.params['main_region_nth_row']) < 0:
             raise InvalidInputError("Value out of range for: Reconstruct every Nth row")
 
         # Can be negative when 16-bit selected
-        # Min value: e_hmin
-        #if float(parameters.params['e_hmin']) < 0:
+        # Min value: main_region_histogram_min
+        #if float(parameters.params['main_region_histogram_min']) < 0:
         #    raise InvalidInputError("Value out of range for: Min value in 32-bit histogram")
 
-        # Max value: e_hmax
-        if float(parameters.params['e_hmax']) < 0:
+        # Max value: main_region_histogram_max
+        if float(parameters.params['main_region_histogram_max']) < 0:
             raise InvalidInputError("Value out of range for: Max value in 32-bit histogram")
 
-        # x: e_x0
-        if int(parameters.params['e_x0']) < 0:
+        # x: main_region_crop_x
+        if int(parameters.params['main_region_crop_x']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: x")
 
-        # width: e_dx
-        if int(parameters.params['e_dx']) < 0:
+        # width: main_region_crop_width
+        if int(parameters.params['main_region_crop_width']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: width")
 
-        # y: e_y0
-        if int(parameters.params['e_y0']) < 0:
+        # y: main_region_crop_y
+        if int(parameters.params['main_region_crop_y']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: y")
 
-        # height: e_dy
-        if int(parameters.params['e_dy']) < 0:
+        # height: main_region_crop_height
+        if int(parameters.params['main_region_crop_height']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
         if int(parameters.params['e_sinFFCEigenReps']) < 0:
@@ -721,8 +723,8 @@ class ConfigGroup(QGroupBox):
             raise InvalidInputError("Value out of range for: Flat Field Correction: Downsample")
 
         # Can be negative value
-        # Optional: rotate volume: e_a0
-        #if float(parameters.params['e_a0']) < 0:
+        # Optional: rotate volume: main_region_rotate_volume_clock
+        #if float(parameters.params['main_region_rotate_volume_clock']) < 0:
         #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
         #TODO ADD CHECKING NLMDN SETTINGS
         #TODO ADD CHECKING FOR ADVANCED SETTINGS
@@ -755,11 +757,13 @@ class tk_args():
                 main_filters_ring_removal_sarepy_window_size, main_filters_ring_removal_sarepy_wide, e_rr_srp_wide_wind,
                 main_filters_ring_removal_sarepy_SNR,
                 main_pr_phase_retrieval, main_pr_photon_energy, main_pr_pixel_size, main_pr_detector_distance,
-                main_pr_delta_beta_ratio, e_vcrop, e_y, e_yheight, e_ystep, e_gray256, e_bit, e_hmin, e_hmax,
-                e_pre, e_pre_cmd, e_a0, e_crop, e_x0, e_dx, e_y0, e_dy,
-                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFC_method, e_sinFFCEigenReps,
-                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats,
-                e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2,
+                main_pr_delta_beta_ratio, main_region_select_rows, main_region_first_row, main_region_number_rows,
+                main_region_nth_row, main_region_clip_histogram, main_region_bit_depth,
+                main_region_histogram_min, main_region_histogram_max, e_pre, e_pre_cmd, main_region_rotate_volume_clock,
+                main_region_crop_slices, main_region_crop_x, main_region_crop_width, main_region_crop_y,
+                main_region_crop_height, e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFC_method, e_sinFFCEigenReps,
+                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats, e_common_darks, e_common_flats,
+                e_use_common_flats2, e_common_flats2,
                 e_nlmdn_apply_after_reco, e_nlmdn_indir, e_nlmdn_input_is_file, e_nlmdn_outdir, e_nlmdn_bigtif,
                 e_nlmdn_r, e_nlmdn_dx, e_nlmdn_h, e_nlmdn_sig,
                 e_nlmdn_w, e_nlmdn_fast, e_nlmdn_autosig, e_nlmdn_dryrun,
@@ -828,42 +832,42 @@ class tk_args():
         self.args['main_pr_delta_beta_ratio']=np.log10(float(main_pr_delta_beta_ratio))
         setattr(self,'main_pr_delta_beta_ratio',self.args['main_pr_delta_beta_ratio'])
         # Crop vertically
-        self.args['vcrop']=bool(e_vcrop)
-        setattr(self,'vcrop',self.args['vcrop'])
-        self.args['y']=int(e_y)
-        setattr(self,'y',self.args['y'])
-        self.args['yheight']=int(e_yheight)
-        setattr(self,'yheight',self.args['yheight'])
-        self.args['ystep']=int(e_ystep)
-        setattr(self,'ystep',self.args['ystep'])
+        self.args['main_region_select_rows']=bool(main_region_select_rows)
+        setattr(self,'main_region_select_rows',self.args['main_region_select_rows'])
+        self.args['main_region_first_row']=int(main_region_first_row)
+        setattr(self,'main_region_first_row',self.args['main_region_first_row'])
+        self.args['main_region_number_rows']=int(main_region_number_rows)
+        setattr(self,'main_region_number_rows',self.args['main_region_number_rows'])
+        self.args['main_region_nth_row']=int(main_region_nth_row)
+        setattr(self,'main_region_nth_row',self.args['main_region_nth_row'])
         # conv to 8 bit
-        self.args['gray256']=bool(e_gray256)
-        setattr(self,'gray256',self.args['gray256'])
-        self.args['bit']=int(e_bit)
-        setattr(self,'bit',self.args['bit'])
-        self.args['hmin']=float(e_hmin)
-        setattr(self,'hmin',self.args['hmin'])
-        self.args['hmax']=float(e_hmax)
-        setattr(self,'hmax',self.args['hmax'])
+        self.args['main_region_clip_histogram']=bool(main_region_clip_histogram)
+        setattr(self,'main_region_clip_histogram',self.args['main_region_clip_histogram'])
+        self.args['main_region_bit_depth']=int(main_region_bit_depth)
+        setattr(self,'main_region_bit_depth',self.args['main_region_bit_depth'])
+        self.args['main_region_histogram_min']=float(main_region_histogram_min)
+        setattr(self,'main_region_histogram_min',self.args['main_region_histogram_min'])
+        self.args['main_region_histogram_max']=float(main_region_histogram_max)
+        setattr(self,'main_region_histogram_max',self.args['main_region_histogram_max'])
         # preprocessing attributes
         self.args['pre']=bool(e_pre)
         setattr(self,'pre',self.args['pre'])
         self.args['pre_cmd']=e_pre_cmd
         setattr(self,'pre_cmd',self.args['pre_cmd'])
         # ROI in slice
-        self.args['crop']=bool(e_crop)
-        setattr(self,'crop',self.args['crop'])
-        self.args['x0']=int(e_x0)
-        setattr(self,'x0',self.args['x0'])
-        self.args['dx']=int(e_dx)
-        setattr(self,'dx',self.args['dx'])
-        self.args['y0']=int(e_y0)
-        setattr(self,'y0',self.args['y0'])
-        self.args['dy']=int(e_dy)
-        setattr(self,'dy',self.args['dy'])
+        self.args['main_region_crop_slices']=bool(main_region_crop_slices)
+        setattr(self,'main_region_crop_slices',self.args['main_region_crop_slices'])
+        self.args['main_region_crop_x']=int(main_region_crop_x)
+        setattr(self,'main_region_crop_x',self.args['main_region_crop_x'])
+        self.args['main_region_crop_width']=int(main_region_crop_width)
+        setattr(self,'main_region_crop_width',self.args['main_region_crop_width'])
+        self.args['main_region_crop_y']=int(main_region_crop_y)
+        setattr(self,'main_region_crop_y',self.args['main_region_crop_y'])
+        self.args['main_region_crop_height']=int(main_region_crop_height)
+        setattr(self,'main_region_crop_height',self.args['main_region_crop_height'])
         # Optional FBP params
-        self.args['a0']= float(e_a0)
-        setattr(self,'a0',self.args['a0'])
+        self.args['main_region_rotate_volume_clock']= float(main_region_rotate_volume_clock)
+        setattr(self,'main_region_rotate_volume_clock',self.args['main_region_rotate_volume_clock'])
         # misc settings
         self.args['dryrun']=bool(e_dryrun)
         setattr(self,'dryrun',self.args['dryrun'])

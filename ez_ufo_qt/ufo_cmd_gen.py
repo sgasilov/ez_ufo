@@ -215,8 +215,8 @@ class ufo_cmds(object):
     def get_crop_sli(self, out_pattern, args):
         cmd = 'ufo-launch read path={}/*.tif ! '.format(os.path.dirname(out_pattern))
         cmd += 'crop x={} width={} y={} height={} ! '. \
-            format(args.x0, args.dx, args.y0, args.dy)
+            format(args.main_region_crop_x, args.main_region_crop_width, args.main_region_crop_y, args.main_region_crop_height)
         cmd += 'write filename={}'.format(out_pattern)
-        if args.gray256:
+        if args.main_region_clip_histogram:
             cmd += ' bits=8 rescale=False'
         return cmd

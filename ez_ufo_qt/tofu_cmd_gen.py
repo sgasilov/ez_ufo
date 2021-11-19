@@ -89,12 +89,12 @@ class tofu_cmds(object):
             cmd += ' --flats2 {}'.format(indir[3])
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
-        cmd += ' --offset {}'.format(args.a0)
+        cmd += ' --offset {}'.format(args.main_region_rotate_volume_clock)
         cmd += ' --number {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
+        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
 
@@ -104,12 +104,12 @@ class tofu_cmds(object):
         cmd = 'tofu tomo --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
-        cmd += ' --offset {}'.format(args.a0)
+        cmd += ' --offset {}'.format(args.main_region_rotate_volume_clock)
         cmd += ' --number {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
+        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
 
@@ -118,15 +118,15 @@ class tofu_cmds(object):
         cmd = 'tofu tomo --sinograms {}'.format(sinos_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
-        cmd += ' --offset {}'.format(args.a0)
+        cmd += ' --offset {}'.format(args.main_region_rotate_volume_clock)
         if args.vcrop:
-            cmd += ' --number {}'.format(int(args.yheight / args.ystep))
+            cmd += ' --number {}'.format(int(args.main_region_number_rows / args.main_region_nth_row))
         else:
             cmd += ' --number {}'.format(WH[0])
         cmd += ' --height {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
+        cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
 
@@ -140,7 +140,7 @@ class tofu_cmds(object):
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
@@ -156,7 +156,7 @@ class tofu_cmds(object):
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
@@ -170,7 +170,7 @@ class tofu_cmds(object):
         if not args.vcrop:
             cmd += ' --number {}'.format(proj_height)
         else:
-            cmd += ' --number {}'.format(int(args.yheight / args.ystep))  # (np.ceil(args.yheight/args.ystep))
+            cmd += ' --number {}'.format(int(args.main_region_number_rows / args.main_region_nth_row))  # (np.ceil(args.main_region_number_rows/args.main_region_nth_row))
         return cmd
 
     def get_sinFFC_cmd(self, ctset, args, nviews, n):
@@ -285,7 +285,7 @@ class tofu_cmds(object):
         cmd += ' --number {}'.format(nviews)
         # elif args.nviews>0:
         #    cmd += ' --number {}'.format(args.nviews)
-        cmd += ' --volume-angle-z {:0.5f}'.format(args.a0)
+        cmd += ' --volume-angle-z {:0.5f}'.format(args.main_region_rotate_volume_clock)
         # rows-slices to be reconstructed
         # full ROI
         b = int(np.ceil(WH[0] / 2.0))
@@ -293,22 +293,22 @@ class tofu_cmds(object):
         c = 1
         if args.vcrop:
             if args.main_filters_ring_removal:
-                h2 = args.yheight / args.ystep / 2.0
+                h2 = args.main_region_number_rows / args.main_region_nth_row / 2.0
                 b = np.ceil(h2)
                 a = -int(h2)
             else:
                 h2 = int(WH[0] / 2.0)
-                a = args.y - h2
-                b = args.y + args.yheight - h2
-                c = args.ystep
+                a = args.main_region_first_row - h2
+                b = args.main_region_first_row + args.main_region_number_rows - h2
+                c = args.main_region_nth_row
         cmd += ' --region={},{},{}'.format(a, b, c)
         # crop of reconstructed slice in the axial plane
         b = WH[1] / 2
-        if args.crop:
-            cmd += ' --x-region={},{},{}'.format(args.x0 - b, args.x0 + args.dx - b, 1)
-            cmd += ' --y-region={},{},{}'.format(args.y0 - b, args.y0 + args.dy - b, 1)
-        # cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
+        if args.main_region_crop_slices:
+            cmd += ' --x-region={},{},{}'.format(args.main_region_crop_x - b, args.main_region_crop_x + args.main_region_crop_width - b, 1)
+            cmd += ' --y-region={},{},{}'.format(args.main_region_crop_y - b, args.main_region_crop_y + args.main_region_crop_height - b, 1)
+        # cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         # Optimization
         cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)
@@ -350,7 +350,7 @@ class tofu_cmds(object):
         cmd += ' --number {}'.format(nviews)
         # elif args.nviews>0:
         #    cmd += ' --number {}'.format(args.nviews)
-        cmd += ' --volume-angle-z {:0.5f}'.format(args.a0)
+        cmd += ' --volume-angle-z {:0.5f}'.format(args.main_region_rotate_volume_clock)
         # rows-slices to be reconstructed
         # full ROI
         b = int(np.ceil(WH[0] / 2.0))
@@ -358,22 +358,22 @@ class tofu_cmds(object):
         c = 1
         if args.vcrop:
             if args.main_filters_ring_removal:
-                h2 = args.yheight / args.ystep / 2.0
+                h2 = args.main_region_number_rows / args.main_region_nth_row / 2.0
                 b = np.ceil(h2)
                 a = -int(h2)
             else:
                 h2 = int(WH[0] / 2.0)
-                a = args.y - h2
-                b = args.y + args.yheight - h2
-                c = args.ystep
+                a = args.main_region_first_row - h2
+                b = args.main_region_first_row + args.main_region_number_rows - h2
+                c = args.main_region_nth_row
         cmd += ' --region={},{},{}'.format(a, b, c)
         # crop of reconstructed slice in the axial plane
         b = WH[1] / 2
-        if args.crop:
-            cmd += ' --x-region={},{},{}'.format(args.x0 - b, args.x0 + args.dx - b, 1)
-            cmd += ' --y-region={},{},{}'.format(args.y0 - b, args.y0 + args.dy - b, 1)
-        # cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
-        cmd = self.check_8bit(cmd, args.gray256, args.bit, args.hmin, args.hmax)
+        if args.main_region_crop_slices:
+            cmd += ' --x-region={},{},{}'.format(args.main_region_crop_x - b, args.main_region_crop_x + args.main_region_crop_width - b, 1)
+            cmd += ' --y-region={},{},{}'.format(args.main_region_crop_y - b, args.main_region_crop_y + args.main_region_crop_height - b, 1)
+        # cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         # Optimization
         cmd += ' --slice-memory-coeff={}'.format(args.adv_slice_mem_coeff)

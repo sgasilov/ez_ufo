@@ -204,12 +204,12 @@ def main_tk(args, fdt_names):
     # else:
     #    clean_tmp_dirs(args.tmpdir, fdt_names)
     # input params consistency check
-    if args.gray256:
-        if args.hmin > args.hmax:
+    if args.main_region_clip_histogram:
+        if args.main_region_histogram_min > args.main_region_histogram_max:
             raise ValueError('hmin must be smaller than hmax to convert to 8bit without contrast inversion')
     '''
-    if args.gray256:
-        if args.hmin >= args.hmax:
+    if args.main_region_clip_histogram:
+        if args.main_region_histogram_min >= args.main_region_histogram_max:
             raise ValueError('hmin must be smaller than hmax to convert to 8bit without contrast inversion')
     '''
     # get list of all good CT directories to be reconstructed
@@ -233,7 +233,7 @@ def main_tk(args, fdt_names):
             nviews, WH, multipage = get_dims(path2proj)
             # If args.main_cor_axis_search_method == 4 then bypass axis search and use image midpoint
             if args.main_cor_axis_search_method != 4:
-                if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
+                if args.vcrop and bad_vert_ROI(multipage, path2proj, args.main_region_first_row, args.main_region_number_rows):
                     print('{:>30}\t{}'.format('CTset', 'Axis'))
                     print('{:>30}\t{}'.format(ctset[0], 'na'))
                     print('Vertical ROI does not contain any rows.')
@@ -241,7 +241,7 @@ def main_tk(args, fdt_names):
                     continue
                 # Find axis of rotation using auto: correlate first/last projections
                 if args.main_cor_axis_search_method == 1:
-                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage, args)
+                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.main_region_first_row, args.main_region_number_rows, multipage, args)
                 # Find axis of rotation using auto: minimize STD of a slice
                 elif args.main_cor_axis_search_method == 2:
                     cmds.append("echo \"Cleaning axis-search in tmp directory\"")

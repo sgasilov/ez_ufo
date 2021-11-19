@@ -369,7 +369,7 @@ def main_360_mp_depth2(args, axis_dict):
                 else:
                     curr_ax = args.ax1 + j * axis_incr
 
-                if args.crop == True:
+                if args.main_region_crop_slices == True:
                     if axis_incr < 0:
                         crop_amt = abs(args.ax1 - round(curr_ax))
                     else:

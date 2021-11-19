@@ -144,27 +144,27 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('*** Region of interest ***\n')
         if args.vcrop:
             f.write('Vertical ROI defined\n')
-            f.write('  first row {}\n'.format(args.y))
-            f.write('  height {}\n'.format(args.yheight))
-            f.write('  reconstruct every {}th row\n'.format(args.ystep))
+            f.write('  first row {}\n'.format(args.main_region_first_row))
+            f.write('  height {}\n'.format(args.main_region_number_rows))
+            f.write('  reconstruct every {}th row\n'.format(args.main_region_nth_row))
         else:
             f.write('Vertical ROI: all rows\n')
-        if args.crop:
+        if args.main_region_crop_slices:
             f.write('ROI in slice plane defined\n')
-            f.write('  x {}\n'.format(args.x0))
-            f.write('  width {}\n'.format(args.dx))
-            f.write('  y {}\n'.format(args.y0))
-            f.write('  height {}\n'.format(args.dy))
+            f.write('  x {}\n'.format(args.main_region_crop_x))
+            f.write('  width {}\n'.format(args.main_region_crop_width))
+            f.write('  y {}\n'.format(args.main_region_crop_y))
+            f.write('  height {}\n'.format(args.main_region_crop_height))
         else:
             f.write('ROI in slice plane not defined\n')
         f.write('*** Reconstructed values ***\n')
-        if args.gray256:
-            f.write('  {} bit\n'.format(args.bit))
-            f.write('  Min value in 32-bit histogram {}\n'.format(args.hmin))
-            f.write('  Max value in 32-bit histogram {}\n'.format(args.hmax))
+        if args.main_region_clip_histogram:
+            f.write('  {} bit\n'.format(args.main_region_bit_depth))
+            f.write('  Min value in 32-bit histogram {}\n'.format(args.main_region_histogram_min))
+            f.write('  Max value in 32-bit histogram {}\n'.format(args.main_region_histogram_max))
         else:
             f.write('  32bit, histogram untouched\n')
         f.write('*** Optional reco parameters ***\n')
-        if args.a0 > 0:
-            f.write('  Rotate volume by: {:0.3f} deg\n'.format(args.a0))
+        if args.main_region_rotate_volume_clock > 0:
+            f.write('  Rotate volume by: {:0.3f} deg\n'.format(args.main_region_rotate_volume_clock))
         f.close()
