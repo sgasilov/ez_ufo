@@ -263,7 +263,7 @@ class AutoVerticalStitchFunctions:
                 cmd += " --output-bytes-per-file 0"
                 os.system(cmd)
                 time.sleep(10)
-            stitch_input_dir_path = os.path.join(self.parameters['temp_dir'], ct_path)
+            stitch_input_dir_path = os.path.join(self.parameters['temp_dir'],  ct_path)
         else:
             if self.parameters['stitch_reconstructed_slices']:
                 stitch_input_dir_path = os.path.join(self.parameters['recon_slices_input_dir'], ct_path)
@@ -378,7 +378,7 @@ class AutoVerticalStitchFunctions:
 
         output_path = os.path.join(self.parameters['output_dir'], ct_path)
         if not os.path.isdir(output_path):
-            os.makedirs(output_path, mode=0o777)
+            os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
         # TODO: Make sure to preserve bitdepth
         tifffile.imsave(output_path, large_image_buffer.astype(input_dir_type))
@@ -436,11 +436,11 @@ class AutoVerticalStitchFunctions:
         """
         index = start + j * step
         # r1 stitch pixel value - we just concatenate here by appending one image to the other
-        r1 = self.ct_stitch_pixel_dict[ct_dir]
-        # r2 image height - stitch pixel value
         example_image_array = self.read_image(example_image_path, flip_image=False)
         image_height = np.shape(example_image_array)[0]
-        r2 = 2 * image_height - self.ct_stitch_pixel_dict[ct_dir]
+        r1 = self.ct_stitch_pixel_dict[ct_dir]
+        # r2 image height - stitch pixel value
+        r2 = image_height - self.ct_stitch_pixel_dict[ct_dir]
 
         large_stitch_buffer, image_rows, dtype = self.make_buf(example_image_path, num_z_dirs, r1, r2)
         for i, z_dir in enumerate(z_fold):
@@ -462,8 +462,8 @@ class AutoVerticalStitchFunctions:
                 large_stitch_buffer[i * image_rows:image_rows * (i + 1), :] = frame
 
         output_path = os.path.join(self.parameters['output_dir'], ct_path)
-        if not os.path.isdir(output_path):
-            os.makedirs(output_path, mode=0o777)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
         # print "input data type {:}".format(dtype)
         # TODO: Make sure to preserve bitdepth
