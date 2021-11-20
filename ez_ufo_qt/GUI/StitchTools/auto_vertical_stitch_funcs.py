@@ -303,13 +303,17 @@ class AutoVerticalStitchFunctions:
             # second: stitch them
             if self.parameters['stitch_reconstructed_slices']:
                 if self.parameters['reslice']:
-                    vertical_steps = sorted(os.listdir(stitch_input_dir_path))
+                    #vertical_steps = sorted(os.listdir(stitch_input_dir_path))
+                    vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
                     tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], '*.tif'))[0]
                 elif not self.parameters['reslice']:
-                    vertical_steps = sorted(os.listdir(self.parameters['recon_slices_input_dir']))
+                    vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
                     tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], 'sli', '*.tif'))[0]
             elif self.parameters['stitch_projections']:
-                vertical_steps = sorted(os.listdir(self.parameters['projections_input_dir']))
+                vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+                print(stitch_input_dir_path)
+                print(vertical_steps)
+                print(os.path.join(stitch_input_dir_path, vertical_steps[0], 'tomo', '*.tif'))
                 tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], 'tomo', '*.tif'))[0]
 
             first = self.read_image(tmp, flip_image=False)
