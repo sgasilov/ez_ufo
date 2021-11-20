@@ -311,9 +311,6 @@ class AutoVerticalStitchFunctions:
                     tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], 'sli', '*.tif'))[0]
             elif self.parameters['stitch_projections']:
                 vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
-                print(stitch_input_dir_path)
-                print(vertical_steps)
-                print(os.path.join(stitch_input_dir_path, vertical_steps[0], 'tomo', '*.tif'))
                 tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], 'tomo', '*.tif'))[0]
 
             first = self.read_image(tmp, flip_image=False)
