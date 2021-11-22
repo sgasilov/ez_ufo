@@ -323,7 +323,6 @@ class ConfigGroup(QGroupBox):
             self.output_dir_entry.setText(os.path.join(dir, "rec"))
             parameters.params['main_config_output_dir'] = os.path.join(dir, "rec")
 
-
     def set_input_dir(self):
         logging.debug(str(self.input_dir_entry.text()))
         parameters.params['main_config_input_dir'] = str(self.input_dir_entry.text())
