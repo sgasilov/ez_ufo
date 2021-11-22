@@ -228,21 +228,21 @@ class GUI(qtw.QWidget):
         when checkbox "Load images and open viewer after reconstruction" is enabled
         Automatically loads images from the output reconstruction directory for viewing
         """
-        if parameters.params['e_openIV'] is True:
+        if parameters.params['main_config_open_viewer'] is True:
             logging.debug("Switch to Image Tab")
             self.tabs.setCurrentWidget(self.tab2)
-            if os.path.isdir(str(parameters.params['e_outdir'] + '/sli')):
-                files = os.listdir(str(parameters.params['e_outdir'] + '/sli'))
+            if os.path.isdir(str(parameters.params['main_config_output_dir'] + '/sli')):
+                files = os.listdir(str(parameters.params['main_config_output_dir'] + '/sli'))
                 #Start thread here to load images
 
                 ##CHECK IF ONLY SINGLE IMAGE THEN USE OPEN IMAGE -- OTHERWISE OPEN STACK
                 if len(files) == 1:
-                    print("Only one file in {}: Opening single image {}".format(parameters.params['e_outdir'] + '/sli', files[0]))
-                    filePath = str(parameters.params['e_outdir'] + '/sli/' + str(files[0]))
+                    print("Only one file in {}: Opening single image {}".format(parameters.params['main_config_output_dir'] + '/sli', files[0]))
+                    filePath = str(parameters.params['main_config_output_dir'] + '/sli/' + str(files[0]))
                     self.image_group.open_image_from_filepath(filePath)
                 else:
-                    print("Multiple files in {}: Opening stack of images".format(str(parameters.params['e_outdir'] + '/sli')))
-                    self.image_group.open_stack_from_path(str(parameters.params['e_outdir'] + '/sli'))
+                    print("Multiple files in {}: Opening stack of images".format(str(parameters.params['main_config_output_dir'] + '/sli')))
+                    self.image_group.open_stack_from_path(str(parameters.params['main_config_output_dir'] + '/sli'))
             else:
                 print("No output directory found")
 
@@ -256,9 +256,9 @@ class GUI(qtw.QWidget):
         qtw.QMessageBox.Yes | qtw.QMessageBox.No, qtw.QMessageBox.No)
         if reply == qtw.QMessageBox.Yes:
             # remove all directories with projections
-            clean_tmp_dirs(parameters.params['e_tmpdir'], self.config_group.get_fdt_names())
+            clean_tmp_dirs(parameters.params['main_config_temp_dir'], self.config_group.get_fdt_names())
             # remove axis-search dir too
-            tmp = os.path.join(parameters.params['e_tmpdir'], 'axis-search')
+            tmp = os.path.join(parameters.params['main_config_temp_dir'], 'axis-search')
             event.accept()
         else:
             event.ignore()

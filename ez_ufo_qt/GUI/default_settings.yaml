@@ -3,11 +3,11 @@
 
 ---
 main_config_input_dir: ""
-e_tmpdir: ""
-e_outdir: ""
+main_config_temp_dir: ""
+main_config_output_dir: ""
 main_config_darks: "darks"
 main_config_flats_dir_name: "flats"
-e_tomo: "tomo"
+main_config_tomo_dir_name: "tomo"
 main_config_flats_dir_name: "flats2"
 main_config_save_multipage_tiff: false
 main_cor_axis_search_method: 1
@@ -24,59 +24,59 @@ main_filters_ring_removal_ufo_lpf: true
 main_filters_ufo_lpf_1d_or_2d: true
 main_filters_ring_removal_ufo_lpf_sigma_horizontal: 3
 main_filters_ring_removal_ufo_lpf_sigma_vertical: 2
-e_rr_srp_wind_sort: 21
-e_rr_srp_wide: false
-e_rr_srp_wind_wide: 91
+main_filters_ring_removal_sarepy_window_size: 21
+main_filters_ring_removal_sarepy_wide: false
+main_filters_ring_removal_sarepy_window: 91
 main_filters_ring_removal_sarepy_SNR: 3
 main_pr_phase_retrieval: false
 main_pr_photon_energy: 20
 main_pr_pixel_size: 3.6
 main_pr_detector_distance: 0.1
 main_pr_delta_beta_ratio: 200
-e_vcrop: false
-e_y: 100
-e_yheight: 200
-e_ystep: 20
+main_region_select_rows: false
+main_region_first_row: 100
+main_region_number_rows: 200
+main_region_nth_row: 20
 main_region_clip_histogram: false
 main_region_bit_depth: 8
 main_region_histogram_min: 0.0
 main_region_histogram_max: 0.0
-e_pre: false
-e_pre_cmd: "remove-outliers size=3 threshold=500 sign=1"
+main_config_preprocess: false
+main_config_preprocess_command: "remove-outliers size=3 threshold=500 sign=1"
 main_region_rotate_volume_clock: 0.0
 main_region_crop_slices: false
-e_x0: 0
+main_region_crop_x: 0
 main_region_crop_width: 0
-e_y0: 0
+main_region_crop_y: 0
 main_region_crop_height: 0
 main_config_dry_run: false
-e_parfile: true
-e_keep_tmp: false
-e_sinFFC: false
-e_sinFFC_method: 1
-e_sinFFCEigenReps: 4
-e_sinFFCEigenDowns: 2
-e_sinFFCDowns: 4
-e_openIV: True
+main_config_save_params: true
+main_config_keep_temp: false
+advanced_ffc_sinFFC: false
+advanced_ffc_method: 1
+advanced_ffc_eigen_pco_reps: 4
+advanced_ffc_eigen_pco_downsample: 2
+advanced_ffc_downsample: 4
+main_config_open_viewer: True
 main_config_common_flats_darks: False
 main_config_darks_path: "Absolute path to darks"
 main_config_flats_path: "Absolute path to flats"
-e_use_common_flats2: False
+main_config_flats2_checkbox: False
 main_config_flats2_path: "Absolute path to flats2"
 #NLMDN Settings
-e_nlmdn_apply_after_reco: False
-e_nlmdn_indir: ""
-e_nlmdn_input_is_file: False
-e_nlmdn_outdir: ""
-e_nlmdn_bigtif: False
-e_nlmdn_r: 10
-e_nlmdn_dx: 3
-e_nlmdn_h: 0.0
-e_nlmdn_sig: 0.0
-e_nlmdn_w: 0.0
-e_nlmdn_fast: True
-e_nlmdn_autosig: False
-e_nlmdn_dryrun: False
+advanced_nlmdn_apply_after_reco: False
+advanced_nlmdn_input_dir: ""
+advanced_nlmdn_input_is_file: False
+advanced_nlmdn_output_dir: ""
+advanced_nlmdn_save_bigtiff: False
+advanced_nlmdn_sim_search_radius: 10
+advanced_nlmdn_patch_radius: 3
+advanced_nlmdn_smoothing_control: 0.0
+advanced_nlmdn_noise_std: 0.0
+advanced_nlmdn_window: 0.0
+advanced_nlmdn_fast: True
+advanced_nlmdn_estimate_sigma: False
+advanced_nlmdn_dry_run: False
 #ADVANCED TOFU Settings
 advanced_advtofu_lamino_angle: 30
 advanced_adv_tofu_z_axis_rotation: 360

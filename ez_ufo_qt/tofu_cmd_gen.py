@@ -37,7 +37,7 @@ class tofu_cmds(object):
             indir.append(args.main_config_darks_path)
             indir.append(args.main_config_flats_path)
             indir.append(os.path.join(lvl0, self._fdt_names[2]))
-            if args.use_common_flats2:
+            if args.main_config_flats2_checkbox:
                 indir.append(args.main_config_flats2_path)
             return indir
 
@@ -80,7 +80,7 @@ class tofu_cmds(object):
         # or CT reconstruction after preprocessing only
         indir = self.make_inpaths(ctset[0], ctset[1], args)
         # correct location of proj folder in case if prepro was done
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
+        in_proj_dir, quatsch = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2], False)
         indir[2] = os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         # format command
         cmd = 'tofu tomo --absorptivity --fix-nan-and-inf'
@@ -93,14 +93,14 @@ class tofu_cmds(object):
         cmd += ' --number {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.main_config_save_multipage_tiff)
         return cmd
 
     def get_ct_proj_cmd(self, out_pattern, ax, args, nviews, WH):
         # CT reconstruction from pre-processed and flat-corrected projections
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, 'obsolete;if-you-need-fix-it', self._fdt_names[2], False)
+        in_proj_dir, quatsch = fmt_in_out_path(args.main_config_temp_dir, 'obsolete;if-you-need-fix-it', self._fdt_names[2], False)
         cmd = 'tofu tomo --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
@@ -108,19 +108,19 @@ class tofu_cmds(object):
         cmd += ' --number {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.main_config_save_multipage_tiff)
         return cmd
 
     def get_ct_sin_cmd(self, out_pattern, ax, args, nviews, WH):
-        sinos_dir = os.path.join(args.tmpdir, 'sinos-filt')
+        sinos_dir = os.path.join(args.main_config_temp_dir, 'sinos-filt')
         cmd = 'tofu tomo --sinograms {}'.format(sinos_dir)
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
         cmd += ' --offset {}'.format(args.main_region_rotate_volume_clock)
-        if args.vcrop:
-            cmd += ' --number {}'.format(int(args.yheight / args.ystep))
+        if args.main_region_select_rows:
+            cmd += ' --number {}'.format(int(args.main_region_number_rows / args.main_region_nth_row))
         else:
             cmd += ' --number {}'.format(WH[0])
         cmd += ' --height {}'.format(nviews)
@@ -132,7 +132,7 @@ class tofu_cmds(object):
 
     def get_sinos_ffc_cmd(self, ctset, tmpdir, args, nviews, WH):
         indir = self.make_inpaths(ctset[0], ctset[1], args)
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2], False)
         cmd = 'tofu sinos --absorptivity --fix-nan-and-inf'
         cmd += ' --darks {} --flats {} '.format(indir[0], indir[1])
         if ctset[1] == 4:
@@ -140,7 +140,7 @@ class tofu_cmds(object):
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
@@ -151,56 +151,56 @@ class tofu_cmds(object):
         return cmd
 
     def get_sinos_noffc_cmd(self, ctsetpath, tmpdir, args, nviews, WH):
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctsetpath, self._fdt_names[2], False)
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctsetpath, self._fdt_names[2], False)
         cmd = 'tofu sinos'
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
         return cmd
 
     def get_sinos2proj_cmd(self, args, proj_height):
-        quatsch, out_pattern = fmt_in_out_path(args.tmpdir, 'quatsch', self._fdt_names[2], True)
+        quatsch, out_pattern = fmt_in_out_path(args.main_config_temp_dir, 'quatsch', self._fdt_names[2], True)
         cmd = 'tofu sinos'
-        cmd += ' --projections {}'.format(os.path.join(args.tmpdir, 'sinos-filt'))
+        cmd += ' --projections {}'.format(os.path.join(args.main_config_temp_dir, 'sinos-filt'))
         cmd += ' --output {}'.format(out_pattern)
-        if not args.vcrop:
+        if not args.main_region_select_rows:
             cmd += ' --number {}'.format(proj_height)
         else:
-            cmd += ' --number {}'.format(int(args.yheight / args.ystep))  # (np.ceil(args.yheight/args.ystep))
+            cmd += ' --number {}'.format(int(args.main_region_number_rows / args.main_region_nth_row))  # (np.ceil(args.main_region_number_rows/args.ystep))
         return cmd
 
     def get_sinFFC_cmd(self, ctset, args, nviews, n):
         indir = self.make_inpaths(ctset[0], ctset[1], args)
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2])
         cmd = 'bmit_sin --fix-nan'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
         if ctset[1] == 4:
             cmd += ' --flats2 {}'.format(indir[3])
         cmd += ' --output {}'.format(os.path.dirname(out_pattern))
-        cmd += ' --method {}'.format(args.sinFFC_method)
+        cmd += ' --method {}'.format(args.advanced_ffc_method)
         cmd += ' --multiprocessing'
-        cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
-        cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
-        cmd += ' --downsample {}'.format(args.sinFFCDowns)
+        cmd += ' --eigen-pco-repetitions {}'.format(args.advanced_ffc_eigen_pco_reps)
+        cmd += ' --eigen-pco-downsample {}'.format(args.advanced_ffc_eigen_pco_downsample)
+        cmd += ' --downsample {}'.format(args.advanced_ffc_downsample)
         return cmd
 
     def get_pr_sinFFC_cmd(self, ctset, args, nviews, n):
         indir = self.make_inpaths(ctset[0], ctset[1], args)
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2])
         cmd = 'bmit_sin --fix-nan'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
         if ctset[1] == 4:
             cmd += ' --flats2 {}'.format(indir[3])
         cmd += ' --output {}'.format(os.path.dirname(out_pattern))
-        cmd += ' --method {}'.format(args.sinFFC_method)
+        cmd += ' --method {}'.format(args.advanced_ffc_method)
         cmd += ' --multiprocessing'
-        cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
-        cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
-        cmd += ' --downsample {}'.format(args.sinFFCDowns)
+        cmd += ' --eigen-pco-repetitions {}'.format(args.advanced_ffc_eigen_pco_reps)
+        cmd += ' --eigen-pco-downsample {}'.format(args.advanced_ffc_eigen_pco_downsample)
+        cmd += ' --downsample {}'.format(args.advanced_ffc_downsample)
         return cmd
 
     def get_pr_tofu_cmd_sinFFC(self, ctset, args, nviews, WH):
@@ -209,7 +209,7 @@ class tofu_cmds(object):
         # cannot be formatted with that command correctly
         # indir = self.make_inpaths(ctset[0], ctset[1])
         # so we need a separate "universal" command which considers all previous steps
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2])
         # Phase retrieval
         cmd = 'tofu preprocess --delta 1e-6'
         cmd += ' --energy {} --propagation-distance {}' \
@@ -227,7 +227,7 @@ class tofu_cmds(object):
         # cannot be formatted with that command correctly
         indir = self.make_inpaths(ctset[0], ctset[1], args)
         # so we need a separate "universal" command which considers all previous steps
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2])
         cmd = 'tofu preprocess --fix-nan-and-inf --projection-filter none --delta 1e-6'
         cmd += ' --darks {} --flats {} --projections {}'.format(indir[0], indir[1], in_proj_dir)
         if ctset[1] == 4:
@@ -248,8 +248,8 @@ class tofu_cmds(object):
         # or CT reconstruction after preprocessing only
         indir = self.make_inpaths(ctset[0], ctset[1], args)
         # correct location of proj folder in case if prepro was done
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
-        # in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.main_config_input_dir, self._fdt_names[2], False)
+        in_proj_dir, quatsch = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2], False)
+        # in_proj_dir, quatsch = fmt_in_out_path(args.main_config_temp_dir,args.main_config_input_dir, self._fdt_names[2], False)
         # indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         # format command
         # Laminography
@@ -291,23 +291,23 @@ class tofu_cmds(object):
         b = int(np.ceil(WH[0] / 2.0))
         a = -int(WH[0] / 2.0)
         c = 1
-        if args.vcrop:
+        if args.main_region_select_rows:
             if args.main_filters_ring_removal:
-                h2 = args.yheight / args.ystep / 2.0
+                h2 = args.main_region_number_rows / args.main_region_nth_row / 2.0
                 b = np.ceil(h2)
                 a = -int(h2)
             else:
                 h2 = int(WH[0] / 2.0)
-                a = args.y - h2
-                b = args.y + args.yheight - h2
-                c = args.ystep
+                a = args.main_region_first_row - h2
+                b = args.main_region_first_row + args.main_region_number_rows - h2
+                c = args.main_region_nth_row
         cmd += ' --region={},{},{}'.format(a, b, c)
         # crop of reconstructed slice in the axial plane
         b = WH[1] / 2
         if args.main_region_crop_slices:
-            cmd += ' --x-region={},{},{}'.format(args.x0 - b, args.x0 + args.main_region_crop_width - b, 1)
-            cmd += ' --y-region={},{},{}'.format(args.y0 - b, args.y0 + args.main_region_crop_height - b, 1)
-        # cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+            cmd += ' --x-region={},{},{}'.format(args.main_region_crop_x - b, args.main_region_crop_x + args.main_region_crop_width - b, 1)
+            cmd += ' --y-region={},{},{}'.format(args.main_region_crop_y - b, args.main_region_crop_y + args.main_region_crop_height - b, 1)
+        # cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.main_config_save_multipage_tiff)
         # Optimization
@@ -325,8 +325,8 @@ class tofu_cmds(object):
         # or CT reconstruction after preprocessing only
         indir = self.make_inpaths(ctset[0], ctset[1], args)
         # correct location of proj folder in case if prepro was done
-        in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2], False)
-        # in_proj_dir, quatsch = fmt_in_out_path(args.tmpdir,args.main_config_input_dir, self._fdt_names[2], False)
+        in_proj_dir, quatsch = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2], False)
+        # in_proj_dir, quatsch = fmt_in_out_path(args.main_config_temp_dir,args.main_config_input_dir, self._fdt_names[2], False)
         # indir[2]=os.path.join(os.path.split(indir[2])[0], os.path.split(in_proj_dir)[1])
         # format command
         cmd = 'tofu reco'
@@ -356,23 +356,23 @@ class tofu_cmds(object):
         b = int(np.ceil(WH[0] / 2.0))
         a = -int(WH[0] / 2.0)
         c = 1
-        if args.vcrop:
+        if args.main_region_select_rows:
             if args.main_filters_ring_removal:
-                h2 = args.yheight / args.ystep / 2.0
+                h2 = args.main_region_number_rows / args.main_region_nth_row / 2.0
                 b = np.ceil(h2)
                 a = -int(h2)
             else:
                 h2 = int(WH[0] / 2.0)
-                a = args.y - h2
-                b = args.y + args.yheight - h2
-                c = args.ystep
+                a = args.main_region_first_row - h2
+                b = args.main_region_first_row + args.main_region_number_rows - h2
+                c = args.main_region_nth_row
         cmd += ' --region={},{},{}'.format(a, b, c)
         # crop of reconstructed slice in the axial plane
         b = WH[1] / 2
         if args.main_region_crop_slices:
-            cmd += ' --x-region={},{},{}'.format(args.x0 - b, args.x0 + args.main_region_crop_width - b, 1)
-            cmd += ' --y-region={},{},{}'.format(args.y0 - b, args.y0 + args.main_region_crop_height - b, 1)
-        # cmd = self.check_vcrop(cmd, args.vcrop, args.y, args.yheight, args.ystep, WH[0])
+            cmd += ' --x-region={},{},{}'.format(args.main_region_crop_x - b, args.main_region_crop_x + args.main_region_crop_width - b, 1)
+            cmd += ' --y-region={},{},{}'.format(args.main_region_crop_y - b, args.main_region_crop_y + args.main_region_crop_height - b, 1)
+        # cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.main_config_save_multipage_tiff)
         # Optimization

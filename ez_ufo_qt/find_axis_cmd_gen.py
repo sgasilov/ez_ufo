@@ -42,7 +42,7 @@ class findCOR_cmds(object):
             indir.append(args.main_config_darks_path)
             indir.append(args.main_config_flats_path)
             indir.append(os.path.join(lvl0, self._fdt_names[2]))
-            if args.use_common_flats2:
+            if args.main_config_flats2_checkbox:
                 indir.append(args.main_config_flats2_path)
             return indir
 

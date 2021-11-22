@@ -130,7 +130,7 @@ class BinningGroup(QGroupBox):
 
     def init_values(self):
         self.select_rows_checkbox.setChecked(False)
-        parameters.params['e_vcrop'] = False
+        parameters.params['main_region_select_rows'] = False
         self.first_row_entry.setText("100")
         self.num_rows_entry.setText("200")
         self.nth_row_entry.setText("20")
@@ -149,10 +149,10 @@ class BinningGroup(QGroupBox):
         self.rotate_vol_entry.setText("0.0")
 
     def set_values_from_params(self):
-        self.select_rows_checkbox.setChecked(parameters.params['e_vcrop'])
-        self.first_row_entry.setText(str(parameters.params['e_y']))
-        self.num_rows_entry.setText(str(parameters.params['e_yheight']))
-        self.nth_row_entry.setText(str(parameters.params['e_ystep']))
+        self.select_rows_checkbox.setChecked(parameters.params['main_region_select_rows'])
+        self.first_row_entry.setText(str(parameters.params['main_region_first_row']))
+        self.num_rows_entry.setText(str(parameters.params['main_region_number_rows']))
+        self.nth_row_entry.setText(str(parameters.params['main_region_nth_row']))
         self.clip_histo_checkbox.setChecked(parameters.params['main_region_clip_histogram'])
         if int(parameters.params['main_region_bit_depth']) == 8:
             self.eight_bit_rButton.setChecked(True)
@@ -163,27 +163,27 @@ class BinningGroup(QGroupBox):
         self.min_val_entry.setText(str(parameters.params['main_region_histogram_min']))
         self.max_val_entry.setText(str(parameters.params['main_region_histogram_max']))
         self.crop_slices_checkbox.setChecked(parameters.params['main_region_crop_slices'])
-        self.x_val_entry.setText(str(parameters.params['e_x0']))
+        self.x_val_entry.setText(str(parameters.params['main_region_crop_x']))
         self.width_val_entry.setText(str(parameters.params['main_region_crop_width']))
-        self.y_val_entry.setText(str(parameters.params['e_y0']))
+        self.y_val_entry.setText(str(parameters.params['main_region_crop_y']))
         self.height_val_entry.setText(str(parameters.params['main_region_crop_height']))
         self.rotate_vol_entry.setText(str(parameters.params['main_region_rotate_volume_clock']))
 
     def set_select_rows(self):
         logging.debug("Select rows: " + str(self.select_rows_checkbox.isChecked()))
-        parameters.params['e_vcrop'] = bool(self.select_rows_checkbox.isChecked())
+        parameters.params['main_region_select_rows'] = bool(self.select_rows_checkbox.isChecked())
 
     def set_first_row(self):
         logging.debug(self.first_row_entry.text())
-        parameters.params['e_y'] = str(self.first_row_entry.text())
+        parameters.params['main_region_first_row'] = str(self.first_row_entry.text())
 
     def set_num_rows(self):
         logging.debug(self.num_rows_entry.text())
-        parameters.params['e_yheight'] = str(self.num_rows_entry.text())
+        parameters.params['main_region_number_rows'] = str(self.num_rows_entry.text())
 
     def set_reco_nth_rows(self):
         logging.debug(self.nth_row_entry.text())
-        parameters.params['e_ystep'] = str(self.nth_row_entry.text())
+        parameters.params['main_region_nth_row'] = str(self.nth_row_entry.text())
 
     def set_clip_histo(self):
         logging.debug("Clip histo: " + str(self.clip_histo_checkbox.isChecked()))
@@ -211,7 +211,7 @@ class BinningGroup(QGroupBox):
 
     def set_x(self):
         logging.debug(self.x_val_entry.text())
-        parameters.params['e_x0'] = str(self.x_val_entry.text())
+        parameters.params['main_region_crop_x'] = str(self.x_val_entry.text())
 
     def set_width(self):
         logging.debug(self.width_val_entry.text())
@@ -219,7 +219,7 @@ class BinningGroup(QGroupBox):
 
     def set_y(self):
         logging.debug(self.y_val_entry.text())
-        parameters.params['e_y0'] = str(self.y_val_entry.text())
+        parameters.params['main_region_crop_y'] = str(self.y_val_entry.text())
 
     def set_height(self):
         logging.debug(self.height_val_entry.text())

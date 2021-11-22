@@ -29,7 +29,7 @@ class WalkCTdirs():
         self.common_flats = args.main_config_flats_path
         self.common_darks = args.main_config_darks_path
         self.common_flats2 = args.main_config_flats2_path
-        self.use_common_flats2 = args.use_common_flats2
+        self.use_common_flats2 = args.main_config_flats2_checkbox
     
     def print_tree(self):
         print('We start in {}'.format(self.lvl0))
