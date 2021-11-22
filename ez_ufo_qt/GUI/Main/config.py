@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog, QCheckBox, QPushButton, QG
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import Qt
-from ez_ufo_qt.main import main_tk, clean_tmp_dirs
+from ez_ufo_qt.main import execute_reconstruction, clean_tmp_dirs
 from ez_ufo_qt.GUI.yaml_in_out import Yaml_IO
 
 import ez_ufo_qt.GUI.params as parameters
@@ -539,7 +539,7 @@ class ConfigGroup(QGroupBox):
     def reco_button_pressed(self):
         """
         Gets the settings set by the user in the GUI
-        These are then passed to main_tk
+        These are then passed to execute_reconstruction
         """
         logging.debug("RECO")
         logging.debug(parameters.params)
@@ -556,7 +556,7 @@ class ConfigGroup(QGroupBox):
                            params['main_cor_axis_column'], params['main_cor_axis_increment_step'],
                            params['main_filters_remove_spots'], params['main_filters_remove_spots_threshold'],
                            params['main_filters_remove_spots_blur_sigma'], params['main_filters_ring_removal'],
-                           params['main_filters_ring_removal_ufo_lpf'], params['main_filters_ufo_lpf_1d_or_2d'],
+                           params['main_filters_ring_removal_ufo_lpf'], params['main_filters_ring_removal_ufo_lpf_1d_or_2d'],
                            params['main_filters_ring_removal_ufo_lpf_sigma_horizontal'],
                            params['main_filters_ring_removal_ufo_lpf_sigma_vertical'],
                            params['main_filters_ring_removal_sarepy_window_size'], params['main_filters_ring_removal_sarepy_wide'],
@@ -574,7 +574,7 @@ class ConfigGroup(QGroupBox):
                            params['main_config_keep_temp'], params['advanced_ffc_sinFFC'],
                            params['advanced_ffc_method'], params['advanced_ffc_eigen_pco_reps'],
                            params['advanced_ffc_eigen_pco_downsample'], params['advanced_ffc_downsample'],
-                           params['main_config_common_flats_darks'], params['e_common_darks'],
+                           params['main_config_common_flats_darks'], params['main_config_darks_path'],
                            params['main_config_flats_path'], params['main_config_flats2_checkbox'],
                            params['main_config_flats2_path'],
                            # NLMDN Parameters
@@ -593,7 +593,8 @@ class ConfigGroup(QGroupBox):
                            params['advanced_optimize_verbose_console'], params['advanced_optimize_slice_mem_coeff'],
                            params['advanced_optimize_num_gpus'], params['advanced_optimize_slices_per_device']
                            )
-            main_tk(args, self.get_fdt_names())
+
+            execute_reconstruction(args, self.get_fdt_names())
             if batch_run is False:
                 msg = "Done. See output in terminal for details."
                 QMessageBox.information(self, "Finished", msg)
@@ -750,7 +751,7 @@ class tk_args():
                 main_cor_axis_search_method, main_cor_axis_search_interval, main_cor_search_row_start,
                 main_cor_recon_patch_size, main_cor_axis_column, main_cor_axis_increment_step,
                 main_filters_remove_spots, main_filters_remove_spots_threshold, main_filters_remove_spots_blur_sigma,
-                main_filters_ring_removal, main_filters_ring_removal_ufo_lpf, main_filters_ufo_lpf_1d_or_2d,
+                main_filters_ring_removal, main_filters_ring_removal_ufo_lpf, main_filters_ring_removal_ufo_lpf_1d_or_2d,
                 main_filters_ring_removal_ufo_lpf_sigma_horizontal, main_filters_ring_removal_ufo_lpf_sigma_vertical,
                 main_filters_ring_removal_sarepy_window_size, main_filters_ring_removal_sarepy_wide, main_filters_ring_removal_sarepy_window, main_filters_ring_removal_sarepy_SNR,
                 main_pr_phase_retrieval, main_pr_photon_energy, main_pr_pixel_size, main_pr_detector_distance,
@@ -801,8 +802,8 @@ class tk_args():
         setattr(self,'main_filters_ring_removal',self.args['main_filters_ring_removal'])
         self.args['main_filters_ring_removal_ufo_lpf'] = bool(main_filters_ring_removal_ufo_lpf)
         setattr(self, 'main_filters_ring_removal_ufo_lpf', self.args['main_filters_ring_removal_ufo_lpf'])
-        self.args['main_filters_ufo_lpf_1d_or_2d'] = bool(main_filters_ufo_lpf_1d_or_2d)
-        setattr(self, 'main_filters_ufo_lpf_1d_or_2d', self.args['main_filters_ufo_lpf_1d_or_2d'])
+        self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = bool(main_filters_ring_removal_ufo_lpf_1d_or_2d)
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_1d_or_2d', self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'])
         self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'] = int(main_filters_ring_removal_ufo_lpf_sigma_horizontal)
         setattr(self,'main_filters_ring_removal_ufo_lpf_sigma_horizontal',self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'])
         self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'] = int(main_filters_ring_removal_ufo_lpf_sigma_vertical)

@@ -195,7 +195,7 @@ def fmt_nlmdn_ufo_cmd(inpath: str, outpath: str, args):
         cmd += " bytes-per-file=0 tiff-bigtiff=False"
     return cmd
 
-def main_tk(args, fdt_names):
+def execute_reconstruction(args, fdt_names):
     # array with the list of commands
     cmds = []
     # clean temporary directory or create if it doesn't exist
@@ -273,7 +273,7 @@ def main_tk(args, fdt_names):
             print("Number of projections: {}, dimensions: {}".format(nviews, WH))
             # tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
             # cmds.append("echo \"{}\"".format(tmp))
-            if args.nlmdn_apply_after_reco:
+            if args.advanced_nlmdn_apply_after_reco:
                 logging.debug("Using Non-Local Means Denoising")
                 nlmdn_input = out_pattern
                 head, tail = os.path.split(out_pattern)

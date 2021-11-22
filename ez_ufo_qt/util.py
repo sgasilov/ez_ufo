@@ -128,7 +128,7 @@ def save_params(args, ctsetname, ax, nviews, WH):
         if args.main_filters_ring_removal:
             if args.main_filters_ring_removal_ufo_lpf:
                 tmp = '2D'
-                if args.main_filters_ufo_lpf_1d_or_2d:
+                if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
                     tmp = '1D'
                 f.write('  RR with ufo {} stripes filter\n'.format(tmp))
                 f.write(f'   sigma horizontal {args.main_filters_ring_removal_ufo_lpf_sigma_horizontal}')
