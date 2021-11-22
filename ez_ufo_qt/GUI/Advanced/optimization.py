@@ -54,32 +54,32 @@ class OptimizationGroup(QGroupBox):
 
     def init_values(self):
         self.verbose_switch.setChecked(False)
-        parameters.params['e_adv_verbose'] = False
+        parameters.params['advanced_optimize_verbose_console'] = False
         self.slice_memory_entry.setText("0.5")
-        parameters.params['e_adv_slice_mem_coeff'] = "0.5"
+        parameters.params['advanced_optimize_slice_mem_coeff'] = "0.5"
         self.num_GPU_entry.setText("")
-        parameters.params['e_adv_num_gpu'] = ""
+        parameters.params['advanced_optimize_num_gpus'] = ""
         self.slices_per_device_entry.setText("")
-        parameters.params['e_adv_slices_per_device'] = ""
+        parameters.params['advanced_optimize_slices_per_device'] = ""
 
     def set_values_from_params(self):
-        self.verbose_switch.setChecked(bool(parameters.params['e_adv_verbose']))
-        self.slice_memory_entry.setText(str(parameters.params['e_adv_slice_mem_coeff']))
-        self.num_GPU_entry.setText(str(parameters.params['e_adv_num_gpu']))
-        self.slices_per_device_entry.setText(str(parameters.params['e_adv_slices_per_device']))
+        self.verbose_switch.setChecked(bool(parameters.params['advanced_optimize_verbose_console']))
+        self.slice_memory_entry.setText(str(parameters.params['advanced_optimize_slice_mem_coeff']))
+        self.num_GPU_entry.setText(str(parameters.params['advanced_optimize_num_gpus']))
+        self.slices_per_device_entry.setText(str(parameters.params['advanced_optimize_slices_per_device']))
 
     def set_verbose_switch(self):
         logging.debug("Verbose: " + str(self.verbose_switch.isChecked()))
-        parameters.params['e_adv_verbose'] = bool(self.verbose_switch.isChecked())
+        parameters.params['advanced_optimize_verbose_console'] = bool(self.verbose_switch.isChecked())
 
     def set_slice(self):
         logging.debug(self.slice_memory_entry.text())
-        parameters.params['e_adv_slice_mem_coeff'] = str(self.slice_memory_entry.text())
+        parameters.params['advanced_optimize_slice_mem_coeff'] = str(self.slice_memory_entry.text())
 
     def set_num_gpu(self):
         logging.debug(self.num_GPU_entry.text())
-        parameters.params['e_adv_num_gpu'] = str(self.num_GPU_entry.text())
+        parameters.params['advanced_optimize_num_gpus'] = str(self.num_GPU_entry.text())
 
     def set_slices_per_device(self):
         logging.debug(self.slices_per_device_entry.text())
-        parameters.params['e_adv_slices_per_device'] = str(self.slices_per_device_entry.text())
+        parameters.params['advanced_optimize_slices_per_device'] = str(self.slices_per_device_entry.text())

@@ -172,7 +172,7 @@ class FiltersGroup(QGroupBox):
         self.remove_spots_checkBox.setChecked(parameters.params['main_filters_remove_spots'])
         self.threshold_entry.setText(str(parameters.params['main_filters_remove_spots_threshold']))
         self.spot_blur_entry.setText(str(parameters.params['main_filters_remove_spots_blur_sigma']))
-        self.enable_RR_checkbox.setChecked(parameters.params['e_RR'])
+        self.enable_RR_checkbox.setChecked(parameters.params['main_filters_ring_removal'])
         if parameters.params['main_filters_ring_removal_ufo_lpf'] == True:
             self.use_LPF_rButton.setChecked(True)
         elif parameters.params['main_filters_ring_removal_ufo_lpf'] == False:

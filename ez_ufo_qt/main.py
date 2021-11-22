@@ -37,11 +37,11 @@ def get_CTdirs_list(inpath, fdt_names, args):
     # Find any directories containing "tomo" directory
     W.findCTdirs()
     # If "Use common flats/darks across multiple experiments" is enabled
-    if args.common_darks_flats:
+    if args.main_config_common_flats_darks:
         logging.debug("Use common darks/flats")
-        logging.debug("Path to darks: " + str(args.common_darks))
-        logging.debug("Path to flats: " + str(args.common_flats))
-        logging.debug("Path to flats2: " + str(args.common_flats2))
+        logging.debug("Path to darks: " + str(args.main_config_darks_path))
+        logging.debug("Path to flats: " + str(args.main_config_flats_path))
+        logging.debug("Path to flats2: " + str(args.main_config_flats2_path))
         logging.debug("Use flats2: " + str(args.use_common_flats2))
         # Determine whether paths to common flats/darks/flats2 exist
         if not W.checkCommonFDT():
@@ -76,15 +76,15 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     ####### PREPROCESSING #########
     flat_file_for_mask = os.path.join(args.tmpdir, 'flat.tif')
     if args.main_filters_remove_spots:
-        if not args.common_darks_flats:
+        if not args.main_config_common_flats_darks:
             flatdir = os.path.join(ctset[0], Tofu._fdt_names[1])
-        elif args.common_darks_flats:
-            flatdir = args.common_flats
-        cmd = make_copy_of_flat(flatdir, flat_file_for_mask, args.dryrun)
+        elif args.main_config_common_flats_darks:
+            flatdir = args.main_config_flats_path
+        cmd = make_copy_of_flat(flatdir, flat_file_for_mask, args.main_config_dry_run)
         cmds.append(cmd)
     if args.pre:
         cmds.append("echo \" - Applying filter(s) to images \"")
-        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir, args.dryrun, args)
+        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir, args.main_config_dry_run, args)
         cmds.extend(cmds_prepro)
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
@@ -215,7 +215,7 @@ def main_tk(args, fdt_names):
     # get list of all good CT directories to be reconstructed
 
     print('*********** Analyzing input directory ************')
-    W, lvl0 = get_CTdirs_list(args.indir, fdt_names, args)
+    W, lvl0 = get_CTdirs_list(args.main_config_input_dir, fdt_names, args)
     # W is an array of tuples (path, type)
     # get list of already reconstructed sets
     recd_sets = findSlicesDirs(args.outdir)
@@ -285,7 +285,7 @@ def main_tk(args, fdt_names):
     start = time.time()
     print('*********** PROCESSING ************')
     for cmd in cmds:
-        if not args.dryrun:
+        if not args.main_config_dry_run:
             os.system(cmd)
         else:
             print(cmd)

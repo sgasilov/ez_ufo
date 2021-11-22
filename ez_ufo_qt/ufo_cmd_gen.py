@@ -49,19 +49,19 @@ class ufo_cmds(object):
         """
         indir = []
         # If using flats/darks/flats2 in same dir as tomo
-        if not args.common_darks_flats:
+        if not args.main_config_common_flats_darks:
             for i in self._fdt_names[:3]:
                 indir.append(os.path.join(lvl0, i))
             if flats2 - 3:
                 indir.append(os.path.join(lvl0, self._fdt_names[3]))
             return indir
         # If using common flats/darks/flats2 across multiple reconstructions
-        elif args.common_darks_flats:
+        elif args.main_config_common_flats_darks:
             indir.append(args.common_darks)
-            indir.append(args.common_flats)
+            indir.append(args.main_config_flats_path)
             indir.append(os.path.join(lvl0, self._fdt_names[2]))
             if args.use_common_flats2:
-                indir.append(args.common_flats2)
+                indir.append(args.main_config_flats2_path)
             return indir
 
     def check_vcrop(self, cmd, vcrop, y, yheight, ystep):
@@ -76,7 +76,7 @@ class ufo_cmds(object):
         return cmd
 
     def get_pr_ufo_cmd(self, args, nviews, WH):
-        # in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
+        # in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.main_config_input_dir,self._fdt_names[2])
         in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, 'quatsch', self._fdt_names[2])
         cmds = []
         pad_width = next_power_of_two(WH[1] + 50)
@@ -190,10 +190,10 @@ class ufo_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             if not args.main_pr_phase_retrieval:
                 cmd += ' --absorptivity'
-            if not args.adv_dark_scale == "":
-                cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
-            if not args.adv_flat_scale == "":
-                cmd += ' --flat-scale {}'.format(args.adv_flat_scale)
+            if not args.advanced_advtofu_aux_ffc_dark_scale == "":
+                cmd += ' --dark-scale {}'.format(args.advanced_advtofu_aux_ffc_dark_scale)
+            if not args.advanced_advtofu_aux_ffc_flat_scale == "":
+                cmd += ' --flat-scale {}'.format(args.advanced_advtofu_aux_ffc_flat_scale)
             cmds.append(cmd)
         if not args.keep_tmp and args.pre:
             cmds.append('rm -rf {}'.format(indir[0]))
@@ -215,7 +215,7 @@ class ufo_cmds(object):
     def get_crop_sli(self, out_pattern, args):
         cmd = 'ufo-launch read path={}/*.tif ! '.format(os.path.dirname(out_pattern))
         cmd += 'crop x={} width={} y={} height={} ! '. \
-            format(args.main_region_crop_x, args.main_region_crop_width, args.main_region_crop_y, args.main_region_crop_height)
+            format(args.x0, args.main_region_crop_width, args.y0, args.main_region_crop_height)
         cmd += 'write filename={}'.format(out_pattern)
         if args.main_region_clip_histogram:
             cmd += ' bits=8 rescale=False'

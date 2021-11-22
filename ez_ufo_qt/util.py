@@ -76,12 +76,12 @@ def enquote(string, escape=False):
 
 
 def save_params(args, ctsetname, ax, nviews, WH):
-    if not args.dryrun and not os.path.exists(args.outdir):
+    if not args.main_config_dry_run and not os.path.exists(args.outdir):
         os.makedirs(args.outdir)
     tmp = os.path.join(args.outdir, ctsetname)
-    if not args.dryrun and not os.path.exists(tmp):
+    if not args.main_config_dry_run and not os.path.exists(tmp):
         os.makedirs(tmp)
-    if not args.dryrun and args.parfile:
+    if not args.main_config_dry_run and args.parfile:
         # Dump the params .yaml file
         try:
             yaml_output_filepath = os.path.join(tmp, 'parameters.yaml')
@@ -94,7 +94,7 @@ def save_params(args, ctsetname, ax, nviews, WH):
         fname = os.path.join(tmp, 'reco.params')
         f = open(fname, 'w')
         f.write('*** General ***\n')
-        f.write('Input directory {}\n'.format(args.indir))
+        f.write('Input directory {}\n'.format(args.main_config_input_dir))
         if ctsetname == '':
             ctsetname = '.'
         f.write('CT set {}\n'.format(ctsetname))
@@ -128,15 +128,15 @@ def save_params(args, ctsetname, ax, nviews, WH):
         if args.main_filters_ring_removal:
             if args.main_filters_ring_removal_ufo_lpf:
                 tmp = '2D'
-                if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
+                if args.main_filters_ufo_lpf_1d_or_2d:
                     tmp = '1D'
                 f.write('  RR with ufo {} stripes filter\n'.format(tmp))
                 f.write(f'   sigma horizontal {args.main_filters_ring_removal_ufo_lpf_sigma_horizontal}')
                 f.write(f'   sigma vertical {args.main_filters_ring_removal_ufo_lpf_sigma_vertical}')
             else:
-                if args.main_filters_ring_removal_sarepy_wide:
+                if args.RR_srp_wide:
                     tmp = '  RR with ufo sarepy remove wide filter, '
-                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR)
+                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.RR_srp_wide_snr)
                     f.write(tmp)
                 f.write('  RR with ufo sarepy sorting filter, window {}\n'.format(args.RR_srp_wind_sort))
         else:
@@ -144,16 +144,16 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('*** Region of interest ***\n')
         if args.vcrop:
             f.write('Vertical ROI defined\n')
-            f.write('  first row {}\n'.format(args.main_region_first_row))
-            f.write('  height {}\n'.format(args.main_region_number_rows))
-            f.write('  reconstruct every {}th row\n'.format(args.main_region_nth_row))
+            f.write('  first row {}\n'.format(args.y))
+            f.write('  height {}\n'.format(args.yheight))
+            f.write('  reconstruct every {}th row\n'.format(args.ystep))
         else:
             f.write('Vertical ROI: all rows\n')
         if args.main_region_crop_slices:
             f.write('ROI in slice plane defined\n')
-            f.write('  x {}\n'.format(args.main_region_crop_x))
+            f.write('  x {}\n'.format(args.x0))
             f.write('  width {}\n'.format(args.main_region_crop_width))
-            f.write('  y {}\n'.format(args.main_region_crop_y))
+            f.write('  y {}\n'.format(args.y0))
             f.write('  height {}\n'.format(args.main_region_crop_height))
         else:
             f.write('ROI in slice plane not defined\n')
