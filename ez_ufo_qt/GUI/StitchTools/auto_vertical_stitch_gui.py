@@ -19,6 +19,7 @@ class AutoVerticalStitchGUI(QGroupBox):
 
         self.parameters = {'parameters_type': 'auto_vertical_stitch'}
         self.auto_vertical_stitch_funcs = None
+        self.stitch_type_group = None
 
         self.projections_input_button = QPushButton("Select Projections Input Path")
         self.projections_input_button.clicked.connect(self.projections_input_button_pressed)
@@ -142,12 +143,12 @@ class AutoVerticalStitchGUI(QGroupBox):
         stitch_group.setLayout(stitch_layout)
         layout.addWidget(stitch_group, 6, 0, 1, 2)
 
-        stitch_type_group = QGroupBox()
+        self.stitch_type_group = QGroupBox()
         stitch_type_layout = QGridLayout()
         stitch_type_layout.addWidget(self.equalize_intensity_rButton, 0, 0)
         stitch_type_layout.addWidget(self.concatenate_rButton, 0, 1)
-        stitch_type_group.setLayout(stitch_type_layout)
-        layout.addWidget(stitch_type_group, 6, 2, 1, 2)
+        self.stitch_type_group.setLayout(stitch_type_layout)
+        layout.addWidget(self.stitch_type_group, 6, 2, 1, 2)
 
         layout.addWidget(self.which_images_to_stitch_label, 7, 0, 1, 2)
         layout.addWidget(self.which_images_to_stitch_entry, 7, 2, 1, 2)
@@ -315,9 +316,12 @@ class AutoVerticalStitchGUI(QGroupBox):
         if self.stitch_projections_rButton.isChecked():
             self.recon_slices_input_button.setDisabled(True)
             self.recon_slices_input_entry.setDisabled(True)
-            self.reslice_checkbox.setDisabled(True)
-            self.reslice_checkbox.setChecked(False)
+            self.stitch_type_group.setEnabled(True)
             self.parameters['reslice'] = False
+            if self.reslice_checkbox.isEnabled():
+                self.reslice_checkbox.setDisabled(True)
+                self.which_images_to_stitch_entry.setEnabled(True)
+                self.which_images_to_stitch_label.setEnabled(True)
 
     def equalize_intensity_rButton_clicked(self):
         logging.debug("Equalize Intensity: " + str(self.equalize_intensity_rButton.isChecked()))
@@ -332,6 +336,18 @@ class AutoVerticalStitchGUI(QGroupBox):
     def set_reslice_checkbox(self):
         logging.debug("Reslice: " + str(self.reslice_checkbox.isChecked()))
         self.parameters['reslice'] = self.reslice_checkbox.isChecked()
+        if self.reslice_checkbox.isChecked():
+            self.stitch_type_group.setEnabled(True)
+            self.which_images_to_stitch_label.setEnabled(True)
+            self.which_images_to_stitch_entry.setEnabled(True)
+            self.temp_button.setEnabled(True)
+            self.temp_entry.setEnabled(True)
+        else:
+            self.stitch_type_group.setEnabled(False)
+            self.which_images_to_stitch_label.setEnabled(False)
+            self.which_images_to_stitch_entry.setEnabled(False)
+            self.temp_button.setEnabled(False)
+            self.temp_entry.setEnabled(False)
 
     def set_which_images_to_stitch(self):
         logging.debug("Which images to be stitched: " + str(self.which_images_to_stitch_entry.text()))

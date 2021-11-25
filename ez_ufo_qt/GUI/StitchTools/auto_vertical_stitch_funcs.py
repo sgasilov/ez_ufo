@@ -46,7 +46,6 @@ class AutoVerticalStitchFunctions:
         print("\nFound the following stitch pixel(s): ")
         print(self.ct_stitch_pixel_dict)
 
-        # TODO: Need to maintain input ct-directory structure when slicing or stitching
         if not self.parameters['dry_run']:
             print("\n--> Stitching Images")
             if self.parameters['stitch_reconstructed_slices'] and not self.parameters['reslice']:
@@ -131,7 +130,6 @@ class AutoVerticalStitchFunctions:
             exec_func = partial(self.find_stitch_pixel_multiproc, midpoint_image_list, one_after_midpoint_image_list)
             stitch_pixel_list = pool.map(exec_func, image_index)
 
-            #print(stitch_pixel_list)
             most_common_value = max(set(stitch_pixel_list), key=stitch_pixel_list.count)
             self.ct_stitch_pixel_dict[ct_dir] = int(most_common_value)
 
