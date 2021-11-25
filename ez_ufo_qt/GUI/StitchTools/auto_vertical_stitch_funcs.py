@@ -305,7 +305,6 @@ class AutoVerticalStitchFunctions:
             if not os.path.isdir(output_path):
                 os.makedirs(output_path, exist_ok=True, mode=0o777)
                 z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))])
-                out_img_index = 0
                 for z_dir_index in range(len(z_dirs)):
                     print(z_dirs[z_dir_index])
                     z_dir_tiff_list = sorted(glob.glob(os.path.join(recon_ct_path, z_dirs[z_dir_index], 'sli', '*.tif')))
@@ -313,31 +312,31 @@ class AutoVerticalStitchFunctions:
                     # First z-directory
                     if z_dir_index == 0:
                         stop_index = (len(z_dir_tiff_list) - stitch_pixel)
-                        for img_index in range(stop_index):
-                            print(img_index)
-                            print(z_dir_tiff_list[img_index])
-                            out_img_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(out_img_index))
-                            shutil.copy(z_dir_tiff_list[img_index], out_img_path)
-                            out_img_index += 1
+                        img_index = range(stop_index)
                     # Last z-directory
                     elif z_dir_index == len(z_dirs) - 1:
                         start_index = stitch_pixel
-                        for img_index in range(start_index, len(z_dir_tiff_list), 1):
-                            print(img_index)
-                            print(z_dir_tiff_list[img_index])
-                            out_img_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(out_img_index))
-                            shutil.copy(z_dir_tiff_list[img_index], out_img_path)
-                            out_img_index += 1
+                        img_index = range(start_index, len(z_dir_tiff_list), 1)
                     # Intermediate z-directories
                     else:
                         start_index = stitch_pixel
                         stop_index = (len(z_dir_tiff_list) - stitch_pixel)
-                        for img_index in range(start_index, stop_index, 1):
-                            print(img_index)
-                            print(z_dir_tiff_list[img_index])
-                            out_img_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(out_img_index))
-                            shutil.copy(z_dir_tiff_list[img_index], out_img_path)
-                            out_img_index += 1
+                        img_index = range(start_index, stop_index, 1)
+                    pool = mp.Pool(processes=mp.cpu_count())
+                    exec_func = partial(self.copy_image_multiproc, stitch_pixel, z_dir_index,
+                                        z_dir_tiff_list, output_path)
+                    pool.map(exec_func, img_index)
+
+    def copy_image_multiproc(self, stitch_pixel, z_dir_index, z_dir_tiff_list, output_path, img_index):
+        num_recon_imgs = len(z_dir_tiff_list)
+        z00_num_imgs = num_recon_imgs - stitch_pixel
+        mid_zdir_num_imgs = num_recon_imgs - stitch_pixel * 2
+        if z_dir_index == 0:
+            out_img_index = img_index
+        else:
+            out_img_index = z00_num_imgs + ((z_dir_index - 1) * mid_zdir_num_imgs) + (img_index - stitch_pixel)
+        out_img_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(out_img_index))
+        shutil.copy(z_dir_tiff_list[img_index], out_img_path)
 
     # Interpolate and Equalize Intensity
     def main_stitch_multiproc(self):
