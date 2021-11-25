@@ -296,19 +296,14 @@ class AutoVerticalStitchFunctions:
     def concatenate_zdirs(self):
         for ct_dir in self.ct_dirs:
             stitch_pixel = self.ct_stitch_pixel_dict[ct_dir]
-            print(ct_dir)
             diff_path = os.path.relpath(ct_dir, self.parameters['projections_input_dir'])
-            print(diff_path)
             recon_ct_path = os.path.join(self.parameters['recon_slices_input_dir'], diff_path)
-            print(recon_ct_path)
             output_path = os.path.join(self.parameters['output_dir'], diff_path)
             if not os.path.isdir(output_path):
                 os.makedirs(output_path, exist_ok=True, mode=0o777)
                 z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))])
                 for z_dir_index in range(len(z_dirs)):
-                    print(z_dirs[z_dir_index])
                     z_dir_tiff_list = sorted(glob.glob(os.path.join(recon_ct_path, z_dirs[z_dir_index], 'sli', '*.tif')))
-                    print(len(z_dir_tiff_list))
                     # First z-directory
                     if z_dir_index == 0:
                         stop_index = (len(z_dir_tiff_list) - stitch_pixel)
