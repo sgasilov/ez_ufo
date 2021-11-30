@@ -53,7 +53,7 @@ class AutoVerticalStitchFunctions:
                 self.concatenate_zdirs()
             elif self.parameters['equalize_intensity']:
                 print("Stitching using intensity equalization")
-                self.main_stitch_multiproc()
+                self.main_interpolate_multiproc()
             elif self.parameters['concatenate']:
                 print("Stitching using concatenation")
                 self.main_concatenate_multiproc()
@@ -312,7 +312,7 @@ class AutoVerticalStitchFunctions:
         shutil.copy(z_dir_tiff_list[img_index], out_img_path)
 
     # Interpolate and Equalize Intensity
-    def main_stitch_multiproc(self):
+    def main_interpolate_multiproc(self):
         """
         Stitch images using interpolation and intensity equalization
         :return: None
