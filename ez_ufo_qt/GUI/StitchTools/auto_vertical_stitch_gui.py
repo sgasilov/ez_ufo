@@ -305,6 +305,8 @@ class AutoVerticalStitchGUI(QGroupBox):
         if self.stitch_reconstructed_slices_rButton.isChecked():
             self.recon_slices_input_button.setEnabled(True)
             self.recon_slices_input_entry.setEnabled(True)
+            self.temp_button.setEnabled(True)
+            self.temp_entry.setEnabled(True)
             self.reslice_checkbox.setEnabled(True)
             self.reslice_checkbox.setChecked(True)
             self.parameters['reslice'] = True
@@ -316,6 +318,8 @@ class AutoVerticalStitchGUI(QGroupBox):
         if self.stitch_projections_rButton.isChecked():
             self.recon_slices_input_button.setDisabled(True)
             self.recon_slices_input_entry.setDisabled(True)
+            self.temp_button.setDisabled(True)
+            self.temp_entry.setDisabled(True)
             self.stitch_type_group.setEnabled(True)
             self.parameters['reslice'] = False
             if self.reslice_checkbox.isEnabled():

@@ -249,8 +249,7 @@ class AutoVerticalStitchFunctions:
         tmp = sorted(glob.glob(tmp))[0]
         input_data_type = type(self.read_image(tmp, flip_image=False)[0][0])
 
-        # Could use os.path.relpath too
-        ct_path = self.build_ct_path(ct_dir)
+        ct_path = os.path.relpath(ct_dir, self.parameters['projections_input_dir'])
         print("ct_path: ", end="")
         print(ct_path)
 
@@ -271,25 +270,6 @@ class AutoVerticalStitchFunctions:
             elif self.parameters['stitch_projections']:
                 stitch_input_dir_path = os.path.join(self.parameters['projections_input_dir'], ct_path)
         return stitch_input_dir_path, start, stop, step, input_data_type, ct_path
-
-    def build_ct_path(self, ct_dir):
-        """
-        Gets the suffix difference of the ct_dir and projections_input_dir
-        :param ct_dir:
-        :return: diff of two strings
-        """
-        head = ct_dir
-        tail_list = []
-        while head != self.parameters['projections_input_dir']:
-            head, tail = os.path.split(head)
-            tail_list.append(tail)
-        if len(tail_list) > 1:
-            tail_list.reverse()
-        str_buff = ''
-        for dir_str in tail_list:
-            str_buff += dir_str
-            str_buff += '/'
-        return str_buff[:-1]
 
     def concatenate_zdirs(self):
         for ct_dir in self.ct_dirs:
@@ -344,7 +324,6 @@ class AutoVerticalStitchFunctions:
             # second: stitch them
             if self.parameters['stitch_reconstructed_slices']:
                 if self.parameters['reslice']:
-                    #vertical_steps = sorted(os.listdir(stitch_input_dir_path))
                     vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
                     tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], '*.tif'))[0]
                 elif not self.parameters['reslice']:
@@ -363,7 +342,7 @@ class AutoVerticalStitchFunctions:
             pool = mp.Pool(processes=mp.cpu_count())
             exec_func = partial(self.exec_stitch_multiproc, stitch_input_dir_path, start, step, num_rows,
                                 num_rows_new, vertical_steps, dx, num_columns, ramp, input_dir_type, ct_path)
-            print("Adjusting and stitching")
+            print("Adjusting and stitching using intensity equalization")
             pool.map(exec_func, j_index)
             print(f"========== Finished Stitching {ct_dir} ==========")
         print("========== Completed Stitching For All CT-Directories ==========")
