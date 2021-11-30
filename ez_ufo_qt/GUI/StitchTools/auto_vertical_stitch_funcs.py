@@ -52,7 +52,7 @@ class AutoVerticalStitchFunctions:
                 print("Concatenating z-directories from reconstructed slices")
                 self.concatenate_zdirs()
             elif self.parameters['equalize_intensity']:
-                print("Stitching using intensity equalization")
+                print("Stitching using interpolation and intensity equalization")
                 self.main_interpolate_multiproc()
             elif self.parameters['concatenate']:
                 print("Stitching using concatenation")
@@ -339,43 +339,71 @@ class AutoVerticalStitchFunctions:
             ramp = np.linspace(0, 1, dx)
 
             j_index = range(int((stop - start) / step))
+
+            if self.parameters['stitch_reconstructed_slices']:
+                if self.parameters['reslice']:
+                    dir_name = ''
+                elif not self.parameters['reslice']:
+                    dir_name = 'sli'
+            elif self.parameters['stitch_projections']:
+                dir_name = 'tomo'
+
             pool = mp.Pool(processes=mp.cpu_count())
-            exec_func = partial(self.exec_stitch_multiproc, stitch_input_dir_path, start, step, num_rows,
-                                num_rows_new, vertical_steps, dx, num_columns, ramp, input_dir_type, ct_path)
-            print("Adjusting and stitching using intensity equalization")
+            exec_func = partial(self.exec_interpolate_multiproc, stitch_input_dir_path, start, step, num_rows,
+                                num_rows_new, vertical_steps, dx, num_columns, ramp, input_dir_type, dir_name, ct_path)
+
             pool.map(exec_func, j_index)
+
+            # Now stitch the flats and darks
+            if self.parameters['stitch_projections']:
+                dir_name = 'flats'
+                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                dir_name = 'darks'
+                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                dir_name = 'flats2'
+                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+
             print(f"========== Finished Stitching {ct_dir} ==========")
         print("========== Completed Stitching For All CT-Directories ==========")
 
-    def exec_stitch_multiproc(self, stitch_input_dir_path, start, step, num_rows, num_rows_new, vertical_steps,
-                              dx, num_columns, ramp, input_dir_type, ct_path, j):
+    def stitch_fdt(self, ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name):
+        if os.path.isdir(os.path.join(ct_dir, vertical_steps[0], dir_name)):
+            print(f"Concatenating {dir_name}")
+            image_path = os.path.join(ct_dir, vertical_steps[0], dir_name, '*.tif')
+            image_list = glob.glob(image_path)
+            num_z_dirs = len(vertical_steps)
+            j_index = range(len(image_list))
+            start = 0
+            step = 1
+            pool = mp.Pool(processes=mp.cpu_count())
+            exec_func = partial(self.exec_concatenate_multiproc, start, step, image_list[0],
+                                num_z_dirs, vertical_steps, stitch_input_dir_path, ct_dir, ct_path, dir_name)
+            pool.map(exec_func, j_index)
+
+    def exec_interpolate_multiproc(self, stitch_input_dir_path, start, step, num_rows, num_rows_new, vertical_steps,
+                              dx, num_columns, ramp, input_dir_type, dir_name, ct_path, j):
         """
         Stitch images using interpolation and intensity equalization
+        :param stitch_input_dir_path: path to input CT directory of z-directories
         :param start: Image index to start stitching
         :param step: Value to skip for each image stitched
         :param num_rows: Number of rows in the original image
         :param num_rows_new: Number of rows in the new stitched image
         :param vertical_steps: List of vertical steps (z-directories)
-        :param dx:
+        :param dx: The region of overlap between the two images (2 * value of stitch pixel)
         :param num_columns: Number of columns in the original image
         :param ramp:
         :param input_dir_type:
         :param j:
+        :param dir_name: Type of directory within z-dir to stitch, e.g. 'tomo', 'flats', 'darks', 'flats2'
+        :param ct_path: Name of the ct-directory
         :return: None - writes stitched image to output directory
         """
         index = start + j * step
         large_image_buffer = np.empty((num_rows_new * len(vertical_steps) + dx, num_columns), dtype=np.float32)
         for i, v_step in enumerate(vertical_steps[:-1]):
-            if self.parameters['stitch_reconstructed_slices']:
-                if self.parameters['reslice']:
-                    dir_type = ''
-                elif not self.parameters['reslice']:
-                    dir_type = 'sli'
-            elif self.parameters['stitch_projections']:
-                dir_type = 'tomo'
-
-            tmp = os.path.join(stitch_input_dir_path, vertical_steps[i], dir_type, '*.tif')
-            tmp1 = os.path.join(stitch_input_dir_path, vertical_steps[i + 1], dir_type, '*.tif')
+            tmp = os.path.join(stitch_input_dir_path, vertical_steps[i], dir_name, '*.tif')
+            tmp1 = os.path.join(stitch_input_dir_path, vertical_steps[i + 1], dir_name, '*.tif')
 
             if self.parameters['reslice']:
                 tmp = sorted(glob.glob(tmp))[j]
@@ -397,14 +425,13 @@ class AutoVerticalStitchFunctions:
                 np.transpose(first[num_rows - dx:, :]) * (1 - ramp) + np.transpose(second[:dx, :]) * ramp)
             large_image_buffer[b + dx:c + dx, :] = second[dx:, :]
 
-        output_path = os.path.join(self.parameters['output_dir'], ct_path)
+        output_path = os.path.join(self.parameters['output_dir'], ct_path, dir_name)
         if not os.path.isdir(output_path):
             os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
         # TODO: Make sure to preserve bitdepth
         tifffile.imsave(output_path, large_image_buffer.astype(input_dir_type))
 
-    # TODO : Also stitch flats/darks for both common and not common for concat and equalize intensity
     # Concatenation
     def main_concatenate_multiproc(self):
         """
@@ -416,42 +443,63 @@ class AutoVerticalStitchFunctions:
             print(self.ct_stitch_pixel_dict[ct_dir])
             stitch_input_dir_path, start, stop, step, input_data_type, ct_path = self.prepare(ct_dir)
             print("Finished preparation")
-            z_fold = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
-            num_z_dirs = len(z_fold)
+            vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+            num_z_dirs = len(vertical_steps)
 
             if self.parameters['stitch_reconstructed_slices']:
                 if self.parameters['reslice']:
                     dir_type = ''
-                    image_path = os.path.join(self.parameters['temp_dir'], ct_path, z_fold[0], dir_type, '*.tif')
+                    image_path = os.path.join(self.parameters['temp_dir'], ct_path, vertical_steps[0], dir_type, '*.tif')
                 elif not self.parameters['reslice']:
                     dir_type = 'sli/'
                     image_path = os.path.join(self.parameters['recon_slices_input_dir'], ct_path,
-                                              z_fold[0], dir_type, '*.tif')
+                                              vertical_steps[0], dir_type, '*.tif')
             elif self.parameters['stitch_projections']:
                 dir_type = 'tomo/'
-                image_path = os.path.join(ct_dir, z_fold[0], dir_type, '*.tif')
+                image_path = os.path.join(ct_dir, vertical_steps[0], dir_type, '*.tif')
             image_list = glob.glob(image_path)
 
             j_index = range(int((stop - start) / step))
+
+            if self.parameters['stitch_reconstructed_slices']:
+                if self.parameters['reslice']:
+                    dir_name = ''
+                elif not self.parameters['reslice']:
+                    dir_name = 'sli'
+            elif self.parameters['stitch_projections']:
+                dir_name = 'tomo'
+
             pool = mp.Pool(processes=mp.cpu_count())
             exec_func = partial(self.exec_concatenate_multiproc, start, step, image_list[0],
-                                num_z_dirs, z_fold, stitch_input_dir_path, ct_dir, ct_path)
+                                num_z_dirs, vertical_steps, stitch_input_dir_path, ct_dir, ct_path, dir_name)
             print("Concatenating")
             pool.map(exec_func, j_index)
+
+            # Now stitch the flats and darks
+            if self.parameters['stitch_projections']:
+                dir_name = 'flats'
+                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                dir_name = 'darks'
+                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                dir_name = 'flats2'
+                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+
             print(f"========== Finished Stitching {ct_dir} ==========")
         print("========== Completed Stitching For All CT-Directories ==========")
 
-    def exec_concatenate_multiproc(self, start, step, example_image_path, num_z_dirs, z_fold,
-                                   stitch_input_dir_path, ct_dir, ct_path, j):
+    def exec_concatenate_multiproc(self, start, step, example_image_path, num_z_dirs, vertical_steps,
+                                   stitch_input_dir_path, ct_dir, ct_path, dir_name, j):
         """
         Stitches images using concatenation
         :param start: starting image index
         :param step: distance between images to be stitched
         :param example_image_path: Image from input dir, used to determine dimensions
         :param num_z_dirs: Number of vertical steps (z-directories) in the input ct directory
-        :param z_fold: List of paths to the z-directories in current ct directory
+        :param vertical_steps: List of paths to the z-directories in current ct directory
         :param stitch_input_dir_path: Path to input images to be stitched
         :param ct_dir: Path to the ct_directory
+        :param ct_path: Name of the ct-dir
+        :param dir_name: Name of the z-dir subdirectory, e.g. 'tomo', 'flats', 'flats2', and 'darks'
         :param j: Index for multiprocessing
         :return: None - writes stitched images to output directory
         """
@@ -464,14 +512,8 @@ class AutoVerticalStitchFunctions:
         r2 = image_height - self.ct_stitch_pixel_dict[ct_dir]
 
         large_stitch_buffer, image_rows, dtype = self.make_buf(example_image_path, num_z_dirs, r1, r2)
-        for i, z_dir in enumerate(z_fold):
-            if self.parameters['stitch_reconstructed_slices']:
-                if self.parameters['reslice']:
-                    tmp = os.path.join(stitch_input_dir_path, z_dir, '*.tif')
-                elif not self.parameters['reslice']:
-                    tmp = os.path.join(stitch_input_dir_path, z_dir, 'sli', '*.tif')
-            elif self.parameters['stitch_projections']:
-                tmp = os.path.join(stitch_input_dir_path, z_dir, 'tomo', '*.tif')
+        for i, z_dir in enumerate(vertical_steps):
+            tmp = os.path.join(stitch_input_dir_path, z_dir, dir_name, '*.tif')
             if self.parameters['reslice']:
                 file_name = sorted(glob.glob(tmp))[j]
             else:
@@ -482,7 +524,7 @@ class AutoVerticalStitchFunctions:
             else:
                 large_stitch_buffer[i * image_rows:image_rows * (i + 1), :] = frame
 
-        output_path = os.path.join(self.parameters['output_dir'], ct_path)
+        output_path = os.path.join(self.parameters['output_dir'], ct_path, dir_name)
         if not os.path.exists(output_path):
             os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
