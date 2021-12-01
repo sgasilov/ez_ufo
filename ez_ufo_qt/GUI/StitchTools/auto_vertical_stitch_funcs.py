@@ -180,7 +180,7 @@ class AutoVerticalStitchFunctions:
         elif self.parameters['common_flats_darks']:
             flat_files = self.get_filtered_filenames(self.parameters['flats_dir'])
             dark_files = self.get_filtered_filenames(self.parameters['darks_dir'])
-        
+
         flats = np.array([tifffile.TiffFile(x).asarray().astype(np.float) for x in flat_files])
         darks = np.array([tifffile.TiffFile(x).asarray().astype(np.float) for x in dark_files])
         dark = np.mean(darks, axis=0)
@@ -508,21 +508,38 @@ class AutoVerticalStitchFunctions:
         example_image_array = self.read_image(example_image_path, flip_image=False)
         image_height = np.shape(example_image_array)[0]
         r1 = self.ct_stitch_pixel_dict[ct_dir]
-        # r2 image height - stitch pixel value
         r2 = image_height - self.ct_stitch_pixel_dict[ct_dir]
 
-        large_stitch_buffer, image_rows, dtype = self.make_buf(example_image_path, num_z_dirs, r1, r2)
-        for i, z_dir in enumerate(vertical_steps):
+        large_stitch_buffer, upper_image_rows, mid_image_rows,\
+               lowest_image_rows, dtype = self.make_buf(example_image_path, num_z_dirs, r1, r2)
+        for z_index, z_dir in enumerate(vertical_steps):
             tmp = os.path.join(stitch_input_dir_path, z_dir, dir_name, '*.tif')
             if self.parameters['reslice']:
                 file_name = sorted(glob.glob(tmp))[j]
             else:
-                file_name = sorted(glob.glob(tmp))[index]
-            frame = self.read_image(file_name, flip_image=False)[r1:r2, :]
-            if self.parameters['sample_moved_down']:
-                large_stitch_buffer[i * image_rows:image_rows * (i + 1), :] = np.flipud(frame)
+                file_name = sorted(glob.glob(tmp))[z_index]
+
+            # If first z-directory clip from rows 0 until the point of overlap
+            if z_index == 0:
+                frame = self.read_image(file_name, flip_image=False)[0:r2, :]
+                start_row = 0
+                stop_row = upper_image_rows
+            # If last z-directory clip from point of overlap until the last row
+            elif z_index == len(vertical_steps) - 1:
+                frame = self.read_image(file_name, flip_image=False)[r1:, :]
+                start_row = upper_image_rows + (z_index - 1) * mid_image_rows
+                stop_row = start_row + lowest_image_rows
+            # If an intermediate z-directory then clip from point of overlap at top and at the bottom
             else:
-                large_stitch_buffer[i * image_rows:image_rows * (i + 1), :] = frame
+                frame = self.read_image(file_name, flip_image=False)[r1:r2, :]
+                start_row = upper_image_rows + (z_index - 1) * mid_image_rows
+                stop_row = start_row + mid_image_rows
+
+            if self.parameters['sample_moved_down']:
+                # if after z00 then image_rows = r2 + z_index * (image_height - 2 * self.ct_stitch_pixel_dict[ct_dir])
+                large_stitch_buffer[start_row:stop_row, :] = np.flipud(frame)
+            else:
+                large_stitch_buffer[start_row:stop_row, :] = frame
 
         output_path = os.path.join(self.parameters['output_dir'], ct_path, dir_name)
         if not os.path.exists(output_path):
@@ -532,18 +549,26 @@ class AutoVerticalStitchFunctions:
         # TODO: Make sure to preserve bitdepth
         tifffile.imsave(output_path, large_stitch_buffer)
 
-    def make_buf(self, tmp, num_z_dirs, a, b):
+    def make_buf(self, tmp, num_z_dirs, r1, r2):
         """
         Creates a large buffer image to store the stitched images in memory before writing
         :param tmp: Path to an example input image
         :param num_z_dirs: Number of vertical steps (z-directories)
-        :param a: stitch pixel value
-        :param b: image height - stitch pixel value
+        :param r1: stitch pixel value
+        :param r2: image height - stitch pixel value
         :return: Empty array large enough to hold stitched images in RAM
         """
         first = self.read_image(tmp, flip_image=False)
-        image_rows, image_columns = first[a:b, :].shape
-        return np.empty((image_rows * num_z_dirs, image_columns), dtype=first.dtype), image_rows, first.dtype
+        # The topmost image is clipped from first row until point of overlap
+        upper_image_rows, num_columns = first[0:r2, :].shape
+        # The middle images are clipped from the upper point of overlap until the lower point of overlap
+        mid_image_rows = first[r1:r2, :].shape[0]
+        # The lower image is clipped from the point of overlap until the end
+        lowest_image_rows = first[r1:, :].shape[0]
+        num_rows = (num_z_dirs - 2) * mid_image_rows + upper_image_rows + lowest_image_rows
+
+        return np.empty((num_rows, num_columns), dtype=first.dtype), upper_image_rows, mid_image_rows,\
+               lowest_image_rows, first.dtype
 
     def make_temp_dir(self):
         if os.path.isdir(self.parameters['temp_dir']):
