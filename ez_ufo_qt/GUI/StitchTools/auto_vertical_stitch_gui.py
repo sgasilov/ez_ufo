@@ -310,6 +310,7 @@ class AutoVerticalStitchGUI(QGroupBox):
             self.reslice_checkbox.setEnabled(True)
             self.reslice_checkbox.setChecked(True)
             self.parameters['reslice'] = True
+            self.equalize_intensity_rButton.setEnabled(True)
 
     def stitch_projections_rButton_clicked(self):
         logging.debug("Stitch Projections: " + str(self.stitch_projections_rButton.isChecked()))
@@ -322,6 +323,10 @@ class AutoVerticalStitchGUI(QGroupBox):
             self.temp_entry.setDisabled(True)
             self.stitch_type_group.setEnabled(True)
             self.parameters['reslice'] = False
+            self.concatenate_rButton.setChecked(True)
+            self.equalize_intensity_rButton.setDisabled(True)
+            self.parameters['equalize_intensity'] = False
+            self.parameters['concatenate'] = True
             if self.reslice_checkbox.isEnabled():
                 self.reslice_checkbox.setDisabled(True)
                 self.which_images_to_stitch_entry.setEnabled(True)

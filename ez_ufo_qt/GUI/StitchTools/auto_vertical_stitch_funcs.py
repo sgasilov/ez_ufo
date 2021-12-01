@@ -353,16 +353,6 @@ class AutoVerticalStitchFunctions:
                                 num_rows_new, vertical_steps, dx, num_columns, ramp, input_dir_type, dir_name, ct_path)
 
             pool.map(exec_func, j_index)
-
-            # Now stitch the flats and darks
-            if self.parameters['stitch_projections']:
-                dir_name = 'flats'
-                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
-                dir_name = 'darks'
-                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
-                dir_name = 'flats2'
-                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
-
             print(f"========== Finished Stitching {ct_dir} ==========")
         print("========== Completed Stitching For All CT-Directories ==========")
 
