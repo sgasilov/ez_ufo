@@ -59,3 +59,4 @@ setuptools~=28.8.0
 tifffile~=2021.4.8
 tofu~=0.9
 scipy~=1.6.3
+scikit-image~=0.18.3

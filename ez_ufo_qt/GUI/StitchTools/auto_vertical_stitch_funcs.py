@@ -61,6 +61,9 @@ class AutoVerticalStitchFunctions:
             print("--> Finished Dry Run")
 
     def write_yaml_params(self):
+        """
+        Writes the GUI parameters to a key-value .yaml file in the output directory
+        """
         try:
             # Create the output directory root and save the parameters.yaml file
             os.makedirs(self.parameters['output_dir'], mode=0o777)
@@ -375,7 +378,15 @@ class AutoVerticalStitchFunctions:
             print(f"========== Finished Stitching {ct_dir} ==========")
         print("========== Completed Stitching For All CT-Directories ==========")
 
-    def stitch_fdt(self, ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name):
+    def stitch_fd(self, ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name):
+        """
+        Prepares values for stitching flats/darks directories
+        :param ct_dir: Name of the ct_directory currently working on
+        :param vertical_steps: Number of z-directories within the current ct_directory
+        :param ct_path: Path to the ct_directory currently working on
+        :param stitch_input_dir_path: Path to input images to be stitched
+        :param dir_name: Name of flats/darks directory to stitch - one of 'flats', 'darks' or 'flats2'
+        """
         if os.path.isdir(os.path.join(ct_dir, vertical_steps[0], dir_name)):
             print(f"Concatenating {dir_name}")
             image_path = os.path.join(ct_dir, vertical_steps[0], dir_name, '*.tif')
@@ -486,12 +497,15 @@ class AutoVerticalStitchFunctions:
 
             # Now stitch the flats and darks
             if self.parameters['stitch_projections']:
-                dir_name = 'flats'
-                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
-                dir_name = 'darks'
-                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
-                dir_name = 'flats2'
-                self.stitch_fdt(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                if self.parameters['common_flats_darks']:
+                    pass
+                elif not self.parameters['common_flats_darks']:
+                    dir_name = 'flats'
+                    self.stitch_fd(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                    dir_name = 'darks'
+                    self.stitch_fd(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
+                    dir_name = 'flats2'
+                    self.stitch_fd(ct_dir, vertical_steps, ct_path, stitch_input_dir_path, dir_name)
 
             print(f"========== Finished Stitching {ct_dir} ==========")
         print("========== Completed Stitching For All CT-Directories ==========")
@@ -580,6 +594,9 @@ class AutoVerticalStitchFunctions:
                lowest_image_rows, first.dtype
 
     def make_temp_dir(self):
+        """
+        Creates a new temporary directory at location specified by user in the GUI
+        """
         if os.path.isdir(self.parameters['temp_dir']):
             shutil.rmtree(self.parameters['temp_dir'])
         os.makedirs(self.parameters['temp_dir'], mode=0o777)
@@ -652,9 +669,3 @@ class AutoVerticalStitchFunctions:
         if flip_image is True:
             image = np.flipud(image)
         return image
-
-    def col_round(self, x):
-        frac = x - math.floor(x)
-        if frac < 0.5:
-            return math.floor(x)
-        return math.ceil(x)
