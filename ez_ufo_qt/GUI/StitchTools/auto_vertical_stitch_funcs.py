@@ -272,6 +272,14 @@ class AutoVerticalStitchFunctions:
         return stitch_input_dir_path, start, stop, step, input_data_type, ct_path
 
     def concatenate_zdirs(self):
+        """
+        This function does not stitch images. It renames and appends the reconstructed slices from each z-directory.
+        The stitch pixel value determines which images are included.
+        For the first z-dir we include all images up to (num_images_in_zdir - stitch_pixel)
+        For intermediate z-dirs we start at the stitch_pixel and end at (num_images_in_zdir - stitch_pixel)
+        For the last z-dir we start at the stitch_pixel and include all images up to the end
+        These images are then renamed in the correct order and written to the output directory
+        """
         for ct_dir in self.ct_dirs:
             stitch_pixel = self.ct_stitch_pixel_dict[ct_dir]
             diff_path = os.path.relpath(ct_dir, self.parameters['projections_input_dir'])
@@ -301,6 +309,17 @@ class AutoVerticalStitchFunctions:
                     pool.map(exec_func, img_index)
 
     def copy_image_multiproc(self, stitch_pixel, z_dir_index, z_dir_tiff_list, output_path, img_index):
+        """
+        Copies image file at img_index in the z_dir_tiff_list to the output_path
+        The output image index is calculated based on the offsets caused by stitch_pixel
+        If we're at the first z-dir the output image index is simply the same as the input
+        For successive z-dirs we calculate the output image index based on the number of preceding z-dirs
+        :param stitch_pixel: The point of overlap between z-directory vertical steps
+        :param z_dir_index: The number of the image in the input directory to copy to the output
+        :param z_dir_tiff_list: The list of input images in one z-directory
+        :param output_path: The path where the reordered images will be written
+        :param img_index: The original index of the image that is to be copied from z_dir_tiff_list
+        """
         num_recon_imgs = len(z_dir_tiff_list)
         z00_num_imgs = num_recon_imgs - stitch_pixel
         mid_zdir_num_imgs = num_recon_imgs - stitch_pixel * 2
