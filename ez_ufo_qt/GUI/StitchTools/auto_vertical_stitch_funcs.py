@@ -3,7 +3,6 @@ import glob
 import numpy as np
 import tifffile
 import shutil
-import math
 import time
 import yaml
 import multiprocessing as mp
