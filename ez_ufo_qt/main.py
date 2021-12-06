@@ -9,6 +9,7 @@ import os
 from tofu.util import get_filenames, read_image
 import warnings
 import math
+import logging
 
 warnings.filterwarnings("ignore")
 import time
