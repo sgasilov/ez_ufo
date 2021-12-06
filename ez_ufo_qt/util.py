@@ -3,7 +3,7 @@ Created on Apr 20, 2020
 
 @author: gasilos
 '''
-import os, logging
+import os
 from tofu.util import (get_filenames, get_first_filename, get_image_shape, read_image)
 import tifffile
 import yaml
