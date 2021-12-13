@@ -159,7 +159,7 @@ class ufo_cmds(object):
         mask_file = os.path.join(tmpdir, "mask.tif")
         # generate mask
         cmd = 'tofu find-large-spots --images {}'.format(any_flat)
-        cmd += ' --spot-threshold {} --gauss-sigma {}'.format(args.main_filters_remove_spots,
+        cmd += ' --spot-threshold {} --gauss-sigma {}'.format(args.main_filters_remove_spots_threshold,
                                                               args.main_filters_remove_spots_blur_sigma)
         cmd += ' --output {} --output-bytes-per-file 0'.format(mask_file)
         cmds.append(cmd)
