@@ -37,12 +37,12 @@ def get_CTdirs_list(inpath, fdt_names, args):
     # Find any directories containing "tomo" directory
     W.findCTdirs()
     # If "Use common flats/darks across multiple experiments" is enabled
-    if args.common_darks_flats:
+    if args.main_config_common_flats_darks:
         logging.debug("Use common darks/flats")
-        logging.debug("Path to darks: " + str(args.common_darks))
-        logging.debug("Path to flats: " + str(args.common_flats))
-        logging.debug("Path to flats2: " + str(args.common_flats2))
-        logging.debug("Use flats2: " + str(args.use_common_flats2))
+        logging.debug("Path to darks: " + str(args.main_config_darks_path))
+        logging.debug("Path to flats: " + str(args.main_config_flats_path))
+        logging.debug("Path to flats2: " + str(args.main_config_flats2_path))
+        logging.debug("Use flats2: " + str(args.main_config_flats2_checkbox))
         # Determine whether paths to common flats/darks/flats2 exist
         if not W.checkCommonFDT():
             print("Invalid path to common flats/darks")
@@ -74,38 +74,38 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     swiPR = args.main_pr_phase_retrieval  # PR is an optional operation
 
     ####### PREPROCESSING #########
-    flat_file_for_mask = os.path.join(args.tmpdir, 'flat.tif')
+    flat_file_for_mask = os.path.join(args.main_config_temp_dir, 'flat.tif')
     if args.main_filters_remove_spots:
-        if not args.common_darks_flats:
+        if not args.main_config_common_flats_darks:
             flatdir = os.path.join(ctset[0], Tofu._fdt_names[1])
-        elif args.common_darks_flats:
-            flatdir = args.common_flats
-        cmd = make_copy_of_flat(flatdir, flat_file_for_mask, args.dryrun)
+        elif args.main_config_common_flats_darks:
+            flatdir = args.main_config_flats_path
+        cmd = make_copy_of_flat(flatdir, flat_file_for_mask, args.main_config_dry_run)
         cmds.append(cmd)
-    if args.pre:
+    if args.main_config_preprocess:
         cmds.append("echo \" - Applying filter(s) to images \"")
-        cmds_prepro = Ufo.get_pre_cmd(ctset, args.pre_cmd, args.tmpdir, args.dryrun, args)
+        cmds_prepro = Ufo.get_pre_cmd(ctset, args.main_config_preprocess_command, args.main_config_temp_dir, args.main_config_dry_run, args)
         cmds.extend(cmds_prepro)
         # reset location of input data
-        ctset = (args.tmpdir, ctset[1])
+        ctset = (args.main_config_temp_dir, ctset[1])
     ###################################################
     if args.main_filters_remove_spots:  # generate commands to remove sci. spots from projections
         cmds.append("echo \" - Flat-correcting and removing large spots\"")
-        cmds_inpaint = Ufo.get_inp_cmd(ctset, args.tmpdir, args, WH[0], nviews, flat_file_for_mask)
+        cmds_inpaint = Ufo.get_inp_cmd(ctset, args.main_config_temp_dir, args, WH[0], nviews, flat_file_for_mask)
         # reset location of input data
-        ctset = (args.tmpdir, ctset[1])
+        ctset = (args.main_config_temp_dir, ctset[1])
         cmds.extend(cmds_inpaint)
         swiFFC = False  # no need to do FFC anymore
 
     ######## PHASE-RETRIEVAL #######
     # Do PR separately if sinograms must be generate or if vertical ROI is defined
-    if args.main_pr_phase_retrieval and args.main_filters_ring_removal:  # or (args.main_pr_phase_retrieval and args.vcrop):
+    if args.main_pr_phase_retrieval and args.main_filters_ring_removal:  # or (args.main_pr_phase_retrieval and args.main_region_select_rows):
         if swiFFC:  # we still need need flat correction #Inpaint No
             cmds.append("echo \" - Phase retrieval with flat-correction\"")
-            if args.sinFFC:
+            if args.advanced_ffc_sinFFC:
                 cmds.append(Tofu.get_pr_sinFFC_cmd(ctset, args, nviews, WH[0]))
                 cmds.append(Tofu.get_pr_tofu_cmd_sinFFC(ctset, args, nviews, WH))
-            elif not args.sinFFC:
+            elif not args.advanced_ffc_sinFFC:
                 cmds.append(Tofu.get_pr_tofu_cmd(ctset, args, nviews, WH[0]))
         else: #Inpaint Yes
             cmds.append("echo \" - Phase retrieval from flat-corrected projections\"")
@@ -113,34 +113,34 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         swiPR = False  # no need to do PR anymore
         swiFFC = False  # no need to do FFC anymore
 
-    # if args.main_pr_phase_retrieval and args.vcrop: # have to reset location of input data
-    #    ctset = (args.tmpdir, ctset[1])
+    # if args.main_pr_phase_retrieval and args.main_region_select_rows: # have to reset location of input data
+    #    ctset = (args.main_config_temp_dir, ctset[1])
 
     ################# RING REMOVAL #######################
     if args.main_filters_ring_removal:
         # Generate sinograms first
         if swiFFC:  # we still need to do flat-field correction
-            if args.sinFFC:
+            if args.advanced_ffc_sinFFC:
                 # Create flat corrected images using sinFFC
                 cmds.append(Tofu.get_sinFFC_cmd(ctset, args, nviews, WH[0]))
                 # Feed the flat corrected images to sino gram generation
-                cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
-            elif not args.sinFFC:
+                cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.main_config_temp_dir, args, nviews, WH))
+            elif not args.advanced_ffc_sinFFC:
                 cmds.append("echo \" - Make sinograms with flat-correction\"")
-                cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.tmpdir, args, nviews, WH))
+                cmds.append(Tofu.get_sinos_ffc_cmd(ctset, args.main_config_temp_dir, args, nviews, WH))
         else:  # we do not need flat-field correction
             cmds.append("echo \" - Make sinograms without flat-correction\"")
-            cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
+            cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.main_config_temp_dir, args, nviews, WH))
         swiFFC = False
         # Filter sinograms
         if args.main_filters_ring_removal_ufo_lpf:
             if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
                 cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
-                cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir,
+                cmds.append(Ufo.get_filter1d_sinos_cmd(args.main_config_temp_dir,
                                                        args.main_filters_ring_removal_ufo_lpf_sigma_horizontal, nviews))
             else:
                 cmds.append("echo \" - Ring removal - ufo 2d stripes filter\"")
-                cmds.append(Ufo.get_filter2d_sinos_cmd(args.tmpdir, \
+                cmds.append(Ufo.get_filter2d_sinos_cmd(args.main_config_temp_dir, \
                             args.main_filters_ring_removal_ufo_lpf_sigma_horizontal,
                             args.main_filters_ring_removal_ufo_lpf_sigma_vertical, nviews, WH[1]))
         else:
@@ -149,25 +149,25 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             tmp = os.path.dirname(os.path.abspath(__file__))
             path_to_filt = os.path.join(tmp, 'RR_simple.py')
             if os.path.isfile(path_to_filt):
-                tmp = os.path.join(args.tmpdir, "sinos")
+                tmp = os.path.join(args.main_config_temp_dir, "sinos")
                 cmdtmp = 'python {} --sinos {} --mws {} --mws2 {} --snr {} --sort_only {}' \
-                    .format(path_to_filt, tmp, args.RR_srp_wind_sort,
-                            args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR,
+                    .format(path_to_filt, tmp, args.main_filters_ring_removal_sarepy_window_size,
+                            args.main_filters_ring_removal_sarepy_window, args.main_filters_ring_removal_sarepy_SNR,
                             int(not args.main_filters_ring_removal_sarepy_wide))
                 cmds.append(cmdtmp)
             else:
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")
-        if not args.keep_tmp:
-            cmds.append('rm -rf {}'.format(os.path.join(args.tmpdir, 'sinos')))
+        if not args.main_config_keep_temp:
+            cmds.append('rm -rf {}'.format(os.path.join(args.main_config_temp_dir, 'sinos')))
         # Convert filtered sinograms back to projections
         cmds.append("echo \" - Generating proj from filtered sinograms\"")
         cmds.append(Tofu.get_sinos2proj_cmd(args, WH[0]))
         # reset location of input data
-        ctset = (args.tmpdir, ctset[1])
+        ctset = (args.main_config_temp_dir, ctset[1])
 
     # Finally - call to tofu reco
     cmds.append("echo \" - CT with axis {}; ffc:{}, PR:{}\"".format(ax, swiFFC, swiPR))
-    if args.sinFFC and swiFFC:
+    if args.advanced_ffc_sinFFC and swiFFC:
         cmds.append(Tofu.get_sinFFC_cmd(ctset, args, nviews, WH[0]))
         cmds.append(Tofu.get_reco_cmd_sinFFC(ctset, out_pattern, ax, args, nviews, WH, swiFFC, swiPR))
     else: #If not using sinFFC
@@ -183,26 +183,26 @@ def fmt_nlmdn_ufo_cmd(inpath: str, outpath: str, args):
     :return:
     """
     cmd = 'ufo-launch read path={}'.format(inpath)
-    cmd += ' ! non-local-means patch-radius={}'.format(args.nlmdn_dx)
-    cmd += ' search-radius={}'.format(args.nlmdn_r)
-    cmd += ' h={}'.format(args.nlmdn_h)
-    cmd += ' sigma={}'.format(args.nlmdn_sig)
-    cmd += ' window={}'.format(args.nlmdn_w)
-    cmd += ' fast={}'.format(args.nlmdn_fast)
-    cmd += ' estimate-sigma={}'.format(args.nlmdn_autosig)
+    cmd += ' ! non-local-means patch-radius={}'.format(args.advanced_nlmdn_patch_radius)
+    cmd += ' search-radius={}'.format(args.advanced_nlmdn_sim_search_radius)
+    cmd += ' h={}'.format(args.advanced_nlmdn_smoothing_control)
+    cmd += ' sigma={}'.format(args.advanced_nlmdn_noise_std)
+    cmd += ' window={}'.format(args.advanced_nlmdn_window)
+    cmd += ' fast={}'.format(args.advanced_nlmdn_fast)
+    cmd += ' estimate-sigma={}'.format(args.advanced_nlmdn_estimate_sigma)
     cmd += ' ! write filename={}'.format(enquote(outpath))
-    if not args.nlmdn_bigtif:
+    if not args.advanced_nlmdn_save_bigtiff:
         cmd += " bytes-per-file=0 tiff-bigtiff=False"
     return cmd
 
-def main_tk(args, fdt_names):
+def execute_reconstruction(args, fdt_names):
     # array with the list of commands
     cmds = []
     # clean temporary directory or create if it doesn't exist
-    if not os.path.exists(args.tmpdir):
-        os.makedirs(args.tmpdir)
+    if not os.path.exists(args.main_config_temp_dir):
+        os.makedirs(args.main_config_temp_dir)
     # else:
-    #    clean_tmp_dirs(args.tmpdir, fdt_names)
+    #    clean_tmp_dirs(args.main_config_temp_dir, fdt_names)
     # input params consistency check
     if args.main_region_clip_histogram:
         if args.main_region_histogram_min > args.main_region_histogram_max:
@@ -215,10 +215,10 @@ def main_tk(args, fdt_names):
     # get list of all good CT directories to be reconstructed
 
     print('*********** Analyzing input directory ************')
-    W, lvl0 = get_CTdirs_list(args.indir, fdt_names, args)
+    W, lvl0 = get_CTdirs_list(args.main_config_input_dir, fdt_names, args)
     # W is an array of tuples (path, type)
     # get list of already reconstructed sets
-    recd_sets = findSlicesDirs(args.outdir)
+    recd_sets = findSlicesDirs(args.main_config_output_dir)
     # initialize command generators
     FindCOR = findCOR_cmds(fdt_names)
     Tofu = tofu_cmds(fdt_names)
@@ -245,8 +245,8 @@ def main_tk(args, fdt_names):
                 # Find axis of rotation using auto: minimize STD of a slice
                 elif args.main_cor_axis_search_method == 2:
                     cmds.append("echo \"Cleaning axis-search in tmp directory\"")
-                    os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))
-                    ax = FindCOR.find_axis_std(ctset, args.tmpdir, args.main_cor_axis_search_interval,
+                    os.system('rm -rf {}'.format(os.path.join(args.main_config_temp_dir, 'axis-search')))
+                    ax = FindCOR.find_axis_std(ctset, args.main_config_temp_dir, args.main_cor_axis_search_interval,
                                                args.main_cor_recon_patch_size, args.main_cor_search_row_start,
                                                nviews, args, WH)
                 else:
@@ -257,13 +257,13 @@ def main_tk(args, fdt_names):
                 print("Bypassing axis search and using image midpoint: {}".format(ax))
 
             setid = ctset[0][len(lvl0) + 1:]
-            out_pattern = os.path.join(args.outdir, setid, 'sli/sli')
+            out_pattern = os.path.join(args.main_config_output_dir, setid, 'sli/sli')
             cmds.append("echo \">>>>> PROCESSING {}\"".format(setid))
             # rm files in temporary directory first of all to
             # format paths correctly and to avoid problems
             # when reconstructing ct sets with variable number of rows or projections
             cmds.append("echo \"Cleaning temporary directory\"".format(setid))
-            clean_tmp_dirs(args.tmpdir, fdt_names)
+            clean_tmp_dirs(args.main_config_temp_dir, fdt_names)
             # call function which formats commands for this data set
             nviews, WH = frmt_ufo_cmds(cmds, ctset, out_pattern, \
                                        ax, args, Tofu, Ufo, FindCOR, nviews, WH)
@@ -273,7 +273,7 @@ def main_tk(args, fdt_names):
             print("Number of projections: {}, dimensions: {}".format(nviews, WH))
             # tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
             # cmds.append("echo \"{}\"".format(tmp))
-            if args.nlmdn_apply_after_reco:
+            if args.advanced_nlmdn_apply_after_reco:
                 logging.debug("Using Non-Local Means Denoising")
                 nlmdn_input = out_pattern
                 head, tail = os.path.split(out_pattern)
@@ -285,12 +285,12 @@ def main_tk(args, fdt_names):
     start = time.time()
     print('*********** PROCESSING ************')
     for cmd in cmds:
-        if not args.dryrun:
+        if not args.main_config_dry_run:
             os.system(cmd)
         else:
             print(cmd)
-    if not args.keep_tmp:
-        clean_tmp_dirs(args.tmpdir, fdt_names)
+    if not args.main_config_keep_temp:
+        clean_tmp_dirs(args.main_config_temp_dir, fdt_names)
 
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     print("*** Done. Total processing time {} sec.".format(int(time.time() - start)))

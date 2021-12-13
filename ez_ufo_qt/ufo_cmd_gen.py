@@ -49,19 +49,19 @@ class ufo_cmds(object):
         """
         indir = []
         # If using flats/darks/flats2 in same dir as tomo
-        if not args.common_darks_flats:
+        if not args.main_config_common_flats_darks:
             for i in self._fdt_names[:3]:
                 indir.append(os.path.join(lvl0, i))
             if flats2 - 3:
                 indir.append(os.path.join(lvl0, self._fdt_names[3]))
             return indir
         # If using common flats/darks/flats2 across multiple reconstructions
-        elif args.common_darks_flats:
+        elif args.main_config_common_flats_darks:
             indir.append(args.common_darks)
-            indir.append(args.common_flats)
+            indir.append(args.main_config_flats_path)
             indir.append(os.path.join(lvl0, self._fdt_names[2]))
-            if args.use_common_flats2:
-                indir.append(args.common_flats2)
+            if args.main_config_flats2_checkbox:
+                indir.append(args.main_config_flats2_path)
             return indir
 
     def check_vcrop(self, cmd, vcrop, y, yheight, ystep):
@@ -76,8 +76,8 @@ class ufo_cmds(object):
         return cmd
 
     def get_pr_ufo_cmd(self, args, nviews, WH):
-        # in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir,args.indir,self._fdt_names[2])
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, 'quatsch', self._fdt_names[2])
+        # in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir,args.main_config_input_dir,self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, 'quatsch', self._fdt_names[2])
         cmds = []
         pad_width = next_power_of_two(WH[1] + 50)
         pad_height = next_power_of_two(WH[0] + 50)
@@ -96,7 +96,7 @@ class ufo_cmds(object):
         cmd += ' ! opencl kernel=\'absorptivity\' ! opencl kernel=\'fix_nan_and_inf\' !'
         cmd += ' write filename={}'.format(enquote(out_pattern))
         cmds.append(cmd)
-        if not args.keep_tmp:
+        if not args.main_config_keep_temp:
             cmds.append('rm -rf {}'.format(in_proj_dir))
         return cmds
 
@@ -164,8 +164,8 @@ class ufo_cmds(object):
         cmd += ' --output {} --output-bytes-per-file 0'.format(mask_file)
         cmds.append(cmd)
         ######### FLAT-CORRECT #########
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
-        if args.sinFFC:
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2])
+        if args.advanced_ffc_sinFFC:
             cmd = 'bmit_sin --fix-nan'
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             cmd += ' --projections {}'.format(in_proj_dir)
@@ -175,13 +175,13 @@ class ufo_cmds(object):
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
             # Add options for eigen-pco-repetitions etc.
-            cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
-            cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
-            cmd += ' --downsample {}'.format(args.sinFFCDowns)
+            cmd += ' --eigen-pco-repetitions {}'.format(args.advanced_ffc_eigen_pco_reps)
+            cmd += ' --eigen-pco-downsample {}'.format(args.advanced_ffc_eigen_pco_downsample)
+            cmd += ' --downsample {}'.format(args.advanced_ffc_downsample)
             #if not args.main_pr_phase_retrieval:
             #    cmd += ' --absorptivity'
             cmds.append(cmd)
-        elif not args.sinFFC:
+        elif not args.advanced_ffc_sinFFC:
             cmd = 'tofu flatcorrect --fix-nan-and-inf'
             cmd += ' --darks {} --flats {}'.format(indir[0], indir[1])
             cmd += ' --projections {}'.format(in_proj_dir)
@@ -190,25 +190,25 @@ class ufo_cmds(object):
                 cmd += ' --flats2 {}'.format(indir[3])
             if not args.main_pr_phase_retrieval:
                 cmd += ' --absorptivity'
-            if not args.adv_dark_scale == "":
-                cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
-            if not args.adv_flat_scale == "":
-                cmd += ' --flat-scale {}'.format(args.adv_flat_scale)
+            if not args.advanced_advtofu_aux_ffc_dark_scale == "":
+                cmd += ' --dark-scale {}'.format(args.advanced_advtofu_aux_ffc_dark_scale)
+            if not args.advanced_advtofu_aux_ffc_flat_scale == "":
+                cmd += ' --flat-scale {}'.format(args.advanced_advtofu_aux_ffc_flat_scale)
             cmds.append(cmd)
-        if not args.keep_tmp and args.pre:
+        if not args.main_config_keep_temp and args.main_config_preprocess:
             cmds.append('rm -rf {}'.format(indir[0]))
             cmds.append('rm -rf {}'.format(indir[1]))
             cmds.append('rm -rf {}'.format(in_proj_dir))
             if len(indir) > 3:
                 cmds.append('rm -rf {}'.format(indir[3]))
         ######### INPAINT #########
-        in_proj_dir, out_pattern = fmt_in_out_path(args.tmpdir, ctset[0], self._fdt_names[2])
+        in_proj_dir, out_pattern = fmt_in_out_path(args.main_config_temp_dir, ctset[0], self._fdt_names[2])
         cmd = 'ufo-launch [read path={} height={} number={}'.format(in_proj_dir, N, nviews)
         cmd += ', read path={}]'.format(mask_file)
         cmd += ' ! horizontal-interpolate ! '
         cmd += 'write filename={}'.format(enquote(out_pattern))
         cmds.append(cmd)
-        if not args.keep_tmp:
+        if not args.main_config_keep_temp:
             cmds.append('rm -rf {}'.format(in_proj_dir))
         return cmds
 

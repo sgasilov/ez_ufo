@@ -47,7 +47,7 @@ e_y0: 3
 e_dy: 4
 e_dryrun: false
 e_parfile: false
-e_keep_tmp: false
+main_config_keep_temp: false
 e_sinFFC: false
 e_sinFFC_method: 1
 e_sinFFCEigenReps: 9

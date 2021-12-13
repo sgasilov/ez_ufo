@@ -78,53 +78,53 @@ class AdvancedGroup(QGroupBox):
 
     def init_values(self):
         self.lamino_group.setChecked(False)
-        parameters.params['e_adv_lamino_group'] = False
+        parameters.params['advanced_advtofu_extended_settings'] = False
         self.lamino_angle_entry.setText("30")
-        parameters.params['e_adv_lamino_angle'] = 30
+        parameters.params['advanced_advtofu_lamino_angle'] = 30
         self.overall_rotation_entry.setText("360")
-        parameters.params['e_adv_overall_rotation'] = 360
+        parameters.params['advanced_adv_tofu_z_axis_rotation'] = 360
         self.center_position_z_entry.setText("")
-        parameters.params['e_adv_center_pos_z'] = ""
+        parameters.params['advanced_advtofu_center_position_z'] = ""
         self.axis_rotation_y_entry.setText("")
-        parameters.params['e_adv_axis_rotation_y'] = ""
+        parameters.params['advanced_advtofu_y_axis_rotation'] = ""
         self.dark_scale_entry.setText("")
-        parameters.params['e_adv_dark_scale'] = ""
+        parameters.params['advanced_advtofu_aux_ffc_dark_scale'] = ""
         self.flat_scale_entry.setText("")
-        parameters.params['e_adv_flat_scale'] = ""
+        parameters.params['advanced_advtofu_aux_ffc_flat_scale'] = ""
 
     def set_values_from_params(self):
-        self.lamino_group.setChecked(parameters.params['e_adv_lamino_group'])
-        self.lamino_angle_entry.setText(str(parameters.params['e_adv_lamino_angle']))
-        self.overall_rotation_entry.setText(str(parameters.params['e_adv_overall_rotation']))
-        self.center_position_z_entry.setText(str(parameters.params['e_adv_center_pos_z']))
-        self.axis_rotation_y_entry.setText(str(parameters.params['e_adv_axis_rotation_y']))
-        self.dark_scale_entry.setText(str(parameters.params['e_adv_dark_scale']))
-        self.flat_scale_entry.setText(str(parameters.params['e_adv_flat_scale']))
+        self.lamino_group.setChecked(parameters.params['advanced_advtofu_extended_settings'])
+        self.lamino_angle_entry.setText(str(parameters.params['advanced_advtofu_lamino_angle']))
+        self.overall_rotation_entry.setText(str(parameters.params['advanced_adv_tofu_z_axis_rotation']))
+        self.center_position_z_entry.setText(str(parameters.params['advanced_advtofu_center_position_z']))
+        self.axis_rotation_y_entry.setText(str(parameters.params['advanced_advtofu_y_axis_rotation']))
+        self.dark_scale_entry.setText(str(parameters.params['advanced_advtofu_aux_ffc_dark_scale']))
+        self.flat_scale_entry.setText(str(parameters.params['advanced_advtofu_aux_ffc_flat_scale']))
 
     def set_lamino_group(self):
         logging.debug("Lamino: " + str(self.lamino_group.isChecked()))
-        parameters.params['e_adv_lamino_group'] = bool(self.lamino_group.isChecked())
+        parameters.params['advanced_advtofu_extended_settings'] = bool(self.lamino_group.isChecked())
 
     def set_lamino_angle(self):
         logging.debug(self.lamino_angle_entry.text())
-        parameters.params['e_adv_lamino_angle'] = str(self.lamino_angle_entry.text())
+        parameters.params['advanced_advtofu_lamino_angle'] = str(self.lamino_angle_entry.text())
 
     def set_overall_rotation(self):
         logging.debug(self.overall_rotation_entry.text())
-        parameters.params['e_adv_overall_rotation'] = str(self.overall_rotation_entry.text())
+        parameters.params['advanced_adv_tofu_z_axis_rotation'] = str(self.overall_rotation_entry.text())
 
     def set_center_position_z(self):
         logging.debug(self.center_position_z_entry.text())
-        parameters.params['e_adv_center_pos_z'] = str(self.center_position_z_entry.text())
+        parameters.params['advanced_advtofu_center_position_z'] = str(self.center_position_z_entry.text())
 
     def set_rotation_about_beam(self):
         logging.debug(self.axis_rotation_y_entry.text())
-        parameters.params['e_adv_axis_rotation_y'] = str(self.axis_rotation_y_entry.text())
+        parameters.params['advanced_advtofu_y_axis_rotation'] = str(self.axis_rotation_y_entry.text())
 
     def set_dark_scale(self):
         logging.debug(self.dark_scale_entry.text())
-        parameters.params['e_adv_dark_scale'] = str(self.dark_scale_entry.text())
+        parameters.params['advanced_advtofu_aux_ffc_dark_scale'] = str(self.dark_scale_entry.text())
 
     def set_flat_scale(self):
         logging.debug(self.flat_scale_entry.text())
-        parameters.params['e_adv_flat_scale'] = str(self.flat_scale_entry.text())
+        parameters.params['advanced_advtofu_aux_ffc_flat_scale'] = str(self.flat_scale_entry.text())

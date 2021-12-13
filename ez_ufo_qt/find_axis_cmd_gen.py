@@ -31,19 +31,19 @@ class findCOR_cmds(object):
         """
         indir = []
         # If using flats/darks/flats2 in same dir as tomo
-        if not args.common_darks_flats:
+        if not args.main_config_common_flats_darks:
             for i in self._fdt_names[:3]:
                 indir.append(os.path.join(lvl0, i))
             if flats2 - 3:
                 indir.append(os.path.join(lvl0, self._fdt_names[3]))
             return indir
         # If using common flats/darks/flats2 across multiple reconstructions
-        elif args.common_darks_flats:
-            indir.append(args.common_darks)
-            indir.append(args.common_flats)
+        elif args.main_config_common_flats_darks:
+            indir.append(args.main_config_darks_path)
+            indir.append(args.main_config_flats_path)
             indir.append(os.path.join(lvl0, self._fdt_names[2]))
-            if args.use_common_flats2:
-                indir.append(args.common_flats2)
+            if args.main_config_flats2_checkbox:
+                indir.append(args.main_config_flats2_path)
             return indir
 
     def find_axis_std(self, ctset, tmpdir, ax_range, p_width, search_row, nviews, args, WH):

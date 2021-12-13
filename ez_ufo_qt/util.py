@@ -76,12 +76,12 @@ def enquote(string, escape=False):
 
 
 def save_params(args, ctsetname, ax, nviews, WH):
-    if not args.dryrun and not os.path.exists(args.outdir):
-        os.makedirs(args.outdir)
-    tmp = os.path.join(args.outdir, ctsetname)
-    if not args.dryrun and not os.path.exists(tmp):
+    if not args.main_config_dry_run and not os.path.exists(args.main_config_output_dir):
+        os.makedirs(args.main_config_output_dir)
+    tmp = os.path.join(args.main_config_output_dir, ctsetname)
+    if not args.main_config_dry_run and not os.path.exists(tmp):
         os.makedirs(tmp)
-    if not args.dryrun and args.parfile:
+    if not args.main_config_dry_run and args.main_config_save_params:
         # Dump the params .yaml file
         try:
             yaml_output_filepath = os.path.join(tmp, 'parameters.yaml')
@@ -94,7 +94,7 @@ def save_params(args, ctsetname, ax, nviews, WH):
         fname = os.path.join(tmp, 'reco.params')
         f = open(fname, 'w')
         f.write('*** General ***\n')
-        f.write('Input directory {}\n'.format(args.indir))
+        f.write('Input directory {}\n'.format(args.main_config_input_dir))
         if ctsetname == '':
             ctsetname = '.'
         f.write('CT set {}\n'.format(ctsetname))
@@ -106,8 +106,8 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('Number of projections {}\n'.format(nviews))
         f.write('*** Preprocessing ***\n')
         tmp = 'None'
-        if args.pre:
-            tmp = args.pre_cmd
+        if args.main_config_preprocess:
+            tmp = args.main_config_preprocess_command
         f.write('  '+tmp+'\n')
         f.write('*** Image filters ***\n')
         if args.main_filters_remove_spots:
@@ -136,9 +136,9 @@ def save_params(args, ctsetname, ax, nviews, WH):
             else:
                 if args.main_filters_ring_removal_sarepy_wide:
                     tmp = '  RR with ufo sarepy remove wide filter, '
-                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR)
+                    tmp += 'window {}, SNR {}\n'.format(args.main_filters_ring_removal_sarepy_window, args.main_filters_ring_removal_sarepy_SNR)
                     f.write(tmp)
-                f.write('  RR with ufo sarepy sorting filter, window {}\n'.format(args.RR_srp_wind_sort))
+                f.write('  RR with ufo sarepy sorting filter, window {}\n'.format(args.main_filters_ring_removal_sarepy_window_size))
         else:
             f.write('RR disabled\n')
         f.write('*** Region of interest ***\n')
