@@ -70,7 +70,7 @@ class findCOR_cmds(object):
         res = [float(num) for num in ax_range.split(',')]
         cmd += " --output-bytes-per-file 0"
         cmd += ' --z-parameter center-position-x'
-        cmd += ' --z {}'.format(args.ax_row - int(image_height/2))
+        cmd += ' --z {}'.format(args.main_cor_search_row_start - int(image_height/2))
         print(cmd)
         os.system(cmd)
         points, maximum = evaluate_images_simp(out_pattern + '*.tif', "msag")

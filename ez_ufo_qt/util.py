@@ -98,7 +98,7 @@ def save_params(args, ctsetname, ax, nviews, WH):
         if ctsetname == '':
             ctsetname = '.'
         f.write('CT set {}\n'.format(ctsetname))
-        if args.ax == 1 or args.ax == 2:
+        if args.main_cor_axis_search_method == 1 or args.main_cor_axis_search_method == 2:
             f.write('Center of rotation {} (auto estimate)\n'.format(ax))
         else:
             f.write('Center of rotation {} (user defined)\n'.format(ax))
@@ -110,33 +110,33 @@ def save_params(args, ctsetname, ax, nviews, WH):
             tmp = args.pre_cmd
         f.write('  '+tmp+'\n')
         f.write('*** Image filters ***\n')
-        if args.inp:
+        if args.main_filters_remove_spots:
             f.write(' Remove large spots enabled\n')
-            f.write('  threshold {}\n'.format(args.inp_thr))
-            f.write('  sigma {}\n'.format(args.inp_sig))
+            f.write('  threshold {}\n'.format(args.main_filters_remove_spots_threshold))
+            f.write('  sigma {}\n'.format(args.main_filters_remove_spots_blur_sigma))
         else:
             f.write('  Remove large spots disabled\n')
-        if args.PR:
+        if args.main_pr_phase_retrieval:
             f.write(' Phase retreival enabled\n')
-            f.write('  energy {} keV\n'.format(args.energy))
-            f.write('  pixel size {:0.1f} um\n'.format(args.pixel * 1e6))
-            f.write('  sample-detector distance {} m\n'.format(args.z))
-            f.write('  delta/beta ratio {:0.0f}\n'.format(10 ** args.log10db))
+            f.write('  energy {} keV\n'.format(args.main_pr_photon_energy))
+            f.write('  pixel size {:0.1f} um\n'.format(args.main_pr_pixel_size * 1e6))
+            f.write('  sample-detector distance {} m\n'.format(args.main_pr_detector_distance))
+            f.write('  delta/beta ratio {:0.0f}\n'.format(10 ** args.main_pr_delta_beta_ratio))
         else:
             f.write('  Phase retreival disabled\n')
         f.write('*** Ring removal ***\n')
-        if args.RR:
-            if args.RR_ufo:
+        if args.main_filters_ring_removal:
+            if args.main_filters_ring_removal_ufo_lpf:
                 tmp = '2D'
-                if args.RR_ufo_1d:
+                if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
                     tmp = '1D'
                 f.write('  RR with ufo {} stripes filter\n'.format(tmp))
-                f.write(f'   sigma horizontal {args.RR_sig_hor}')
-                f.write(f'   sigma vertical {args.RR_sig_ver}')
+                f.write(f'   sigma horizontal {args.main_filters_ring_removal_ufo_lpf_sigma_horizontal}')
+                f.write(f'   sigma vertical {args.main_filters_ring_removal_ufo_lpf_sigma_vertical}')
             else:
-                if args.RR_srp_wide:
+                if args.main_filters_ring_removal_sarepy_wide:
                     tmp = '  RR with ufo sarepy remove wide filter, '
-                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.RR_srp_wide_snr)
+                    tmp += 'window {}, SNR {}\n'.format(args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR)
                     f.write(tmp)
                 f.write('  RR with ufo sarepy sorting filter, window {}\n'.format(args.RR_srp_wind_sort))
         else:
@@ -144,27 +144,27 @@ def save_params(args, ctsetname, ax, nviews, WH):
         f.write('*** Region of interest ***\n')
         if args.vcrop:
             f.write('Vertical ROI defined\n')
-            f.write('  first row {}\n'.format(args.y))
-            f.write('  height {}\n'.format(args.yheight))
-            f.write('  reconstruct every {}th row\n'.format(args.ystep))
+            f.write('  first row {}\n'.format(args.main_region_first_row))
+            f.write('  height {}\n'.format(args.main_region_number_rows))
+            f.write('  reconstruct every {}th row\n'.format(args.main_region_nth_row))
         else:
             f.write('Vertical ROI: all rows\n')
-        if args.crop:
+        if args.main_region_crop_slices:
             f.write('ROI in slice plane defined\n')
-            f.write('  x {}\n'.format(args.x0))
-            f.write('  width {}\n'.format(args.dx))
-            f.write('  y {}\n'.format(args.y0))
-            f.write('  height {}\n'.format(args.dy))
+            f.write('  x {}\n'.format(args.main_region_crop_x))
+            f.write('  width {}\n'.format(args.main_region_crop_width))
+            f.write('  y {}\n'.format(args.main_region_crop_y))
+            f.write('  height {}\n'.format(args.main_region_crop_height))
         else:
             f.write('ROI in slice plane not defined\n')
         f.write('*** Reconstructed values ***\n')
-        if args.gray256:
-            f.write('  {} bit\n'.format(args.bit))
-            f.write('  Min value in 32-bit histogram {}\n'.format(args.hmin))
-            f.write('  Max value in 32-bit histogram {}\n'.format(args.hmax))
+        if args.main_region_clip_histogram:
+            f.write('  {} bit\n'.format(args.main_region_bit_depth))
+            f.write('  Min value in 32-bit histogram {}\n'.format(args.main_region_histogram_min))
+            f.write('  Max value in 32-bit histogram {}\n'.format(args.main_region_histogram_max))
         else:
             f.write('  32bit, histogram untouched\n')
         f.write('*** Optional reco parameters ***\n')
-        if args.a0 > 0:
-            f.write('  Rotate volume by: {:0.3f} deg\n'.format(args.a0))
+        if args.main_region_rotate_volume_clock > 0:
+            f.write('  Rotate volume by: {:0.3f} deg\n'.format(args.main_region_rotate_volume_clock))
         f.close()

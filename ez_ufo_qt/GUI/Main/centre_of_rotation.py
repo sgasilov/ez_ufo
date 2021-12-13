@@ -104,43 +104,43 @@ class CentreOfRotationGroup(QGroupBox):
 
     def set_values_from_params(self):
         self.set_rButton_from_params()
-        self.search_rotation_entry.setText(str(parameters.params['e_ax_range']))
-        self.search_in_slice_entry.setText(str(parameters.params['e_ax_row']))
-        self.size_of_recon_entry.setText(str(parameters.params['e_ax_p_size']))
-        self.axis_col_entry.setText(str(parameters.params['e_ax_fix']))
-        self.inc_axis_entry.setText(str(parameters.params['e_dax']))
+        self.search_rotation_entry.setText(str(parameters.params['main_cor_axis_search_interval']))
+        self.search_in_slice_entry.setText(str(parameters.params['main_cor_search_row_start']))
+        self.size_of_recon_entry.setText(str(parameters.params['main_cor_recon_patch_size']))
+        self.axis_col_entry.setText(str(parameters.params['main_cor_axis_column']))
+        self.inc_axis_entry.setText(str(parameters.params['main_cor_axis_increment_step']))
 
     def set_rButton(self):
         if self.auto_correlate_rButton.isChecked():
             logging.debug("Auto Correlate")
-            parameters.params['e_ax'] = 1
+            parameters.params['main_cor_axis_search_method'] = 1
         elif self.auto_minimize_rButton.isChecked():
             logging.debug("Auto Minimize")
-            parameters.params['e_ax'] = 2
+            parameters.params['main_cor_axis_search_method'] = 2
         elif self.define_axis_rButton.isChecked():
             logging.debug("Define axis")
-            parameters.params['e_ax'] = 3
+            parameters.params['main_cor_axis_search_method'] = 3
         elif self.image_midpoint_rButton.isChecked():
             logging.debug("Use image midpoint")
-            parameters.params['e_ax'] = 4
+            parameters.params['main_cor_axis_search_method'] = 4
 
     def set_rButton_from_params(self):
-        if parameters.params['e_ax'] == 1:
+        if parameters.params['main_cor_axis_search_method'] == 1:
             self.auto_correlate_rButton.setChecked(True)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(False)
             self.image_midpoint_rButton.setChecked(False)
-        elif parameters.params['e_ax'] == 2:
+        elif parameters.params['main_cor_axis_search_method'] == 2:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(True)
             self.define_axis_rButton.setChecked(False)
             self.image_midpoint_rButton.setChecked(False)
-        elif parameters.params['e_ax'] == 3:
+        elif parameters.params['main_cor_axis_search_method'] == 3:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(True)
             self.image_midpoint_rButton.setChecked(False)
-        elif parameters.params['e_ax'] == 4:
+        elif parameters.params['main_cor_axis_search_method'] == 4:
             self.auto_correlate_rButton.setChecked(False)
             self.auto_minimize_rButton.setChecked(False)
             self.define_axis_rButton.setChecked(False)
@@ -148,20 +148,20 @@ class CentreOfRotationGroup(QGroupBox):
 
     def set_search_rotation(self):
         logging.debug(self.search_rotation_entry.text())
-        parameters.params['e_ax_range'] = str(self.search_rotation_entry.text())
+        parameters.params['main_cor_axis_search_interval'] = str(self.search_rotation_entry.text())
 
     def set_search_slice(self):
         logging.debug(self.search_in_slice_entry.text())
-        parameters.params['e_ax_row'] = str(self.search_in_slice_entry.text())
+        parameters.params['main_cor_search_row_start'] = str(self.search_in_slice_entry.text())
 
     def set_size_of_reco(self):
         logging.debug(self.size_of_recon_entry.text())
-        parameters.params['e_ax_p_size'] = str(self.size_of_recon_entry.text())
+        parameters.params['main_cor_recon_patch_size'] = str(self.size_of_recon_entry.text())
 
     def set_axis_col(self):
         logging.debug(self.axis_col_entry.text())
-        parameters.params['e_ax_fix'] = str(self.axis_col_entry.text())
+        parameters.params['main_cor_axis_column'] = str(self.axis_col_entry.text())
 
     def set_axis_inc(self):
         logging.debug(self.inc_axis_entry.text())
-        parameters.params['e_dax'] = str(self.inc_axis_entry.text())
+        parameters.params['main_cor_axis_increment_step'] = str(self.inc_axis_entry.text())

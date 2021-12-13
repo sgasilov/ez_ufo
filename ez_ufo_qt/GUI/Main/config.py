@@ -551,21 +551,27 @@ class ConfigGroup(QGroupBox):
 
             args = tk_args(params['e_indir'], params['e_tmpdir'],
                            params['e_outdir'], params['e_bigtif'],
-                           params['e_ax'], params['e_ax_range'],
-                           params['e_ax_row'], params['e_ax_p_size'],
-                           params['e_ax_fix'], params['e_dax'], params['e_inp'],
-                           params['e_inp_thr'], params['e_inp_sig'],
-                           params['e_RR'], params['e_RR_ufo'],
-                           params['e_RR_ufo_1d'], params['e_RR_sig_hor'], params['e_RR_sig_ver'],
-                           params['e_rr_srp_wind_sort'], params['e_rr_srp_wide'],
-                           params['e_rr_srp_wind_wide'], params['e_rr_srp_snr'],
-                           params['e_PR'], params['e_energy'], params['e_pixel'],
-                           params['e_z'], params['e_log10db'], params['e_vcrop'],
-                           params['e_y'], params['e_yheight'], params['e_ystep'],
-                           params['e_gray256'], params['e_bit'], params['e_hmin'],
-                           params['e_hmax'], params['e_pre'], params['e_pre_cmd'],
-                           params['e_a0'], params['e_crop'], params['e_x0'],
-                           params['e_dx'], params['e_y0'], params['e_dy'],
+                           params['main_cor_axis_search_method'], params['main_cor_axis_search_interval'],
+                           params['main_cor_search_row_start'], params['main_cor_recon_patch_size'],
+                           params['main_cor_axis_column'], params['main_cor_axis_increment_step'],
+                           params['main_filters_remove_spots'], params['main_filters_remove_spots_threshold'],
+                           params['main_filters_remove_spots_blur_sigma'], params['main_filters_ring_removal'],
+                           params['main_filters_ring_removal_ufo_lpf'], params['main_filters_ring_removal_ufo_lpf_1d_or_2d'],
+                           params['main_filters_ring_removal_ufo_lpf_sigma_horizontal'],
+                           params['main_filters_ring_removal_ufo_lpf_sigma_vertical'],
+                           params['main_filters_ring_removal_sarepy_window_size'], params['main_filters_ring_removal_sarepy_wide'],
+                           params['main_filters_ring_removal_sarepy_window'],
+                           params['main_filters_ring_removal_sarepy_SNR'],
+                           params['main_pr_phase_retrieval'], params['main_pr_photon_energy'],
+                           params['main_pr_pixel_size'],
+                           params['main_pr_detector_distance'], params['main_pr_delta_beta_ratio'],
+                           params['main_region_select_rows'], params['main_region_first_row'],
+                           params['main_region_number_rows'], params['main_region_nth_row'],
+                           params['main_region_clip_histogram'], params['main_region_bit_depth'], params['main_region_histogram_min'],
+                           params['main_region_histogram_max'], params['e_pre'], params['e_pre_cmd'],
+                           params['main_region_rotate_volume_clock'], params['main_region_crop_slices'],
+                           params['main_region_crop_x'],
+                           params['main_region_crop_width'], params['main_region_crop_y'], params['main_region_crop_height'],
                            params['e_dryrun'], params['e_parfile'],
                            params['e_keep_tmp'], params['e_sinFFC'],
                            params['e_sinFFC_method'], params['e_sinFFCEigenReps'],
@@ -608,103 +614,103 @@ class ConfigGroup(QGroupBox):
         Determines whether user-input values are valid
         """
 
-        # Search rotation: e_ax_range
+        # Search rotation: main_cor_axis_search_interval
 
-        # Search in slice: e_ax_row
-        if int(parameters.params['e_ax_row']) < 0:
+        # Search in slice: main_cor_search_row_start
+        if int(parameters.params['main_cor_search_row_start']) < 0:
             raise InvalidInputError("Value out of range for: Search in slice from row number")
 
-        # Size of reconstructed: e_ax_p_size
-        if int(parameters.params['e_ax_p_size']) < 0:
+        # Size of reconstructed: main_cor_recon_patch_size
+        if int(parameters.params['main_cor_recon_patch_size']) < 0:
             raise InvalidInputError("Value out of range for: Size of reconstructed patch [pixel]")
 
-        # Axis is in column No: e_ax_fix
-        if float(parameters.params['e_ax_fix']) < 0:
+        # Axis is in column No: main_cor_axis_column
+        if float(parameters.params['main_cor_axis_column']) < 0:
             raise InvalidInputError("Value out of range for: Axis is in column No [pixel]")
 
-        # Increment axis: e_dax
-        if float(parameters.params['e_dax']) < 0:
+        # Increment axis: main_cor_axis_increment_step
+        if float(parameters.params['main_cor_axis_increment_step']) < 0:
             raise InvalidInputError("Value out of range for: Increment axis every reconstruction")
 
-        # Threshold: e_inp_thr
-        if int(parameters.params['e_inp_thr']) < 0:
+        # Threshold: main_filters_remove_spots_threshold
+        if int(parameters.params['main_filters_remove_spots_threshold']) < 0:
             raise InvalidInputError("Value out of range for: Threshold (prominence of the spot) [counts]")
 
-        # Spot blur: e_inp_sig
-        if int(parameters.params['e_inp_sig']) < 0:
+        # Spot blur: main_filters_remove_spots_blur_sigma
+        if int(parameters.params['main_filters_remove_spots_blur_sigma']) < 0:
             raise InvalidInputError("Value out of range for: Spot blur. sigma [pixels]")
 
         # Sigma: e_sig_hor
-        if int(parameters.params['e_RR_sig_hor']) < 0:
+        if int(parameters.params['main_filters_ring_removal_ufo_lpf_sigma_horizontal']) < 0:
             raise InvalidInputError("Value out of range for: ufo ring-removal sigma horizontal")
 
         # Sigma: e_sig_ver
-        if int(parameters.params['e_RR_sig_ver']) < 0:
+        if int(parameters.params['main_filters_ring_removal_ufo_lpf_sigma_vertical']) < 0:
             raise InvalidInputError("Value out of range for: ufo ring-removal sigma vertical")
 
-        # Window size: e_rr_srp_wind_sort
-        if int(parameters.params['e_rr_srp_wind_sort']) < 0:
+        # Window size: main_filters_ring_removal_sarepy_window_size
+        if int(parameters.params['main_filters_ring_removal_sarepy_window_size']) < 0:
             raise InvalidInputError("Value out of range for: window size")
 
-        # Wind: e_rr_srp_wind_wide
-        if int(parameters.params['e_rr_srp_wind_wide']) < 0:
+        # Wind: main_filters_ring_removal_sarepy_window
+        if int(parameters.params['main_filters_ring_removal_sarepy_window']) < 0:
             raise InvalidInputError("Value out of range for: wind")
 
-        # SNR: e_rr_srp_snr
-        if int(parameters.params['e_rr_srp_snr']) < 0:
+        # SNR: main_filters_ring_removal_sarepy_SNR
+        if int(parameters.params['main_filters_ring_removal_sarepy_SNR']) < 0:
             raise InvalidInputError("Value out of range for: SNR")
 
-        # Photon energy: e_energy
-        if float(parameters.params['e_energy']) < 0:
+        # Photon energy: main_pr_photon_energy
+        if float(parameters.params['main_pr_photon_energy']) < 0:
             raise InvalidInputError("Value out of range for: Photon energy [keV]")
 
-        # Pixel size: e_pixel
-        if float(parameters.params['e_pixel']) < 0:
+        # Pixel size: main_pr_pixel_size
+        if float(parameters.params['main_pr_pixel_size']) < 0:
             raise InvalidInputError("Value out of range for: Pixel size [micron]")
 
-        # Sample detector distance: e_z
-        if float(parameters.params['e_z']) < 0:
+        # Sample detector distance: main_pr_detector_distance
+        if float(parameters.params['main_pr_detector_distance']) < 0:
             raise InvalidInputError("Value out of range for: Sample-detector distance [m]")
 
-        # Delta/beta ratio: e_log10db
-        if int(parameters.params['e_log10db']) < 0:
+        # Delta/beta ratio: main_pr_delta_beta_ratio
+        if int(parameters.params['main_pr_delta_beta_ratio']) < 0:
             raise InvalidInputError("Value out of range for: Delta/beta ratio: (try default if unsure)")
 
-        # First row in projections: e_y
-        if int(parameters.params['e_y']) < 0:
+        # First row in projections: main_region_first_row
+        if int(parameters.params['main_region_first_row']) < 0:
             raise InvalidInputError("Value out of range for: First row in projections")
 
-        # Number of rows: e_yheight
-        if int(parameters.params['e_yheight']) < 0:
+        # Number of rows: main_region_number_rows
+        if int(parameters.params['main_region_number_rows']) < 0:
             raise InvalidInputError("Value out of range for: Number of rows (ROI height)")
 
-        # Reconstruct every Nth row: e_ystep
-        if int(parameters.params['e_ystep']) < 0:
+        # Reconstruct every Nth row: main_region_nth_row
+        if int(parameters.params['main_region_nth_row']) < 0:
             raise InvalidInputError("Value out of range for: Reconstruct every Nth row")
 
         # Can be negative when 16-bit selected
-        # Min value: e_hmin
-        #if float(parameters.params['e_hmin']) < 0:
+        # Min value: main_region_histogram_min
+        #if float(parameters.params['main_region_histogram_min']) < 0:
         #    raise InvalidInputError("Value out of range for: Min value in 32-bit histogram")
 
-        # Max value: e_hmax
-        if float(parameters.params['e_hmax']) < 0:
+        # Max value: main_region_histogram_max
+        if float(parameters.params['main_region_histogram_max']) < 0:
             raise InvalidInputError("Value out of range for: Max value in 32-bit histogram")
 
-        # x: e_x0
-        if int(parameters.params['e_x0']) < 0:
+        # x: main_region_crop_x
+        if int(parameters.params['main_region_crop_x']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: x")
 
-        # width: e_dx
-        if int(parameters.params['e_dx']) < 0:
+        # width: main_region_crop_width
+        if int(parameters.params['main_region_crop_width']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: width")
 
-        # y: e_y0
-        if int(parameters.params['e_y0']) < 0:
+        # y: main_region_crop_y
+        if int(parameters.params['main_region_crop_y']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: y")
 
-        # height: e_dy
-        if int(parameters.params['e_dy']) < 0:
+        # height: main_region_crop_height
+        if int(parameters.params['main_region_crop_height']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
         if int(parameters.params['e_sinFFCEigenReps']) < 0:
@@ -717,8 +723,8 @@ class ConfigGroup(QGroupBox):
             raise InvalidInputError("Value out of range for: Flat Field Correction: Downsample")
 
         # Can be negative value
-        # Optional: rotate volume: e_a0
-        #if float(parameters.params['e_a0']) < 0:
+        # Optional: rotate volume: main_region_rotate_volume_clock
+        #if float(parameters.params['main_region_rotate_volume_clock']) < 0:
         #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
         #TODO ADD CHECKING NLMDN SETTINGS
         #TODO ADD CHECKING FOR ADVANCED SETTINGS
@@ -743,16 +749,21 @@ class ConfigGroup(QGroupBox):
 
 class tk_args():
     def __init__(self, e_indir, e_tmpdir, e_outdir, e_bigtif,
-                e_ax, e_ax_range, e_ax_row,e_ax_p_size, e_ax_fix, e_dax,
-                e_inp, e_inp_thr, e_inp_sig,
-                e_RR, e_RR_ufo, e_RR_ufo_1d, e_RR_sig_hor, e_RR_sig_ver,
-                e_rr_srp_wind_sort, e_rr_srp_wide, e_rr_srp_wide_wind, e_rr_srp_wide_snr,
-                e_PR, e_energy, e_pixel, e_z, e_log10db,
-                e_vcrop, e_y, e_yheight, e_ystep, e_gray256, e_bit, e_hmin, e_hmax,
-                e_pre, e_pre_cmd, e_a0, e_crop, e_x0, e_dx, e_y0, e_dy,
-                e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFC_method, e_sinFFCEigenReps,
-                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats,
-                e_common_darks, e_common_flats, e_use_common_flats2, e_common_flats2,
+                main_cor_axis_search_method, main_cor_axis_search_interval, main_cor_search_row_start,
+                main_cor_recon_patch_size, main_cor_axis_column, main_cor_axis_increment_step,
+                main_filters_remove_spots, main_filters_remove_spots_threshold, main_filters_remove_spots_blur_sigma,
+                main_filters_ring_removal, main_filters_ring_removal_ufo_lpf, main_filters_ring_removal_ufo_lpf_1d_or_2d,
+                main_filters_ring_removal_ufo_lpf_sigma_horizontal, main_filters_ring_removal_ufo_lpf_sigma_vertical,
+                main_filters_ring_removal_sarepy_window_size, main_filters_ring_removal_sarepy_wide, e_rr_srp_wide_wind,
+                main_filters_ring_removal_sarepy_SNR,
+                main_pr_phase_retrieval, main_pr_photon_energy, main_pr_pixel_size, main_pr_detector_distance,
+                main_pr_delta_beta_ratio, main_region_select_rows, main_region_first_row, main_region_number_rows,
+                main_region_nth_row, main_region_clip_histogram, main_region_bit_depth,
+                main_region_histogram_min, main_region_histogram_max, e_pre, e_pre_cmd, main_region_rotate_volume_clock,
+                main_region_crop_slices, main_region_crop_x, main_region_crop_width, main_region_crop_y,
+                main_region_crop_height, e_dryrun, e_parfile, e_keep_tmp, e_sinFFC, e_sinFFC_method, e_sinFFCEigenReps,
+                e_sinFFCEigenDowns, e_sinFFCDowns, e_common_darks_flats, e_common_darks, e_common_flats,
+                e_use_common_flats2, e_common_flats2,
                 e_nlmdn_apply_after_reco, e_nlmdn_indir, e_nlmdn_input_is_file, e_nlmdn_outdir, e_nlmdn_bigtif,
                 e_nlmdn_r, e_nlmdn_dx, e_nlmdn_h, e_nlmdn_sig,
                 e_nlmdn_w, e_nlmdn_fast, e_nlmdn_autosig, e_nlmdn_dryrun,
@@ -772,91 +783,91 @@ class tk_args():
         self.args['bigtif_sli']=bool(e_bigtif)
         setattr(self,'bigtif_sli',self.args['bigtif_sli'])
         # center of rotation parameters
-        self.args['ax']=int(e_ax)
-        setattr(self,'ax',self.args['ax'])
-        self.args['ax_range']=str(e_ax_range)
-        setattr(self,'ax_range',self.args['ax_range'])
-        self.args['ax_p_size']=int(e_ax_p_size)
-        setattr(self,'ax_p_size',self.args['ax_p_size'])
-        self.args['ax_row']=int(e_ax_row)
-        setattr(self,'ax_row',self.args['ax_row'])
-        self.args['ax_fix']=float(e_ax_fix)
-        setattr(self,'ax_fix',self.args['ax_fix'])
-        self.args['dax']=float(e_dax)
-        setattr(self,'dax',self.args['dax'])
+        self.args['main_cor_axis_search_method']=int(main_cor_axis_search_method)
+        setattr(self,'main_cor_axis_search_method',self.args['main_cor_axis_search_method'])
+        self.args['main_cor_axis_search_interval']=str(main_cor_axis_search_interval)
+        setattr(self,'main_cor_axis_search_interval',self.args['main_cor_axis_search_interval'])
+        self.args['main_cor_recon_patch_size']=int(main_cor_recon_patch_size)
+        setattr(self,'main_cor_recon_patch_size',self.args['main_cor_recon_patch_size'])
+        self.args['main_cor_search_row_start']=int(main_cor_search_row_start)
+        setattr(self,'main_cor_search_row_start',self.args['main_cor_search_row_start'])
+        self.args['main_cor_axis_column']=float(main_cor_axis_column)
+        setattr(self,'main_cor_axis_column',self.args['main_cor_axis_column'])
+        self.args['main_cor_axis_increment_step']=float(main_cor_axis_increment_step)
+        setattr(self,'main_cor_axis_increment_step',self.args['main_cor_axis_increment_step'])
         #ring removal
-        self.args['inp']=bool(e_inp)
-        setattr(self,'inp',self.args['inp'])
-        self.args['inp_thr']=int(e_inp_thr)
-        setattr(self,'inp_thr',self.args['inp_thr'])
-        self.args['inp_sig']=int(e_inp_sig)
-        setattr(self,'inp_sig',self.args['inp_sig'])
-        self.args['RR']=bool(e_RR)
-        setattr(self,'RR',self.args['RR'])
-        self.args['RR_ufo'] = bool(e_RR_ufo)
-        setattr(self, 'RR_ufo', self.args['RR_ufo'])
-        self.args['RR_ufo_1d'] = bool(e_RR_ufo_1d)
-        setattr(self, 'RR_ufo_1d', self.args['RR_ufo_1d'])
-        self.args['RR_sig_hor']=int(e_RR_sig_hor)
-        setattr(self,'RR_sig_hor',self.args['RR_sig_hor'])
-        self.args['RR_sig_ver'] = int(e_RR_sig_ver)
-        setattr(self, 'RR_sig_ver', self.args['RR_sig_ver'])
-        self.args['RR_srp_wind_sort'] = int(e_rr_srp_wind_sort)
-        setattr(self, 'RR_srp_wind_sort', self.args['RR_srp_wind_sort'])
-        self.args['RR_srp_wide'] = bool(e_rr_srp_wide)
-        setattr(self, 'RR_srp_wide', self.args['RR_srp_wide'])
+        self.args['main_filters_remove_spots']=bool(main_filters_remove_spots)
+        setattr(self,'main_filters_remove_spots',self.args['main_filters_remove_spots'])
+        self.args['main_filters_remove_spots_threshold']=int(main_filters_remove_spots_threshold)
+        setattr(self,'main_filters_remove_spots_threshold', self.args['main_filters_remove_spots_threshold'])
+        self.args['main_filters_remove_spots_blur_sigma']=int(main_filters_remove_spots_blur_sigma)
+        setattr(self,'main_filters_remove_spots_blur_sigma',self.args['main_filters_remove_spots_blur_sigma'])
+        self.args['main_filters_ring_removal']=bool(main_filters_ring_removal)
+        setattr(self,'main_filters_ring_removal',self.args['main_filters_ring_removal'])
+        self.args['main_filters_ring_removal_ufo_lpf'] = bool(main_filters_ring_removal_ufo_lpf)
+        setattr(self, 'main_filters_ring_removal_ufo_lpf', self.args['main_filters_ring_removal_ufo_lpf'])
+        self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = bool(main_filters_ring_removal_ufo_lpf_1d_or_2d)
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_1d_or_2d', self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'])
+        self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'] = int(main_filters_ring_removal_ufo_lpf_sigma_horizontal)
+        setattr(self,'main_filters_ring_removal_ufo_lpf_sigma_horizontal',self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'])
+        self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'] = int(main_filters_ring_removal_ufo_lpf_sigma_vertical)
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_sigma_vertical', self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'])
+        self.args['main_filters_ring_removal_sarepy_window_size'] = int(main_filters_ring_removal_sarepy_window_size)
+        setattr(self, 'main_filters_ring_removal_sarepy_window_size', self.args['main_filters_ring_removal_sarepy_window_size'])
+        self.args['main_filters_ring_removal_sarepy_wide'] = bool(main_filters_ring_removal_sarepy_wide)
+        setattr(self, 'main_filters_ring_removal_sarepy_wide', self.args['main_filters_ring_removal_sarepy_wide'])
         self.args['RR_srp_wide_wind'] = int(e_rr_srp_wide_wind)
         setattr(self, 'RR_srp_wide_wind', self.args['RR_srp_wide_wind'])
-        self.args['RR_srp_wide_snr'] = int(e_rr_srp_wide_snr)
-        setattr(self, 'RR_srp_wide_snr', self.args['RR_srp_wide_snr'])
+        self.args['main_filters_ring_removal_sarepy_SNR'] = int(main_filters_ring_removal_sarepy_SNR)
+        setattr(self, 'main_filters_ring_removal_sarepy_SNR', self.args['main_filters_ring_removal_sarepy_SNR'])
         # phase retrieval
-        self.args['PR']=bool(e_PR)
-        setattr(self,'PR',self.args['PR'])
-        self.args['energy']=float(e_energy)
-        setattr(self,'energy',self.args['energy'])
-        self.args['pixel']=float(e_pixel)*1e-6
-        setattr(self,'pixel',self.args['pixel'])
-        self.args['z']=float(e_z)
-        setattr(self,'z',self.args['z'])
-        self.args['log10db']=np.log10(float(e_log10db))
-        setattr(self,'log10db',self.args['log10db'])
+        self.args['main_pr_phase_retrieval'] = bool(main_pr_phase_retrieval)
+        setattr(self, 'main_pr_phase_retrieval', self.args['main_pr_phase_retrieval'])
+        self.args['main_pr_photon_energy']=float(main_pr_photon_energy)
+        setattr(self,'main_pr_photon_energy',self.args['main_pr_photon_energy'])
+        self.args['main_pr_pixel_size']=float(main_pr_pixel_size)*1e-6
+        setattr(self,'main_pr_pixel_size',self.args['main_pr_pixel_size'])
+        self.args['main_pr_detector_distance']=float(main_pr_detector_distance)
+        setattr(self,'main_pr_detector_distance',self.args['main_pr_detector_distance'])
+        self.args['main_pr_delta_beta_ratio']=np.log10(float(main_pr_delta_beta_ratio))
+        setattr(self,'main_pr_delta_beta_ratio',self.args['main_pr_delta_beta_ratio'])
         # Crop vertically
-        self.args['vcrop']=bool(e_vcrop)
-        setattr(self,'vcrop',self.args['vcrop'])
-        self.args['y']=int(e_y)
-        setattr(self,'y',self.args['y'])
-        self.args['yheight']=int(e_yheight)
-        setattr(self,'yheight',self.args['yheight'])
-        self.args['ystep']=int(e_ystep)
-        setattr(self,'ystep',self.args['ystep'])
+        self.args['main_region_select_rows']=bool(main_region_select_rows)
+        setattr(self,'main_region_select_rows',self.args['main_region_select_rows'])
+        self.args['main_region_first_row']=int(main_region_first_row)
+        setattr(self,'main_region_first_row',self.args['main_region_first_row'])
+        self.args['main_region_number_rows']=int(main_region_number_rows)
+        setattr(self,'main_region_number_rows',self.args['main_region_number_rows'])
+        self.args['main_region_nth_row']=int(main_region_nth_row)
+        setattr(self,'main_region_nth_row',self.args['main_region_nth_row'])
         # conv to 8 bit
-        self.args['gray256']=bool(e_gray256)
-        setattr(self,'gray256',self.args['gray256'])
-        self.args['bit']=int(e_bit)
-        setattr(self,'bit',self.args['bit'])
-        self.args['hmin']=float(e_hmin)
-        setattr(self,'hmin',self.args['hmin'])
-        self.args['hmax']=float(e_hmax)
-        setattr(self,'hmax',self.args['hmax'])
+        self.args['main_region_clip_histogram']=bool(main_region_clip_histogram)
+        setattr(self,'main_region_clip_histogram',self.args['main_region_clip_histogram'])
+        self.args['main_region_bit_depth']=int(main_region_bit_depth)
+        setattr(self,'main_region_bit_depth',self.args['main_region_bit_depth'])
+        self.args['main_region_histogram_min']=float(main_region_histogram_min)
+        setattr(self,'main_region_histogram_min',self.args['main_region_histogram_min'])
+        self.args['main_region_histogram_max']=float(main_region_histogram_max)
+        setattr(self,'main_region_histogram_max',self.args['main_region_histogram_max'])
         # preprocessing attributes
         self.args['pre']=bool(e_pre)
         setattr(self,'pre',self.args['pre'])
         self.args['pre_cmd']=e_pre_cmd
         setattr(self,'pre_cmd',self.args['pre_cmd'])
         # ROI in slice
-        self.args['crop']=bool(e_crop)
-        setattr(self,'crop',self.args['crop'])
-        self.args['x0']=int(e_x0)
-        setattr(self,'x0',self.args['x0'])
-        self.args['dx']=int(e_dx)
-        setattr(self,'dx',self.args['dx'])
-        self.args['y0']=int(e_y0)
-        setattr(self,'y0',self.args['y0'])
-        self.args['dy']=int(e_dy)
-        setattr(self,'dy',self.args['dy'])
+        self.args['main_region_crop_slices']=bool(main_region_crop_slices)
+        setattr(self,'main_region_crop_slices',self.args['main_region_crop_slices'])
+        self.args['main_region_crop_x']=int(main_region_crop_x)
+        setattr(self,'main_region_crop_x',self.args['main_region_crop_x'])
+        self.args['main_region_crop_width']=int(main_region_crop_width)
+        setattr(self,'main_region_crop_width',self.args['main_region_crop_width'])
+        self.args['main_region_crop_y']=int(main_region_crop_y)
+        setattr(self,'main_region_crop_y',self.args['main_region_crop_y'])
+        self.args['main_region_crop_height']=int(main_region_crop_height)
+        setattr(self,'main_region_crop_height',self.args['main_region_crop_height'])
         # Optional FBP params
-        self.args['a0']= float(e_a0)
-        setattr(self,'a0',self.args['a0'])
+        self.args['main_region_rotate_volume_clock']= float(main_region_rotate_volume_clock)
+        setattr(self,'main_region_rotate_volume_clock',self.args['main_region_rotate_volume_clock'])
         # misc settings
         self.args['dryrun']=bool(e_dryrun)
         setattr(self,'dryrun',self.args['dryrun'])

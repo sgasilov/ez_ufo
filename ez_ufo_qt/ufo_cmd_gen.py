@@ -88,7 +88,8 @@ class ufo_cmds(object):
         cmd += ' addressing-mode=clamp_to_edge'
         cmd += ' ! fft dimensions=2 ! retrieve-phase'
         cmd += ' energy={} distance={} pixel-size={} regularization-rate={:0.2f}' \
-            .format(args.energy, args.z, args.pixel, args.log10db)
+            .format(args.main_pr_photon_energy, args.main_pr_detector_distance,
+                    args.main_pr_pixel_size, args.main_pr_delta_beta_ratio)
         cmd += ' ! ifft dimensions=2 crop-width={} crop-height={}' \
             .format(pad_width, pad_height)
         cmd += ' ! crop x={} width={} y={} height={}'.format(pad_x, WH[1], pad_y, WH[0])
@@ -158,7 +159,8 @@ class ufo_cmds(object):
         mask_file = os.path.join(tmpdir, "mask.tif")
         # generate mask
         cmd = 'tofu find-large-spots --images {}'.format(any_flat)
-        cmd += ' --spot-threshold {} --gauss-sigma {}'.format(args.inp_thr, args.inp_sig)
+        cmd += ' --spot-threshold {} --gauss-sigma {}'.format(args.main_filters_remove_spots,
+                                                              args.main_filters_remove_spots_blur_sigma)
         cmd += ' --output {} --output-bytes-per-file 0'.format(mask_file)
         cmds.append(cmd)
         ######### FLAT-CORRECT #########
@@ -176,7 +178,7 @@ class ufo_cmds(object):
             cmd += ' --eigen-pco-repetitions {}'.format(args.sinFFCEigenReps)
             cmd += ' --eigen-pco-downsample {}'.format(args.sinFFCEigenDowns)
             cmd += ' --downsample {}'.format(args.sinFFCDowns)
-            #if not args.PR:
+            #if not args.main_pr_phase_retrieval:
             #    cmd += ' --absorptivity'
             cmds.append(cmd)
         elif not args.sinFFC:
@@ -186,7 +188,7 @@ class ufo_cmds(object):
             cmd += ' --output {}'.format(out_pattern)
             if ctset[1] == 4:
                 cmd += ' --flats2 {}'.format(indir[3])
-            if not args.PR:
+            if not args.main_pr_phase_retrieval:
                 cmd += ' --absorptivity'
             if not args.adv_dark_scale == "":
                 cmd += ' --dark-scale {}'.format(args.adv_dark_scale)
@@ -213,8 +215,8 @@ class ufo_cmds(object):
     def get_crop_sli(self, out_pattern, args):
         cmd = 'ufo-launch read path={}/*.tif ! '.format(os.path.dirname(out_pattern))
         cmd += 'crop x={} width={} y={} height={} ! '. \
-            format(args.x0, args.dx, args.y0, args.dy)
+            format(args.main_region_crop_x, args.main_region_crop_width, args.main_region_crop_y, args.main_region_crop_height)
         cmd += 'write filename={}'.format(out_pattern)
-        if args.gray256:
+        if args.main_region_clip_histogram:
             cmd += ' bits=8 rescale=False'
         return cmd

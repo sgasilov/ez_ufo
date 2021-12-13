@@ -71,11 +71,11 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
     '''formats list of processing commands for a CT set'''
     # two helper variables to mark that PR/FFC has been done at some step
     swiFFC = True  # FFC is always required required
-    swiPR = args.PR  # PR is an optional operation
+    swiPR = args.main_pr_phase_retrieval  # PR is an optional operation
 
     ####### PREPROCESSING #########
     flat_file_for_mask = os.path.join(args.tmpdir, 'flat.tif')
-    if args.inp:
+    if args.main_filters_remove_spots:
         if not args.common_darks_flats:
             flatdir = os.path.join(ctset[0], Tofu._fdt_names[1])
         elif args.common_darks_flats:
@@ -89,7 +89,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         # reset location of input data
         ctset = (args.tmpdir, ctset[1])
     ###################################################
-    if args.inp:  # generate commands to remove sci. spots from projections
+    if args.main_filters_remove_spots:  # generate commands to remove sci. spots from projections
         cmds.append("echo \" - Flat-correcting and removing large spots\"")
         cmds_inpaint = Ufo.get_inp_cmd(ctset, args.tmpdir, args, WH[0], nviews, flat_file_for_mask)
         # reset location of input data
@@ -99,7 +99,7 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
 
     ######## PHASE-RETRIEVAL #######
     # Do PR separately if sinograms must be generate or if vertical ROI is defined
-    if (args.PR and args.RR):  # or (args.PR and args.vcrop): #Phase Retrieval and Ring Removal
+    if args.main_pr_phase_retrieval and args.main_filters_ring_removal:  # or (args.main_pr_phase_retrieval and args.vcrop):
         if swiFFC:  # we still need need flat correction #Inpaint No
             cmds.append("echo \" - Phase retrieval with flat-correction\"")
             if args.sinFFC:
@@ -113,11 +113,11 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
         swiPR = False  # no need to do PR anymore
         swiFFC = False  # no need to do FFC anymore
 
-    # if args.PR and args.vcrop: # have to reset location of input data
+    # if args.main_pr_phase_retrieval and args.vcrop: # have to reset location of input data
     #    ctset = (args.tmpdir, ctset[1])
 
     ################# RING REMOVAL #######################
-    if args.RR:
+    if args.main_filters_ring_removal:
         # Generate sinograms first
         if swiFFC:  # we still need to do flat-field correction
             if args.sinFFC:
@@ -133,14 +133,16 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
             cmds.append(Tofu.get_sinos_noffc_cmd(ctset[0], args.tmpdir, args, nviews, WH))
         swiFFC = False
         # Filter sinograms
-        if args.RR_ufo:
-            if args.RR_ufo_1d:
+        if args.main_filters_ring_removal_ufo_lpf:
+            if args.main_filters_ring_removal_ufo_lpf_1d_or_2d:
                 cmds.append("echo \" - Ring removal - ufo 1d stripes filter\"")
-                cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir, args.RR_sig_hor, nviews))
+                cmds.append(Ufo.get_filter1d_sinos_cmd(args.tmpdir,
+                                                       args.main_filters_ring_removal_ufo_lpf_sigma_horizontal, nviews))
             else:
                 cmds.append("echo \" - Ring removal - ufo 2d stripes filter\"")
                 cmds.append(Ufo.get_filter2d_sinos_cmd(args.tmpdir, \
-                                        args.RR_sig_hor, args.RR_sig_ver, nviews, WH[1]))
+                            args.main_filters_ring_removal_ufo_lpf_sigma_horizontal,
+                            args.main_filters_ring_removal_ufo_lpf_sigma_vertical, nviews, WH[1]))
         else:
             cmds.append("echo \" - Ring removal - sarepy filter(s)\"")
             # note - calling an external program, not an ufo-kit script
@@ -150,7 +152,8 @@ def frmt_ufo_cmds(cmds, ctset, out_pattern, ax, args, Tofu, Ufo, FindCOR, nviews
                 tmp = os.path.join(args.tmpdir, "sinos")
                 cmdtmp = 'python {} --sinos {} --mws {} --mws2 {} --snr {} --sort_only {}' \
                     .format(path_to_filt, tmp, args.RR_srp_wind_sort,
-                            args.RR_srp_wide_wind, args.RR_srp_wide_snr, int(not args.RR_srp_wide))
+                            args.RR_srp_wide_wind, args.main_filters_ring_removal_sarepy_SNR,
+                            int(not args.main_filters_ring_removal_sarepy_wide))
                 cmds.append(cmdtmp)
             else:
                 cmds.append("echo \"Omitting RR because file with filter does not exist\"")
@@ -201,12 +204,12 @@ def main_tk(args, fdt_names):
     # else:
     #    clean_tmp_dirs(args.tmpdir, fdt_names)
     # input params consistency check
-    if args.gray256:
-        if args.hmin > args.hmax:
+    if args.main_region_clip_histogram:
+        if args.main_region_histogram_min > args.main_region_histogram_max:
             raise ValueError('hmin must be smaller than hmax to convert to 8bit without contrast inversion')
     '''
-    if args.gray256:
-        if args.hmin >= args.hmax:
+    if args.main_region_clip_histogram:
+        if args.main_region_histogram_min >= args.main_region_histogram_max:
             raise ValueError('hmin must be smaller than hmax to convert to 8bit without contrast inversion')
     '''
     # get list of all good CT directories to be reconstructed
@@ -228,27 +231,28 @@ def main_tk(args, fdt_names):
             # determine initial number of projections and their shape
             path2proj = os.path.join(ctset[0], fdt_names[2])
             nviews, WH, multipage = get_dims(path2proj)
-            # If args.ax == 4 then bypass axis search and use image midpoint
-            if args.ax != 4:
-                if args.vcrop and bad_vert_ROI(multipage, path2proj, args.y, args.yheight):
+            # If args.main_cor_axis_search_method == 4 then bypass axis search and use image midpoint
+            if args.main_cor_axis_search_method != 4:
+                if args.vcrop and bad_vert_ROI(multipage, path2proj, args.main_region_first_row, args.main_region_number_rows):
                     print('{:>30}\t{}'.format('CTset', 'Axis'))
                     print('{:>30}\t{}'.format(ctset[0], 'na'))
                     print('Vertical ROI does not contain any rows.')
                     print("Number of projections: {}, dimensions: {}".format(nviews, WH))
                     continue
                 # Find axis of rotation using auto: correlate first/last projections
-                if args.ax == 1:
-                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.y, args.yheight, multipage, args)
+                if args.main_cor_axis_search_method == 1:
+                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.main_region_first_row, args.main_region_number_rows, multipage, args)
                 # Find axis of rotation using auto: minimize STD of a slice
-                elif args.ax == 2:
+                elif args.main_cor_axis_search_method == 2:
                     cmds.append("echo \"Cleaning axis-search in tmp directory\"")
                     os.system('rm -rf {}'.format(os.path.join(args.tmpdir, 'axis-search')))
-                    ax = FindCOR.find_axis_std(ctset, args.tmpdir, \
-                                               args.ax_range, args.ax_p_size, args.ax_row, nviews, args, WH)
+                    ax = FindCOR.find_axis_std(ctset, args.tmpdir, args.main_cor_axis_search_interval,
+                                               args.main_cor_recon_patch_size, args.main_cor_search_row_start,
+                                               nviews, args, WH)
                 else:
-                    ax = args.ax_fix + i * args.dax
-            # If args.ax == 4 then bypass axis search and use image midpoint
-            elif args.ax == 4:
+                    ax = args.main_cor_axis_column + i * args.main_cor_axis_increment_step
+            # If args.main_cor_axis_search_method == 4 then bypass axis search and use image midpoint
+            elif args.main_cor_axis_search_method == 4:
                 ax = FindCOR.find_axis_image_midpoint(ctset, multipage, WH)
                 print("Bypassing axis search and using image midpoint: {}".format(ax))
 

@@ -20,9 +20,9 @@ e_RR: true
 e_RR_ufo: true
 e_RR_ufo_1d: true
 e_RR_par: 2
-e_rr_srp_wind_sort: 21
+main_filters_ring_removal_sarepy_window_size: 21
 e_rr_srp_wide: false
-e_rr_srp_wind_wide: 91
+main_filters_ring_removal_sarepy_wind: 91
 e_rr_srp_snr: 3
 e_PR: true
 e_energy: 12
