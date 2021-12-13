@@ -80,6 +80,13 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.which_images_to_stitch_entry = QLineEdit()
         self.which_images_to_stitch_entry.textChanged.connect(self.set_which_images_to_stitch)
 
+        self.remove_large_spots_checkbox = QCheckBox("Remove large spots from projections")
+        self.remove_large_spots_checkbox.stateChanged.connect(self.set_remove_spots_checkbox)
+        self.spot_threshold_label = QLabel("Threshold (prominence of the spot):")
+        self.spot_threshold_entry = QLineEdit()
+        self.spot_blur_sigma_label = QLabel("Spot blur sigma [pixels]:")
+        self.spot_blur_sigma_entry = QLineEdit()
+
         self.save_params_button = QPushButton("Save parameters")
         self.save_params_button.clicked.connect(self.save_params_button_clicked)
 
@@ -106,7 +113,7 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.show()
 
     def set_layout(self):
-        self.setMaximumSize(900, 450)
+        self.setMaximumSize(900, 500)
 
         layout = QGridLayout()
         layout.addWidget(self.projections_input_button, 0, 0, 1, 2)
@@ -129,11 +136,11 @@ class AutoVerticalStitchGUI(QGroupBox):
         flats_darks_layout.addWidget(self.darks_button, 1, 0, 1, 2)
         flats_darks_layout.addWidget(self.darks_entry, 1, 2, 1, 2)
         self.flats_darks_group.setLayout(flats_darks_layout)
-        layout.addWidget(self.flats_darks_group, 4, 0, 1, 4)
+        layout.addWidget(self.flats_darks_group, 4, 0, 1, 5)
 
-        layout.addWidget(self.overlap_region_label, 5, 2)
-        layout.addWidget(self.overlap_region_entry, 5, 3)
         layout.addWidget(self.sample_moved_down_checkbox, 5, 0, 1, 2)
+        layout.addWidget(self.overlap_region_label, 5, 2)
+        layout.addWidget(self.overlap_region_entry, 5, 4)
 
         stitch_group = QGroupBox()
         stitch_layout = QGridLayout()
@@ -148,18 +155,24 @@ class AutoVerticalStitchGUI(QGroupBox):
         stitch_type_layout.addWidget(self.equalize_intensity_rButton, 0, 0)
         stitch_type_layout.addWidget(self.concatenate_rButton, 0, 1)
         self.stitch_type_group.setLayout(stitch_type_layout)
-        layout.addWidget(self.stitch_type_group, 6, 2, 1, 2)
+        layout.addWidget(self.stitch_type_group, 6, 2, 1, 3)
 
         layout.addWidget(self.which_images_to_stitch_label, 7, 0, 1, 2)
-        layout.addWidget(self.which_images_to_stitch_entry, 7, 2, 1, 2)
+        layout.addWidget(self.which_images_to_stitch_entry, 7, 2, 1, 3)
 
-        layout.addWidget(self.save_params_button, 8, 0, 1, 2)
-        layout.addWidget(self.import_params_button, 8, 3, 1, 1)
-        layout.addWidget(self.help_button, 8, 2, 1, 1)
+        layout.addWidget(self.remove_large_spots_checkbox, 8, 0, 1, 1)
+        layout.addWidget(self.spot_threshold_label, 8, 1, 1, 1)
+        layout.addWidget(self.spot_threshold_entry, 8, 2, 1, 1)
+        layout.addWidget(self.spot_blur_sigma_label, 8, 3, 1, 1)
+        layout.addWidget(self.spot_blur_sigma_entry, 8, 4, 1, 1)
 
-        layout.addWidget(self.stitch_button, 9, 0, 1, 2)
-        layout.addWidget(self.dry_run_checkbox, 9, 2, 1, 1)
-        layout.addWidget(self.delete_temp_button, 9, 3, 1, 1)
+        layout.addWidget(self.save_params_button, 9, 0, 1, 2)
+        layout.addWidget(self.help_button, 9, 2, 1, 1)
+        layout.addWidget(self.import_params_button, 9, 3, 1, 2)
+
+        layout.addWidget(self.stitch_button, 10, 0, 1, 2)
+        layout.addWidget(self.dry_run_checkbox, 10, 2, 1, 1)
+        layout.addWidget(self.delete_temp_button, 10, 3, 1, 2)
         self.setLayout(layout)
 
     def init_values(self):
@@ -188,6 +201,11 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.parameters['concatenate'] = False
         self.parameters['images_to_stitch'] = "0,2000,1"
         self.which_images_to_stitch_entry.setText("0,2000,1")
+        self.parameters['remove_large_spots'] = True
+        self.parameters['spot_threshold'] = "1000"
+        self.spot_threshold_entry.setText("1000")
+        self.parameters['spot_blur_sigma'] = "2"
+        self.spot_blur_sigma_entry.setText("2")
         self.dry_run_checkbox.setChecked(False)
         self.parameters['dry_run'] = False
 
@@ -213,6 +231,9 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.stitch_projections_rButton.setChecked(bool(self.parameters['stitch_projections']))
         self.reslice_checkbox.setChecked(bool(self.parameters['reslice']))
         self.which_images_to_stitch_entry.setText(self.parameters['images_to_stitch'])
+        self.remove_large_spots_checkbox.setChecked(self.parameters['remove_large_spots'])
+        self.spot_threshold_entry.setText(self.parameters['spot_threshold'])
+        self.spot_blur_sigma_entry.setText(self.parameters['spot_blur_sigma'])
         self.equalize_intensity_rButton.setChecked(bool(self.parameters['equalize_intensity']))
         self.concatenate_rButton.setChecked(bool(self.parameters['concatenate']))
         self.dry_run_checkbox.setChecked(bool(self.parameters['dry_run']))
@@ -362,6 +383,24 @@ class AutoVerticalStitchGUI(QGroupBox):
         logging.debug("Which images to be stitched: " + str(self.which_images_to_stitch_entry.text()))
         self.parameters['images_to_stitch'] = self.which_images_to_stitch_entry.text()
 
+    def set_remove_spots_checkbox(self):
+        logging.debug("Remove large spots from projections: " + str(self.remove_large_spots_checkbox.isChecked()))
+        self.parameters['remove_large_spots'] = self.remove_large_spots_checkbox.isChecked()
+        if self.remove_large_spots_checkbox.isChecked():
+            self.temp_button.setEnabled(True)
+            self.temp_entry.setEnabled(True)
+        else:
+            self.temp_button.setEnabled(False)
+            self.temp_entry.setEnabled(False)
+
+    def set_spot_threshold_entry(self):
+        logging.debug("Threshold (prominence of the spot): " + str(self.spot_threshold_entry.text()))
+        self.parameters['spot_threshold'] = self.spot_threshold_entry.text()
+
+    def set_spot_blur_sigma(self):
+        logging.debug("Spot blur sigma [pixels]: " + str(self.spot_blur_sigma_entry.text()))
+        self.parameters['spot_blur_sigma'] = self.spot_blur_sigma_entry.text()
+
     def save_params_button_clicked(self):
         logging.debug("Save params button clicked")
         dir_explore = QFileDialog(self)
@@ -444,7 +483,8 @@ class AutoVerticalStitchGUI(QGroupBox):
 
     def stitch_button_pressed(self):
         logging.debug("Stitch Button Pressed")
-        if self.parameters['temp_dir'] == "...enter temporary directory":
+        if self.parameters['temp_dir'] == "...enter temporary directory"\
+                and (self.parameters['stitch_reconstructed_slices'] and self.parameters['reslice']):
             print("Please enter a valid temporary directory")
             return
         self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(self.parameters)

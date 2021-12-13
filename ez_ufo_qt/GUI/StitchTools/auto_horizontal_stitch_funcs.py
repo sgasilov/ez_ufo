@@ -272,6 +272,9 @@ class AutoHorizontalStitchFunctions:
         # vertically, so the image is transposed and we can apply convolution
         # which will act as cross-correlation
         convolved = fftconvolve(first_projection, last_projection[::-1, :], mode='same')
+        #tifffile.imwrite(os.path.join(self.parameters['output_dir'], 'first.tif'), first_projection)
+        #tifffile.imwrite(os.path.join(self.parameters['output_dir'], 'second.tif'), last_projection)
+        #tifffile.imwrite(os.path.join(self.parameters['output_dir'], 'convolved.tif'), convolved)
         center = np.unravel_index(convolved.argmax(), convolved.shape)[1]
 
         return (width / 2.0 + center) / 2

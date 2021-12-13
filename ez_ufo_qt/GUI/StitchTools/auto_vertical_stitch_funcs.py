@@ -124,6 +124,25 @@ class AutoVerticalStitchFunctions:
             midpoint_image_list = sorted(glob.glob(os.path.join(midpoint_zdir_tomo, '*.tif')))
             one_after_midpoint_image_list = sorted(glob.glob(os.path.join(one_after_midpoint_zdir_tomo, '*.tif')))
 
+            # Create a mask of bright spots from flat file - used for in-painting
+            if self.parameters['remove_large_spots']:
+                # Use the flats file to find the position of bright spots caused by scintillator defect
+                if self.parameters['common_flats_darks']:
+                    flat_file_list = sorted(glob.glob(os.path.join(self.parameters['flats_dir'], '*.tif')))
+                    first_flat = flat_file_list[0]
+                else:
+                    flat_file_list = sorted(glob.glob(os.path.join(ct_dir, z_list[0], 'flats', '*.tif')))
+                    first_flat = flat_file_list[0]
+                mask_file = os.path.join(self.parameters['temp_dir'], "mask.tif")
+                # Generate mask with call to tofu and save in temp directory
+                cmd = 'tofu find-large-spots --images {}'.format(first_flat)
+                cmd += ' --spot-threshold {} --gauss-sigma {}'.format(
+                    int(self.parameters['spot_threshold']), int(self.parameters['spot_blur_sigma']))
+                cmd += ' --output {} --output-bytes-per-file 0'.format(mask_file)
+                print("\nCreating mask of bright spots: ")
+                print(cmd + "\n")
+                os.system(cmd)
+
             stitch_pixel_list = []
             # We divide total number of images by 10 to get step value. For 1500 images we compare every 150th image
             step_value = int(len(midpoint_image_list) / 10)
@@ -193,6 +212,8 @@ class AutoVerticalStitchFunctions:
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_flat_corrected.tif'), first)
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_flat_corrected.tif'), second)
 
+        # TODO: DO inpainting here
+
         # Equalize the histograms and match them so that images are more similar
         first = exposure.equalize_hist(first)
         second = exposure.equalize_hist(second)
@@ -230,6 +251,9 @@ class AutoVerticalStitchFunctions:
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_cropped.tif'), second_cropped)
 
         return self.compute_rotation_axis(first_cropped, second_cropped)
+
+    def exec_inpainting_cmd(self):
+        pass
 
     # Stitching Functions
     def prepare(self, ct_dir):
@@ -644,6 +668,9 @@ class AutoVerticalStitchFunctions:
         print("Equalize Intensity: " + str(self.parameters['equalize_intensity']))
         print("Concatenate: " + str(self.parameters['concatenate']))
         print("Which images to stitch - start,stop,step: " + str(self.parameters['images_to_stitch']))
+        print("Remove large spots from projections: " + str(self.parameters['remove_large_spots']))
+        print("Threshold (prominence of the spot): " + str(self.parameters['spot_threshold']))
+        print("Spot blur sigma [pixels]: " + str(self.parameters['spot_blur_sigma']))
         print("Dry Run: " + str(self.parameters['dry_run']))
         print("============================================================")
 
