@@ -22,6 +22,7 @@ def main():
     # Setup logging for debugging
     logger = logging.getLogger()
     logger_path = os.path.join(head, 'ezufo.log')
+
     # TODO: Fix this
     logger.setLevel(logging.WARNING)
 
