@@ -220,6 +220,7 @@ class AutoVerticalStitchFunctions:
             first = skimage.restoration.inpaint_biharmonic(first, mask_image)
             second = skimage.restoration.inpaint_biharmonic(second, mask_image)
 
+
         #first = self.read_image()
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_inpainted.tif'), first)
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_inpainted.tif'), second)
