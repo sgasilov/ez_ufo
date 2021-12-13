@@ -1,6 +1,7 @@
 import os
 import glob
 import numpy as np
+import skimage.restoration
 import tifffile
 import shutil
 import time
@@ -209,10 +210,18 @@ class AutoVerticalStitchFunctions:
         first = (first - dark) / flat
         second = (second - dark) / flat
 
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_flat_corrected.tif'), first)
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_flat_corrected.tif'), second)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_flat_corrected.tif'), first)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_flat_corrected.tif'), second)
 
-        # TODO: DO inpainting here
+        # Do in-painting here
+        if self.parameters['remove_large_spots']:
+            mask_image_path = os.path.join(self.parameters['temp_dir'], 'mask.tif')
+            mask_image = self.read_image(mask_image_path, flip_image=False)
+            first = skimage.restoration.inpaint_biharmonic(first, mask_image)
+            second = skimage.restoration.inpaint_biharmonic(second, mask_image)
+
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_inpainted.tif'), first)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_inpainted.tif'), second)
 
         # Equalize the histograms and match them so that images are more similar
         first = exposure.equalize_hist(first)
