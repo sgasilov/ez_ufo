@@ -233,7 +233,7 @@ def main_tk(args, fdt_names):
             nviews, WH, multipage = get_dims(path2proj)
             # If args.main_cor_axis_search_method == 4 then bypass axis search and use image midpoint
             if args.main_cor_axis_search_method != 4:
-                if args.vcrop and bad_vert_ROI(multipage, path2proj, args.main_region_first_row, args.main_region_number_rows):
+                if args.main_region_select_rows and bad_vert_ROI(multipage, path2proj, args.main_region_first_row, args.main_region_number_rows):
                     print('{:>30}\t{}'.format('CTset', 'Axis'))
                     print('{:>30}\t{}'.format(ctset[0], 'na'))
                     print('Vertical ROI does not contain any rows.')
@@ -241,7 +241,7 @@ def main_tk(args, fdt_names):
                     continue
                 # Find axis of rotation using auto: correlate first/last projections
                 if args.main_cor_axis_search_method == 1:
-                    ax = FindCOR.find_axis_corr(ctset, args.vcrop, args.main_region_first_row, args.main_region_number_rows, multipage, args)
+                    ax = FindCOR.find_axis_corr(ctset, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, multipage, args)
                 # Find axis of rotation using auto: minimize STD of a slice
                 elif args.main_cor_axis_search_method == 2:
                     cmds.append("echo \"Cleaning axis-search in tmp directory\"")

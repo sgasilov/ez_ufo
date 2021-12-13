@@ -93,7 +93,7 @@ class tofu_cmds(object):
         cmd += ' --number {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
@@ -108,7 +108,7 @@ class tofu_cmds(object):
         cmd += ' --number {}'.format(nviews)
         if args.step > 0.0:
             cmd += ' --angle {}'.format(args.step)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         cmd = self.check_8bit(cmd, args.main_region_clip_histogram, args.main_region_bit_depth, args.main_region_histogram_min, args.main_region_histogram_max)
         cmd = self.check_bigtif(cmd, args.bigtif_sli)
         return cmd
@@ -119,7 +119,7 @@ class tofu_cmds(object):
         cmd += ' --output {}'.format(out_pattern)
         cmd += ' --axis {}'.format(ax)
         cmd += ' --offset {}'.format(args.main_region_rotate_volume_clock)
-        if args.vcrop:
+        if args.main_region_select_rows:
             cmd += ' --number {}'.format(int(args.main_region_number_rows / args.main_region_nth_row))
         else:
             cmd += ' --number {}'.format(WH[0])
@@ -140,7 +140,7 @@ class tofu_cmds(object):
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
@@ -156,7 +156,7 @@ class tofu_cmds(object):
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(os.path.join(tmpdir, 'sinos/sin-%04i.tif'))
         cmd += ' --number {}'.format(nviews)
-        cmd = self.check_vcrop(cmd, args.vcrop, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
+        cmd = self.check_vcrop(cmd, args.main_region_select_rows, args.main_region_first_row, args.main_region_number_rows, args.main_region_nth_row, WH[0])
         if not args.main_filters_ring_removal_ufo_lpf:
             # because second RR algorithm does not know how to work with multipage tiffs
             cmd += " --output-bytes-per-file 0"
@@ -167,7 +167,7 @@ class tofu_cmds(object):
         cmd = 'tofu sinos'
         cmd += ' --projections {}'.format(os.path.join(args.tmpdir, 'sinos-filt'))
         cmd += ' --output {}'.format(out_pattern)
-        if not args.vcrop:
+        if not args.main_region_select_rows:
             cmd += ' --number {}'.format(proj_height)
         else:
             cmd += ' --number {}'.format(int(args.main_region_number_rows / args.main_region_nth_row))  # (np.ceil(args.main_region_number_rows/args.main_region_nth_row))
@@ -291,7 +291,7 @@ class tofu_cmds(object):
         b = int(np.ceil(WH[0] / 2.0))
         a = -int(WH[0] / 2.0)
         c = 1
-        if args.vcrop:
+        if args.main_region_select_rows:
             if args.main_filters_ring_removal:
                 h2 = args.main_region_number_rows / args.main_region_nth_row / 2.0
                 b = np.ceil(h2)
@@ -356,7 +356,7 @@ class tofu_cmds(object):
         b = int(np.ceil(WH[0] / 2.0))
         a = -int(WH[0] / 2.0)
         c = 1
-        if args.vcrop:
+        if args.main_region_select_rows:
             if args.main_filters_ring_removal:
                 h2 = args.main_region_number_rows / args.main_region_nth_row / 2.0
                 b = np.ceil(h2)

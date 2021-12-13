@@ -142,7 +142,7 @@ def save_params(args, ctsetname, ax, nviews, WH):
         else:
             f.write('RR disabled\n')
         f.write('*** Region of interest ***\n')
-        if args.vcrop:
+        if args.main_region_select_rows:
             f.write('Vertical ROI defined\n')
             f.write('  first row {}\n'.format(args.main_region_first_row))
             f.write('  height {}\n'.format(args.main_region_number_rows))
