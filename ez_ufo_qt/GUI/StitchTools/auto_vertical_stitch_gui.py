@@ -237,6 +237,13 @@ class AutoVerticalStitchGUI(QGroupBox):
             self.recon_slices_input_button.setEnabled(True)
         self.stitch_reconstructed_slices_rButton.setChecked(bool(self.parameters['stitch_reconstructed_slices']))
         self.stitch_projections_rButton.setChecked(bool(self.parameters['stitch_projections']))
+        if self.parameters['stitch_projections']:
+            self.reslice_checkbox.setEnabled(False)
+            self.recon_slices_input_entry.setEnabled(False)
+            self.recon_slices_input_button.setEnabled(False)
+            self.temp_button.setEnabled(True)
+            self.temp_entry.setEnabled(True)
+            self.stitch_type_group.setEnabled(True)
         self.reslice_checkbox.setChecked(bool(self.parameters['reslice']))
         self.which_images_to_stitch_entry.setText(self.parameters['images_to_stitch'])
         self.remove_large_spots_checkbox.setChecked(self.parameters['remove_large_spots'])
@@ -351,8 +358,6 @@ class AutoVerticalStitchGUI(QGroupBox):
         if self.stitch_projections_rButton.isChecked():
             self.recon_slices_input_button.setDisabled(True)
             self.recon_slices_input_entry.setDisabled(True)
-            #self.temp_button.setDisabled(True)
-            #self.temp_entry.setDisabled(True)
             self.stitch_type_group.setEnabled(True)
             self.parameters['reslice'] = False
             self.concatenate_rButton.setChecked(True)
@@ -383,14 +388,10 @@ class AutoVerticalStitchGUI(QGroupBox):
             self.stitch_type_group.setEnabled(True)
             self.which_images_to_stitch_label.setEnabled(True)
             self.which_images_to_stitch_entry.setEnabled(True)
-            self.temp_button.setEnabled(True)
-            self.temp_entry.setEnabled(True)
         else:
             self.stitch_type_group.setEnabled(False)
             self.which_images_to_stitch_label.setEnabled(False)
             self.which_images_to_stitch_entry.setEnabled(False)
-            self.temp_button.setEnabled(False)
-            self.temp_entry.setEnabled(False)
 
     def set_which_images_to_stitch(self):
         logging.debug("Which images to be stitched: " + str(self.which_images_to_stitch_entry.text()))
@@ -399,12 +400,6 @@ class AutoVerticalStitchGUI(QGroupBox):
     def set_remove_spots_checkbox(self):
         logging.debug("Remove large spots from projections: " + str(self.remove_large_spots_checkbox.isChecked()))
         self.parameters['remove_large_spots'] = self.remove_large_spots_checkbox.isChecked()
-        if self.remove_large_spots_checkbox.isChecked():
-            self.temp_button.setEnabled(True)
-            self.temp_entry.setEnabled(True)
-        else:
-            self.temp_button.setEnabled(False)
-            self.temp_entry.setEnabled(False)
 
     def set_spot_threshold_entry(self):
         logging.debug("Threshold (prominence of the spot): " + str(self.spot_threshold_entry.text()))
