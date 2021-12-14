@@ -201,7 +201,8 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.parameters['concatenate'] = False
         self.parameters['images_to_stitch'] = "0,2000,1"
         self.which_images_to_stitch_entry.setText("0,2000,1")
-        self.parameters['remove_large_spots'] = True
+        self.parameters['remove_large_spots'] = False
+        self.remove_large_spots_checkbox.setChecked(False)
         self.parameters['spot_threshold'] = "1000"
         self.spot_threshold_entry.setText("1000")
         self.parameters['spot_blur_sigma'] = "2"
@@ -332,6 +333,8 @@ class AutoVerticalStitchGUI(QGroupBox):
             self.reslice_checkbox.setChecked(True)
             self.parameters['reslice'] = True
             self.equalize_intensity_rButton.setEnabled(True)
+            self.which_images_to_stitch_entry.setEnabled(True)
+            self.which_images_to_stitch_label.setEnabled(True)
 
     def stitch_projections_rButton_clicked(self):
         logging.debug("Stitch Projections: " + str(self.stitch_projections_rButton.isChecked()))
@@ -340,18 +343,20 @@ class AutoVerticalStitchGUI(QGroupBox):
         if self.stitch_projections_rButton.isChecked():
             self.recon_slices_input_button.setDisabled(True)
             self.recon_slices_input_entry.setDisabled(True)
-            self.temp_button.setDisabled(True)
-            self.temp_entry.setDisabled(True)
+            #self.temp_button.setDisabled(True)
+            #self.temp_entry.setDisabled(True)
             self.stitch_type_group.setEnabled(True)
             self.parameters['reslice'] = False
             self.concatenate_rButton.setChecked(True)
             self.equalize_intensity_rButton.setDisabled(True)
             self.parameters['equalize_intensity'] = False
             self.parameters['concatenate'] = True
+            self.which_images_to_stitch_entry.setEnabled(False)
+            self.which_images_to_stitch_label.setEnabled(False)
             if self.reslice_checkbox.isEnabled():
                 self.reslice_checkbox.setDisabled(True)
-                self.which_images_to_stitch_entry.setEnabled(True)
-                self.which_images_to_stitch_label.setEnabled(True)
+                #self.which_images_to_stitch_entry.setEnabled(True)
+                #self.which_images_to_stitch_label.setEnabled(True)
 
     def equalize_intensity_rButton_clicked(self):
         logging.debug("Equalize Intensity: " + str(self.equalize_intensity_rButton.isChecked()))

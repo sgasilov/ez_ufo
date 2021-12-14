@@ -220,10 +220,9 @@ class AutoVerticalStitchFunctions:
             first = skimage.restoration.inpaint_biharmonic(first, mask_image)
             second = skimage.restoration.inpaint_biharmonic(second, mask_image)
 
-
         #first = self.read_image()
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_inpainted.tif'), first)
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_inpainted.tif'), second)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_inpainted.tif'), first)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_inpainted.tif'), second)
 
         # Equalize the histograms and match them so that images are more similar
         first = exposure.equalize_hist(first)
@@ -516,6 +515,12 @@ class AutoVerticalStitchFunctions:
                 image_path = os.path.join(ct_dir, vertical_steps[0], dir_type, '*.tif')
             image_list = glob.glob(image_path)
 
+            # When stitching projections we must stitch every image in the directory
+            if self.parameters['stitch_projections']:
+                start = 0
+                stop = len(image_list)
+                step = 1
+
             j_index = range(int((stop - start) / step))
 
             if self.parameters['stitch_reconstructed_slices']:
@@ -593,7 +598,7 @@ class AutoVerticalStitchFunctions:
                     file_name = sorted(glob.glob(image_path))[0]
                 else:
                     # We stitch each image to the corresponding image in the next z-directory
-                    file_name = sorted(glob.glob(image_path))[z_index]
+                    file_name = sorted(glob.glob(image_path))[index]
 
             # If first z-directory clip from rows 0 until the point of overlap
             if z_index == 0:
