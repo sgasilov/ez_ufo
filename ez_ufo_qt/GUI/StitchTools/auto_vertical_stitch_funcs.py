@@ -219,46 +219,45 @@ class AutoVerticalStitchFunctions:
             mask_image = self.read_image(mask_image_path, flip_image=False)
             first = skimage.restoration.inpaint_biharmonic(first, mask_image)
             second = skimage.restoration.inpaint_biharmonic(second, mask_image)
-
-        #first = self.read_image()
-        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_inpainted.tif'), first)
-        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_inpainted.tif'), second)
+            tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_inpainted.tif'), first)
+            tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_inpainted.tif'), second)
 
         # Equalize the histograms and match them so that images are more similar
         first = exposure.equalize_hist(first)
         second = exposure.equalize_hist(second)
         second = exposure.match_histograms(second, first)
 
-        # Apply sobel filtering to find gradients of images
-        first = filters.sobel(first)
-        second = filters.sobel(second)
+        if self.parameters['use_edge_detection']:
+            # Apply sobel filtering to find gradients of images
+            first = filters.sobel(first)
+            second = filters.sobel(second)
 
-        # Equalize the histograms and match them so that images are more similar
-        first = exposure.equalize_hist(first)
-        second = exposure.equalize_hist(second)
-        second = exposure.match_histograms(second, first)
+            # Equalize the histograms and match them so that images are more similar
+            first = exposure.equalize_hist(first)
+            second = exposure.equalize_hist(second)
+            second = exposure.match_histograms(second, first)
 
-        # Apply canny edge detection on sobel filtered and equalized images
-        first = feature.canny(first)
-        second = feature.canny(second)
+            # Apply canny edge detection on sobel filtered and equalized images
+            first = feature.canny(first)
+            second = feature.canny(second)
 
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_edges.tif'), first)
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_edges.tif'), second)
+            tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_edges.tif'), first)
+            tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_edges.tif'), second)
 
         # Flip and rotate the images so that they have same orientation as auto_horizontal_stitch
         first = np.rot90(first)
         second = np.rot90(second)
         first = np.fliplr(first)
 
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_fliprot_edges.tif'), first)
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_fliprot_edges.tif'), second)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_fliprot.tif'), first)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_fliprot.tif'), second)
 
         # We must crop the both images from left column of image until overlap region
         first_cropped = first[:, :int(self.parameters['overlap_region'])]
         second_cropped = second[:, :int(self.parameters['overlap_region'])]
 
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_cropped.tif'), first_cropped)
-        #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_cropped.tif'), second_cropped)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first_cropped.tif'), first_cropped)
+        tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second_cropped.tif'), second_cropped)
 
         return self.compute_rotation_axis(first_cropped, second_cropped)
 
