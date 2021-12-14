@@ -13,7 +13,6 @@ class AutoVerticalStitchGUI(QGroupBox):
     def __init__(self):
         super().__init__()
         self.setTitle('Auto Vertical Stitch')
-        self.setStyleSheet('QGroupBox {color: blue;}')
 
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)
