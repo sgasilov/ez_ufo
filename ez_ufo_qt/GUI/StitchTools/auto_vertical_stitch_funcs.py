@@ -113,7 +113,7 @@ class AutoVerticalStitchFunctions:
             midpoint_zdir = z_list[int(len(z_list) / 2)-1]
             one_after_midpoint_zdir = z_list[int(len(z_list) / 2)]
 
-            print("Working on: " + ct_dir)
+            print("\nWorking on: " + ct_dir)
             print("Using middle z-directories for correlation:")
             print("-  " + midpoint_zdir)
             print("-  " + one_after_midpoint_zdir)
@@ -538,7 +538,7 @@ class AutoVerticalStitchFunctions:
             pool = mp.Pool(processes=mp.cpu_count())
             exec_func = partial(self.exec_concatenate_multiproc, start, step, image_list[0],
                                 num_z_dirs, vertical_steps, stitch_input_dir_path, ct_dir, ct_name, dir_name)
-            print("Concatenating")
+            print("Concatenating...")
             pool.map(exec_func, j_index)
 
             # Now stitch the flats and darks
