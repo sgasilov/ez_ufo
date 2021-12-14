@@ -87,6 +87,9 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.spot_blur_sigma_label = QLabel("Spot blur sigma [pixels]:")
         self.spot_blur_sigma_entry = QLineEdit()
 
+        self.use_edge_detection_checkbox = QCheckBox("Use edge detection during correlation")
+        self.use_edge_detection_checkbox.stateChanged.connect(self.set_use_edge_detection_checkbox)
+
         self.save_params_button = QPushButton("Save parameters")
         self.save_params_button.clicked.connect(self.save_params_button_clicked)
 
@@ -140,7 +143,7 @@ class AutoVerticalStitchGUI(QGroupBox):
 
         layout.addWidget(self.sample_moved_down_checkbox, 5, 0, 1, 2)
         layout.addWidget(self.overlap_region_label, 5, 2)
-        layout.addWidget(self.overlap_region_entry, 5, 4)
+        layout.addWidget(self.overlap_region_entry, 5, 3, 1, 2)
 
         stitch_group = QGroupBox()
         stitch_layout = QGridLayout()
@@ -166,13 +169,15 @@ class AutoVerticalStitchGUI(QGroupBox):
         layout.addWidget(self.spot_blur_sigma_label, 8, 3, 1, 1)
         layout.addWidget(self.spot_blur_sigma_entry, 8, 4, 1, 1)
 
-        layout.addWidget(self.save_params_button, 9, 0, 1, 2)
-        layout.addWidget(self.help_button, 9, 2, 1, 1)
-        layout.addWidget(self.import_params_button, 9, 3, 1, 2)
+        layout.addWidget(self.use_edge_detection_checkbox, 9, 0)
 
-        layout.addWidget(self.stitch_button, 10, 0, 1, 2)
-        layout.addWidget(self.dry_run_checkbox, 10, 2, 1, 1)
-        layout.addWidget(self.delete_temp_button, 10, 3, 1, 2)
+        layout.addWidget(self.save_params_button, 10, 0, 1, 2)
+        layout.addWidget(self.help_button, 10, 2, 1, 1)
+        layout.addWidget(self.import_params_button, 10, 3, 1, 2)
+
+        layout.addWidget(self.stitch_button, 11, 0, 1, 2)
+        layout.addWidget(self.dry_run_checkbox, 11, 2, 1, 1)
+        layout.addWidget(self.delete_temp_button, 11, 3, 1, 2)
         self.setLayout(layout)
 
     def init_values(self):
@@ -206,6 +211,8 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.parameters['spot_threshold'] = "1000"
         self.spot_threshold_entry.setText("1000")
         self.parameters['spot_blur_sigma'] = "2"
+        self.use_edge_detection_checkbox.setChecked(True)
+        self.parameters['use_edge_detection'] = True
         self.spot_blur_sigma_entry.setText("2")
         self.dry_run_checkbox.setChecked(False)
         self.parameters['dry_run'] = False
@@ -235,6 +242,7 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.remove_large_spots_checkbox.setChecked(self.parameters['remove_large_spots'])
         self.spot_threshold_entry.setText(self.parameters['spot_threshold'])
         self.spot_blur_sigma_entry.setText(self.parameters['spot_blur_sigma'])
+        self.use_edge_detection_checkbox.setChecked(self.parameters['use_edge_detection'])
         self.equalize_intensity_rButton.setChecked(bool(self.parameters['equalize_intensity']))
         self.concatenate_rButton.setChecked(bool(self.parameters['concatenate']))
         self.dry_run_checkbox.setChecked(bool(self.parameters['dry_run']))
@@ -405,6 +413,10 @@ class AutoVerticalStitchGUI(QGroupBox):
     def set_spot_blur_sigma(self):
         logging.debug("Spot blur sigma [pixels]: " + str(self.spot_blur_sigma_entry.text()))
         self.parameters['spot_blur_sigma'] = self.spot_blur_sigma_entry.text()
+
+    def set_use_edge_detection_checkbox(self):
+        logging.debug("Use Edge Detection: " + str(self.use_edge_detection_checkbox.isChecked()))
+        self.parameters['use_edge_detection'] = self.use_edge_detection_checkbox.isChecked()
 
     def save_params_button_clicked(self):
         logging.debug("Save params button clicked")

@@ -694,6 +694,7 @@ class AutoVerticalStitchFunctions:
         print("Remove large spots from projections: " + str(self.parameters['remove_large_spots']))
         print("Threshold (prominence of the spot): " + str(self.parameters['spot_threshold']))
         print("Spot blur sigma [pixels]: " + str(self.parameters['spot_blur_sigma']))
+        print("Use edge detection during correlation: " + str(self.parameters['use_edge_detection']))
         print("Dry Run: " + str(self.parameters['dry_run']))
         print("============================================================")
 
