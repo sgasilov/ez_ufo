@@ -275,7 +275,7 @@ class AutoVerticalStitchFunctions:
 
         if not os.path.exists(self.parameters['output_dir']):
             os.makedirs(self.parameters['output_dir'])
-        print("Preparing to stitch: " + str(ct_dir))
+        print("========== Preparing to stitch: " + str(ct_dir) + " ==========")
         vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
         # determine input data type
         tmp = os.path.join(ct_dir, vertical_steps[0], 'tomo', '*.tif')
@@ -406,6 +406,11 @@ class AutoVerticalStitchFunctions:
 
             pool.map(exec_func, j_index)
             print(f"========== Finished Stitching {ct_dir} ==========")
+            # Delete temp directory
+            temp_ct_path = os.path.join(self.parameters['temp_dir'], ct_name)
+            if os.path.isdir(temp_ct_path):
+                shutil.rmtree(temp_ct_path)
+                print(f"Deleted {temp_ct_path}")
         print("========== Completed Stitching For All CT-Directories ==========")
 
     def stitch_fd(self, ct_dir, vertical_steps, ct_name, stitch_input_dir_path, dir_name):
@@ -553,6 +558,11 @@ class AutoVerticalStitchFunctions:
                     self.stitch_fd(ct_dir, vertical_steps, ct_name, stitch_input_dir_path, dir_name)
 
             print(f"========== Finished Stitching {ct_dir} ==========")
+            # Delete temp directory
+            temp_ct_path = os.path.join(self.parameters['temp_dir'], ct_name)
+            if os.path.isdir(temp_ct_path):
+                shutil.rmtree(temp_ct_path)
+                print(f"Deleted {temp_ct_path}\n")
         print("========== Completed Stitching For All CT-Directories ==========")
 
     def exec_concatenate_multiproc(self, start, step, example_image_path, num_z_dirs, vertical_steps,
