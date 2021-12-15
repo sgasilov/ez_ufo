@@ -231,19 +231,6 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.darks_entry.setText(self.parameters['darks_dir'])
         self.sample_moved_down_checkbox.setChecked(bool(self.parameters['sample_moved_down']))
         self.overlap_region_entry.setText(self.parameters['overlap_region'])
-        if self.parameters['stitch_reconstructed_slices']:
-            self.reslice_checkbox.setEnabled(True)
-            self.recon_slices_input_entry.setEnabled(True)
-            self.recon_slices_input_button.setEnabled(True)
-        self.stitch_reconstructed_slices_rButton.setChecked(bool(self.parameters['stitch_reconstructed_slices']))
-        self.stitch_projections_rButton.setChecked(bool(self.parameters['stitch_projections']))
-        if self.parameters['stitch_projections']:
-            self.reslice_checkbox.setEnabled(False)
-            self.recon_slices_input_entry.setEnabled(False)
-            self.recon_slices_input_button.setEnabled(False)
-            self.temp_button.setEnabled(True)
-            self.temp_entry.setEnabled(True)
-            self.stitch_type_group.setEnabled(True)
         self.reslice_checkbox.setChecked(bool(self.parameters['reslice']))
         self.which_images_to_stitch_entry.setText(self.parameters['images_to_stitch'])
         self.remove_large_spots_checkbox.setChecked(self.parameters['remove_large_spots'])
@@ -253,6 +240,24 @@ class AutoVerticalStitchGUI(QGroupBox):
         self.equalize_intensity_rButton.setChecked(bool(self.parameters['equalize_intensity']))
         self.concatenate_rButton.setChecked(bool(self.parameters['concatenate']))
         self.dry_run_checkbox.setChecked(bool(self.parameters['dry_run']))
+        if self.parameters['stitch_reconstructed_slices']:
+            self.reslice_checkbox.setEnabled(True)
+            self.recon_slices_input_entry.setEnabled(True)
+            self.recon_slices_input_button.setEnabled(True)
+            self.equalize_intensity_rButton.setEnabled(True)
+            self.which_images_to_stitch_entry.setEnabled(True)
+            self.which_images_to_stitch_label.setEnabled(True)
+        self.stitch_reconstructed_slices_rButton.setChecked(bool(self.parameters['stitch_reconstructed_slices']))
+        self.stitch_projections_rButton.setChecked(bool(self.parameters['stitch_projections']))
+        if self.parameters['stitch_projections']:
+            self.reslice_checkbox.setEnabled(False)
+            self.recon_slices_input_entry.setEnabled(False)
+            self.recon_slices_input_button.setEnabled(False)
+            self.temp_button.setEnabled(True)
+            self.temp_entry.setEnabled(True)
+            self.stitch_type_group.setEnabled(True)
+            self.equalize_intensity_rButton.setEnabled(False)
+
 
     def projections_input_button_pressed(self):
         logging.debug("Projections Input Button Pressed")
