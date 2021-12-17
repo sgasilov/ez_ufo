@@ -106,7 +106,11 @@ class AutoVerticalStitchFunctions:
         """
         index = 0
         for ct_dir in self.ct_dirs:
-            z_list = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+            if self.parameters['sample_moved_down']:
+                z_list = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))],
+                                reverse=True)
+            else:
+                z_list = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
             print(z_list)
 
             # Get list of z-directories within each ct directory
@@ -181,12 +185,12 @@ class AutoVerticalStitchFunctions:
         print(lower_image)
 
         # Read in the images to numpy array
-        if not self.parameters['sample_moved_down']:
-            first = self.read_image(upper_image, False)
-            second = self.read_image(lower_image, False)
-        elif self.parameters['sample_moved_down']:
-            first = self.read_image(upper_image, True)
-            second = self.read_image(lower_image, True)
+        #if not self.parameters['sample_moved_down']:
+        first = self.read_image(upper_image, False)
+        second = self.read_image(lower_image, False)
+        #elif self.parameters['sample_moved_down']:
+        #    first = self.read_image(upper_image, True)
+        #    second = self.read_image(lower_image, True)
 
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'first.tif'), first)
         #tifffile.imwrite(os.path.join(self.parameters['temp_dir'], 'second.tif'), second)
@@ -319,7 +323,11 @@ class AutoVerticalStitchFunctions:
             output_path = os.path.join(self.parameters['output_dir'], diff_path)
             if not os.path.isdir(output_path):
                 os.makedirs(output_path, exist_ok=True, mode=0o777)
-                z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))])
+                if self.parameters['sample_moved_down']:
+                    z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))],
+                                    reverse=True)
+                else:
+                    z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))])
                 for z_dir_index in range(len(z_dirs)):
                     z_dir_tiff_list = sorted(glob.glob(os.path.join(recon_ct_path, z_dirs[z_dir_index], 'sli', '*.tif')))
                     # First z-directory
@@ -375,13 +383,29 @@ class AutoVerticalStitchFunctions:
             # second: stitch them
             if self.parameters['stitch_reconstructed_slices']:
                 if self.parameters['reslice']:
-                    vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+                    if self.parameters['sample_moved_down']:
+                        vertical_steps = sorted([dI for dI in os.listdir(ct_dir)
+                                                 if os.path.isdir(os.path.join(ct_dir, dI))], reverse=True)
+                    else:
+                        vertical_steps = sorted(
+                            [dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
                     tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], '*.tif'))[0]
                 elif not self.parameters['reslice']:
-                    vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+                    if self.parameters['sample_moved_down']:
+                        vertical_steps = sorted([dI for dI in os.listdir(ct_dir)
+                                                 if os.path.isdir(os.path.join(ct_dir, dI))], reverse=True)
+                    else:
+                        vertical_steps = sorted(
+                            [dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+
                     tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], 'sli', '*.tif'))[0]
             elif self.parameters['stitch_projections']:
-                vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+                if self.parameters['sample_moved_down']:
+                    vertical_steps = sorted([dI for dI in os.listdir(ct_dir)
+                                             if os.path.isdir(os.path.join(ct_dir, dI))], reverse=True)
+                else:
+                    vertical_steps = sorted([dI for dI in os.listdir(ct_dir)
+                                             if os.path.isdir(os.path.join(ct_dir, dI))])
                 tmp = glob.glob(os.path.join(stitch_input_dir_path, vertical_steps[0], 'tomo', '*.tif'))[0]
 
             first = self.read_image(tmp, flip_image=False)
@@ -503,7 +527,11 @@ class AutoVerticalStitchFunctions:
             print(self.ct_stitch_pixel_dict[ct_dir])
             stitch_input_dir_path, start, stop, step, input_data_type, ct_name = self.prepare(ct_dir)
             print("Finished preparation")
-            vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
+            if self.parameters['sample_moved_down']:
+                vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))],
+                                        reverse=True)
+            else:
+                vertical_steps = sorted([dI for dI in os.listdir(ct_dir) if os.path.isdir(os.path.join(ct_dir, dI))])
             num_z_dirs = len(vertical_steps)
 
             if self.parameters['stitch_reconstructed_slices']:
