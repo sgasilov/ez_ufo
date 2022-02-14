@@ -117,13 +117,13 @@ def save_params(args, ctsetname, ax, nviews, WH):
         else:
             f.write('  Remove large spots disabled\n')
         if args.main_pr_phase_retrieval:
-            f.write(' Phase retreival enabled\n')
+            f.write(' Phase retrieval enabled\n')
             f.write('  energy {} keV\n'.format(args.main_pr_photon_energy))
             f.write('  pixel size {:0.1f} um\n'.format(args.main_pr_pixel_size * 1e6))
             f.write('  sample-detector distance {} m\n'.format(args.main_pr_detector_distance))
             f.write('  delta/beta ratio {:0.0f}\n'.format(10 ** args.main_pr_delta_beta_ratio))
         else:
-            f.write('  Phase retreival disabled\n')
+            f.write('  Phase retrieval disabled\n')
         f.write('*** Ring removal ***\n')
         if args.main_filters_ring_removal:
             if args.main_filters_ring_removal_ufo_lpf:
