@@ -280,7 +280,7 @@ class NLMDNGroup(QGroupBox):
                        parameters.params['advanced_nlmdn_smoothing_control'], parameters.params['advanced_nlmdn_noise_std'],
                        parameters.params['advanced_nlmdn_window'], parameters.params['advanced_nlmdn_fast'],
                        parameters.params['advanced_nlmdn_estimate_sigma'], parameters.params['advanced_nlmdn_dry_run'])
-        logging.debug(args.args)
+        #logging.debug(args.args)
         if os.path.exists(args.outdir) and not args.dryrun:
             title_text = "Warning: files can be overwritten"
             text1 = "Output directory exists. Files can be overwritten. Proceed?"
