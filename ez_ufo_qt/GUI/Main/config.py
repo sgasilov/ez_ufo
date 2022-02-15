@@ -294,6 +294,7 @@ class ConfigGroup(QGroupBox):
         self.keep_tmp_data_checkbox.setChecked(parameters.params['main_config_keep_temp'])
         self.dry_run_button.setChecked(parameters.params['main_config_dry_run'])
         self.open_image_after_reco_checkbox.setChecked(parameters.params['main_config_open_viewer'])
+        self.use_common_flats_darks_checkbox.setChecked(parameters.params['main_config_common_flats_darks'])
         self.darks_absolute_entry.setText(parameters.params['main_config_darks_path'])
         self.flats_absolute_entry.setText(parameters.params['main_config_flats_path'])
         self.use_flats2_checkbox.setChecked(parameters.params['main_config_flats2_checkbox'])
