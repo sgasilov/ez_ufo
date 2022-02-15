@@ -214,7 +214,7 @@ class tofu_cmds(object):
         cmd = 'tofu preprocess --delta 1e-6'
         cmd += ' --energy {} --propagation-distance {}' \
                ' --pixel-size {} --regularization-rate {:0.2f}' \
-            .format(args.main_pr_photon_energy, args.args.main_pr_detector_distance,
+            .format(args.main_pr_photon_energy, args.main_pr_detector_distance,
                     args.main_pr_pixel_size, args.main_pr_delta_beta_ratio)
         cmd += ' --projections {}'.format(in_proj_dir)
         cmd += ' --output {}'.format(out_pattern)
