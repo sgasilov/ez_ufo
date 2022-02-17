@@ -1,5 +1,6 @@
 import os
 import logging
+import yaml
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QLineEdit, QLabel, QCheckBox, QGridLayout, QFileDialog, QMessageBox
 from ez_ufo_qt.Helpers.mview_main import main_prep
 
@@ -8,20 +9,21 @@ class EZMViewGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.args = {}
-        self.e_indir = ""
-        self.e_nproj = 0
-        self.e_nflats = 0
-        self.e_ndarks = 0
-        self.e_nviews = 0
-        self.e_noflats2 = False
-        self.e_Andor = False
+        self.parameters = {'parameters_type': 'ezmview'}
+
+        self.parameters['ezmview_input_dir'] = ""
+        self.parameters['ezmview_num_projections'] = 0
+        self.parameters['ezmview_num_flats'] = 0
+        self.parameters['ezmview_num_darks'] = 0
+        self.parameters['ezmview_num_vertical_steps'] = 0
+        self.parameters['ezmview_flats2'] = False
+        self.parameters['ezmview_zero_padding'] = False
 
         self.setTitle("EZMView")
         self.setStyleSheet('QGroupBox {color: green;}')
 
         self.input_dir_button = QPushButton()
-        self.input_dir_button.setText("Select directory with a CT sequence")
+        self.input_dir_button.setText("Select input directory with a CT sequence")
         self.input_dir_button.clicked.connect(self.select_directory)
 
         self.input_dir_entry = QLineEdit()
@@ -72,6 +74,14 @@ class EZMViewGroup(QGroupBox):
         self.convert_button.clicked.connect(self.convert_button_pressed)
         self.convert_button.setStyleSheet("color:royalblue;font-weight:bold")
 
+        self.save_parameters_button = QPushButton()
+        self.save_parameters_button.setText("Save Parameters to File")
+        self.save_parameters_button.clicked.connect(self.save_parameters_button_pressed)
+
+        self.import_parameters_button = QPushButton()
+        self.import_parameters_button.setText("Import Parameters from File")
+        self.import_parameters_button.clicked.connect(self.import_parameters_button_pressed)
+
         self.set_layout()
 
     def set_layout(self):
@@ -91,85 +101,84 @@ class EZMViewGroup(QGroupBox):
         layout.addWidget(self.help_button, 7, 0, 1, 1)
         layout.addWidget(self.undo_button, 7, 1, 1, 1)
         layout.addWidget(self.convert_button, 7, 2, 1, 1)
+        layout.addWidget(self.import_parameters_button, 8, 0, 1, 1)
+        layout.addWidget(self.save_parameters_button, 8, 2, 1, 1)
+
         self.setLayout(layout)
 
     def init_values(self):
         self.input_dir_entry.setText(os.getcwd())
-        self.e_indir = os.getcwd()
+        self.parameters['ezmview_input_dir'] = os.getcwd()
         self.num_projections_entry.setText("3000")
-        self.e_nproj = 3000
+        self.parameters['ezmview_num_projections'] = 3000
         self.num_flats_entry.setText("10")
-        self.e_nflats = 10
+        self.parameters['ezmview_num_flats'] = 10
         self.num_darks_entry.setText("10")
-        self.e_ndarks = 10
+        self.parameters['ezmview_num_darks'] = 10
         self.num_vert_steps_entry.setText("1")
-        self.e_nviews = 1
+        self.parameters['ezmview_num_vertical_steps'] = 1
         self.no_trailing_flats_darks_checkbox.setChecked(False)
-        self.e_noflats2 = False
+        self.parameters['ezmview_flats2'] = False
         self.filenames_without_padding_checkbox.setChecked(False)
-        self.e_Andor = False
+        self.parameters['ezmview_zero_padding'] = False
+
+    def update_parameters(self, new_parameters):
+        logging.debug("Update parameters")
+        # Update parameters dictionary (which is passed to auto_stitch_funcs)
+        self.parameters = new_parameters
+        # Update displayed parameters for GUI
+        self.input_dir_entry.setText(str(self.parameters['ezmview_input_dir']))
+        self.num_projections_entry.setText(str(self.parameters['ezmview_num_projections']))
+        self.num_flats_entry.setText(str(self.parameters['ezmview_num_flats']))
+        self.num_darks_entry.setText(str(self.parameters['ezmview_num_darks']))
+        self.num_vert_steps_entry.setText(str(self.parameters['ezmview_num_vertical_steps']))
+        self.no_trailing_flats_darks_checkbox.setChecked(bool(self.parameters['ezmview_flats2']))
+        self.filenames_without_padding_checkbox.setChecked(bool(self.parameters['ezmview_zero_padding']))
 
     def select_directory(self):
         logging.debug("Select directory button pressed")
         dir_explore = QFileDialog(self)
         directory = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(directory)
-        self.e_indir = directory
+        self.parameters['ezmview_input_dir'] = directory
 
     def set_directory_entry(self):
         logging.debug("Directory entry: " + str(self.input_dir_entry.text()))
-        self.e_indir = str(self.input_dir_entry.text())
+        self.parameters['ezmview_input_dir'] = str(self.input_dir_entry.text())
 
     def set_num_projections(self):
         logging.debug("Num projections: " + str(self.num_projections_entry.text()))
-        self.e_nproj = int(self.num_projections_entry.text())
+        self.parameters['ezmview_num_projections'] = int(self.num_projections_entry.text())
 
     def set_num_flats(self):
         logging.debug("Num flats: " + str(self.num_flats_entry.text()))
-        self.e_nflats = int(self.num_flats_entry.text())
+        self.parameters['ezmview_num_flats'] = int(self.num_flats_entry.text())
 
     def set_num_darks(self):
         logging.debug("Num darks: " + str(self.num_darks_entry.text()))
-        self.e_ndarks = int(self.num_darks_entry.text())
+        self.parameters['ezmview_num_darks'] = int(self.num_darks_entry.text())
 
     def set_num_steps(self):
         logging.debug("Num steps: " + str(self.num_vert_steps_entry.text()))
-        self.e_nviews = int(self.num_vert_steps_entry.text())
+        self.parameters['ezmview_num_vertical_steps'] = int(self.num_vert_steps_entry.text())
 
     def set_trailing_checkbox(self):
         logging.debug("No trailing: " + str(self.no_trailing_flats_darks_checkbox.isChecked()))
-        self.e_noflats2 = bool(self.no_trailing_flats_darks_checkbox.isChecked())
+        self.parameters['ezmview_flats2'] = bool(self.no_trailing_flats_darks_checkbox.isChecked())
 
     def set_file_names_checkbox(self):
         logging.debug("File names without zero padding: " + str(self.filenames_without_padding_checkbox.isChecked()))
-        self.e_Andor = bool(self.filenames_without_padding_checkbox.isChecked())
+        self.parameters['ezmview_zero_padding'] = bool(self.filenames_without_padding_checkbox.isChecked())
 
     def convert_button_pressed(self):
         logging.debug("Convert button pressed")
-        self.args['input'] = str(self.e_indir)
-        setattr(self, 'input', self.args['input'])
-        self.args['output'] = str(self.e_indir)
-        setattr(self, 'output', self.args['output'])
-        self.args['nproj'] = int(self.e_nproj)
-        setattr(self, 'nproj', self.args['nproj'])
-        self.args['nflats'] = int(self.e_nflats)
-        setattr(self, 'nflats', self.args['nflats'])
-        self.args['ndarks'] = int(self.e_ndarks)
-        setattr(self, 'ndarks', self.args['ndarks'])
-        self.args['nviews'] = int(self.e_nviews)
-        setattr(self, 'nviews', self.args['nviews'])
-        self.args['noflats2'] = bool(int(self.e_noflats2))
-        setattr(self, 'noflats2', self.args['noflats2'])
-        self.args['Andor'] = bool(int(self.e_Andor))
-        setattr(self, 'Andor', self.args['Andor'])
-
-        logging.debug(self.args)
-        main_prep(self)
+        logging.debug(self.parameters)
+        main_prep(self.parameters)
 
     def undo_button_pressed(self):
         logging.debug("Undo button pressed")
         cmd = "find {} -type f -name \"*.tif\" -exec mv -t {} {{}} +"
-        cmd = cmd.format(str(self.e_indir), str(self.e_indir))
+        cmd = cmd.format(str(self.parameters['ezmview_input_dir']), str(self.parameters['ezmview_input_dir']))
         os.system(cmd)
 
     def help_button_pressed(self):
@@ -180,25 +189,34 @@ class EZMViewGroup(QGroupBox):
         h += "Conversions happens in-place but can be undone"
         QMessageBox.information(self, "Help", h)
 
-class tk_args():
-    def __init__(self, e_input, e_output, e_tmpdir, e_ax1, e_ax2, e_ax, e_crop):
+    def import_parameters_button_pressed(self):
+        logging.debug("Import params button clicked")
+        dir_explore = QFileDialog(self)
+        params_file_path = dir_explore.getOpenFileName(filter="*.yaml")
+        try:
+            file_in = open(params_file_path[0], 'r')
+            new_parameters = yaml.load(file_in, Loader=yaml.FullLoader)
+            self.update_parameters(new_parameters)
+            print("Parameters file loaded from: " + str(params_file_path[0]))
+        except FileNotFoundError:
+            print("You need to select a valid input file")
 
-        self.args={}
-        # directories
-        self.args['input']=str(e_input.get())
-        setattr(self, 'input', self.args['input'])
-        self.args['output'] = str(e_output.get())
-        setattr(self, 'output', self.args['output'])
-        self.args['tmpdir'] = str(e_tmpdir.get())
-        setattr(self, 'tmpdir', self.args['tmpdir'])
-        #hor stitch half acq mode
-        self.args['ax1'] = int(e_ax1.get())
-        setattr(self, 'ax1', self.args['ax1'])
-        self.args['ax2'] = int(e_ax2.get())
-        setattr(self, 'ax2', self.args['ax2'])
-        self.args['ax'] = int(e_ax.get())
-        setattr(self, 'ax', self.args['ax'])
-        self.args['crop'] = int(e_crop.get())
-        setattr(self, 'crop', self.args['crop'])
+    def save_parameters_button_pressed(self):
+        logging.debug("Save params button clicked")
+        dir_explore = QFileDialog(self)
+        params_file_path = dir_explore.getSaveFileName(filter="*.yaml")
+        garbage, file_name = os.path.split(params_file_path[0])
+        file_extension = os.path.splitext(file_name)
+        # If the user doesn't enter the .yaml extension then append it to filepath
+        if file_extension[-1] == "":
+            file_path = params_file_path[0] + ".yaml"
+        else:
+            file_path = params_file_path[0]
+        try:
+            file_out = open(file_path, 'w')
+            yaml.dump(self.parameters, file_out)
+            print("Parameters file saved at: " + str(file_path))
+        except FileNotFoundError:
+            print("You need to select a directory and use a valid file name")
 
 

@@ -1,3 +1,5 @@
+# Written by Iain Emslie, with code from Sergei Gasilov and Tomas Farago
+
 import os
 import glob
 import numpy as np
