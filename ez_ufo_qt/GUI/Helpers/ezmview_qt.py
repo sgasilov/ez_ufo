@@ -10,7 +10,6 @@ class EZMViewGroup(QGroupBox):
         super().__init__()
 
         self.parameters = {'parameters_type': 'ezmview'}
-
         self.parameters['ezmview_input_dir'] = ""
         self.parameters['ezmview_num_projections'] = 0
         self.parameters['ezmview_num_flats'] = 0
@@ -22,64 +21,52 @@ class EZMViewGroup(QGroupBox):
         self.setTitle("EZMView")
         self.setStyleSheet('QGroupBox {color: green;}')
 
-        self.input_dir_button = QPushButton()
-        self.input_dir_button.setText("Select input directory with a CT sequence")
+        self.input_dir_button = QPushButton("Select input directory with a CT sequence")
         self.input_dir_button.clicked.connect(self.select_directory)
 
         self.input_dir_entry = QLineEdit()
         self.input_dir_entry.textChanged.connect(self.set_directory_entry)
 
-        self.num_projections_label = QLabel()
-        self.num_projections_label.setText("Number of projections")
+        self.num_projections_label = QLabel("Number of projections")
 
         self.num_projections_entry = QLineEdit()
         self.num_projections_entry.textChanged.connect(self.set_num_projections)
 
-        self.num_flats_label = QLabel()
-        self.num_flats_label.setText("Number of flats")
+        self.num_flats_label = QLabel("Number of flats")
 
         self.num_flats_entry = QLineEdit()
         self.num_flats_entry.textChanged.connect(self.set_num_flats)
 
-        self.num_darks_label = QLabel()
-        self.num_darks_label.setText("Number of darks")
+        self.num_darks_label = QLabel("Number of darks")
 
         self.num_darks_entry = QLineEdit()
         self.num_darks_entry.textChanged.connect(self.set_num_darks)
 
-        self.num_vert_steps_label = QLabel()
-        self.num_vert_steps_label.setText("Number of vertical steps")
+        self.num_vert_steps_label = QLabel("Number of vertical steps")
 
         self.num_vert_steps_entry = QLineEdit()
         self.num_vert_steps_entry.textChanged.connect(self.set_num_steps)
 
-        self.no_trailing_flats_darks_checkbox = QCheckBox()
-        self.no_trailing_flats_darks_checkbox.setText("No trailing flats/darks")
+        self.no_trailing_flats_darks_checkbox = QCheckBox("No trailing flats/darks")
         self.no_trailing_flats_darks_checkbox.stateChanged.connect(self.set_trailing_checkbox)
 
-        self.filenames_without_padding_checkbox = QCheckBox()
-        self.filenames_without_padding_checkbox.setText("File names without zero padding")
+        self.filenames_without_padding_checkbox = QCheckBox("File names without zero padding")
         self.filenames_without_padding_checkbox.stateChanged.connect(self.set_file_names_checkbox)
 
-        self.help_button = QPushButton()
-        self.help_button.setText("Help")
+        self.help_button = QPushButton("Help")
         self.help_button.clicked.connect(self.help_button_pressed)
 
-        self.undo_button = QPushButton()
-        self.undo_button.setText("Undo")
+        self.undo_button = QPushButton("Undo")
         self.undo_button.clicked.connect(self.undo_button_pressed)
 
-        self.convert_button = QPushButton()
-        self.convert_button.setText("Convert")
+        self.convert_button = QPushButton("Convert")
         self.convert_button.clicked.connect(self.convert_button_pressed)
         self.convert_button.setStyleSheet("color:royalblue;font-weight:bold")
 
-        self.save_parameters_button = QPushButton()
-        self.save_parameters_button.setText("Save Parameters to File")
+        self.save_parameters_button = QPushButton("Save Parameters to File")
         self.save_parameters_button.clicked.connect(self.save_parameters_button_pressed)
 
-        self.import_parameters_button = QPushButton()
-        self.import_parameters_button.setText("Import Parameters from File")
+        self.import_parameters_button = QPushButton("Import Parameters from File")
         self.import_parameters_button.clicked.connect(self.import_parameters_button_pressed)
 
         self.set_layout()

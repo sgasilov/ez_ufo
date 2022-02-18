@@ -324,15 +324,15 @@ def main_360_mp_depth1(args):
     print("========== Done ==========")
 
 
-def main_360_mp_depth2(args, axis_dict):
+def main_360_mp_depth2(parameters):
 
-    if args.manual_axis:
+    if parameters['360multi_manual_axis']:
         print("Axis values: ", end='')
-        print(axis_dict)
-        axis_list = list(axis_dict.values())
+        print(parameters['360multi_axis_dict'])
+        axis_list = list(parameters['360multi_axis_dict'].values())
         last_index = check_last_index(axis_list)
 
-    ctdirs, lvl0 = findCTdirs(args.input, "tomo")
+    ctdirs, lvl0 = findCTdirs(parameters['360multi_input_dir'], "tomo")
 
     ctlist = []
     for item in ctdirs:
@@ -351,32 +351,31 @@ def main_360_mp_depth2(args, axis_dict):
         if len(glob.glob(os.path.join(ctdir, 'z??'))) > 0:
 
             num_slices = len(glob.glob(os.path.join(ctdir, 'z??')))
-            axis_incr = float((args.ax2 - args.ax1) / float(num_slices - 1))
+            axis_incr = float((parameters['360multi_top_axis'] - parameters['360multi_bottom_axis']) / float(num_slices - 1))
 
             print(str(num_slices) + " slices detected. stitching all slices....")
 
             for j in range(0, num_slices):
                 head, tail = os.path.split(ctdir)
-                if not os.path.exists(os.path.join(args.output, tail)):
-                    os.makedirs(os.path.join(args.output, tail, "z" + str(j).zfill(2)))
-                out_dir = os.path.join(args.output, tail, "z" + str(j).zfill(2))
+                if not os.path.exists(os.path.join(parameters['360multi_output_dir'], tail)):
+                    os.makedirs(os.path.join(parameters['360multi_output_dir'], tail, "z" + str(j).zfill(2)))
+                out_dir = os.path.join(parameters['360multi_output_dir'], tail, "z" + str(j).zfill(2))
                 print("Output directory: " + out_dir)
 
-                if args.manual_axis:
+                if parameters['360multi_manual_axis']:
                     curr_ax = int(list(axis_list)[j])
-                    args.ax1 = int(list(axis_list)[0])
-                    args.ax2 = int(list(axis_list)[last_index])
+                    parameters['360multi_bottom_axis'] = int(list(axis_list)[0])
+                    parameters['360multi_top_axis']= int(list(axis_list)[last_index])
                 else:
-                    curr_ax = args.ax1 + j * axis_incr
+                    curr_ax = parameters['360multi_bottom_axis'] + j * axis_incr
 
-                if args.crop == True:
+                if parameters['360multi_crop_projections'] == True:
                     if axis_incr < 0:
-                        crop_amt = abs(args.ax1 - round(curr_ax))
+                        crop_amt = abs(parameters['360multi_bottom_axis'] - round(curr_ax))
                     else:
-                        crop_amt = abs(args.ax2 - round(curr_ax))
+                        crop_amt = abs(parameters['360multi_top_axis'] - round(curr_ax))
                 else:
                     crop_amt = 0
-                # subdirs=sorted(os.listdir(args.input))
 
                 subdirs = [dI for dI in os.listdir(os.path.join(ctdir, "z" + str(j).zfill(2))) \
                            if os.path.isdir(os.path.join(ctdir, "z" + str(j).zfill(2), dI))]
@@ -421,8 +420,8 @@ def main_360_mp_depth2(args, axis_dict):
                 print("=========== Done ===========")
 
         else:
-            if not os.path.exists(args.output):
-                os.makedirs(args.output)
+            if not os.path.exists(parameters['360multi_output_dir']):
+                os.makedirs(parameters['360multi_output_dir'])
             # subdirs=sorted(os.listdir(args.input))
 
             for i, sdir in enumerate(subdirs):
@@ -432,8 +431,8 @@ def main_360_mp_depth2(args, axis_dict):
                     warnings.warn("Warning: less than 2 files")
                 print ('{} files in {}'.format(num_projs, sdir))
 
-                os.makedirs(os.path.join(args.output, sdir))
-                out_fmt = os.path.join(args.output, sdir, 'sti-{:>04}.tif')
+                os.makedirs(os.path.join(parameters['360multi_output_dir'], sdir))
+                out_fmt = os.path.join(parameters['360multi_output_dir'], sdir, 'sti-{:>04}.tif')
 
                 # extract input file format
                 firstfname = names[0]
@@ -446,7 +445,7 @@ def main_360_mp_depth2(args, axis_dict):
                 pool = mp.Pool(processes=mp.cpu_count())
                 # exec_func = partial(st_mp, num_projs,args.ax, out_fmt)
                 offst = int(num_projs / 2)
-                exec_func = partial(st_mp_idx, offst, args.ax, in_fmt, out_fmt)
+                exec_func = partial(st_mp_idx, offst, parameters['360multi_axis'], in_fmt, out_fmt)
                 idxs = range(idx0, idx0 + offst)
                 # double check if names correspond - to remove later
                 for nmi in idxs:
