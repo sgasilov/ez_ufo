@@ -39,27 +39,17 @@ def findCTdirs(root: str, tomo_name: str):
                 ctdirs.append(root)
     return ctdirs, lvl0
 
-def find_overlap(args):
-    # assign GUI arguments to variables
 
-    root = args.indir
-    proc = args.tmpdir
-    output = args.outdir
-    row_num = args.row_num
-    overlap_min = args.overlap_min
-    overlap_max = args.overlap_max
-    overlap_increment = args.overlap_increment
-    axis_on_left = args.axis_on_left
-
+def find_overlap(parameters):
     # recursively create output temporary ctset if it doesn't exist
-    if os.path.exists(proc):
-        shutil.rmtree(proc)
-        os.makedirs(proc)
+    if os.path.exists(parameters['360overlap_temp_dir']):
+        shutil.rmtree(parameters['360overlap_temp_dir'])
+        os.makedirs(parameters['360overlap_temp_dir'])
     else:
-        os.makedirs(proc)
+        os.makedirs(parameters['360overlap_temp_dir'])
 
     print("Finding CTDirs...")
-    ctdirs, lvl0 = findCTdirs(root, "tomo")
+    ctdirs, lvl0 = findCTdirs(parameters['360overlap_input_dir'], "tomo")
     ctdirs.sort()
     print(ctdirs)
 
@@ -70,15 +60,18 @@ def find_overlap(args):
         print("Working on ctset:" + str(ctset))
         index_dir = os.path.basename(os.path.normpath(ctset))
 
-        os.makedirs(os.path.join(proc, index_dir, 'sinos'))
+        os.makedirs(os.path.join(parameters['360overlap_temp_dir'], index_dir, 'sinos'))
 
-        tomo = open_tif_sequence(os.path.join(ctset, 'tomo'), row_num)
+        tomo = open_tif_sequence(os.path.join(ctset, 'tomo'), parameters['360overlap_start_row'])
 
         # open flats and darks and average them
-        flat = np.mean(open_tif_sequence(os.path.join(ctset, 'flats'), row_num) / 65535.0, axis=0)
-        dark = np.mean(open_tif_sequence(os.path.join(ctset, 'darks'), row_num) / 65535.0, axis=0)
+        flat = np.mean(open_tif_sequence(os.path.join(ctset, 'flats'),
+                                         parameters['360overlap_start_row']) / 65535.0, axis=0)
+        dark = np.mean(open_tif_sequence(os.path.join(ctset, 'darks'),
+                                         parameters['360overlap_start_row']) / 65535.0, axis=0)
         if os.path.exists(os.path.join(ctset, 'flats2')):
-            flat2 = np.mean(open_tif_sequence(os.path.join(ctset, 'flats2'), row_num) / 65535.0, axis=0)
+            flat2 = np.mean(open_tif_sequence(os.path.join(ctset, 'flats2'),
+                                              parameters['360overlap_start_row']) / 65535.0, axis=0)
         else:
             flat2 = flat
 
@@ -90,11 +83,12 @@ def find_overlap(args):
 
         del tomo
 
-        # create interpolated sinogram of flats on the same row as we use for the projections, then carry out flat/dark correction
+        # create interpolated sinogram of flats on the same row as we use for the projections, then flat/dark correction
         print('Creating stitched sinograms...')
         for i in range(0, img_height):
-            flat_single_row[i, :] = (flat[img_width // 2, :] * (float(i) / float(img_height)) + flat2[img_width // 2, :] * (
-                        1.0 - float(i) / float(img_height)))
+            flat_single_row[i, :] = (flat[img_width // 2, :]
+                                     * (float(i) / float(img_height)) + flat2[img_width // 2, :]
+                                     * (1.0 - float(i) / float(img_height)))
 
         tomo_sino_corr = (tomo_single_row - dark_single_row) / (flat_single_row - dark_single_row)
         max_gray_value = tomo_sino_corr.max()
@@ -106,11 +100,13 @@ def find_overlap(args):
         tomo_first_half = -1.0 * np.log(tomo_first_half)
         tomo_second_half = -1.0 * np.log(tomo_second_half)
 
-        # flip half of corrected unstitched sinos (depending on right- or left-hand axis) and produce stitched sinos at regular increments TODO: fix code for right-hand axis case
-        if axis_on_left:
+        # flip half of corrected unstitched sinos (depending on right- or left-hand axis)
+        # and produce stitched sinos at regular increments TODO: fix code for right-hand axis case
+        if parameters['360overlap_axis_on_left']:
             tomo_second_half_flipped = np.fliplr(tomo_second_half)
 
-            for axis in range(overlap_min, overlap_max, overlap_increment):
+            for axis in range(parameters['360overlap_lower_limit'], parameters['360overlap_upper_limit'],
+                              parameters['360overlap_increment']):
                 sino_halves = []
                 sino_halves.append(tomo_second_half_flipped[:, :tomo_second_half_flipped.shape[1] - axis])
                 sino_halves.append(tomo_first_half[:, axis:])
@@ -118,29 +114,31 @@ def find_overlap(args):
 
                 output_img = stitched_sino
 
-                tifffile.imsave(os.path.join(proc, index_dir, 'sinos', 'axis-' + str(axis).zfill(4) + '.tif'),
+                tifffile.imsave(os.path.join(parameters['360overlap_temp_dir'],
+                                             index_dir, 'sinos', 'axis-' + str(axis).zfill(4) + '.tif'),
                                 output_img.astype(np.float32))
 
         # perform reconstructions for each sinogram and save to output folder
         print('Reconstructing stitched sinograms:')
 
         setid = ctset[len(lvl0)+1:]
-        #print("setid: " + setid)
-        out_pattern = os.path.join(args.outdir, setid)
+        out_pattern = os.path.join(parameters['360overlap_output_dir'], setid)
 
-        for filename in os.listdir(os.path.join(proc, index_dir, 'sinos')):
+        for filename in os.listdir(os.path.join(parameters['360overlap_temp_dir'], index_dir, 'sinos')):
             if '.tif' in filename:
-                current_img = np.array(read_image(os.path.join(proc, index_dir, 'sinos', filename)))
+                current_img = np.array(read_image(os.path.join(parameters['360overlap_temp_dir'],
+                                                               index_dir, 'sinos', filename)))
                 axis = current_img.shape[1] / 2
 
                 recon_cmd = 'tofu tomo  --output-bytes-per-file 0 --sinograms '\
-                            + os.path.join(proc, index_dir, 'sinos', filename) + ' --output '\
+                            + os.path.join(parameters['360overlap_temp_dir'], index_dir, 'sinos', filename)\
+                            + ' --output '\
                             + os.path.join(out_pattern, filename) + ' --axis ' + str(axis)
                 os.system(recon_cmd)
 
-        shutil.rmtree(os.path.join(proc, index_dir))
+        shutil.rmtree(os.path.join(parameters['360overlap_temp_dir'], index_dir))
         print("Finished processing: " + str(index_dir))
         print("********************DONE********************")
 
-    shutil.rmtree(proc)
-    print("Finished processing: " + str(root))
+    shutil.rmtree(parameters['360overlap_temp_dir'])
+    print("Finished processing: " + str(parameters['360overlap_input_dir']))

@@ -1,21 +1,22 @@
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QFileDialog, QMessageBox
 import logging
 import os
+import yaml
 from ez_ufo_qt.Helpers.find_360_overlap import find_overlap
 
 class Overlap360Group(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.args = {}
-        self.e_root = ""
-        self.e_proc = ""
-        self.e_output = ""
-        self.e_row_num = 0
-        self.e_overlap_min = 0
-        self.e_overlap_max = 0
-        self.e_overlap_increment = 0
-        self.e_axis_on_left = False
+        self.parameters = {'parameters_type': '360overlap'}
+        self.parameters['360overlap_input_dir'] = ""
+        self.parameters['360overlap_temp_dir'] = ""
+        self.parameters['360overlap_output_dir'] = ""
+        self.parameters['360overlap_start_row'] = 0
+        self.parameters['360overlap_lower_limit'] = 0
+        self.parameters['360overlap_upper_limit'] = 0
+        self.parameters['360overlap_increment'] = 0
+        self.parameters['360overlap_axis_on_left'] = False
 
         self.setTitle("Find 360 Overlap")
         self.setStyleSheet('QGroupBox {color: Orange;}')
@@ -54,12 +55,18 @@ class Overlap360Group(QGroupBox):
         self.axis_on_left = QCheckBox("Is the rotation axis on the left-hand side of the image?")
         self.axis_on_left.stateChanged.connect(self.set_axis_checkbox)
 
+        self.help_button = QPushButton("Help")
+        self.help_button.clicked.connect(self.help_button_pressed)
+
         self.find_overlap_button = QPushButton("Find Overlap")
         self.find_overlap_button.clicked.connect(self.overlap_button_pressed)
         self.find_overlap_button.setStyleSheet("color:royalblue;font-weight:bold")
 
-        self.help_button = QPushButton("Help")
-        self.help_button.clicked.connect(self.help_button_pressed)
+        self.import_parameters_button = QPushButton("Import Parameters from File")
+        self.import_parameters_button.clicked.connect(self.import_parameters_button_pressed)
+
+        self.save_parameters_button = QPushButton("Save Parameters to File")
+        self.save_parameters_button.clicked.connect(self.save_parameters_button_pressed)
 
         self.set_layout()
 
@@ -82,89 +89,96 @@ class Overlap360Group(QGroupBox):
         layout.addWidget(self.axis_on_left, 10, 0)
         layout.addWidget(self.help_button, 11, 0)
         layout.addWidget(self.find_overlap_button, 11, 1)
-
+        layout.addWidget(self.import_parameters_button, 12, 0)
+        layout.addWidget(self.save_parameters_button, 12, 1)
         self.setLayout(layout)
 
     def init_values(self):
-        indir = os.getcwd()
-        self.input_dir_entry.setText(indir)
-        self.e_root = indir
-        tmpdir = "/data/tmp-stitch_search"
-        self.temp_dir_entry.setText(tmpdir)
-        self.e_proc = tmpdir
-        outdir = os.getcwd() + '-overlap'
-        self.output_dir_entry.setText(outdir)
-        self.e_output = outdir
-        self.e_row_num = 200
-        self.pixel_row_entry.setText(str(self.e_row_num))
-        self.e_overlap_min = 100
-        self.min_entry.setText(str(self.e_overlap_min))
-        self.e_overlap_max = 200
-        self.max_entry.setText(str(self.e_overlap_max))
-        self.e_overlap_increment = 2
-        self.step_entry.setText(str(self.e_overlap_increment))
-        self.e_axis_on_left = True
-        self.axis_on_left.setChecked(bool(self.e_axis_on_left))
+        self.parameters['360overlap_input_dir'] = os.getcwd()
+        self.input_dir_entry.setText(self.parameters['360overlap_input_dir'])
+        self.parameters['360overlap_temp_dir'] = "/data/tmp-stitch_search"
+        self.temp_dir_entry.setText(self.parameters['360overlap_temp_dir'])
+        self.parameters['360overlap_output_dir'] = os.getcwd() + '-overlap'
+        self.output_dir_entry.setText(self.parameters['360overlap_output_dir'])
+        self.parameters['360overlap_start_row'] = 200
+        self.pixel_row_entry.setText(str(self.parameters['360overlap_start_row']))
+        self.parameters['360overlap_lower_limit'] = 100
+        self.min_entry.setText(str(self.parameters['360overlap_lower_limit']))
+        self.parameters['360overlap_upper_limit'] = 200
+        self.max_entry.setText(str(self.parameters['360overlap_upper_limit']))
+        self.parameters['360overlap_increment'] = 2
+        self.step_entry.setText(str(self.parameters['360overlap_increment']))
+        self.parameters['360overlap_axis_on_left'] = True
+        self.axis_on_left.setChecked(bool(self.parameters['360overlap_axis_on_left']))
+
+    def update_parameters(self, new_parameters):
+        logging.debug("Update parameters")
+        # Update parameters dictionary (which is passed to auto_stitch_funcs)
+        self.parameters = new_parameters
+        # Update displayed parameters for GUI
+        self.input_dir_entry.setText(self.parameters['360overlap_input_dir'])
+        self.temp_dir_entry.setText(self.parameters['360overlap_temp_dir'])
+        self.output_dir_entry.setText(self.parameters['360overlap_output_dir'])
+        self.pixel_row_entry.setText(str(self.parameters['360overlap_start_row']))
+        self.min_entry.setText(str(self.parameters['360overlap_lower_limit']))
+        self.max_entry.setText(str(self.parameters['360overlap_upper_limit']))
+        self.step_entry.setText(str(self.parameters['360overlap_increment']))
+        self.axis_on_left.setChecked(bool(self.parameters['360overlap_axis_on_left']))
 
     def input_button_pressed(self):
         logging.debug("Select input button pressed")
         dir_explore = QFileDialog(self)
-        directory = dir_explore.getExistingDirectory()
-        self.input_dir_entry.setText(directory)
-        self.e_root = directory
+        self.parameters['360overlap_input_dir'] = dir_explore.getExistingDirectory()
+        self.input_dir_entry.setText(self.parameters['360overlap_input_dir'])
 
     def set_input_entry(self):
         logging.debug("Input: " + str(self.input_dir_entry.text()))
-        self.e_root = str(self.input_dir_entry.text())
+        self.parameters['360overlap_input_dir'] = str(self.input_dir_entry.text())
 
     def temp_button_pressed(self):
         logging.debug("Select temp button pressed")
         dir_explore = QFileDialog(self)
-        directory = dir_explore.getExistingDirectory()
-        self.temp_dir_entry.setText(directory)
-        self.e_proc = directory
+        self.parameters['360overlap_temp_dir'] = dir_explore.getExistingDirectory()
+        self.temp_dir_entry.setText(self.parameters['360overlap_temp_dir'])
 
     def set_temp_entry(self):
         logging.debug("Temp: " + str(self.temp_dir_entry.text()))
-        self.e_proc = str(self.temp_dir_entry.text())
+        self.parameters['360overlap_temp_dir'] = str(self.temp_dir_entry.text())
 
     def output_button_pressed(self):
         logging.debug("Select output button pressed")
         dir_explore = QFileDialog(self)
-        directory = dir_explore.getExistingDirectory()
-        self.output_dir_entry.setText(directory)
-        self.e_output = directory
+        self.parameters['360overlap_output_dir'] = dir_explore.getExistingDirectory()
+        self.output_dir_entry.setText(self.parameters['360overlap_output_dir'])
 
     def set_output_entry(self):
         logging.debug("Output: " + str(self.output_dir_entry.text()))
-        self.e_output = str(self.output_dir_entry.text())
+        self.parameters['360overlap_output_dir'] = str(self.output_dir_entry.text())
 
     def set_pixel_row(self):
         logging.debug("Pixel row: " + str(self.pixel_row_entry.text()))
-        self.e_row_num = int(self.pixel_row_entry.text())
+        self.parameters['360overlap_start_row'] = int(self.pixel_row_entry.text())
 
     def set_lower_limit(self):
         logging.debug("Lower limit: " + str(self.min_entry.text()))
-        self.e_overlap_min = int(self.min_entry.text())
+        self.parameters['360overlap_lower_limit'] = int(self.min_entry.text())
 
     def set_upper_limit(self):
         logging.debug("Upper limit: " + str(self.max_entry.text()))
-        self.e_overlap_max = int(self.max_entry.text())
+        self.parameters['360overlap_upper_limit'] = int(self.max_entry.text())
 
     def set_increment(self):
         logging.debug("Value of increment: " + str(self.step_entry.text()))
-        self.e_overlap_increment = int(self.step_entry.text())
+        self.parameters['360overlap_increment'] = int(self.step_entry.text())
 
     def set_axis_checkbox(self):
         logging.debug("Is rotation axis on left-hand-side?: " + str(self.axis_on_left.isChecked()))
-        self.e_axis_on_left = bool(self.axis_on_left.isChecked())
+        self.parameters['360overlap_axis_on_left'] = bool(self.axis_on_left.isChecked())
 
     def overlap_button_pressed(self):
         logging.debug("Find overlap button pressed")
 
-        args = qt_args(self.e_root, self.e_proc, self.e_output, self.e_row_num,
-                self.e_overlap_min, self.e_overlap_max, self.e_overlap_increment, self.e_axis_on_left)
-        find_overlap(args)
+        find_overlap(self.parameters)
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")
@@ -176,27 +190,32 @@ class Overlap360Group(QGroupBox):
         h += " is located (much like the axis search function commonly used in reconstruction software)."
         QMessageBox.information(self, "Help", h)
 
-class qt_args():
-    def __init__(self, e_root, e_proc, e_output, e_row_num,
-                 e_overlap_min, e_overlap_max, e_overlap_increment, e_axis_on_left):
+    def import_parameters_button_pressed(self):
+        logging.debug("Import params button clicked")
+        dir_explore = QFileDialog(self)
+        params_file_path = dir_explore.getOpenFileName(filter="*.yaml")
+        try:
+            file_in = open(params_file_path[0], 'r')
+            new_parameters = yaml.load(file_in, Loader=yaml.FullLoader)
+            self.update_parameters(new_parameters)
+            print("Parameters file loaded from: " + str(params_file_path[0]))
+        except FileNotFoundError:
+            print("You need to select a valid input file")
 
-        self.args = {}
-        # Directories
-        self.args['indir'] = str(e_root)
-        setattr(self, 'indir', self.args['indir'])
-        self.args['tmpdir'] = str(e_proc)
-        setattr(self, 'tmpdir', self.args['tmpdir'])
-        self.args['outdir'] = str(e_output)
-        setattr(self, 'outdir', self.args['outdir'])
-        # Values
-        self.args['row_num'] = int(e_row_num)
-        setattr(self, 'row_num', self.args['row_num'])
-        self.args['overlap_min'] = int(e_overlap_min)
-        setattr(self, 'overlap_min', self.args['overlap_min'])
-        self.args['overlap_max'] = int(e_overlap_max)
-        setattr(self, 'overlap_max', self.args['overlap_max'])
-        self.args['overlap_increment'] = int(e_overlap_increment)
-        setattr(self, 'overlap_increment', self.args['overlap_increment'])
-        self.args['axis_on_left'] = bool(e_axis_on_left)
-        setattr(self, 'axis_on_left', self.args['axis_on_left'])
-
+    def save_parameters_button_pressed(self):
+        logging.debug("Save params button clicked")
+        dir_explore = QFileDialog(self)
+        params_file_path = dir_explore.getSaveFileName(filter="*.yaml")
+        garbage, file_name = os.path.split(params_file_path[0])
+        file_extension = os.path.splitext(file_name)
+        # If the user doesn't enter the .yaml extension then append it to filepath
+        if file_extension[-1] == "":
+            file_path = params_file_path[0] + ".yaml"
+        else:
+            file_path = params_file_path[0]
+        try:
+            file_out = open(file_path, 'w')
+            yaml.dump(self.parameters, file_out)
+            print("Parameters file saved at: " + str(file_path))
+        except FileNotFoundError:
+            print("You need to select a directory and use a valid file name")
