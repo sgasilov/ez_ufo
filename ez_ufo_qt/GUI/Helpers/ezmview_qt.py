@@ -9,15 +9,6 @@ class EZMViewGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.parameters = {'parameters_type': 'ezmview'}
-        self.parameters['ezmview_input_dir'] = ""
-        self.parameters['ezmview_num_projections'] = 0
-        self.parameters['ezmview_num_flats'] = 0
-        self.parameters['ezmview_num_darks'] = 0
-        self.parameters['ezmview_num_vertical_steps'] = 0
-        self.parameters['ezmview_flats2'] = False
-        self.parameters['ezmview_zero_padding'] = False
-
         self.setTitle("EZMView")
         self.setStyleSheet('QGroupBox {color: green;}')
 
@@ -88,12 +79,13 @@ class EZMViewGroup(QGroupBox):
         layout.addWidget(self.help_button, 7, 0, 1, 1)
         layout.addWidget(self.undo_button, 7, 1, 1, 1)
         layout.addWidget(self.convert_button, 7, 2, 1, 1)
-        layout.addWidget(self.import_parameters_button, 8, 0, 1, 1)
+        layout.addWidget(self.import_parameters_button, 8, 0, 1, 2)
         layout.addWidget(self.save_parameters_button, 8, 2, 1, 1)
 
         self.setLayout(layout)
 
     def init_values(self):
+        self.parameters = {'parameters_type': 'ezmview'}
         self.input_dir_entry.setText(os.getcwd())
         self.parameters['ezmview_input_dir'] = os.getcwd()
         self.num_projections_entry.setText("3000")
