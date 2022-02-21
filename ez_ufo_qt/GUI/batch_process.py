@@ -4,10 +4,15 @@ import glob
 import os
 
 from PyQt5.QtWidgets import QGroupBox, QLabel, QGridLayout, QPushButton, QFileDialog, QLineEdit
-
+# Auto Stitch
 from ez_ufo_qt.GUI.Main.config import ConfigGroup
 from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_funcs import AutoHorizontalStitchFunctions
 from ez_ufo_qt.GUI.StitchTools.auto_vertical_stitch_funcs import AutoVerticalStitchFunctions
+# Helpers
+from ez_ufo_qt.Helpers.mview_main import main_prep
+from ez_ufo_qt.Helpers.find_360_overlap import find_overlap
+from ez_ufo_qt.Helpers.stitch_funcs import main_360_mp_depth2
+from ez_ufo_qt.Helpers.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
 
 class BatchProcessGroup(QGroupBox):
     def __init__(self):
@@ -104,8 +109,42 @@ class BatchProcessGroup(QGroupBox):
                         self.config_group = ConfigGroup()
                         self.config_group.run_reconstruction(params, batch_run=True)
                     elif params_type == "auto_vertical_stitch":
+                        # Call functions to begin auto horizontal stitch and pass params
                         self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(params)
                         self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
-                        # Call functions to begin auto horizontal stitch and pass params
-        except KeyError:
-            print("Please select an input directory")
+                    elif params_type == "ez_mview":
+                        main_prep(params)
+                    elif params_type == "360_overlap":
+                        find_overlap(params)
+                    elif params_type == "360_multi_stitch":
+                        if os.path.exists(params['360multi_temp_dir']):
+                            os.system('rm -r {}'.format(params['360multi_temp_dir']))
+
+                        if os.path.exists(params['360multi_output_dir']):
+                            raise ValueError('Output directory exists')
+                            #print("Output directory exists - delete before stitching")
+
+                        print("======= Begin 360 Multi-Stitch =======")
+                        main_360_mp_depth2(params)
+                        print("==== Waiting for Next Task ====")
+                    elif params_type == "ez_stitch":
+                        if os.path.exists(params['ezstitch_temp_dir']):
+                            os.system('rm -r {}'.format(params['ezstitch_temp_dir']))
+
+                        if os.path.exists(params['ezstitch_output_dir']):
+                            raise ValueError('Output directory exists')
+
+                        print("======= Begin Stitching =======")
+                        # Interpolate overlapping regions and equalize intensity
+                        if params['ezstitch_stitch_type'] == 0:
+                            main_sti_mp(params)
+                        # Concatenate only
+                        elif params['ezstitch_stitch_type'] == 1:
+                            main_conc_mp(params)
+                        # Half acquisition mode
+                        elif params['ezstitch_stitch_type'] == 2:
+                            main_360_mp_depth1(params)
+                        print("==== Waiting for Next Task ====")
+        except KeyError as k:
+            #print("Please select an input directory")
+            print("Key Error: " + k)

@@ -10,18 +10,6 @@ class MultiStitch360Group(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.parameters = {'parameters_type': '360_multi_stitch'}
-        self.parameters['360multi_input_dir'] = ""
-        self.parameters['360multi_output_dir'] = ""
-        self.parameters['360multi_temp_dir'] = ""
-        self.parameters['360multi_bottom_axis'] = 0
-        self.parameters['360multi_top_axis'] = 0
-        self.parameters['360multi_axis'] = 0
-        self.parameters['360multi_crop_projections'] = 0
-        self.parameters['360multi_manual_axis'] = False
-        self.parameters['360multi_axis_dict'] = dict.fromkeys(['z00', 'z01', 'z02', 'z03', 'z04', 'z05',
-                                                               'z06', 'z07', 'z08', 'z09', 'z010', 'z011'])
-
         self.setTitle("360 Multi Stitch")
         self.setStyleSheet('QGroupBox {color: red;}')
 
@@ -201,6 +189,7 @@ class MultiStitch360Group(QGroupBox):
         self.setLayout(layout)
 
     def init_values(self):
+        self.parameters = {'parameters_type': '360_multi_stitch'}
         self.parameters['360multi_input_dir'] = os.getcwd()
         self.input_dir_entry.setText(self.parameters['360multi_input_dir'])
         self.parameters['360multi_temp_dir'] = os.path.join("/data", "tmp-ezstitch-" + getpass.getuser())
@@ -215,6 +204,8 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_entry.setText(str(self.parameters['360multi_top_axis']))
         self.parameters['360multi_axis'] = self.parameters['360multi_bottom_axis']
         self.parameters['360multi_manual_axis'] = False
+        self.parameters['360multi_axis_dict'] = dict.fromkeys(['z00', 'z01', 'z02', 'z03', 'z04', 'z05',
+                                                               'z06', 'z07', 'z08', 'z09', 'z010', 'z011'])
 
     def update_parameters(self, new_parameters):
         logging.debug("Update parameters")

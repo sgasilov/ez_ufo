@@ -339,15 +339,6 @@ class EZStitchGroup(QGroupBox):
 
     def stitch_button_pressed(self):
         logging.debug("Stitch button pressed")
-        args = tk_args(self.parameters['ezstitch_input_dir'], self.parameters['ezstitch_output_dir'],
-                       self.parameters['ezstitch_temp_dir'], self.parameters['ezstitch_type_image'],
-                       self.parameters['ezstitch_stitch_orthogonal'], self.parameters['ezstitch_start_stop_step'],
-                       self.parameters['ezstitch_sample_moved_down'], self.parameters['ezstitch_stitch_type'],
-                       self.parameters['ezstitch_num_overlap_rows'], self.parameters['ezstitch_clip_histo'],
-                       self.parameters['ezstitch_histo_min'], self.parameters['ezstitch_histo_max'],
-                       self.parameters['ezstitch_first_row'], self.parameters['ezstitch_last_row'],
-                       self.parameters['ezstitch_axis_of_rotation'])
-        logging.debug(args)
 
         if os.path.exists(self.parameters['ezstitch_temp_dir']):
             os.system('rm -r {}'.format(self.parameters['ezstitch_temp_dir']))
@@ -358,15 +349,14 @@ class EZStitchGroup(QGroupBox):
         print("======= Begin Stitching =======")
         # Interpolate overlapping regions and equalize intensity
         if self.parameters['ezstitch_stitch_type'] == 0:
-            main_sti_mp(args)
+            main_sti_mp(self.parameters)
         # Concatenate only
         elif self.parameters['ezstitch_stitch_type'] == 1:
-            main_conc_mp(args)
+            main_conc_mp(self.parameters)
         # Half acquisition mode
         elif self.parameters['ezstitch_stitch_type'] == 2:
-            main_360_mp_depth1(args)
+            main_360_mp_depth1(self.parameters)
         print("==== Waiting for Next Task ====")
-
 
     def import_parameters_button_pressed(self):
         logging.debug("Import params button clicked")
@@ -397,46 +387,3 @@ class EZStitchGroup(QGroupBox):
             print("Parameters file saved at: " + str(file_path))
         except FileNotFoundError:
             print("You need to select a directory and use a valid file name")
-
-class tk_args():
-    def __init__(self, e_input, e_output, e_tmpdir,
-                    e_typ, e_ort, e_slices, e_flip, e_ipol,
-                    e_reprows, e_gray256, e_hmin, e_hmax,
-                    e_r1, e_r2, e_ax):
-
-        self.args={}
-        # directories
-        self.args['input'] = str(e_input)
-        setattr(self, 'input', self.args['input'])
-        self.args['output'] = str(e_output)
-        setattr(self, 'output', self.args['output'])
-        self.args['tmpdir'] = str(e_tmpdir)
-        setattr(self, 'tmpdir', self.args['tmpdir'])
-        # parameters
-        self.args['typ'] = str(e_typ)
-        setattr(self, 'typ', self.args['typ'])
-        self.args['slices'] = str(e_slices)
-        setattr(self, 'slices', self.args['slices'])
-        self.args['flip'] = bool(int(e_flip))
-        setattr(self, 'flip', self.args['flip'])
-        self.args['ipol'] = int(e_ipol)
-        setattr(self, 'ipol', self.args['ipol'])
-        self.args['ort'] = bool(int(e_ort))
-        setattr(self, 'ort', self.args['ort'])
-        # vert stitch with interp and normalization
-        self.args['reprows'] = int(e_reprows)
-        setattr(self, 'reprows', self.args['reprows'])
-        self.args['gray256'] = bool(int(e_gray256))
-        setattr(self, 'gray256', self.args['gray256'])
-        self.args['hmin'] = float(e_hmin)
-        setattr(self, 'hmin', self.args['hmin'])
-        self.args['hmax'] = float(e_hmax)
-        setattr(self, 'hmax', self.args['hmax'])
-        #simple vert stitch
-        self.args['r2'] = int(e_r2)
-        setattr(self, 'r2', self.args['r2'])
-        self.args['r1'] = int(e_r1)
-        setattr(self, 'r1', self.args['r1'])
-        #hor stitch half acq mode
-        self.args['ax'] = int(e_ax)
-        setattr(self, 'ax', self.args['ax'])

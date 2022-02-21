@@ -8,16 +8,6 @@ class Overlap360Group(QGroupBox):
     def __init__(self):
         super().__init__()
 
-        self.parameters = {'parameters_type': '360overlap'}
-        self.parameters['360overlap_input_dir'] = ""
-        self.parameters['360overlap_temp_dir'] = ""
-        self.parameters['360overlap_output_dir'] = ""
-        self.parameters['360overlap_start_row'] = 0
-        self.parameters['360overlap_lower_limit'] = 0
-        self.parameters['360overlap_upper_limit'] = 0
-        self.parameters['360overlap_increment'] = 0
-        self.parameters['360overlap_axis_on_left'] = False
-
         self.setTitle("Find 360 Overlap")
         self.setStyleSheet('QGroupBox {color: Orange;}')
 
@@ -94,6 +84,7 @@ class Overlap360Group(QGroupBox):
         self.setLayout(layout)
 
     def init_values(self):
+        self.parameters = {'parameters_type': '360_overlap'}
         self.parameters['360overlap_input_dir'] = os.getcwd()
         self.input_dir_entry.setText(self.parameters['360overlap_input_dir'])
         self.parameters['360overlap_temp_dir'] = "/data/tmp-stitch_search"
@@ -177,7 +168,6 @@ class Overlap360Group(QGroupBox):
 
     def overlap_button_pressed(self):
         logging.debug("Find overlap button pressed")
-
         find_overlap(self.parameters)
 
     def help_button_pressed(self):

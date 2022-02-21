@@ -4,8 +4,8 @@ import yaml
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QLineEdit, QLabel, QCheckBox, QGridLayout, QFileDialog, QMessageBox
 from ez_ufo_qt.Helpers.mview_main import main_prep
 
-class EZMViewGroup(QGroupBox):
 
+class EZMViewGroup(QGroupBox):
     def __init__(self):
         super().__init__()
 
@@ -85,7 +85,7 @@ class EZMViewGroup(QGroupBox):
         self.setLayout(layout)
 
     def init_values(self):
-        self.parameters = {'parameters_type': 'ezmview'}
+        self.parameters = {'parameters_type': 'ez_mview'}
         self.input_dir_entry.setText(os.getcwd())
         self.parameters['ezmview_input_dir'] = os.getcwd()
         self.num_projections_entry.setText("3000")

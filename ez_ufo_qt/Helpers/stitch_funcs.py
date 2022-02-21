@@ -18,63 +18,63 @@ import warnings
 import time
 
 
-def prepare(args, dir_type: int, ctdir: str):
+def prepare(parameters, dir_type: int, ctdir: str):
     """
-    :param args:
+    :param parameters: GUI params
     :param dir_type 1 if CTDir containing Z00-Z0N slices - 2 if parent directory containing CTdirs each containing Z slices:
     :param ctdir Name of the ctdir - blank string if not using multiple ctdirs:
     :return:
     """
     hmin, hmax = 0.0, 0.0
-    if args.gray256:
-        if args.hmin == args.hmax:
+    if parameters['ezstitch_clip_histo']:
+        if parameters['ezstitch_histo_min'] == parameters['ezstitch_histo_max']:
             raise ValueError(' - Define hmin and hmax correctly in order to convert to 8bit')
         else:
-            hmin, hmax = args.hmin, args.hmax
-    start, stop, step = [int(value) for value in args.slices.split(',')]
-    if not os.path.exists(args.output):
-        os.makedirs(args.output)
-    Vsteps = sorted(os.listdir(os.path.join(args.input, ctdir)))
+            hmin, hmax = parameters['ezstitch_histo_min'], parameters['ezstitch_histo_max']
+    start, stop, step = [int(value) for value in parameters['ezstitch_start_stop_step'].split(',')]
+    if not os.path.exists(parameters['ezstitch_output_dir']):
+        os.makedirs(parameters['ezstitch_output_dir'])
+    Vsteps = sorted(os.listdir(os.path.join(parameters['ezstitch_input_dir'], ctdir)))
     #determine input data type
     if dir_type == 1:
-        tmp = os.path.join(args.input, Vsteps[0], args.typ, '*.tif')
+        tmp = os.path.join(parameters['ezstitch_input_dir'], Vsteps[0], parameters['ezstitch_type_image'], '*.tif')
         tmp = sorted(glob.glob(tmp))[0]
         indtype = type(read_image(tmp)[0][0])
     elif dir_type == 2:
-        tmp = os.path.join(args.input, ctdir, Vsteps[0], args.typ, '*.tif')
+        tmp = os.path.join(parameters['ezstitch_input_dir'], ctdir, Vsteps[0], parameters['ezstitch_type_image'], '*.tif')
         tmp = sorted(glob.glob(tmp))[0]
         indtype = type(read_image(tmp)[0][0])
 
-    if args.ort:
+    if parameters['ezstitch_stitch_orthogonal']:
         for vstep in Vsteps:
             if dir_type == 1:
-                in_name = os.path.join(args.input, vstep, args.typ)
-                out_name = os.path.join(args.tmpdir, vstep, args.typ, 'sli-%04i.tif')
+                in_name = os.path.join(parameters['ezstitch_input_dir'], vstep, parameters['ezstitch_type_image'])
+                out_name = os.path.join(parameters['ezstitch_temp_dir'], vstep, parameters['ezstitch_type_image'], 'sli-%04i.tif')
             elif dir_type == 2:
-                in_name = os.path.join(args.input, ctdir, vstep, args.typ)
-                out_name = os.path.join(args.tmpdir, ctdir, vstep, args.typ, 'sli-%04i.tif')
+                in_name = os.path.join(parameters['ezstitch_input_dir'], ctdir, vstep, parameters['ezstitch_type_image'])
+                out_name = os.path.join(parameters['ezstitch_temp_dir'], ctdir, vstep, parameters['ezstitch_type_image'], 'sli-%04i.tif')
             cmd = 'tofu sinos --projections {} --output {}'.format(in_name, out_name)
             cmd += " --y {} --height {} --y-step {}".format(start, stop-start, step)
             cmd += " --output-bytes-per-file 0"
             os.system(cmd)
             time.sleep(10)
-        indir = args.tmpdir
+        indir = parameters['ezstitch_temp_dir']
     else:
-        indir = args.input
+        indir = parameters['ezstitch_input_dir']
     return indir, hmin, hmax, start, stop, step, indtype
 
 
-def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type, j):
+def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, parameters, ramp, hmin, hmax, indtype, ctdir, dir_type, j):
     index = start+j*step
     Large = np.empty((Nnew*len(Vsteps)+dx, M), dtype=np.float32)
     for i, vstep in enumerate(Vsteps[:-1]):
         if dir_type == 1:
-            tmp = os.path.join(indir, Vsteps[i], args.typ, '*.tif')
-            tmp1 = os.path.join(indir, Vsteps[i+1], args.typ, '*.tif')
+            tmp = os.path.join(indir, Vsteps[i], parameters['ezstitch_type_image'], '*.tif')
+            tmp1 = os.path.join(indir, Vsteps[i+1], parameters['ezstitch_type_image'], '*.tif')
         elif dir_type == 2:
-            tmp = os.path.join(indir, ctdir, Vsteps[i], args.typ, '*.tif')
-            tmp1 = os.path.join(indir, ctdir, Vsteps[i + 1], args.typ, '*.tif')
-        if args.ort:
+            tmp = os.path.join(indir, ctdir, Vsteps[i], parameters['ezstitch_type_image'], '*.tif')
+            tmp1 = os.path.join(indir, ctdir, Vsteps[i + 1], parameters['ezstitch_type_image'], '*.tif')
+        if parameters['ezstitch_stitch_orthogonal']:
             tmp = sorted(glob.glob(tmp))[j]
             tmp1 = sorted(glob.glob(tmp1))[j]
         else:
@@ -83,7 +83,7 @@ def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hm
         first = read_image(tmp)
         second = read_image(tmp1)
         # sample moved downwards
-        if args.flip:
+        if parameters['ezstitch_sample_moved_down']:
             first, second = np.flipud(first), np.flipud(second)
 
         k = np.mean(first[N - dx:, :]) / np.mean(second[:dx, :])
@@ -94,28 +94,28 @@ def exec_sti_mp(start, step, N, Nnew, Vsteps, indir, dx, M, args, ramp, hmin, hm
         Large[b:b+dx, :] = np.transpose(np.transpose(first[N-dx:, :])*(1 - ramp) + np.transpose(second[:dx, :]) * ramp)
         Large[b+dx:c+dx, :] = second[dx:, :]
 
-    pout = os.path.join(args.output, ctdir, args.typ+'-sti-{:>04}.tif'.format(index))
-    if not args.gray256:
+    pout = os.path.join(parameters['ezstitch_output_dir'], ctdir, parameters['ezstitch_type_image']+'-sti-{:>04}.tif'.format(index))
+    if not parameters['ezstitch_clip_histo']:
         tifffile.imsave(pout, Large.astype(indtype))
     else:
         Large = 255.0/(hmax-hmin) * (np.clip(Large, hmin, hmax) - hmin)
         tifffile.imsave(pout, Large.astype(np.uint8))
 
-def main_sti_mp(args):
+def main_sti_mp(parameters):
     #Check whether indir is CTdir or parent containing CTdirs
     #if indir + some z00 subdir + sli + *.tif does not exist then use original
-    subdirs = sorted(os.listdir(args.input))
-    if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
+    subdirs = sorted(os.listdir(parameters['ezstitch_input_dir']))
+    if os.path.exists(os.path.join(parameters['ezstitch_input_dir'], subdirs[0], parameters['ezstitch_type_image'])):
         dir_type = 1
         ctdir = ""
         print(" - Using CT directory containing slices")
-        if args.ort:
+        if parameters['ezstitch_stitch_orthogonal']:
             print(" - Creating orthogonal sections")
-        indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, "")
-        dx = int(args.reprows)
+        indir, hmin, hmax, start, stop, step, indtype = prepare(parameters, dir_type, "")
+        dx = int(parameters['ezstitch_num_overlap_rows'])
         # second: stitch them
         Vsteps = sorted(os.listdir(indir))
-        tmp = glob.glob(os.path.join(indir, Vsteps[0], args.typ, '*.tif'))[0]
+        tmp = glob.glob(os.path.join(indir, Vsteps[0], parameters['ezstitch_type_image'], '*.tif'))[0]
         first = read_image(tmp)
         N, M = first.shape
         Nnew = N - dx
@@ -124,28 +124,28 @@ def main_sti_mp(args):
         J = range(int((stop - start) / step))
         pool = mp.Pool(processes=mp.cpu_count())
         exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                            Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type)
+                            Vsteps, indir, dx, M, parameters, ramp, hmin, hmax, indtype, ctdir, dir_type)
         print(" - Adjusting and stitching")
         # start = time.time()
         pool.map(exec_func, J)
         print("========== Done ==========")
     else:
-        second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
-        if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
+        second_subdirs = sorted(os.listdir(os.path.join(parameters['ezstitch_input_dir'], subdirs[0])))
+        if os.path.exists(os.path.join(parameters['ezstitch_input_dir'], subdirs[0], second_subdirs[0], parameters['ezstitch_type_image'])):
             print(" - Using parent directory containing CT directories, each of which contains slices")
             dir_type = 2
             #For each subdirectory do the same thing
             for ctdir in subdirs:
                 print("-> Working on " + str(ctdir))
-                if not os.path.exists(os.path.join(args.output, ctdir)):
-                    os.makedirs(os.path.join(args.output, ctdir))
-                if args.ort:
+                if not os.path.exists(os.path.join(parameters['ezstitch_output_dir'], ctdir)):
+                    os.makedirs(os.path.join(parameters['ezstitch_output_dir'], ctdir))
+                if parameters['ezstitch_stitch_orthogonal']:
                     print(" - Creating orthogonal sections")
-                indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
-                dx = int(args.reprows)
+                indir, hmin, hmax, start, stop, step, indtype = prepare(parameters, dir_type, ctdir)
+                dx = int(parameters['ezstitch_num_overlap_rows'])
                 # second: stitch them
                 Vsteps = sorted(os.listdir(os.path.join(indir, ctdir)))
-                tmp = glob.glob(os.path.join(indir, ctdir, Vsteps[0], args.typ, '*.tif'))[0]
+                tmp = glob.glob(os.path.join(indir, ctdir, Vsteps[0], parameters['ezstitch_type_image'], '*.tif'))[0]
                 first = read_image(tmp)
                 N, M = first.shape
                 Nnew = N - dx
@@ -154,13 +154,13 @@ def main_sti_mp(args):
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
                 exec_func = partial(exec_sti_mp, start, step, N, Nnew, \
-                                    Vsteps, indir, dx, M, args, ramp, hmin, hmax, indtype, ctdir, dir_type)
+                                    Vsteps, indir, dx, M, parameters, ramp, hmin, hmax, indtype, ctdir, dir_type)
                 print(" - Adjusting and stitching")
                 # start = time.time()
                 pool.map(exec_func, J)
                 print("========== Done ==========")
                 # Clear temp directory
-                clear_tmp(args)
+                clear_tmp(parameters)
         else:
             print("Invalid input directory")
         complete_message()
@@ -172,80 +172,76 @@ def make_buf(tmp, l, a, b):
     return np.empty((N*l, M), dtype=first.dtype), N, first.dtype
 
 
-def exec_conc_mp(start, step, example_im, l, args, zfold, indir, ctdir, j):
+def exec_conc_mp(start, step, example_im, l, parameters, zfold, indir, ctdir, j):
     index = start+j*step
-    Large, N, dtype = make_buf(example_im, l, args.r1, args.r2)
+    Large, N, dtype = make_buf(example_im, l, parameters['ezstitch_first_row'], parameters['ezstitch_last_row'])
     for i, vert in enumerate(zfold):
-        tmp = os.path.join(indir, ctdir, vert, args.typ, '*.tif')
-        if args.ort:
+        tmp = os.path.join(indir, ctdir, vert, parameters['ezstitch_type_image'], '*.tif')
+        if parameters['ezstitch_stitch_orthogonal']:
             fname=sorted(glob.glob(tmp))[j]
         else:
             fname=sorted(glob.glob(tmp))[index]
-        frame = read_image(fname)[args.r1:args.r2, :]
-        if args.flip: #sample moved downwards
+        frame = read_image(fname)[parameters['ezstitch_first_row']:parameters['ezstitch_last_row'], :]
+        if parameters['ezstitch_sample_moved_down']:
             Large[i*N:N*(i+1), :] = np.flipud(frame)
         else:
             Large[i*N:N*(i+1), :] = frame
 
-    pout = os.path.join(args.output, ctdir, args.typ+'-sti-{:>04}.tif'.format(index))
+    pout = os.path.join(parameters['ezstitch_output_dir'], ctdir, parameters['ezstitch_type_image']+'-sti-{:>04}.tif'.format(index))
     #print "input data type {:}".format(dtype)
     tifffile.imsave(pout, Large)
 
 
-def main_conc_mp(args):
+def main_conc_mp(parameters):
     # Check whether indir is CTdir or parent containing CTdirs
     # if indir + some z00 subdir + sli + *.tif does not exist then use original
-    subdirs = sorted(os.listdir(args.input))
-    if os.path.exists(os.path.join(args.input, subdirs[0], args.typ)):
+    subdirs = sorted(os.listdir(parameters['ezstitch_input_dir']))
+    if os.path.exists(os.path.join(parameters['ezstitch_input_dir'], subdirs[0], parameters['ezstitch_type_image'])):
         dir_type = 1
         ctdir = ""
         print(" - Using CT directory containing slices")
-        if args.ort:
+        if parameters['ezstitch_stitch_orthogonal']:
             print(" - Creating orthogonal sections")
         #start = time.time()
-        indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
-        #if args.ort:
-        #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
-        subdirs = [dI for dI in os.listdir(args.input) if os.path.isdir(os.path.join(args.input, dI))]
+        indir, hmin, hmax, start, stop, step, indtype = prepare(parameters, dir_type, ctdir)
+        subdirs = [dI for dI in os.listdir(parameters['ezstitch_input_dir']) if os.path.isdir(os.path.join(parameters['ezstitch_input_dir'], dI))]
         zfold = sorted(subdirs)
         l = len(zfold)
-        tmp = glob.glob(os.path.join(indir, zfold[0], args.typ, '*.tif'))
+        tmp = glob.glob(os.path.join(indir, zfold[0], parameters['ezstitch_type_image'], '*.tif'))
         J = range(int((stop-start)/step))
         pool = mp.Pool(processes=mp.cpu_count())
-        exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
+        exec_func = partial(exec_conc_mp, start, step, tmp[0], l, parameters, zfold, indir, ctdir)
         print(" - Concatenating")
         #start = time.time()
         pool.map(exec_func, J)
         #print "Images stitched in {:.01f} sec".format(time.time()-start)
         print("============ Done ============")
     else:
-        second_subdirs = sorted(os.listdir(os.path.join(args.input, subdirs[0])))
-        if os.path.exists(os.path.join(args.input, subdirs[0], second_subdirs[0], args.typ)):
+        second_subdirs = sorted(os.listdir(os.path.join(parameters['ezstitch_input_dir'], subdirs[0])))
+        if os.path.exists(os.path.join(parameters['ezstitch_input_dir'], subdirs[0], second_subdirs[0], parameters['ezstitch_type_image'])):
             print(" - Using parent directory containing CT directories, each of which contains slices")
             dir_type = 2
             for ctdir in subdirs:
                 print(" == Working on " + str(ctdir) + " ==")
-                if not os.path.exists(os.path.join(args.output, ctdir)):
-                    os.makedirs(os.path.join(args.output, ctdir))
-                if args.ort:
+                if not os.path.exists(os.path.join(parameters['ezstitch_output_dir'], ctdir)):
+                    os.makedirs(os.path.join(parameters['ezstitch_output_dir'], ctdir))
+                if parameters['ezstitch_stitch_orthogonal']:
                     print("   - Creating orthogonal sections")
                 # start = time.time()
-                indir, hmin, hmax, start, stop, step, indtype = prepare(args, dir_type, ctdir)
-                # if args.ort:
-                #    print "Orthogonal sections created in {:.01f} sec".format(time.time()-start)
+                indir, hmin, hmax, start, stop, step, indtype = prepare(parameters, dir_type, ctdir)
                 zfold = sorted(os.listdir(os.path.join(indir, ctdir)))
                 l = len(zfold)
-                tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], args.typ, '*.tif'))
+                tmp = glob.glob(os.path.join(indir, ctdir, zfold[0], parameters['ezstitch_type_image'], '*.tif'))
                 J = range(int((stop - start) / step))
                 pool = mp.Pool(processes=mp.cpu_count())
-                exec_func = partial(exec_conc_mp, start, step, tmp[0], l, args, zfold, indir, ctdir)
+                exec_func = partial(exec_conc_mp, start, step, tmp[0], l, parameters, zfold, indir, ctdir)
                 print("   - Concatenating")
                 # start = time.time()
                 pool.map(exec_func, J)
                 # print "Images stitched in {:.01f} sec".format(time.time()-start)
                 print("============ Done ============")
                 #Clear temp directory
-                clear_tmp(args)
+                clear_tmp(parameters)
     complete_message()
 
 
@@ -283,21 +279,21 @@ def st_mp_idx(offst, ax, crop, in_fmt, out_fmt, idx):
     tifffile.imwrite(out_fmt.format(idx), stitched)
 
 
-def main_360_mp_depth1(args):
-    if not os.path.exists(args.output):
-        os.makedirs(args.output)
+def main_360_mp_depth1(parameters):
+    if not os.path.exists(parameters['ezstitch_output_dir']):
+        os.makedirs(parameters['ezstitch_output_dir'])
 
-    subdirs = [dI for dI in os.listdir(args.input) \
-            if os.path.isdir(os.path.join(args.input,dI))]
+    subdirs = [dI for dI in os.listdir(parameters['ezstitch_input_dir']) \
+            if os.path.isdir(os.path.join(parameters['ezstitch_input_dir'], dI))]
     for i, sdir in enumerate(subdirs):
-        names = sorted(glob.glob(os.path.join(args.input,sdir, '*.tif')))
+        names = sorted(glob.glob(os.path.join(parameters['ezstitch_input_dir'], sdir, '*.tif')))
         num_projs = len(names)
         if num_projs<2:
             warnings.warn("Warning: less than 2 files")
         print(str(num_projs) + ' files in ' + str(sdir))
 
-        os.makedirs(os.path.join(args.output,sdir))
-        out_fmt = os.path.join(args.output, sdir, 'sti-{:>04}.tif')
+        os.makedirs(os.path.join(parameters['ezstitch_output_dir'], sdir))
+        out_fmt = os.path.join(parameters['ezstitch_output_dir'], sdir, 'sti-{:>04}.tif')
 
         # extraxt input file format
         firstfname = names[0]
@@ -308,9 +304,8 @@ def main_360_mp_depth1(args):
         in_fmt = firstfname[:-trnc_len] + '{:0'+str(n_dgts)+'}.tif'
 
         pool = mp.Pool(processes=mp.cpu_count())
-        #exec_func = partial(st_mp, num_projs,args.ax, out_fmt)
         offst = int(num_projs / 2)
-        exec_func = partial(st_mp_idx, offst, args.ax, 0, in_fmt, out_fmt)
+        exec_func = partial(st_mp_idx, offst, parameters['ezstitch_axis_of_rotation'], 0, in_fmt, out_fmt)
         idxs = range(idx0, idx0+offst)
         # double check if names correspond - to remove later
         for nmi in idxs:
@@ -404,17 +399,14 @@ def main_360_mp_depth2(parameters):
                     in_fmt = firstfname[:-trnc_len] + '{:0' + str(n_dgts) + '}.tif'
 
                     pool = mp.Pool(processes=mp.cpu_count())
-                    # exec_func = partial(st_mp, num_projs,args.ax, out_fmt)
                     offst = int(num_projs / 2)
                     exec_func = partial(st_mp_idx, offst, round(curr_ax), round(crop_amt), in_fmt, out_fmt)
                     idxs = range(idx0, idx0 + offst)
                     # double check if names correspond - to remove later
                     for nmi in idxs:
-                        # print(names[nmi-idx0], in_fmt.format(nmi))
                         if names[nmi - idx0] != in_fmt.format(nmi):
                             print('Something wrong with file name format')
                             continue
-                    # pool.map(exec_func, names[0:num_projs/2])
                     pool.map(exec_func, idxs)
 
                 print("=========== Done ===========")
@@ -422,7 +414,6 @@ def main_360_mp_depth2(parameters):
         else:
             if not os.path.exists(parameters['360multi_output_dir']):
                 os.makedirs(parameters['360multi_output_dir'])
-            # subdirs=sorted(os.listdir(args.input))
 
             for i, sdir in enumerate(subdirs):
                 names = sorted(glob.glob(os.path.join(ctdir, sdir, '*.tif')))
@@ -443,27 +434,25 @@ def main_360_mp_depth2(parameters):
                 in_fmt = firstfname[:-trnc_len] + '{:0' + str(n_dgts) + '}.tif'
 
                 pool = mp.Pool(processes=mp.cpu_count())
-                # exec_func = partial(st_mp, num_projs,args.ax, out_fmt)
                 offst = int(num_projs / 2)
                 exec_func = partial(st_mp_idx, offst, parameters['360multi_axis'], in_fmt, out_fmt)
                 idxs = range(idx0, idx0 + offst)
                 # double check if names correspond - to remove later
                 for nmi in idxs:
-                    # print(names[nmi-idx0], in_fmt.format(nmi))
                     if names[nmi - idx0] != in_fmt.format(nmi):
                         print('Something wrong with file name format')
                         continue
-                # pool.map(exec_func, names[0:num_projs/2])
                 pool.map(exec_func, idxs)
 
             print("=========== Done ===========")
         print("-> Finished: " + str(ctdir))
     print("==== Finished processing all directories. ====")
 
-def clear_tmp(args):
-    tmp_dirs = os.listdir(args.tmpdir)
+
+def clear_tmp(parameters):
+    tmp_dirs = os.listdir(parameters['ezstitch_temp_dir'])
     for tmp_dir in tmp_dirs:
-        shutil.rmtree(os.path.join(args.tmpdir, tmp_dir))
+        shutil.rmtree(os.path.join(parameters['ezstitch_temp_dir'], tmp_dir))
 
 
 def check_last_index(axis_list):
