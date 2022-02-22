@@ -570,6 +570,7 @@ class ConfigGroup(QGroupBox):
                            params['main_region_histogram_max'], params['main_config_preprocess'], params['main_config_preprocess_command'],
                            params['main_region_rotate_volume_clock'], params['main_region_crop_slices'], params['main_region_crop_x'],
                            params['main_region_crop_width'], params['main_region_crop_y'], params['main_region_crop_height'],
+                           params['main_region_crop_z_axis'], params['main_region_crop_z_axis_start'], params['main_region_crop_z_axis_end'],
                            params['main_config_dry_run'], params['main_config_save_params'],
                            params['main_config_keep_temp'], params['advanced_ffc_sinFFC'],
                            params['advanced_ffc_method'], params['advanced_ffc_eigen_pco_reps'],
@@ -757,6 +758,7 @@ class tk_args():
                 main_pr_phase_retrieval, main_pr_photon_energy, main_pr_pixel_size, main_pr_detector_distance,
                 main_pr_delta_beta_ratio, main_region_select_rows, main_region_first_row, main_region_number_rows, main_region_nth_row, main_region_clip_histogram, main_region_bit_depth, main_region_histogram_min, main_region_histogram_max,
                 main_config_preprocess, main_config_preprocess_command, main_region_rotate_volume_clock, main_region_crop_slices, main_region_crop_x, main_region_crop_width, main_region_crop_y, main_region_crop_height,
+                main_region_crop_z_axis, main_region_crop_z_axis_start, main_region_crop_z_axis_end,
                 main_config_dry_run, main_config_save_params, main_config_keep_temp, advanced_ffc_sinFFC, advanced_ffc_method, advanced_ffc_eigen_pco_reps,
                 advanced_ffc_eigen_pco_downsample, advanced_ffc_downsample, main_config_common_flats_darks,
                 main_config_darks_path, main_config_flats_path, main_config_flats2_checkbox, main_config_flats2_path,
@@ -864,6 +866,13 @@ class tk_args():
         # Optional FBP params
         self.args['main_region_rotate_volume_clock']= float(main_region_rotate_volume_clock)
         setattr(self,'main_region_rotate_volume_clock',self.args['main_region_rotate_volume_clock'])
+        # Crop z-axis params
+        self.args['main_region_crop_z_axis'] = bool(main_region_crop_z_axis)
+        setattr(self, 'main_region_crop_z_axis', self.args['main_region_crop_z_axis'])
+        self.args['main_region_crop_z_axis_start'] = int(main_region_crop_z_axis_start)
+        setattr(self, 'main_region_crop_z_axis_start', self.args['main_region_crop_z_axis_start'])
+        self.args['main_region_crop_z_axis_end'] = int(main_region_crop_z_axis_end)
+        setattr(self, 'main_region_crop_z_axis_end', self.args['main_region_crop_z_axis_end'])
         # misc settings
         self.args['main_config_dry_run']=bool(main_config_dry_run)
         setattr(self,'main_config_dry_run',self.args['main_config_dry_run'])

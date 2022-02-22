@@ -234,10 +234,10 @@ def execute_reconstruction(args, fdt_names):
             # If args.main_cor_axis_search_method == 4 then bypass axis search and use image midpoint
             if args.main_cor_axis_search_method != 4:
                 if args.main_region_select_rows and bad_vert_ROI(multipage, path2proj, args.main_region_first_row, args.main_region_number_rows):
-                    print('{:>30}\t{}'.format('CTset', 'Axis'))
-                    print('{:>30}\t{}'.format(ctset[0], 'na'))
+                    print('{}\t{}'.format('CTset:', ctset[0]))
+                    print('{:>30}\t{}'.format('Axis:', 'na'))
                     print('Vertical ROI does not contain any rows.')
-                    print("Number of projections: {}, dimensions: {}".format(nviews, WH))
+                    print("{:>30}\t{}, dimensions: {}".format("Number of projections:", nviews, WH))
                     continue
                 # Find axis of rotation using auto: correlate first/last projections
                 if args.main_cor_axis_search_method == 1:
@@ -268,9 +268,9 @@ def execute_reconstruction(args, fdt_names):
             nviews, WH = frmt_ufo_cmds(cmds, ctset, out_pattern, \
                                        ax, args, Tofu, Ufo, FindCOR, nviews, WH)
             save_params(args, setid, ax, nviews, WH)
-            print('{:>30}\t{}'.format('CTset', 'Axis'))
-            print('{:>30}\t{}'.format(ctset[0], ax))
-            print("Number of projections: {}, dimensions: {}".format(nviews, WH))
+            print('{}\t{}'.format('CTset:', ctset[0]))
+            print('{:>30}\t{}'.format('Axis:', ax))
+            print("{:>30}\t{}, dimensions: {}".format("Number of projections:", nviews, WH))
             # tmp = "Number of projections: {}, dimensions: {}".format(nviews, WH)
             # cmds.append("echo \"{}\"".format(tmp))
             if args.advanced_nlmdn_apply_after_reco:
@@ -279,6 +279,8 @@ def execute_reconstruction(args, fdt_names):
                 head, tail = os.path.split(out_pattern)
                 nlmdn_output = os.path.join(head, 'sli-nlmdn')
                 cmds.append(fmt_nlmdn_ufo_cmd(nlmdn_input, nlmdn_output, args))
+            if args.main_region_crop_z_axis:
+                crop_z_axis_output_dir(args)
         else:
             print('{} has been already reconstructed'.format(ctset[0]))
     # execute commands = start reconstruction
@@ -297,6 +299,14 @@ def execute_reconstruction(args, fdt_names):
     print("*** Waiting for the next job...........")
     # cmnds, axes = get_ufo_cmnds(W, tmpdir, recodir, fol, axes = None, dryrun = False)
 
+
+def crop_z_axis_output_dir(args):
+    """
+    If crop z-axis checkbox is enabled then delete images from start and end of the output directory
+    """
+    print('{:>30}\t{}'.format('Cropping:', args.main_region_crop_z_axis))
+    print('{:>30}\t{}'.format('Cropping at start:', args.main_region_crop_z_axis_start))
+    print('{:>30}\t{}'.format('Cropping at end:', args.main_region_crop_z_axis_end))
 
 def already_recd(ctset, indir, recd_sets):
     x = False
