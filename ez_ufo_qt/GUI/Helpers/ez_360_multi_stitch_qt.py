@@ -48,45 +48,45 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_entry = QLineEdit()
         self.axis_top_entry.textChanged.connect(self.set_axis_top)
 
-        self.axis_z00_label = QLabel("Axis of Rotation (z00):")
-        self.axis_z00_entry = QLineEdit()
-        self.axis_z00_entry.textChanged.connect(self.set_z00)
+        self.axis_z000_label = QLabel("Axis of Rotation (z000):")
+        self.axis_z000_entry = QLineEdit()
+        self.axis_z000_entry.textChanged.connect(self.set_z000)
 
-        self.axis_z01_label = QLabel("Axis of Rotation (z01):")
-        self.axis_z01_entry = QLineEdit()
-        self.axis_z01_entry.textChanged.connect(self.set_z01)
+        self.axis_z001_label = QLabel("Axis of Rotation (z001):")
+        self.axis_z001_entry = QLineEdit()
+        self.axis_z001_entry.textChanged.connect(self.set_z001)
 
-        self.axis_z02_label = QLabel("Axis of Rotation (z02):")
-        self.axis_z02_entry = QLineEdit()
-        self.axis_z02_entry.textChanged.connect(self.set_z02)
+        self.axis_z002_label = QLabel("Axis of Rotation (z002):")
+        self.axis_z002_entry = QLineEdit()
+        self.axis_z002_entry.textChanged.connect(self.set_z002)
 
-        self.axis_z03_label = QLabel("Axis of Rotation (z03):")
-        self.axis_z03_entry = QLineEdit()
-        self.axis_z03_entry.textChanged.connect(self.set_z03)
+        self.axis_z003_label = QLabel("Axis of Rotation (z003):")
+        self.axis_z003_entry = QLineEdit()
+        self.axis_z003_entry.textChanged.connect(self.set_z003)
 
-        self.axis_z04_label = QLabel("Axis of Rotation (z04):")
-        self.axis_z04_entry = QLineEdit()
-        self.axis_z04_entry.textChanged.connect(self.set_z04)
+        self.axis_z004_label = QLabel("Axis of Rotation (z004):")
+        self.axis_z004_entry = QLineEdit()
+        self.axis_z004_entry.textChanged.connect(self.set_z004)
 
-        self.axis_z05_label = QLabel("Axis of Rotation (z05):")
-        self.axis_z05_entry = QLineEdit()
-        self.axis_z05_entry.textChanged.connect(self.set_z05)
+        self.axis_z005_label = QLabel("Axis of Rotation (z005):")
+        self.axis_z005_entry = QLineEdit()
+        self.axis_z005_entry.textChanged.connect(self.set_z005)
 
-        self.axis_z06_label = QLabel("Axis of Rotation (z06):")
-        self.axis_z06_entry = QLineEdit()
-        self.axis_z06_entry.textChanged.connect(self.set_z06)
+        self.axis_z006_label = QLabel("Axis of Rotation (z006):")
+        self.axis_z006_entry = QLineEdit()
+        self.axis_z006_entry.textChanged.connect(self.set_z006)
 
-        self.axis_z07_label = QLabel("Axis of Rotation (z07):")
-        self.axis_z07_entry = QLineEdit()
-        self.axis_z07_entry.textChanged.connect(self.set_z07)
+        self.axis_z007_label = QLabel("Axis of Rotation (z007):")
+        self.axis_z007_entry = QLineEdit()
+        self.axis_z007_entry.textChanged.connect(self.set_z007)
 
-        self.axis_z08_label = QLabel("Axis of Rotation (z08):")
-        self.axis_z08_entry = QLineEdit()
-        self.axis_z08_entry.textChanged.connect(self.set_z08)
+        self.axis_z008_label = QLabel("Axis of Rotation (z008):")
+        self.axis_z008_entry = QLineEdit()
+        self.axis_z008_entry.textChanged.connect(self.set_z008)
 
-        self.axis_z09_label = QLabel("Axis of Rotation (z09):")
-        self.axis_z09_entry = QLineEdit()
-        self.axis_z09_entry.textChanged.connect(self.set_z09)
+        self.axis_z009_label = QLabel("Axis of Rotation (z009):")
+        self.axis_z009_entry = QLineEdit()
+        self.axis_z009_entry.textChanged.connect(self.set_z009)
 
         self.axis_z010_label = QLabel("Axis of Rotation (z010):")
         self.axis_z010_entry = QLineEdit()
@@ -134,47 +134,47 @@ class MultiStitch360Group(QGroupBox):
         self.axis_group.setChecked(False)
         axis_layout = QGridLayout()
 
-        axis_layout.addWidget(self.axis_z00_label, 0, 0)
-        axis_layout.addWidget(self.axis_z00_entry, 0, 1)
-        axis_layout.addWidget(self.axis_z06_label, 0, 2)
-        axis_layout.addWidget(self.axis_z06_entry, 0, 3)
+        axis_layout.addWidget(self.axis_z000_label, 0, 0)
+        axis_layout.addWidget(self.axis_z000_entry, 0, 1)
+        axis_layout.addWidget(self.axis_z006_label, 0, 2)
+        axis_layout.addWidget(self.axis_z006_entry, 0, 3)
 
-        axis_layout.addWidget(self.axis_z01_label, 1, 0)
-        axis_layout.addWidget(self.axis_z01_entry, 1, 1)
-        axis_layout.addWidget(self.axis_z07_label, 1, 2)
-        axis_layout.addWidget(self.axis_z07_entry, 1, 3)
+        axis_layout.addWidget(self.axis_z001_label, 1, 0)
+        axis_layout.addWidget(self.axis_z001_entry, 1, 1)
+        axis_layout.addWidget(self.axis_z007_label, 1, 2)
+        axis_layout.addWidget(self.axis_z007_entry, 1, 3)
 
-        axis_layout.addWidget(self.axis_z02_label, 2, 0)
-        axis_layout.addWidget(self.axis_z02_entry, 2, 1)
-        axis_layout.addWidget(self.axis_z08_label, 2, 2)
-        axis_layout.addWidget(self.axis_z08_entry, 2, 3)
+        axis_layout.addWidget(self.axis_z002_label, 2, 0)
+        axis_layout.addWidget(self.axis_z002_entry, 2, 1)
+        axis_layout.addWidget(self.axis_z008_label, 2, 2)
+        axis_layout.addWidget(self.axis_z008_entry, 2, 3)
 
-        axis_layout.addWidget(self.axis_z03_label, 3, 0)
-        axis_layout.addWidget(self.axis_z03_entry, 3, 1)
-        axis_layout.addWidget(self.axis_z09_label, 3, 2)
-        axis_layout.addWidget(self.axis_z09_entry, 3, 3)
+        axis_layout.addWidget(self.axis_z003_label, 3, 0)
+        axis_layout.addWidget(self.axis_z003_entry, 3, 1)
+        axis_layout.addWidget(self.axis_z009_label, 3, 2)
+        axis_layout.addWidget(self.axis_z009_entry, 3, 3)
 
-        axis_layout.addWidget(self.axis_z04_label, 4, 0)
-        axis_layout.addWidget(self.axis_z04_entry, 4, 1)
+        axis_layout.addWidget(self.axis_z004_label, 4, 0)
+        axis_layout.addWidget(self.axis_z004_entry, 4, 1)
         axis_layout.addWidget(self.axis_z010_label, 4, 2)
         axis_layout.addWidget(self.axis_z010_entry, 4, 3)
 
-        axis_layout.addWidget(self.axis_z05_label, 5, 0)
-        axis_layout.addWidget(self.axis_z05_entry, 5, 1)
+        axis_layout.addWidget(self.axis_z005_label, 5, 0)
+        axis_layout.addWidget(self.axis_z005_entry, 5, 1)
         axis_layout.addWidget(self.axis_z011_label, 5, 2)
         axis_layout.addWidget(self.axis_z011_entry, 5, 3)
         self.axis_group.setLayout(axis_layout)
 
-        self.axis_group.setTabOrder(self.axis_z00_entry, self.axis_z01_entry)
-        self.axis_group.setTabOrder(self.axis_z01_entry, self.axis_z02_entry)
-        self.axis_group.setTabOrder(self.axis_z02_entry, self.axis_z03_entry)
-        self.axis_group.setTabOrder(self.axis_z03_entry, self.axis_z04_entry)
-        self.axis_group.setTabOrder(self.axis_z04_entry, self.axis_z05_entry)
-        self.axis_group.setTabOrder(self.axis_z05_entry, self.axis_z06_entry)
-        self.axis_group.setTabOrder(self.axis_z06_entry, self.axis_z07_entry)
-        self.axis_group.setTabOrder(self.axis_z07_entry, self.axis_z08_entry)
-        self.axis_group.setTabOrder(self.axis_z08_entry, self.axis_z09_entry)
-        self.axis_group.setTabOrder(self.axis_z09_entry, self.axis_z010_entry)
+        self.axis_group.setTabOrder(self.axis_z000_entry, self.axis_z001_entry)
+        self.axis_group.setTabOrder(self.axis_z001_entry, self.axis_z002_entry)
+        self.axis_group.setTabOrder(self.axis_z002_entry, self.axis_z003_entry)
+        self.axis_group.setTabOrder(self.axis_z003_entry, self.axis_z004_entry)
+        self.axis_group.setTabOrder(self.axis_z004_entry, self.axis_z005_entry)
+        self.axis_group.setTabOrder(self.axis_z005_entry, self.axis_z006_entry)
+        self.axis_group.setTabOrder(self.axis_z006_entry, self.axis_z007_entry)
+        self.axis_group.setTabOrder(self.axis_z007_entry, self.axis_z008_entry)
+        self.axis_group.setTabOrder(self.axis_z008_entry, self.axis_z009_entry)
+        self.axis_group.setTabOrder(self.axis_z009_entry, self.axis_z010_entry)
         self.axis_group.setTabOrder(self.axis_z010_entry, self.axis_z011_entry)
 
         layout.addWidget(self.axis_group, 8, 0, 1, 4)
@@ -204,8 +204,8 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_entry.setText(str(self.parameters['360multi_top_axis']))
         self.parameters['360multi_axis'] = self.parameters['360multi_bottom_axis']
         self.parameters['360multi_manual_axis'] = False
-        self.parameters['360multi_axis_dict'] = dict.fromkeys(['z00', 'z01', 'z02', 'z03', 'z04', 'z05',
-                                                               'z06', 'z07', 'z08', 'z09', 'z010', 'z011'])
+        self.parameters['360multi_axis_dict'] = dict.fromkeys(['z000', 'z001', 'z002', 'z003', 'z004', 'z005',
+                                                               'z006', 'z007', 'z008', 'z009', 'z010', 'z011'])
 
     def update_parameters(self, new_parameters):
         logging.debug("Update parameters")
@@ -219,16 +219,16 @@ class MultiStitch360Group(QGroupBox):
         self.axis_bottom_entry.setText(str(self.parameters['360multi_bottom_axis']))
         self.axis_top_entry.setText(str(self.parameters['360multi_top_axis']))
         self.axis_group.setChecked(bool(self.parameters['360multi_manual_axis']))
-        self.axis_z00_entry.setText(str(self.parameters['360multi_axis_dict']['z00']))
-        self.axis_z01_entry.setText(str(self.parameters['360multi_axis_dict']['z01']))
-        self.axis_z02_entry.setText(str(self.parameters['360multi_axis_dict']['z02']))
-        self.axis_z03_entry.setText(str(self.parameters['360multi_axis_dict']['z03']))
-        self.axis_z04_entry.setText(str(self.parameters['360multi_axis_dict']['z04']))
-        self.axis_z05_entry.setText(str(self.parameters['360multi_axis_dict']['z05']))
-        self.axis_z06_entry.setText(str(self.parameters['360multi_axis_dict']['z06']))
-        self.axis_z07_entry.setText(str(self.parameters['360multi_axis_dict']['z07']))
-        self.axis_z08_entry.setText(str(self.parameters['360multi_axis_dict']['z08']))
-        self.axis_z09_entry.setText(str(self.parameters['360multi_axis_dict']['z09']))
+        self.axis_z00_entry.setText(str(self.parameters['360multi_axis_dict']['z000']))
+        self.axis_z01_entry.setText(str(self.parameters['360multi_axis_dict']['z001']))
+        self.axis_z02_entry.setText(str(self.parameters['360multi_axis_dict']['z002']))
+        self.axis_z03_entry.setText(str(self.parameters['360multi_axis_dict']['z003']))
+        self.axis_z04_entry.setText(str(self.parameters['360multi_axis_dict']['z004']))
+        self.axis_z05_entry.setText(str(self.parameters['360multi_axis_dict']['z005']))
+        self.axis_z06_entry.setText(str(self.parameters['360multi_axis_dict']['z006']))
+        self.axis_z07_entry.setText(str(self.parameters['360multi_axis_dict']['z007']))
+        self.axis_z08_entry.setText(str(self.parameters['360multi_axis_dict']['z008']))
+        self.axis_z09_entry.setText(str(self.parameters['360multi_axis_dict']['z009']))
         self.axis_z010_entry.setText(str(self.parameters['360multi_axis_dict']['z010']))
         self.axis_z011_entry.setText(str(self.parameters['360multi_axis_dict']['z011']))
 
@@ -290,45 +290,45 @@ class MultiStitch360Group(QGroupBox):
             self.parameters['360multi_manual_axis'] = False
             logging.debug("Enter axis of rotation manually: " + str(self.parameters['360multi_manual_axis']))
 
-    def set_z00(self):
-        logging.debug("z00 axis: " + str(self.axis_z00_entry.text()))
-        self.parameters['360multi_axis_dict']['z00'] = str(self.axis_z00_entry.text())
+    def set_z000(self):
+        logging.debug("z000 axis: " + str(self.axis_z000_entry.text()))
+        self.parameters['360multi_axis_dict']['z000'] = str(self.axis_z000_entry.text())
 
-    def set_z01(self):
-        logging.debug("z01 axis: " + str(self.axis_z01_entry.text()))
-        self.parameters['360multi_axis_dict']['z01'] = str(self.axis_z01_entry.text())
+    def set_z001(self):
+        logging.debug("z001 axis: " + str(self.axis_z001_entry.text()))
+        self.parameters['360multi_axis_dict']['z001'] = str(self.axis_z001_entry.text())
 
-    def set_z02(self):
-        logging.debug("z02 axis: " + str(self.axis_z02_entry.text()))
-        self.parameters['360multi_axis_dict']['z02'] = str(self.axis_z02_entry.text())
+    def set_z002(self):
+        logging.debug("z002 axis: " + str(self.axis_z002_entry.text()))
+        self.parameters['360multi_axis_dict']['z002'] = str(self.axis_z002_entry.text())
 
-    def set_z03(self):
-        logging.debug("z03 axis: " + str(self.axis_z03_entry.text()))
-        self.parameters['360multi_axis_dict']['z03'] = str(self.axis_z03_entry.text())
+    def set_z003(self):
+        logging.debug("z003 axis: " + str(self.axis_z003_entry.text()))
+        self.parameters['360multi_axis_dict']['z003'] = str(self.axis_z003_entry.text())
 
-    def set_z04(self):
-        logging.debug("z04 axis: " + str(self.axis_z04_entry.text()))
-        self.parameters['360multi_axis_dict']['z04'] = str(self.axis_z04_entry.text())
+    def set_z004(self):
+        logging.debug("z004 axis: " + str(self.axis_z004_entry.text()))
+        self.parameters['360multi_axis_dict']['z004'] = str(self.axis_z004_entry.text())
 
-    def set_z05(self):
-        logging.debug("z05 axis: " + str(self.axis_z05_entry.text()))
-        self.parameters['360multi_axis_dict']['z05'] = str(self.axis_z05_entry.text())
+    def set_z005(self):
+        logging.debug("z005 axis: " + str(self.axis_z005_entry.text()))
+        self.parameters['360multi_axis_dict']['z005'] = str(self.axis_z005_entry.text())
 
-    def set_z06(self):
-        logging.debug("z06 axis: " + str(self.axis_z06_entry.text()))
-        self.parameters['360multi_axis_dict']['z06'] = str(self.axis_z06_entry.text())
+    def set_z006(self):
+        logging.debug("z006 axis: " + str(self.axis_z006_entry.text()))
+        self.parameters['360multi_axis_dict']['z006'] = str(self.axis_z006_entry.text())
 
-    def set_z07(self):
-        logging.debug("z07 axis: " + str(self.axis_z07_entry.text()))
-        self.parameters['360multi_axis_dict']['z07'] = str(self.axis_z07_entry.text())
+    def set_z007(self):
+        logging.debug("z007 axis: " + str(self.axis_z007_entry.text()))
+        self.parameters['360multi_axis_dict']['z007'] = str(self.axis_z007_entry.text())
 
-    def set_z08(self):
-        logging.debug("z08 axis: " + str(self.axis_z08_entry.text()))
-        self.parameters['360multi_axis_dict']['z08'] = str(self.axis_z08_entry.text())
+    def set_z008(self):
+        logging.debug("z008 axis: " + str(self.axis_z008_entry.text()))
+        self.parameters['360multi_axis_dict']['z008'] = str(self.axis_z008_entry.text())
 
-    def set_z09(self):
-        logging.debug("z09 axis: " + str(self.axis_z09_entry.text()))
-        self.parameters['360multi_axis_dict']['z09'] = str(self.axis_z09_entry.text())
+    def set_z009(self):
+        logging.debug("z009 axis: " + str(self.axis_z009_entry.text()))
+        self.parameters['360multi_axis_dict']['z009'] = str(self.axis_z009_entry.text())
 
     def set_z010(self):
         logging.debug("z010 axis: " + str(self.axis_z010_entry.text()))
