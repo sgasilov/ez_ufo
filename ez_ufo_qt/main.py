@@ -279,8 +279,6 @@ def execute_reconstruction(args, fdt_names):
                 head, tail = os.path.split(out_pattern)
                 nlmdn_output = os.path.join(head, 'sli-nlmdn')
                 cmds.append(fmt_nlmdn_ufo_cmd(nlmdn_input, nlmdn_output, args))
-            if args.main_region_crop_z_axis:
-                crop_z_axis_output_dir(args)
         else:
             print('{} has been already reconstructed'.format(ctset[0]))
     # execute commands = start reconstruction
@@ -293,6 +291,9 @@ def execute_reconstruction(args, fdt_names):
             print(cmd)
     if not args.main_config_keep_temp:
         clean_tmp_dirs(args.main_config_temp_dir, fdt_names)
+
+    if args.main_region_crop_z_axis and not args.main_config_dry_run:
+        crop_z_axis_output_dir(args)
 
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     print("*** Done. Total processing time {} sec.".format(int(time.time() - start)))
@@ -307,6 +308,21 @@ def crop_z_axis_output_dir(args):
     print('{:>30}\t{}'.format('Cropping:', args.main_region_crop_z_axis))
     print('{:>30}\t{}'.format('Cropping at start:', args.main_region_crop_z_axis_start))
     print('{:>30}\t{}'.format('Cropping at end:', args.main_region_crop_z_axis_end))
+    if os.path.exists(args.main_config_output_dir):
+        print('{:>30}\t{}'.format('Removing images from:', str(args.main_config_output_dir)))
+        z_list = os.listdir(args.main_config_output_dir)
+        for zdir in z_list:
+            out_path = os.path.join(args.main_config_output_dir, zdir, 'sli')
+            image_list = sorted(os.listdir(out_path))
+            crop_from_start_list = image_list[:args.main_region_crop_z_axis_start]
+            crop_from_end_list = image_list[-args.main_region_crop_z_axis_end:]
+            for image in crop_from_start_list:
+                image_path = os.path.join(out_path, image)
+                os.remove(image_path)
+            for image in crop_from_end_list:
+                image_path = os.path.join(out_path, image)
+                os.remove(image_path)
+
 
 def already_recd(ctset, indir, recd_sets):
     x = False

@@ -713,6 +713,12 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['main_region_crop_height']) < 0:
             raise InvalidInputError("Value out of range for: Crop slices: height")
 
+        if int(parameters.params['main_region_crop_z_axis_start']) < 0:
+            raise InvalidInputError("Cropping start value must be greater than 0")
+
+        if int(parameters.params['main_region_crop_z_axis_end']) < 0:
+            raise InvalidInputError("Cropping end value must be greater than 0")
+
         if int(parameters.params['advanced_ffc_eigen_pco_reps']) < 0:
             raise InvalidInputError("Value out of range for: Flat Field Correction: Eigen PCO Repetitions")
 
