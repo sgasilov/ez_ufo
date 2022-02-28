@@ -309,20 +309,32 @@ def crop_z_axis_output_dir(args):
     print('{:>30}\t{}'.format('Cropping at start:', args.main_region_crop_z_axis_start))
     print('{:>30}\t{}'.format('Cropping at end:', args.main_region_crop_z_axis_end))
     if os.path.exists(args.main_config_output_dir):
-        print('{:>30}\t{}'.format('Removing images from:', str(args.main_config_output_dir)))
-        z_list = os.listdir(args.main_config_output_dir)
-        for zdir in z_list:
-            out_path = os.path.join(args.main_config_output_dir, zdir, 'sli')
-            image_list = sorted(os.listdir(out_path))
+        output_zdir_list = find_ct_dirs(args.main_config_output_dir)
+        for zdir in output_zdir_list:
+            slice_path = os.path.join(zdir, 'sli')
+            print('{:>30}\t{}'.format('Removing images from:', str(slice_path)))
+            image_list = sorted(os.listdir(slice_path))
             crop_from_start_list = image_list[:args.main_region_crop_z_axis_start]
             crop_from_end_list = image_list[-args.main_region_crop_z_axis_end:]
             for image in crop_from_start_list:
-                image_path = os.path.join(out_path, image)
+                image_path = os.path.join(slice_path, image)
                 os.remove(image_path)
             for image in crop_from_end_list:
-                image_path = os.path.join(out_path, image)
+                image_path = os.path.join(slice_path, image)
                 os.remove(image_path)
 
+
+def find_ct_dirs(output_dir):
+    """
+    Walks directories rooted at "Input Directory" location
+    Appends their absolute path to ct-dir if they contain a directory with same name as "tomo" entry in GUI
+    """
+    ct_dirs = []
+    for root, dirs, files in os.walk(output_dir):
+        for name in dirs:
+            if name == "sli":
+                ct_dirs.append(root)
+    return sorted(list(set(ct_dirs)))
 
 def already_recd(ctset, indir, recd_sets):
     x = False
