@@ -35,12 +35,12 @@ class MultiStitch360Group(QGroupBox):
         self.crop_checkbox.clicked.connect(self.set_crop_projections_checkbox)
 
         self.axis_bottom_label = QLabel()
-        self.axis_bottom_label.setText("Bottom Axis of Rotation (z00):")
+        self.axis_bottom_label.setText("Axis of Rotation (z00):")
 
         self.axis_bottom_entry = QLineEdit()
         self.axis_bottom_entry.textChanged.connect(self.set_axis_bottom)
 
-        self.axis_top_label = QLabel("Top Axis of Rotation (z0N):")
+        self.axis_top_label = QLabel("Axis of Rotation (z0N):")
 
         self.axis_group = QGroupBox("Enter axis of rotation manually")
         self.axis_group.clicked.connect(self.set_axis_group)
@@ -354,9 +354,9 @@ class MultiStitch360Group(QGroupBox):
     def delete_button_pressed(self):
         print("---- Deleting Data From Output Directory ----")
         logging.debug("Delete button pressed")
-        if os.path.exists(self.e_output):
-            os.system('rm -r {}'.format(self.e_output))
-            print(" - Directory with reconstructed data was removed")
+        if os.path.exists(self.parameters['360multi_output_dir']):
+            os.system('rm -r {}'.format(self.parameters['360multi_output_dir']))
+            print(" - Directory with stitched data was removed")
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")

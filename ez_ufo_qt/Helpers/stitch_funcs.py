@@ -346,11 +346,20 @@ def main_360_mp_depth2(parameters):
         if len(glob.glob(os.path.join(ctdir, 'z??'))) > 0:
 
             num_slices = len(glob.glob(os.path.join(ctdir, 'z??')))
-            axis_incr = float((parameters['360multi_top_axis'] - parameters['360multi_bottom_axis']) / float(num_slices - 1))
-
             print(str(num_slices) + " slices detected. stitching all slices....")
 
-            for j in range(0, num_slices):
+            if parameters['360multi_bottom_axis'] < parameters['360multi_top_axis']:
+                axis_incr = float((parameters['360multi_top_axis'] - parameters['360multi_bottom_axis']) / float(num_slices - 1))
+                range_start = 0
+                range_end = num_slices
+                range_increment = 1
+            elif parameters['360multi_bottom_axis'] > parameters['360multi_top_axis']:
+                axis_incr = float((parameters['360multi_bottom_axis'] - parameters['360multi_top_axis']) / float(num_slices - 1))
+                range_start = num_slices - 1
+                range_end = -1
+                range_increment = -1
+
+            for j in range(range_start, range_end, range_increment):
                 head, tail = os.path.split(ctdir)
                 if not os.path.exists(os.path.join(parameters['360multi_output_dir'], tail)):
                     os.makedirs(os.path.join(parameters['360multi_output_dir'], tail, "z" + str(j).zfill(2)))
@@ -360,11 +369,14 @@ def main_360_mp_depth2(parameters):
                 if parameters['360multi_manual_axis']:
                     curr_ax = int(list(axis_list)[j])
                     parameters['360multi_bottom_axis'] = int(list(axis_list)[0])
-                    parameters['360multi_top_axis']= int(list(axis_list)[last_index])
+                    parameters['360multi_top_axis'] = int(list(axis_list)[last_index])
                 else:
-                    curr_ax = parameters['360multi_bottom_axis'] + j * axis_incr
+                    if parameters['360multi_bottom_axis'] < parameters['360multi_top_axis']:
+                        curr_ax = parameters['360multi_bottom_axis'] + j * axis_incr
+                    elif parameters['360multi_bottom_axis'] > parameters['360multi_top_axis']:
+                        curr_ax = parameters['360multi_top_axis'] + j * axis_incr
 
-                if parameters['360multi_crop_projections'] == True:
+                if parameters['360multi_crop_projections']:
                     if axis_incr < 0:
                         crop_amt = abs(parameters['360multi_bottom_axis'] - round(curr_ax))
                     else:
@@ -420,7 +432,7 @@ def main_360_mp_depth2(parameters):
                 num_projs = len(names)
                 if num_projs < 2:
                     warnings.warn("Warning: less than 2 files")
-                print ('{} files in {}'.format(num_projs, sdir))
+                print('{} files in {}'.format(num_projs, sdir))
 
                 os.makedirs(os.path.join(parameters['360multi_output_dir'], sdir))
                 out_fmt = os.path.join(parameters['360multi_output_dir'], sdir, 'sti-{:>04}.tif')
