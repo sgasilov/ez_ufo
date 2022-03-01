@@ -219,6 +219,9 @@ class AutoVerticalStitchGUI(QGroupBox):
 
     def update_parameters(self, new_parameters):
         logging.debug("Update parameters")
+        if new_parameters['parameters_type'] != 'auto_vertical_stitch':
+            print("Error: Invalid parameter file type: " + str(new_parameters['parameters_type']))
+            return -1
         # Update parameters dictionary (which is passed to auto_stitch_funcs)
         self.parameters = new_parameters
         # Update displayed parameters for GUI
@@ -257,7 +260,6 @@ class AutoVerticalStitchGUI(QGroupBox):
             self.temp_entry.setEnabled(True)
             self.stitch_type_group.setEnabled(True)
             self.equalize_intensity_rButton.setEnabled(False)
-
 
     def projections_input_button_pressed(self):
         logging.debug("Projections Input Button Pressed")
@@ -444,8 +446,8 @@ class AutoVerticalStitchGUI(QGroupBox):
         try:
             file_in = open(params_file_path[0], 'r')
             new_parameters = yaml.load(file_in, Loader=yaml.FullLoader)
-            self.update_parameters(new_parameters)
-            print("Parameters file loaded from: " + str(params_file_path[0]))
+            if self.update_parameters(new_parameters) == 0:
+                print("Parameters file loaded from: " + str(params_file_path[0]))
         except FileNotFoundError:
             print("You need to select a valid input file")
 
