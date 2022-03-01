@@ -386,7 +386,7 @@ def main_360_mp_depth2(parameters):
                 fdt_subdirs = [dI for dI in os.listdir(os.path.join(ctdir, vertical_steps[j])) \
                            if os.path.isdir(os.path.join(ctdir, vertical_steps[j], dI))]
 
-                print("processing slice: z" + str(j).zfill(2) + " using axis: " + str(
+                print("processing slice: " + str(vertical_steps[j]) + " using axis: " + str(
                     round(curr_ax)) + " and cropping by: " + str(crop_amt))
                 print("axis_incr = " + str(axis_incr))
                 print("curr_ax = " + str(curr_ax))
