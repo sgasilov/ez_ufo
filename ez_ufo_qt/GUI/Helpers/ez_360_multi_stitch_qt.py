@@ -209,6 +209,9 @@ class MultiStitch360Group(QGroupBox):
 
     def update_parameters(self, new_parameters):
         logging.debug("Update parameters")
+        if new_parameters['parameters_type'] != '360_multi_stitch':
+            print("Error: Invalid parameter file type: " + str(new_parameters['parameters_type']))
+            return -1
         # Update parameters dictionary (which is passed to auto_stitch_funcs)
         self.parameters = new_parameters
         # Update displayed parameters for GUI
@@ -219,18 +222,19 @@ class MultiStitch360Group(QGroupBox):
         self.axis_bottom_entry.setText(str(self.parameters['360multi_bottom_axis']))
         self.axis_top_entry.setText(str(self.parameters['360multi_top_axis']))
         self.axis_group.setChecked(bool(self.parameters['360multi_manual_axis']))
-        self.axis_z00_entry.setText(str(self.parameters['360multi_axis_dict']['z000']))
-        self.axis_z01_entry.setText(str(self.parameters['360multi_axis_dict']['z001']))
-        self.axis_z02_entry.setText(str(self.parameters['360multi_axis_dict']['z002']))
-        self.axis_z03_entry.setText(str(self.parameters['360multi_axis_dict']['z003']))
-        self.axis_z04_entry.setText(str(self.parameters['360multi_axis_dict']['z004']))
-        self.axis_z05_entry.setText(str(self.parameters['360multi_axis_dict']['z005']))
-        self.axis_z06_entry.setText(str(self.parameters['360multi_axis_dict']['z006']))
-        self.axis_z07_entry.setText(str(self.parameters['360multi_axis_dict']['z007']))
-        self.axis_z08_entry.setText(str(self.parameters['360multi_axis_dict']['z008']))
-        self.axis_z09_entry.setText(str(self.parameters['360multi_axis_dict']['z009']))
+        self.axis_z000_entry.setText(str(self.parameters['360multi_axis_dict']['z000']))
+        self.axis_z001_entry.setText(str(self.parameters['360multi_axis_dict']['z001']))
+        self.axis_z002_entry.setText(str(self.parameters['360multi_axis_dict']['z002']))
+        self.axis_z003_entry.setText(str(self.parameters['360multi_axis_dict']['z003']))
+        self.axis_z004_entry.setText(str(self.parameters['360multi_axis_dict']['z004']))
+        self.axis_z005_entry.setText(str(self.parameters['360multi_axis_dict']['z005']))
+        self.axis_z006_entry.setText(str(self.parameters['360multi_axis_dict']['z006']))
+        self.axis_z007_entry.setText(str(self.parameters['360multi_axis_dict']['z007']))
+        self.axis_z008_entry.setText(str(self.parameters['360multi_axis_dict']['z008']))
+        self.axis_z009_entry.setText(str(self.parameters['360multi_axis_dict']['z009']))
         self.axis_z010_entry.setText(str(self.parameters['360multi_axis_dict']['z010']))
         self.axis_z011_entry.setText(str(self.parameters['360multi_axis_dict']['z011']))
+        return 0
 
     def input_button_pressed(self):
         logging.debug("Input button pressed")
@@ -376,8 +380,8 @@ class MultiStitch360Group(QGroupBox):
         try:
             file_in = open(params_file_path[0], 'r')
             new_parameters = yaml.load(file_in, Loader=yaml.FullLoader)
-            self.update_parameters(new_parameters)
-            print("Parameters file loaded from: " + str(params_file_path[0]))
+            if self.update_parameters(new_parameters) == 0:
+                print("Parameters file loaded from: " + str(params_file_path[0]))
         except FileNotFoundError:
             print("You need to select a valid input file")
 

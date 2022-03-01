@@ -103,6 +103,9 @@ class EZMViewGroup(QGroupBox):
 
     def update_parameters(self, new_parameters):
         logging.debug("Update parameters")
+        if new_parameters['parameters_type'] != 'ez_mview':
+            print("Error: Invalid parameter file type: " + str(new_parameters['parameters_type']))
+            return -1
         # Update parameters dictionary (which is passed to auto_stitch_funcs)
         self.parameters = new_parameters
         # Update displayed parameters for GUI
@@ -175,8 +178,8 @@ class EZMViewGroup(QGroupBox):
         try:
             file_in = open(params_file_path[0], 'r')
             new_parameters = yaml.load(file_in, Loader=yaml.FullLoader)
-            self.update_parameters(new_parameters)
-            print("Parameters file loaded from: " + str(params_file_path[0]))
+            if self.update_parameters(new_parameters) == 0:
+                print("Parameters file loaded from: " + str(params_file_path[0]))
         except FileNotFoundError:
             print("You need to select a valid input file")
 

@@ -339,13 +339,12 @@ def main_360_mp_depth2(parameters):
     for ctdir in ctlist:
         print("================================================================")
         print(" -> Working On: " + str(ctdir))
-        subdirs = [dI for dI in os.listdir(ctdir) if os.path.isdir(os.path.join(ctdir, dI))]
+        vertical_steps = sorted([dI for dI in os.listdir(ctdir) if os.path.isdir(os.path.join(ctdir, dI))])
         print(" -> Contents: ", end="")
-        print(sorted(subdirs))
+        print(vertical_steps)
+        num_slices = len(vertical_steps)
 
-        if len(glob.glob(os.path.join(ctdir, 'z??'))) > 0:
-
-            num_slices = len(glob.glob(os.path.join(ctdir, 'z??')))
+        if num_slices > 0:
             print(str(num_slices) + " slices detected. stitching all slices....")
 
             if parameters['360multi_bottom_axis'] < parameters['360multi_top_axis']:
@@ -362,8 +361,8 @@ def main_360_mp_depth2(parameters):
             for j in range(range_start, range_end, range_increment):
                 head, tail = os.path.split(ctdir)
                 if not os.path.exists(os.path.join(parameters['360multi_output_dir'], tail)):
-                    os.makedirs(os.path.join(parameters['360multi_output_dir'], tail, "z" + str(j).zfill(2)))
-                out_dir = os.path.join(parameters['360multi_output_dir'], tail, "z" + str(j).zfill(2))
+                    os.makedirs(os.path.join(parameters['360multi_output_dir'], tail, vertical_steps[j]))
+                out_dir = os.path.join(parameters['360multi_output_dir'], tail, vertical_steps[j])
                 print("Output directory: " + out_dir)
 
                 if parameters['360multi_manual_axis']:
@@ -384,16 +383,16 @@ def main_360_mp_depth2(parameters):
                 else:
                     crop_amt = 0
 
-                subdirs = [dI for dI in os.listdir(os.path.join(ctdir, "z" + str(j).zfill(2))) \
-                           if os.path.isdir(os.path.join(ctdir, "z" + str(j).zfill(2), dI))]
+                fdt_subdirs = [dI for dI in os.listdir(os.path.join(ctdir, vertical_steps[j])) \
+                           if os.path.isdir(os.path.join(ctdir, vertical_steps[j], dI))]
 
                 print("processing slice: z" + str(j).zfill(2) + " using axis: " + str(
                     round(curr_ax)) + " and cropping by: " + str(crop_amt))
                 print("axis_incr = " + str(axis_incr))
                 print("curr_ax = " + str(curr_ax))
 
-                for i, sdir in enumerate(subdirs):
-                    names = sorted(glob.glob(os.path.join(ctdir, "z" + str(j).zfill(2), sdir, '*.tif')))
+                for i, sdir in enumerate(fdt_subdirs):
+                    names = sorted(glob.glob(os.path.join(ctdir, vertical_steps[j], sdir, '*.tif')))
                     num_projs = len(names)
                     if num_projs < 2:
                         warnings.warn("Warning: less than 2 files")
@@ -427,7 +426,7 @@ def main_360_mp_depth2(parameters):
             if not os.path.exists(parameters['360multi_output_dir']):
                 os.makedirs(parameters['360multi_output_dir'])
 
-            for i, sdir in enumerate(subdirs):
+            for i, sdir in enumerate(fdt_subdirs):
                 names = sorted(glob.glob(os.path.join(ctdir, sdir, '*.tif')))
                 num_projs = len(names)
                 if num_projs < 2:
