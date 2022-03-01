@@ -145,6 +145,8 @@ class BatchProcessGroup(QGroupBox):
                         elif params['ezstitch_stitch_type'] == 2:
                             main_360_mp_depth1(params)
                         print("==== Waiting for Next Task ====")
+                    else:
+                        print("Invalid params type: " + str(params_type))
         except KeyError as k:
             #print("Please select an input directory")
             print("Key Error: " + k)
