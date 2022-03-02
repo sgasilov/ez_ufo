@@ -8,6 +8,8 @@ Thumbs.db
 ezufo.py
 eznlmdn.py
 *manifest*
+*pyc
+__pycache__
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
