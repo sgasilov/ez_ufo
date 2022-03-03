@@ -90,7 +90,10 @@ class BatchProcessGroup(QGroupBox):
                 print("************************** Begin Batch Process **************************")
                 print("*************************************************************************\n")
                 print("=> Found the following .yaml files:")
+                print(param_files_list)
+
                 for file in param_files_list:
+                    print("\n************************* Working on: *************************")
                     print("-->  " + file)
                     # Open .yaml file and store the parameters
                     try:
@@ -98,36 +101,57 @@ class BatchProcessGroup(QGroupBox):
                         params = yaml.load(file_in, Loader=yaml.FullLoader)
                     except FileNotFoundError:
                         print("Something went wrong")
+
                     params_type = params['parameters_type']
                     print("       type: " + params_type)
+
                     if params_type == "auto_horizontal_stitch":
+                        print("\n**********************************************")
+                        print("********** Auto Horizontal Stitch ************")
+                        print("**********************************************\n")
                         # Call functions to begin auto horizontal stitch and pass params
                         self.auto_horizontal_stitch_funcs = AutoHorizontalStitchFunctions(params)
                         self.auto_horizontal_stitch_funcs.run_horizontal_auto_stitch()
                     elif params_type == "ez_ufo_reco":
+                        print("\n**********************************************")
+                        print("************** Reconstruction ****************")
+                        print("**********************************************\n")
                         # Call functions to begin ezufo reco and pass params
                         self.config_group = ConfigGroup()
                         self.config_group.run_reconstruction(params, batch_run=True)
                     elif params_type == "auto_vertical_stitch":
+                        print("\n********************************************")
+                        print("********** Auto Vertical Stitch ************")
+                        print("********************************************\n")
                         # Call functions to begin auto horizontal stitch and pass params
                         self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(params)
                         self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
                     elif params_type == "ez_mview":
+                        print("\n*************************************")
+                        print("********** EZ Multi-View ************")
+                        print("*************************************\n")
+
                         main_prep(params)
                     elif params_type == "360_overlap":
+                        print("\n***********************************************")
+                        print("**************** 360 Overlap ******************")
+                        print("***********************************************\n")
                         find_overlap(params)
                     elif params_type == "360_multi_stitch":
+                        print("\n****************************************")
+                        print("********** 360 Multi Stitch ************")
+                        print("****************************************\n")
                         if os.path.exists(params['360multi_temp_dir']):
                             os.system('rm -r {}'.format(params['360multi_temp_dir']))
-
                         if os.path.exists(params['360multi_output_dir']):
                             raise ValueError('Output directory exists')
-                            #print("Output directory exists - delete before stitching")
-
                         print("======= Begin 360 Multi-Stitch =======")
                         main_360_mp_depth2(params)
                         print("==== Waiting for Next Task ====")
                     elif params_type == "ez_stitch":
+                        print("\n*********************************************")
+                        print("**************** EZ Stitch ******************")
+                        print("*********************************************\n")
                         if os.path.exists(params['ezstitch_temp_dir']):
                             os.system('rm -r {}'.format(params['ezstitch_temp_dir']))
 
@@ -147,6 +171,10 @@ class BatchProcessGroup(QGroupBox):
                         print("==== Waiting for Next Task ====")
                     else:
                         print("Invalid params type: " + str(params_type))
+
+                print("\n*****************************************************************************")
+                print("************************** Completed Batch Process **************************")
+                print("*****************************************************************************\n")
         except KeyError as k:
             #print("Please select an input directory")
             print("Key Error: " + k)
