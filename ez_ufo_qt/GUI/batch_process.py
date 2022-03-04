@@ -109,75 +109,96 @@ class BatchProcessGroup(QGroupBox):
                     print("       type: " + params_type)
 
                     if params_type == "auto_horizontal_stitch":
-                        print("\n**********************************************")
-                        print("********** Auto Horizontal Stitch ************")
-                        print("**********************************************\n")
-                        # Call functions to begin auto horizontal stitch and pass params
-                        self.auto_horizontal_stitch_funcs = AutoHorizontalStitchFunctions(params)
-                        self.auto_horizontal_stitch_funcs.run_horizontal_auto_stitch()
-                        params_io.save_parameters(params, params['output_dir'])
+                        try:
+                            print("\n**********************************************")
+                            print("********** Auto Horizontal Stitch ************")
+                            print("**********************************************\n")
+                            # Call functions to begin auto horizontal stitch and pass params
+                            self.auto_horizontal_stitch_funcs = AutoHorizontalStitchFunctions(params)
+                            self.auto_horizontal_stitch_funcs.run_horizontal_auto_stitch()
+                            params_io.save_parameters(params, params['output_dir'])
+                        except Exception as e:
+                            print(e)
                     elif params_type == "ez_ufo_reco":
-                        print("\n**********************************************")
-                        print("************** Reconstruction ****************")
-                        print("**********************************************\n")
-                        # Call functions to begin ezufo reco and pass params
-                        self.config_group = ConfigGroup()
-                        self.config_group.run_reconstruction(params, batch_run=True)
-                        params_io.save_parameters(params, params['main_config_output_dir'])
+                        try:
+                            print("\n**********************************************")
+                            print("************** Reconstruction ****************")
+                            print("**********************************************\n")
+                            # Call functions to begin ezufo reco and pass params
+                            self.config_group = ConfigGroup()
+                            self.config_group.run_reconstruction(params, batch_run=True)
+                            params_io.save_parameters(params, params['main_config_output_dir'])
+                        except Exception as e:
+                            print(e)
                     elif params_type == "auto_vertical_stitch":
-                        print("\n********************************************")
-                        print("********** Auto Vertical Stitch ************")
-                        print("********************************************\n")
-                        # Call functions to begin auto horizontal stitch and pass params
-                        self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(params)
-                        self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
-                        params_io.save_parameters(params, params['output_dir'])
+                        try:
+                            print("\n********************************************")
+                            print("********** Auto Vertical Stitch ************")
+                            print("********************************************\n")
+                            # Call functions to begin auto horizontal stitch and pass params
+                            self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(params)
+                            self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
+                            params_io.save_parameters(params, params['output_dir'])
+                        except Exception as e:
+                            print(e)
                     elif params_type == "ez_mview":
-                        print("\n*************************************")
-                        print("********** EZ Multi-View ************")
-                        print("*************************************\n")
-                        main_prep(params)
-                        params_io.save_parameters(params, params['ezmview_input_dir'])
+                        try:
+                            print("\n*************************************")
+                            print("********** EZ Multi-View ************")
+                            print("*************************************\n")
+                            main_prep(params)
+                            params_io.save_parameters(params, params['ezmview_input_dir'])
+                        except Exception as e:
+                            print(e)
                     elif params_type == "360_overlap":
-                        print("\n***********************************************")
-                        print("**************** 360 Overlap ******************")
-                        print("***********************************************\n")
-                        find_overlap(params)
-                        params_io.save_parameters(params, params['360overlap_output_dir'])
+                        try:
+                            print("\n***********************************************")
+                            print("**************** 360 Overlap ******************")
+                            print("***********************************************\n")
+                            find_overlap(params)
+                            params_io.save_parameters(params, params['360overlap_output_dir'])
+                        except Exception as e:
+                            print(e)
                     elif params_type == "360_multi_stitch":
-                        print("\n****************************************")
-                        print("********** 360 Multi Stitch ************")
-                        print("****************************************\n")
-                        if os.path.exists(params['360multi_temp_dir']):
-                            os.system('rm -r {}'.format(params['360multi_temp_dir']))
-                        if os.path.exists(params['360multi_output_dir']):
-                            raise ValueError('Output directory exists')
-                        print("======= Begin 360 Multi-Stitch =======")
-                        main_360_mp_depth2(params)
-                        params_io.save_parameters(params, params['360multi_output_dir'])
-                        print("==== Waiting for Next Task ====")
+                        try:
+                            print("\n****************************************")
+                            print("********** 360 Multi Stitch ************")
+                            print("****************************************\n")
+                            if os.path.exists(params['360multi_temp_dir']):
+                                os.system('rm -r {}'.format(params['360multi_temp_dir']))
+                            if os.path.exists(params['360multi_output_dir']):
+                                raise ValueError('Output directory exists')
+                            print("======= Begin 360 Multi-Stitch =======")
+                            main_360_mp_depth2(params)
+                            params_io.save_parameters(params, params['360multi_output_dir'])
+                            print("==== Waiting for Next Task ====")
+                        except Exception as e:
+                            print(e)
                     elif params_type == "ez_stitch":
-                        print("\n*********************************************")
-                        print("**************** EZ Stitch ******************")
-                        print("*********************************************\n")
-                        if os.path.exists(params['ezstitch_temp_dir']):
-                            os.system('rm -r {}'.format(params['ezstitch_temp_dir']))
+                        try:
+                            print("\n*********************************************")
+                            print("**************** EZ Stitch ******************")
+                            print("*********************************************\n")
+                            if os.path.exists(params['ezstitch_temp_dir']):
+                                os.system('rm -r {}'.format(params['ezstitch_temp_dir']))
 
-                        if os.path.exists(params['ezstitch_output_dir']):
-                            raise ValueError('Output directory exists')
+                            if os.path.exists(params['ezstitch_output_dir']):
+                                raise ValueError('Output directory exists')
 
-                        print("======= Begin Stitching =======")
-                        # Interpolate overlapping regions and equalize intensity
-                        if params['ezstitch_stitch_type'] == 0:
-                            main_sti_mp(params)
-                        # Concatenate only
-                        elif params['ezstitch_stitch_type'] == 1:
-                            main_conc_mp(params)
-                        # Half acquisition mode
-                        elif params['ezstitch_stitch_type'] == 2:
-                            main_360_mp_depth1(params)
-                        params_io.save_parameters(params, params['ezstitch_output_dir'])
-                        print("==== Waiting for Next Task ====")
+                            print("======= Begin Stitching =======")
+                            # Interpolate overlapping regions and equalize intensity
+                            if params['ezstitch_stitch_type'] == 0:
+                                main_sti_mp(params)
+                            # Concatenate only
+                            elif params['ezstitch_stitch_type'] == 1:
+                                main_conc_mp(params)
+                            # Half acquisition mode
+                            elif params['ezstitch_stitch_type'] == 2:
+                                main_360_mp_depth1(params)
+                            params_io.save_parameters(params, params['ezstitch_output_dir'])
+                            print("==== Waiting for Next Task ====")
+                        except Exception as e:
+                            print(e)
                     else:
                         print("Invalid params type: " + str(params_type))
 
