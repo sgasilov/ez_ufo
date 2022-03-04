@@ -4,7 +4,8 @@ import os
 import getpass
 import yaml
 from ez_ufo_qt.Helpers.stitch_funcs import main_360_mp_depth2
-
+# Params
+import ez_ufo_qt.GUI.params_io as params_io
 
 class MultiStitch360Group(QGroupBox):
     def __init__(self):
@@ -353,6 +354,7 @@ class MultiStitch360Group(QGroupBox):
 
         print("======= Begin 360 Multi-Stitch =======")
         main_360_mp_depth2(self.parameters)
+        params_io.save_parameters(self.parameters, self.parameters['360multi_output_dir'])
         print("==== Waiting for Next Task ====")
 
     def delete_button_pressed(self):

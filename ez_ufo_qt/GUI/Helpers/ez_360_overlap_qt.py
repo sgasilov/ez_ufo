@@ -3,6 +3,9 @@ import logging
 import os
 import yaml
 from ez_ufo_qt.Helpers.find_360_overlap import find_overlap
+# Params
+import ez_ufo_qt.GUI.params_io as params_io
+
 
 class Overlap360Group(QGroupBox):
     def __init__(self):
@@ -172,6 +175,7 @@ class Overlap360Group(QGroupBox):
     def overlap_button_pressed(self):
         logging.debug("Find overlap button pressed")
         find_overlap(self.parameters)
+        params_io.save_parameters(self.parameters, self.parameters['360overlap_output_dir'])
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")

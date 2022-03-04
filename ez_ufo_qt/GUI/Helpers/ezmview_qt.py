@@ -3,7 +3,8 @@ import logging
 import yaml
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QLineEdit, QLabel, QCheckBox, QGridLayout, QFileDialog, QMessageBox
 from ez_ufo_qt.Helpers.mview_main import main_prep
-
+# Params
+import ez_ufo_qt.GUI.params_io as params_io
 
 class EZMViewGroup(QGroupBox):
     def __init__(self):
@@ -156,6 +157,7 @@ class EZMViewGroup(QGroupBox):
         logging.debug("Convert button pressed")
         logging.debug(self.parameters)
         main_prep(self.parameters)
+        params_io.save_parameters(self.parameters, self.parameters['ezmview_input_dir'])
 
     def undo_button_pressed(self):
         logging.debug("Undo button pressed")

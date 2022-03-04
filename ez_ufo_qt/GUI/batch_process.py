@@ -13,6 +13,9 @@ from ez_ufo_qt.Helpers.mview_main import main_prep
 from ez_ufo_qt.Helpers.find_360_overlap import find_overlap
 from ez_ufo_qt.Helpers.stitch_funcs import main_360_mp_depth2
 from ez_ufo_qt.Helpers.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
+# Params
+import ez_ufo_qt.GUI.params_io as params_io
+
 
 class BatchProcessGroup(QGroupBox):
     def __init__(self):
@@ -112,6 +115,7 @@ class BatchProcessGroup(QGroupBox):
                         # Call functions to begin auto horizontal stitch and pass params
                         self.auto_horizontal_stitch_funcs = AutoHorizontalStitchFunctions(params)
                         self.auto_horizontal_stitch_funcs.run_horizontal_auto_stitch()
+                        params_io.save_parameters(params, params['output_dir'])
                     elif params_type == "ez_ufo_reco":
                         print("\n**********************************************")
                         print("************** Reconstruction ****************")
@@ -119,6 +123,7 @@ class BatchProcessGroup(QGroupBox):
                         # Call functions to begin ezufo reco and pass params
                         self.config_group = ConfigGroup()
                         self.config_group.run_reconstruction(params, batch_run=True)
+                        params_io.save_parameters(params, params['main_config_output_dir'])
                     elif params_type == "auto_vertical_stitch":
                         print("\n********************************************")
                         print("********** Auto Vertical Stitch ************")
@@ -126,17 +131,19 @@ class BatchProcessGroup(QGroupBox):
                         # Call functions to begin auto horizontal stitch and pass params
                         self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(params)
                         self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
+                        params_io.save_parameters(params, params['output_dir'])
                     elif params_type == "ez_mview":
                         print("\n*************************************")
                         print("********** EZ Multi-View ************")
                         print("*************************************\n")
-
                         main_prep(params)
+                        params_io.save_parameters(params, params['ezmview_input_dir'])
                     elif params_type == "360_overlap":
                         print("\n***********************************************")
                         print("**************** 360 Overlap ******************")
                         print("***********************************************\n")
                         find_overlap(params)
+                        params_io.save_parameters(params, params['360overlap_output_dir'])
                     elif params_type == "360_multi_stitch":
                         print("\n****************************************")
                         print("********** 360 Multi Stitch ************")
@@ -147,6 +154,7 @@ class BatchProcessGroup(QGroupBox):
                             raise ValueError('Output directory exists')
                         print("======= Begin 360 Multi-Stitch =======")
                         main_360_mp_depth2(params)
+                        params_io.save_parameters(params, params['360multi_output_dir'])
                         print("==== Waiting for Next Task ====")
                     elif params_type == "ez_stitch":
                         print("\n*********************************************")
@@ -168,6 +176,7 @@ class BatchProcessGroup(QGroupBox):
                         # Half acquisition mode
                         elif params['ezstitch_stitch_type'] == 2:
                             main_360_mp_depth1(params)
+                        params_io.save_parameters(params, params['ezstitch_output_dir'])
                         print("==== Waiting for Next Task ====")
                     else:
                         print("Invalid params type: " + str(params_type))
@@ -176,5 +185,4 @@ class BatchProcessGroup(QGroupBox):
                 print("************************** Completed Batch Process **************************")
                 print("*****************************************************************************\n")
         except KeyError as k:
-            #print("Please select an input directory")
             print("Key Error: " + k)

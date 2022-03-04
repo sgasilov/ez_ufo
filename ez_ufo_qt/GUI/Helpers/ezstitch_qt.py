@@ -4,7 +4,8 @@ import getpass
 import yaml
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QVBoxLayout, QHBoxLayout, QRadioButton, QFileDialog, QMessageBox
 from ez_ufo_qt.Helpers.stitch_funcs import main_sti_mp, main_conc_mp, main_360_mp_depth1
-
+# Params
+import ez_ufo_qt.GUI.params_io as params_io
 
 class EZStitchGroup(QGroupBox):
     def __init__(self):
@@ -359,6 +360,7 @@ class EZStitchGroup(QGroupBox):
         # Half acquisition mode
         elif self.parameters['ezstitch_stitch_type'] == 2:
             main_360_mp_depth1(self.parameters)
+        params_io.save_parameters(self.parameters, self.parameters['ezstitch_output_dir'])
         print("==== Waiting for Next Task ====")
 
     def import_parameters_button_pressed(self):
