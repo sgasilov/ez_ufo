@@ -25,6 +25,7 @@ class BatchProcessGroup(QGroupBox):
         self.config_group = None
         self.auto_horizontal_stitch_funcs = None
         self.auto_vertical_stitch_funcs = None
+        self.file_list_group = None
 
         self.params_file_list = []
 
@@ -54,27 +55,33 @@ class BatchProcessGroup(QGroupBox):
 
         layout = QGridLayout()
 
+        info_group = QGroupBox()
+        info_group_layout = QGridLayout()
+        info_group_layout.addWidget(self.info_label)
+        info_group.setLayout(info_group_layout)
+
         input_group = QGroupBox()
         input_group_layout = QGridLayout()
         input_group_layout.addWidget(self.input_dir_button, 0, 0)
         input_group_layout.addWidget(self.input_dir_entry, 0, 1)
         input_group.setLayout(input_group_layout)
-        layout.addWidget(input_group, 1, 0, 1, 2)
 
-        info_group = QGroupBox()
-        info_group_layout = QGridLayout()
-        info_group_layout.addWidget(self.info_label)
-        info_group.setLayout(info_group_layout)
-        layout.addWidget(info_group, 0, 0, 1, 2)
-
-        file_list_group = QGroupBox()
+        self.file_list_group = QGroupBox()
         file_list_layout = QGridLayout()
         file_list_layout.addWidget(self.file_list_label, 2, 0)
         file_list_layout.addWidget(self.file_list_content_label, 2, 1)
-        file_list_group.setLayout(file_list_layout)
-        layout.addWidget(file_list_group, 2, 0, 1, 2)
+        self.file_list_group.setLayout(file_list_layout)
+        self.file_list_group.setHidden(True)
 
-        layout.addWidget(self.batch_proc_button, 3, 0, 1, 2)
+        batch_group = QGroupBox()
+        batch_group_layout = QGridLayout()
+        batch_group_layout.addWidget(input_group, 1, 0, 1, 2)
+        batch_group_layout.addWidget(info_group, 0, 0, 1, 2)
+        batch_group_layout.addWidget(self.file_list_group, 2, 0, 1, 2)
+        batch_group_layout.addWidget(self.batch_proc_button, 3, 0, 1, 2)
+        batch_group.setLayout(batch_group_layout)
+
+        layout.addWidget(batch_group)
         self.setLayout(layout)
 
         self.show()
@@ -107,9 +114,10 @@ class BatchProcessGroup(QGroupBox):
     def set_file_list_content_label(self, param_files_list):
         str_buffer = ''
         for params_file_path in param_files_list:
-            str_buffer += f'{params_file_path}\n'
+            str_buffer += f' -> {params_file_path}\n'
         self.file_list_label.setText("Found the following parameters files: ")
         self.file_list_content_label.setText(str_buffer)
+        self.file_list_group.setHidden(False)
         print("Found the following parameters files: ")
         print(str_buffer)
 
