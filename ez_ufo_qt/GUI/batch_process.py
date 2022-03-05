@@ -3,7 +3,7 @@ import logging
 import glob
 import os
 
-from PyQt5.QtWidgets import QGroupBox, QLabel, QGridLayout, QPushButton, QFileDialog, QLineEdit
+from PyQt5.QtWidgets import QGroupBox, QLabel, QGridLayout, QPushButton, QFileDialog, QLineEdit, QMessageBox
 # Auto Stitch
 from ez_ufo_qt.GUI.Main.config import ConfigGroup
 from ez_ufo_qt.GUI.StitchTools.auto_horizontal_stitch_funcs import AutoHorizontalStitchFunctions
@@ -26,18 +26,19 @@ class BatchProcessGroup(QGroupBox):
         self.auto_horizontal_stitch_funcs = None
         self.auto_vertical_stitch_funcs = None
         self.file_list_group = None
+        self.meta_batch_input_list = []
 
         self.params_file_list = []
 
-        self.info_label = QLabel()
-        self.set_info_label()
+        # ---- Simple Batch ---- #
+        self.help_button = QPushButton("Help")
+        self.help_button.clicked.connect(self.help_button_pressed)
 
         self.input_dir_button = QPushButton("Select input directory")
-        self.input_dir_button.setFixedWidth(500)
         self.input_dir_button.clicked.connect(self.input_dir_button_pressed)
 
         self.input_dir_entry = QLineEdit("...Enter the path to the input directory")
-        self.input_dir_entry.setFixedWidth(450)
+        self.input_dir_entry.setFixedWidth(500)
         self.input_dir_entry.textChanged.connect(self.set_input_entry)
 
         self.file_list_label = QLabel()
@@ -46,7 +47,26 @@ class BatchProcessGroup(QGroupBox):
         self.batch_proc_button = QPushButton("Begin Batch Process")
         self.batch_proc_button.clicked.connect(self.batch_proc_button_pressed)
         self.batch_proc_button.setStyleSheet("background-color:orangered; font-size:26px")
-        self.batch_proc_button.setFixedHeight(100)
+        self.batch_proc_button.setFixedHeight(50)
+
+        # ---- Meta Batch ---- #
+        self.meta_help_button = QPushButton("Help")
+        self.meta_help_button.clicked.connect(self.meta_help_button_pressed)
+
+        self.meta_input_dir_button = QPushButton("Select input directory")
+        self.meta_input_dir_button.clicked.connect(self.meta_input_dir_button_pressed)
+
+        self.meta_input_dir_entry = QLineEdit("...Enter the path to the input directory")
+        self.meta_input_dir_entry.setFixedWidth(500)
+        self.meta_input_dir_entry.textChanged.connect(self.set_meta_input_entry)
+
+        self.meta_directory_list_label = QLabel()
+        self.meta_directory_list_content_label = QLabel()
+
+        self.meta_batch_proc_button = QPushButton("Begin Meta Batch Process")
+        self.meta_batch_proc_button.clicked.connect(self.meta_batch_proc_button_pressed)
+        self.meta_batch_proc_button.setStyleSheet("background-color:aquamarine; font-size:26px")
+        self.meta_batch_proc_button.setFixedHeight(50)
 
         self.set_layout()
 
@@ -55,15 +75,12 @@ class BatchProcessGroup(QGroupBox):
 
         layout = QGridLayout()
 
-        info_group = QGroupBox()
-        info_group_layout = QGridLayout()
-        info_group_layout.addWidget(self.info_label)
-        info_group.setLayout(info_group_layout)
-
+        # ---- Simple Batch ---- #
         input_group = QGroupBox()
         input_group_layout = QGridLayout()
-        input_group_layout.addWidget(self.input_dir_button, 0, 0)
-        input_group_layout.addWidget(self.input_dir_entry, 0, 1)
+        input_group_layout.addWidget(self.help_button, 0, 0)
+        input_group_layout.addWidget(self.input_dir_button, 0, 1)
+        input_group_layout.addWidget(self.input_dir_entry, 0, 2)
         input_group.setLayout(input_group_layout)
 
         self.file_list_group = QGroupBox()
@@ -76,28 +93,34 @@ class BatchProcessGroup(QGroupBox):
         batch_group = QGroupBox()
         batch_group_layout = QGridLayout()
         batch_group_layout.addWidget(input_group, 1, 0, 1, 2)
-        batch_group_layout.addWidget(info_group, 0, 0, 1, 2)
         batch_group_layout.addWidget(self.file_list_group, 2, 0, 1, 2)
         batch_group_layout.addWidget(self.batch_proc_button, 3, 0, 1, 2)
         batch_group.setLayout(batch_group_layout)
+        batch_group.setStyleSheet('background: #eee')
+
+        # ---- Meta Batch ---- #
+        meta_input_group = QGroupBox()
+        meta_input_group_layout = QGridLayout()
+        meta_input_group_layout.addWidget(self.meta_help_button, 0, 0)
+        meta_input_group_layout.addWidget(self.meta_input_dir_button, 0, 1)
+        meta_input_group_layout.addWidget(self.meta_input_dir_entry, 0, 2)
+        meta_input_group.setLayout(meta_input_group_layout)
+
+        meta_batch_group = QGroupBox()
+        meta_batch_group_layout = QGridLayout()
+        meta_batch_group_layout.addWidget(meta_input_group, 0, 0, 1, 2)
+        #meta_batch_group_layout.addWidget(self.meta_file_list_group, 2, 0, 1, 2)
+        meta_batch_group_layout.addWidget(self.meta_batch_proc_button, 3, 0, 1, 2)
+        meta_batch_group.setLayout(meta_batch_group_layout)
+        meta_batch_group.setStyleSheet('background: #eee')
 
         layout.addWidget(batch_group)
+        layout.addWidget(meta_batch_group)
         self.setLayout(layout)
 
         self.show()
 
-    def set_info_label(self):
-        info_str = "EZ Batch Process allows for batch reconstruction and processing of images.\n\n"
-        info_str += "The program reads a list of .yaml parameter files from the input directory and executes\n" \
-                    "them sequentially in alpha-numeric order.\n"
-        info_str += "It is the user's responsibility to name files so that they are executed in the desired order.\n"
-        info_str += "It is suggested to prepend descriptive filenames with numbers to indicate the order.\n" \
-                    "For example: \n\n"
-        info_str += "00_horizontal_stitch_params.yaml\n"
-        info_str += "01_ezufo_params.yaml\n"
-        info_str += "02_vertical_stitch_params.yaml\n"
-        self.info_label.setText(info_str)
-
+    # ---- Simple Batch ---- #
     def input_dir_button_pressed(self):
         logging.debug("Input Button Pressed")
         dir_explore = QFileDialog(self)
@@ -120,6 +143,19 @@ class BatchProcessGroup(QGroupBox):
         self.file_list_group.setHidden(False)
         print("Found the following parameters files: ")
         print(str_buffer)
+
+    def help_button_pressed(self):
+        logging.debug("HELP")
+        info_str = "EZ Batch Process allows for batch reconstruction and processing of images.\n\n"
+        info_str += "The program reads a list of .yaml parameter files from the input directory and executes\n" \
+                    "them sequentially in alpha-numeric order.\n"
+        info_str += "It is the user's responsibility to name files so that they are executed in the desired order.\n"
+        info_str += "It is suggested to prepend descriptive filenames with numbers to indicate the order.\n" \
+                    "For example: \n\n"
+        info_str += "00_horizontal_stitch_params.yaml\n"
+        info_str += "01_ezufo_params.yaml\n"
+        info_str += "02_vertical_stitch_params.yaml\n"
+        QMessageBox.information(self, "Help", info_str)
 
     def batch_proc_button_pressed(self):
         logging.debug("Batch Process Button Pressed")
@@ -245,3 +281,37 @@ class BatchProcessGroup(QGroupBox):
                 print("*****************************************************************************\n")
         except KeyError as k:
             print("Key Error: " + k)
+
+    # ---- Meta Batch ---- #
+    def meta_help_button_pressed(self):
+        logging.debug("HELP")
+        info_str = "EZ Batch Process allows for batch reconstruction and processing of images.\n\n"
+        info_str += "The program reads a list of .yaml parameter files from the input directory and executes\n" \
+                    "them sequentially in alpha-numeric order.\n"
+        info_str += "It is the user's responsibility to name files so that they are executed in the desired order.\n"
+        info_str += "It is suggested to prepend descriptive filenames with numbers to indicate the order.\n" \
+                    "For example: \n\n"
+        info_str += "00_horizontal_stitch_params.yaml\n"
+        info_str += "01_ezufo_params.yaml\n"
+        info_str += "02_vertical_stitch_params.yaml\n"
+        QMessageBox.information(self, "Help", info_str)
+
+    def meta_input_dir_button_pressed(self):
+        logging.debug("Input Button Pressed")
+        dir_explore = QFileDialog(self)
+        input_dir = dir_explore.getExistingDirectory()
+        self.input_dir_entry.setText(input_dir)
+        self.meta_batch_input_list.append(input_dir)
+        self.set_meta_directory_list_content_label(self.meta_batch_input_list)
+        # self.parameters['input_dir'] = input_dir
+        # self.param_files_list = sorted(glob.glob(os.path.join(self.parameters['input_dir'], "*.yaml")))
+        # self.set_file_list_content_label(self.param_files_list)
+
+    def set_meta_input_entry(self):
+        pass
+
+    def set_meta_directory_list_content_label(self, directory_list):
+        print(directory_list)
+
+    def meta_batch_proc_button_pressed(self):
+        pass
