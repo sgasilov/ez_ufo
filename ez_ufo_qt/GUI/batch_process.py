@@ -26,6 +26,8 @@ class BatchProcessGroup(QGroupBox):
         self.auto_horizontal_stitch_funcs = None
         self.auto_vertical_stitch_funcs = None
 
+        self.params_file_list = []
+
         self.info_label = QLabel()
         self.set_info_label()
 
@@ -37,6 +39,9 @@ class BatchProcessGroup(QGroupBox):
         self.input_dir_entry.setFixedWidth(450)
         self.input_dir_entry.textChanged.connect(self.set_input_entry)
 
+        self.file_list_label = QLabel()
+        self.file_list_content_label = QLabel()
+
         self.batch_proc_button = QPushButton("Begin Batch Process")
         self.batch_proc_button.clicked.connect(self.batch_proc_button_pressed)
         self.batch_proc_button.setStyleSheet("background-color:orangered; font-size:26px")
@@ -45,16 +50,31 @@ class BatchProcessGroup(QGroupBox):
         self.set_layout()
 
     def set_layout(self):
-        self.setMaximumSize(1000, 400)
+        self.setMaximumSize(1000, 800)
 
         layout = QGridLayout()
 
-        layout.addWidget(self.input_dir_button, 0, 0)
-        layout.addWidget(self.input_dir_entry, 0, 1)
+        input_group = QGroupBox()
+        input_group_layout = QGridLayout()
+        input_group_layout.addWidget(self.input_dir_button, 0, 0)
+        input_group_layout.addWidget(self.input_dir_entry, 0, 1)
+        input_group.setLayout(input_group_layout)
+        layout.addWidget(input_group, 1, 0, 1, 2)
 
-        layout.addWidget(self.info_label, 1, 0)
+        info_group = QGroupBox()
+        info_group_layout = QGridLayout()
+        info_group_layout.addWidget(self.info_label)
+        info_group.setLayout(info_group_layout)
+        layout.addWidget(info_group, 0, 0, 1, 2)
 
-        layout.addWidget(self.batch_proc_button, 2, 0, 1, 2)
+        file_list_group = QGroupBox()
+        file_list_layout = QGridLayout()
+        file_list_layout.addWidget(self.file_list_label, 2, 0)
+        file_list_layout.addWidget(self.file_list_content_label, 2, 1)
+        file_list_group.setLayout(file_list_layout)
+        layout.addWidget(file_list_group, 2, 0, 1, 2)
+
+        layout.addWidget(self.batch_proc_button, 3, 0, 1, 2)
         self.setLayout(layout)
 
         self.show()
@@ -77,25 +97,35 @@ class BatchProcessGroup(QGroupBox):
         input_dir = dir_explore.getExistingDirectory()
         self.input_dir_entry.setText(input_dir)
         self.parameters['input_dir'] = input_dir
+        self.param_files_list = sorted(glob.glob(os.path.join(self.parameters['input_dir'], "*.yaml")))
+        self.set_file_list_content_label(self.param_files_list)
 
     def set_input_entry(self):
         logging.debug("Input Entry: " + str(self.input_dir_entry.text()))
         self.parameters['input_dir'] = str(self.input_dir_entry.text())
 
+    def set_file_list_content_label(self, param_files_list):
+        str_buffer = ''
+        for params_file_path in param_files_list:
+            str_buffer += f'{params_file_path}\n'
+        self.file_list_label.setText("Found the following parameters files: ")
+        self.file_list_content_label.setText(str_buffer)
+        print("Found the following parameters files: ")
+        print(str_buffer)
+
     def batch_proc_button_pressed(self):
         logging.debug("Batch Process Button Pressed")
         try:
-            param_files_list = sorted(glob.glob(os.path.join(self.parameters['input_dir'], "*.yaml")))
-            if len(param_files_list) == 0:
+            if len(self.param_files_list) == 0:
                 print("=> Error: Did not find any .yaml files in the input directory. Please try again.")
             else:
                 print("*************************************************************************")
                 print("************************** Begin Batch Process **************************")
                 print("*************************************************************************\n")
                 print("=> Found the following .yaml files:")
-                print(param_files_list)
+                print(self.param_files_list)
 
-                for file in param_files_list:
+                for file in self.param_files_list:
                     print("\n************************* Working on: *************************")
                     print("-->  " + file)
                     # Open .yaml file and store the parameters

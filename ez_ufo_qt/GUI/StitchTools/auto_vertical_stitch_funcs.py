@@ -516,7 +516,6 @@ class AutoVerticalStitchFunctions:
         if not os.path.isdir(output_path):
             os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
-        # TODO: Make sure to preserve bitdepth
         tifffile.imsave(output_path, large_image_buffer.astype(input_dir_type))
 
     # Concatenation
@@ -666,7 +665,6 @@ class AutoVerticalStitchFunctions:
             os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
         # print "input data type {:}".format(dtype)
-        # TODO: Make sure to preserve bitdepth
         tifffile.imsave(output_path, large_stitch_buffer)
 
     def make_buf(self, tmp, num_z_dirs, r1, r2):
