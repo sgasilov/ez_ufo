@@ -36,12 +36,12 @@ class MultiStitch360Group(QGroupBox):
         self.crop_checkbox.clicked.connect(self.set_crop_projections_checkbox)
 
         self.axis_bottom_label = QLabel()
-        self.axis_bottom_label.setText("Axis of Rotation (z00):")
+        self.axis_bottom_label.setText("Axis of Rotation (Dir 00):")
 
         self.axis_bottom_entry = QLineEdit()
         self.axis_bottom_entry.textChanged.connect(self.set_axis_bottom)
 
-        self.axis_top_label = QLabel("Axis of Rotation (z0N):")
+        self.axis_top_label = QLabel("Axis of Rotation (Dir 0N):")
 
         self.axis_group = QGroupBox("Enter axis of rotation manually")
         self.axis_group.clicked.connect(self.set_axis_group)
@@ -49,51 +49,51 @@ class MultiStitch360Group(QGroupBox):
         self.axis_top_entry = QLineEdit()
         self.axis_top_entry.textChanged.connect(self.set_axis_top)
 
-        self.axis_z000_label = QLabel("Axis of Rotation (z000):")
+        self.axis_z000_label = QLabel("Axis of Rotation (Dir 00):")
         self.axis_z000_entry = QLineEdit()
         self.axis_z000_entry.textChanged.connect(self.set_z000)
 
-        self.axis_z001_label = QLabel("Axis of Rotation (z001):")
+        self.axis_z001_label = QLabel("Axis of Rotation (Dir 01):")
         self.axis_z001_entry = QLineEdit()
         self.axis_z001_entry.textChanged.connect(self.set_z001)
 
-        self.axis_z002_label = QLabel("Axis of Rotation (z002):")
+        self.axis_z002_label = QLabel("Axis of Rotation (Dir 02):")
         self.axis_z002_entry = QLineEdit()
         self.axis_z002_entry.textChanged.connect(self.set_z002)
 
-        self.axis_z003_label = QLabel("Axis of Rotation (z003):")
+        self.axis_z003_label = QLabel("Axis of Rotation (Dir 03):")
         self.axis_z003_entry = QLineEdit()
         self.axis_z003_entry.textChanged.connect(self.set_z003)
 
-        self.axis_z004_label = QLabel("Axis of Rotation (z004):")
+        self.axis_z004_label = QLabel("Axis of Rotation (Dir 04):")
         self.axis_z004_entry = QLineEdit()
         self.axis_z004_entry.textChanged.connect(self.set_z004)
 
-        self.axis_z005_label = QLabel("Axis of Rotation (z005):")
+        self.axis_z005_label = QLabel("Axis of Rotation (Dir 05):")
         self.axis_z005_entry = QLineEdit()
         self.axis_z005_entry.textChanged.connect(self.set_z005)
 
-        self.axis_z006_label = QLabel("Axis of Rotation (z006):")
+        self.axis_z006_label = QLabel("Axis of Rotation (Dir 06):")
         self.axis_z006_entry = QLineEdit()
         self.axis_z006_entry.textChanged.connect(self.set_z006)
 
-        self.axis_z007_label = QLabel("Axis of Rotation (z007):")
+        self.axis_z007_label = QLabel("Axis of Rotation (Dir 07):")
         self.axis_z007_entry = QLineEdit()
         self.axis_z007_entry.textChanged.connect(self.set_z007)
 
-        self.axis_z008_label = QLabel("Axis of Rotation (z008):")
+        self.axis_z008_label = QLabel("Axis of Rotation (Dir 08):")
         self.axis_z008_entry = QLineEdit()
         self.axis_z008_entry.textChanged.connect(self.set_z008)
 
-        self.axis_z009_label = QLabel("Axis of Rotation (z009):")
+        self.axis_z009_label = QLabel("Axis of Rotation (Dir 09):")
         self.axis_z009_entry = QLineEdit()
         self.axis_z009_entry.textChanged.connect(self.set_z009)
 
-        self.axis_z010_label = QLabel("Axis of Rotation (z010):")
+        self.axis_z010_label = QLabel("Axis of Rotation (Dir 10):")
         self.axis_z010_entry = QLineEdit()
         self.axis_z010_entry.textChanged.connect(self.set_z010)
 
-        self.axis_z011_label = QLabel("Axis of Rotation (z011):")
+        self.axis_z011_label = QLabel("Axis of Rotation (Dir 11):")
         self.axis_z011_entry = QLineEdit()
         self.axis_z011_entry.textChanged.connect(self.set_z011)
 
