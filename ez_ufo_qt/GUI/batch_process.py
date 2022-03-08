@@ -53,15 +53,17 @@ class BatchProcessGroup(QGroupBox):
         self.meta_help_button = QPushButton("Help")
         self.meta_help_button.clicked.connect(self.meta_help_button_pressed)
 
-        self.meta_input_dir_button = QPushButton("Select input directory")
-        self.meta_input_dir_button.clicked.connect(self.meta_input_dir_button_pressed)
+        self.meta_add_input_dir_button = QPushButton("Add input directory")
+        self.meta_add_input_dir_button.clicked.connect(self.meta_add_input_dir_button_pressed)
 
-        self.meta_input_dir_entry = QLineEdit("...Enter the path to the input directory")
-        self.meta_input_dir_entry.setFixedWidth(500)
-        self.meta_input_dir_entry.textChanged.connect(self.set_meta_input_entry)
+        self.meta_remove_input_dir_button = QPushButton("Remove input directory")
+        self.meta_remove_input_dir_button.clicked.connect(self.meta_remove_input_dir_button_pressed)
 
         self.meta_directory_list_label = QLabel()
         self.meta_directory_list_content_label = QLabel()
+
+        self.meta_file_list_label = QLabel("Hello")
+        self.meta_file_list_content_label = QLabel()
 
         self.meta_batch_proc_button = QPushButton("Begin Meta Batch Process")
         self.meta_batch_proc_button.clicked.connect(self.meta_batch_proc_button_pressed)
@@ -102,14 +104,21 @@ class BatchProcessGroup(QGroupBox):
         meta_input_group = QGroupBox()
         meta_input_group_layout = QGridLayout()
         meta_input_group_layout.addWidget(self.meta_help_button, 0, 0)
-        meta_input_group_layout.addWidget(self.meta_input_dir_button, 0, 1)
-        meta_input_group_layout.addWidget(self.meta_input_dir_entry, 0, 2)
+        meta_input_group_layout.addWidget(self.meta_add_input_dir_button, 0, 1)
+        meta_input_group_layout.addWidget(self.meta_remove_input_dir_button, 0, 2)
         meta_input_group.setLayout(meta_input_group_layout)
+
+        self.meta_file_list_group = QGroupBox()
+        meta_file_list_layout = QGridLayout()
+        meta_file_list_layout.addWidget(self.meta_file_list_label, 2, 0)
+        meta_file_list_layout.addWidget(self.meta_file_list_content_label, 2, 1)
+        self.meta_file_list_group.setLayout(meta_file_list_layout)
+        self.meta_file_list_group.setHidden(True)
 
         meta_batch_group = QGroupBox()
         meta_batch_group_layout = QGridLayout()
         meta_batch_group_layout.addWidget(meta_input_group, 0, 0, 1, 2)
-        #meta_batch_group_layout.addWidget(self.meta_file_list_group, 2, 0, 1, 2)
+        meta_batch_group_layout.addWidget(self.meta_file_list_group, 2, 0, 1, 2)
         meta_batch_group_layout.addWidget(self.meta_batch_proc_button, 3, 0, 1, 2)
         meta_batch_group.setLayout(meta_batch_group_layout)
         meta_batch_group.setStyleSheet('background: #eee')
@@ -158,6 +167,9 @@ class BatchProcessGroup(QGroupBox):
         QMessageBox.information(self, "Help", info_str)
 
     def batch_proc_button_pressed(self):
+        self.run_batch_process()
+
+    def run_batch_process(self):
         logging.debug("Batch Process Button Pressed")
         try:
             if len(self.param_files_list) == 0:
@@ -296,22 +308,49 @@ class BatchProcessGroup(QGroupBox):
         info_str += "02_vertical_stitch_params.yaml\n"
         QMessageBox.information(self, "Help", info_str)
 
-    def meta_input_dir_button_pressed(self):
+    def meta_add_input_dir_button_pressed(self):
         logging.debug("Input Button Pressed")
         dir_explore = QFileDialog(self)
         input_dir = dir_explore.getExistingDirectory()
-        self.input_dir_entry.setText(input_dir)
         self.meta_batch_input_list.append(input_dir)
         self.set_meta_directory_list_content_label(self.meta_batch_input_list)
-        # self.parameters['input_dir'] = input_dir
-        # self.param_files_list = sorted(glob.glob(os.path.join(self.parameters['input_dir'], "*.yaml")))
-        # self.set_file_list_content_label(self.param_files_list)
 
-    def set_meta_input_entry(self):
-        pass
+    def meta_remove_input_dir_button_pressed(self):
+        if not len(self.meta_batch_input_list) == 0:
+            self.meta_batch_input_list.pop()
+        self.set_meta_directory_list_content_label(self.meta_batch_input_list)
 
     def set_meta_directory_list_content_label(self, directory_list):
-        print(directory_list)
+        format_string = ""
+        for index, dir_name in enumerate(directory_list):
+            format_string += "{} : {}\n".format(index, directory_list[index])
+        self.meta_file_list_label.setText("Found the following directories: ")
+        self.meta_file_list_content_label.setText(format_string)
+        self.meta_file_list_group.setHidden(False)
+        print("Found the following directories: ")
+        print(format_string)
 
     def meta_batch_proc_button_pressed(self):
-        pass
+        print("***********************************************************************************************")
+        print("************************************* Begin Meta Batch Process ********************************")
+        print("***********************************************************************************************\n")
+        self.verify_input_directories()
+        for dir_path in self.meta_batch_input_list:
+            print("Working on: {}".format(dir_path))
+            self.param_files_list = sorted(glob.glob(os.path.join(dir_path, "*.yaml")))
+            self.run_batch_process()
+
+    def verify_input_directories(self):
+        """
+        Checks that each directory in the meta batch input list contains .yaml files
+        If the directory does not contain .yaml files then it is removed from the list
+        """
+        for index, dir_path in enumerate(self.meta_batch_input_list):
+            yaml_list = glob.glob(os.path.join(dir_path, '*.yaml'))
+            if len(yaml_list) != 0:
+                print("{} : {} contains : ".format(index, dir_path))
+                for file in yaml_list:
+                    print("{}\n".format(file))
+            else:
+                print("{} : {} does not contain any .yaml files".format(index, dir_path))
+                self.meta_batch_input_list.pop(index)
