@@ -340,6 +340,10 @@ class BatchProcessGroup(QGroupBox):
             self.param_files_list = sorted(glob.glob(os.path.join(dir_path, "*.yaml")))
             self.run_batch_process()
 
+        print("***********************************************************************************************")
+        print("*********************************** Completed Meta Batch Process ******************************")
+        print("***********************************************************************************************\n")
+
     def verify_input_directories(self):
         """
         Checks that each directory in the meta batch input list contains .yaml files
@@ -352,5 +356,5 @@ class BatchProcessGroup(QGroupBox):
                 for file in yaml_list:
                     print("{}\n".format(file))
             else:
-                print("{} : {} does not contain any .yaml files".format(index, dir_path))
+                print("{} : {} does not contain any .yaml files\n".format(index, dir_path))
                 self.meta_batch_input_list.pop(index)
