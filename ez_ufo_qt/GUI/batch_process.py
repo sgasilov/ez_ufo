@@ -65,9 +65,9 @@ class BatchProcessGroup(QGroupBox):
         self.meta_file_list_label = QLabel("Hello")
         self.meta_file_list_content_label = QLabel()
 
-        self.meta_batch_proc_button = QPushButton("Begin Meta Batch Process")
+        self.meta_batch_proc_button = QPushButton("Begin Batch Process")
         self.meta_batch_proc_button.clicked.connect(self.meta_batch_proc_button_pressed)
-        self.meta_batch_proc_button.setStyleSheet("background-color:aquamarine; font-size:26px")
+        self.meta_batch_proc_button.setStyleSheet("background-color:orangered; font-size:26px")
         self.meta_batch_proc_button.setFixedHeight(50)
 
         self.set_layout()
@@ -78,6 +78,7 @@ class BatchProcessGroup(QGroupBox):
         layout = QGridLayout()
 
         # ---- Simple Batch ---- #
+        '''
         input_group = QGroupBox()
         input_group_layout = QGridLayout()
         input_group_layout.addWidget(self.help_button, 0, 0)
@@ -99,7 +100,7 @@ class BatchProcessGroup(QGroupBox):
         batch_group_layout.addWidget(self.batch_proc_button, 3, 0, 1, 2)
         batch_group.setLayout(batch_group_layout)
         batch_group.setStyleSheet('background: #eee')
-
+        '''
         # ---- Meta Batch ---- #
         meta_input_group = QGroupBox()
         meta_input_group_layout = QGridLayout()
@@ -123,7 +124,7 @@ class BatchProcessGroup(QGroupBox):
         meta_batch_group.setLayout(meta_batch_group_layout)
         meta_batch_group.setStyleSheet('background: #eee')
 
-        layout.addWidget(batch_group)
+        #layout.addWidget(batch_group)
         layout.addWidget(meta_batch_group)
         self.setLayout(layout)
 
@@ -298,14 +299,18 @@ class BatchProcessGroup(QGroupBox):
     def meta_help_button_pressed(self):
         logging.debug("HELP")
         info_str = "EZ Batch Process allows for batch reconstruction and processing of images.\n\n"
-        info_str += "The program reads a list of .yaml parameter files from the input directory and executes\n" \
-                    "them sequentially in alpha-numeric order.\n"
-        info_str += "It is the user's responsibility to name files so that they are executed in the desired order.\n"
-        info_str += "It is suggested to prepend descriptive filenames with numbers to indicate the order.\n" \
+        info_str += "The user can select multiple input directories containing .yaml files." \
+                    " These directories will be processed in the order that they are added. \n\n"
+        info_str += "From each input directory, the program reads a list of .yaml parameter files and executes " \
+                    "them sequentially in alpha-numeric order.\n\n"
+        info_str += "It is the user's responsibility to name files so that they are executed in the desired order.\n\n"
+        info_str += "It is suggested to prepend descriptive filenames with numbers to indicate the order.\n\n" \
                     "For example: \n\n"
         info_str += "00_horizontal_stitch_params.yaml\n"
         info_str += "01_ezufo_params.yaml\n"
-        info_str += "02_vertical_stitch_params.yaml\n"
+        info_str += "02_vertical_stitch_params.yaml\n\n\n"
+        info_str += "Once all directories have been added, simply click the big red button to begin processing :)"
+
         QMessageBox.information(self, "Help", info_str)
 
     def meta_add_input_dir_button_pressed(self):
