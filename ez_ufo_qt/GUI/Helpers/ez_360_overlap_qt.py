@@ -175,7 +175,8 @@ class Overlap360Group(QGroupBox):
     def overlap_button_pressed(self):
         logging.debug("Find overlap button pressed")
         find_overlap(self.parameters)
-        params_io.save_parameters(self.parameters, self.parameters['360overlap_output_dir'])
+        params_file_path = os.path.join(self.parameters['360overlap_output_dir'], '360_overlap_params.yaml')
+        params_io.save_parameters(self.parameters, params_file_path)
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")

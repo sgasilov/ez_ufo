@@ -360,7 +360,8 @@ class EZStitchGroup(QGroupBox):
         # Half acquisition mode
         elif self.parameters['ezstitch_stitch_type'] == 2:
             main_360_mp_depth1(self.parameters)
-        params_io.save_parameters(self.parameters, self.parameters['ezstitch_output_dir'])
+        params_file_path = os.path.join(self.parameters['ezstitch_output_dir'], 'ezmview_params.yaml')
+        params_io.save_parameters(self.parameters, params_file_path)
         print("==== Waiting for Next Task ====")
 
     def import_parameters_button_pressed(self):
