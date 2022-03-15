@@ -500,8 +500,6 @@ class AutoVerticalStitchFunctions:
                 tmp1 = sorted(glob.glob(tmp1))[index]
             first = self.read_image(tmp, flip_image=False)
             second = self.read_image(tmp1, flip_image=False)
-            if self.parameters['sample_moved_down']:
-                first, second = np.flipud(first), np.flipud(second)
 
             k = np.mean(first[num_rows - dx:, :]) / np.mean(second[:dx, :])
             second = second * k
@@ -510,6 +508,9 @@ class AutoVerticalStitchFunctions:
             large_image_buffer[a:b, :] = first[:num_rows - dx, :]
             large_image_buffer[b:b + dx, :] = np.transpose(
                 np.transpose(first[num_rows - dx:, :]) * (1 - ramp) + np.transpose(second[:dx, :]) * ramp)
+            if self.parameters['sample_moved_down']:
+                np.flipud(np.transpose(
+                np.transpose(first[num_rows - dx:, :]) * (1 - ramp) + np.transpose(second[:dx, :]) * ramp))
             large_image_buffer[b + dx:c + dx, :] = second[dx:, :]
 
         output_path = os.path.join(self.parameters['output_dir'], ct_name, dir_name)
