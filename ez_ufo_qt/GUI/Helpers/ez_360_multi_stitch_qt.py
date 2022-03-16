@@ -354,8 +354,9 @@ class MultiStitch360Group(QGroupBox):
 
         print("======= Begin 360 Multi-Stitch =======")
         main_360_mp_depth2(self.parameters)
-        params_file_path = os.path.join(self.parameters['360multi_output_dir'], '360_multi_stitch_params.yaml')
-        params_io.save_parameters(self.parameters, params_file_path)
+        if os.path.isdir(self.parameters['360multi_output_dir']):
+            params_file_path = os.path.join(self.parameters['360multi_output_dir'], '360_multi_stitch_params.yaml')
+            params_io.save_parameters(self.parameters, params_file_path)
         print("==== Waiting for Next Task ====")
 
     def delete_button_pressed(self):

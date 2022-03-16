@@ -342,21 +342,35 @@ def main_360_mp_depth2(parameters):
         vertical_steps = sorted([dI for dI in os.listdir(ctdir) if os.path.isdir(os.path.join(ctdir, dI))])
         print(" -> Contents: ", end="")
         print(vertical_steps)
-        num_slices = len(vertical_steps)
+
+        if parameters['360multi_manual_axis']:
+            num_slices = last_index + 1
+        else:
+            num_slices = len(vertical_steps)
 
         if num_slices > 0:
             print(str(num_slices) + " slices detected. stitching all slices....")
 
-            if parameters['360multi_bottom_axis'] < parameters['360multi_top_axis']:
-                axis_incr = float((parameters['360multi_top_axis'] - parameters['360multi_bottom_axis']) / float(num_slices - 1))
+            if not parameters['360multi_manual_axis']:
+                if parameters['360multi_bottom_axis'] < parameters['360multi_top_axis']:
+                    axis_incr = float((parameters['360multi_top_axis'] - parameters['360multi_bottom_axis']) / float(num_slices - 1))
+                    range_start = 0
+                    range_end = num_slices - 1
+                    range_increment = 1
+                elif parameters['360multi_bottom_axis'] > parameters['360multi_top_axis']:
+                    axis_incr = float((parameters['360multi_bottom_axis'] - parameters['360multi_top_axis']) / float(num_slices - 1))
+                    range_start = num_slices - 1
+                    range_end = -1
+                    range_increment = -1
+            else:
+                if num_slices == 1:
+                    axis_incr = 0
+                else:
+                    axis_incr = float(
+                        (int(axis_list[last_index]) - int(axis_list[0])) / float(num_slices - 1))
                 range_start = 0
                 range_end = num_slices
                 range_increment = 1
-            elif parameters['360multi_bottom_axis'] > parameters['360multi_top_axis']:
-                axis_incr = float((parameters['360multi_bottom_axis'] - parameters['360multi_top_axis']) / float(num_slices - 1))
-                range_start = num_slices - 1
-                range_end = -1
-                range_increment = -1
 
             for j in range(range_start, range_end, range_increment):
                 head, tail = os.path.split(ctdir)
@@ -391,6 +405,9 @@ def main_360_mp_depth2(parameters):
 
                 fdt_subdirs = [dI for dI in os.listdir(os.path.join(ctdir, vertical_steps[j])) \
                            if os.path.isdir(os.path.join(ctdir, vertical_steps[j], dI))]
+
+                if num_slices == 1:
+                    crop_amt = 0
 
                 print("processing slice: " + str(vertical_steps[j]) + " using axis: " + str(
                     round(curr_ax)) + " and cropping by: " + str(crop_amt))
@@ -480,11 +497,10 @@ def check_last_index(axis_list):
     """
     last_index = 0
     for index, item in enumerate(axis_list):
-        if item is None:
+        if item == 'None':
             last_index = index - 1
-            break
-        else:
-            last_index = axis_list.__len__() - 1
+            return last_index
+        last_index = index
     return last_index
 
 def complete_message():

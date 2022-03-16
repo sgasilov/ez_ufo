@@ -157,8 +157,9 @@ class EZMViewGroup(QGroupBox):
         logging.debug("Convert button pressed")
         logging.debug(self.parameters)
         main_prep(self.parameters)
-        params_file_path = os.path.join(self.parameters['ezmview_input_dir'], 'ezmview_params.yaml')
-        params_io.save_parameters(self.parameters, params_file_path)
+        if os.path.isdir(self.parameters['ezmview_input_dir']):
+            params_file_path = os.path.join(self.parameters['ezmview_input_dir'], 'ezmview_params.yaml')
+            params_io.save_parameters(self.parameters, params_file_path)
 
     def undo_button_pressed(self):
         logging.debug("Undo button pressed")
