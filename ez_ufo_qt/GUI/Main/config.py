@@ -289,7 +289,7 @@ class ConfigGroup(QGroupBox):
         self.darks_entry.setText(parameters.params['main_config_darks'])
         self.flats_entry.setText(parameters.params['main_config_flats_dir_name'])
         self.tomo_entry.setText(parameters.params['main_config_tomo_dir_name'])
-        self.flats2_entry.setText(parameters.params['main_config_flats_dir_name'])
+        self.flats2_entry.setText(parameters.params['main_config_flats2_dir_name'])
         self.temp_dir_entry.setText(parameters.params['main_config_temp_dir'])
         self.keep_tmp_data_checkbox.setChecked(parameters.params['main_config_keep_temp'])
         self.dry_run_button.setChecked(parameters.params['main_config_dry_run'])
@@ -377,7 +377,7 @@ class ConfigGroup(QGroupBox):
     def set_flats2(self):
         logging.debug(self.flats2_entry.text())
         self.e_DIRTYP[3] = str(self.flats2_entry.text())
-        parameters.params['main_config_flats_dir_name'] = str(self.flats2_entry.text())
+        parameters.params['main_config_flats2_dir_name'] = str(self.flats2_entry.text())
 
     def set_flats_darks_checkbox(self):
         logging.debug("Use same flats/darks across multiple experiments: "
