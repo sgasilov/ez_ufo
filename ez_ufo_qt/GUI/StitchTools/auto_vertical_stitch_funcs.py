@@ -644,17 +644,26 @@ class AutoVerticalStitchFunctions:
 
             # If first z-directory clip from rows 0 until the point of overlap
             if z_index == 0:
-                frame = self.read_image(file_name, flip_image=False)[0:r2, :]
+                if self.parameters['sample_moved_down']:
+                    frame = self.read_image(file_name, flip_image=True)[0:r2, :]
+                else:
+                    frame = self.read_image(file_name, flip_image=False)[0:r2, :]
                 start_row = 0
                 stop_row = upper_image_rows
             # If last z-directory clip from point of overlap until the last row
             elif z_index == len(vertical_steps) - 1:
-                frame = self.read_image(file_name, flip_image=False)[r1:, :]
+                if self.parameters['sample_moved_down']:
+                    frame = self.read_image(file_name, flip_image=True)[r1:, :]
+                else:
+                    frame = self.read_image(file_name, flip_image=False)[r1:, :]
                 start_row = upper_image_rows + (z_index - 1) * mid_image_rows
                 stop_row = start_row + lowest_image_rows
             # If an intermediate z-directory then clip from point of overlap at top and at the bottom
             else:
-                frame = self.read_image(file_name, flip_image=False)[r1:r2, :]
+                if self.parameters['sample_moved_down']:
+                    frame = self.read_image(file_name, flip_image=True)[r1:r2, :]
+                else:
+                    frame = self.read_image(file_name, flip_image=False)[r1:r2, :]
                 start_row = upper_image_rows + (z_index - 1) * mid_image_rows
                 stop_row = start_row + mid_image_rows
 
