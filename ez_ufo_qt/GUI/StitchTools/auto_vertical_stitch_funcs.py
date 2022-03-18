@@ -635,12 +635,7 @@ class AutoVerticalStitchFunctions:
                 image_path = os.path.join(self.parameters['temp_dir'], ct_name, z_dir, '*.tif')
                 file_name = sorted(glob.glob(image_path))[j]
             else:
-                if self.parameters['common_flats_darks']:
-                    # We are just stitching each image to itself multiplied by the number of z-directories
-                    file_name = sorted(glob.glob(image_path))[0]
-                else:
-                    # We stitch each image to the corresponding image in the next z-directory
-                    file_name = sorted(glob.glob(image_path))[index]
+                file_name = sorted(glob.glob(image_path))[index]
 
             # If first z-directory clip from rows 0 until the point of overlap
             if z_index == 0:
