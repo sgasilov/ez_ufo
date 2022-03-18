@@ -288,6 +288,8 @@ class AutoVerticalStitchFunctions:
         input_data_type = type(self.read_image(tmp, flip_image=False)[0][0])
 
         ct_name = os.path.relpath(ct_dir, self.parameters['projections_input_dir'])
+        if ct_dir == self.parameters['projections_input_dir']:
+            ct_name = ""
         print("ct_name: ", end="")
         print(ct_name)
 
@@ -630,6 +632,7 @@ class AutoVerticalStitchFunctions:
             else:
                 image_path = os.path.join(stitch_input_dir_path, z_dir, dir_name, '*.tif')
             if self.parameters['reslice']:
+                image_path = os.path.join(self.parameters['temp_dir'], ct_name, z_dir, '*.tif')
                 file_name = sorted(glob.glob(image_path))[j]
             else:
                 if self.parameters['common_flats_darks']:
