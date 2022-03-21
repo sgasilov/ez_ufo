@@ -323,34 +323,40 @@ class AutoVerticalStitchFunctions:
         for ct_dir in self.ct_dirs:
             stitch_pixel = self.ct_stitch_pixel_dict[ct_dir]
             diff_path = os.path.relpath(ct_dir, self.parameters['projections_input_dir'])
-            recon_ct_path = os.path.join(self.parameters['recon_slices_input_dir'], diff_path)
-            output_path = os.path.join(self.parameters['output_dir'], diff_path)
+            if diff_path == ".":
+                recon_ct_path = self.parameters['recon_slices_input_dir']
+                output_path = self.parameters['output_dir']
+            else:
+                recon_ct_path = os.path.join(self.parameters['recon_slices_input_dir'], diff_path)
+                output_path = os.path.join(self.parameters['output_dir'], diff_path)
+
             if not os.path.isdir(output_path):
                 os.makedirs(output_path, exist_ok=True, mode=0o777)
-                if self.parameters['sample_moved_down']:
-                    z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))],
-                                    reverse=True)
+
+            if self.parameters['sample_moved_down']:
+                z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))],
+                                reverse=True)
+            else:
+                z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))])
+            for z_dir_index in range(len(z_dirs)):
+                z_dir_tiff_list = sorted(glob.glob(os.path.join(recon_ct_path, z_dirs[z_dir_index], 'sli', '*.tif')))
+                # First z-directory
+                if z_dir_index == 0:
+                    stop_index = (len(z_dir_tiff_list) - stitch_pixel)
+                    img_index = range(stop_index)
+                # Last z-directory
+                elif z_dir_index == len(z_dirs) - 1:
+                    start_index = stitch_pixel
+                    img_index = range(start_index, len(z_dir_tiff_list), 1)
+                # Intermediate z-directories
                 else:
-                    z_dirs = sorted([dI for dI in os.listdir(recon_ct_path) if os.path.isdir(os.path.join(ct_dir, dI))])
-                for z_dir_index in range(len(z_dirs)):
-                    z_dir_tiff_list = sorted(glob.glob(os.path.join(recon_ct_path, z_dirs[z_dir_index], 'sli', '*.tif')))
-                    # First z-directory
-                    if z_dir_index == 0:
-                        stop_index = (len(z_dir_tiff_list) - stitch_pixel)
-                        img_index = range(stop_index)
-                    # Last z-directory
-                    elif z_dir_index == len(z_dirs) - 1:
-                        start_index = stitch_pixel
-                        img_index = range(start_index, len(z_dir_tiff_list), 1)
-                    # Intermediate z-directories
-                    else:
-                        start_index = stitch_pixel
-                        stop_index = (len(z_dir_tiff_list) - stitch_pixel)
-                        img_index = range(start_index, stop_index, 1)
-                    pool = mp.Pool(processes=mp.cpu_count())
-                    exec_func = partial(self.copy_image_multiproc, stitch_pixel, z_dir_index,
-                                        z_dir_tiff_list, output_path)
-                    pool.map(exec_func, img_index)
+                    start_index = stitch_pixel
+                    stop_index = (len(z_dir_tiff_list) - stitch_pixel)
+                    img_index = range(start_index, stop_index, 1)
+                pool = mp.Pool(processes=mp.cpu_count())
+                exec_func = partial(self.copy_image_multiproc, stitch_pixel, z_dir_index,
+                                    z_dir_tiff_list, output_path)
+                pool.map(exec_func, img_index)
 
     def copy_image_multiproc(self, stitch_pixel, z_dir_index, z_dir_tiff_list, output_path, img_index):
         """

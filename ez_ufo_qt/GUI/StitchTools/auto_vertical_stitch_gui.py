@@ -506,8 +506,17 @@ class AutoVerticalStitchGUI(QGroupBox):
                 and (self.parameters['stitch_reconstructed_slices'] and self.parameters['reslice']):
             print("Please enter a valid temporary directory")
             return
-        self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(self.parameters)
-        self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
+        if not os.path.isdir(self.parameters['projections_input_dir']):
+            print("Error: The Projections Input Directory does not exist")
+        elif not os.path.isdir(self.parameters['recon_slices_input_dir']):
+            print("Error: The Reconstructed Slices Input Directory does not exist")
+        elif not os.path.isdir(self.parameters['flats_dir']) and self.parameters['common_flats_darks']:
+            print("Error: The Common Flats Path Directory does not exist")
+        elif not os.path.isdir(self.parameters['darks_dir']) and self.parameters['common_flats_darks']:
+            print("Error: The Common Darks Path Directory does not exist")
+        else:
+            self.auto_vertical_stitch_funcs = AutoVerticalStitchFunctions(self.parameters)
+            self.auto_vertical_stitch_funcs.run_vertical_auto_stitch()
 
     def set_dry_run_checkbox(self):
         logging.debug("Dry Run Checkbox: " + str(self.dry_run_checkbox.isChecked()))

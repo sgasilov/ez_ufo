@@ -78,6 +78,7 @@ def main_prep(parameters):
               '(expected {} files)'.format(files_input)
         raise ValueError(tmp)
 
+    print("========== EZMView ==========")
     print("=> Begin Processing Files")
 
     for i in range(parameters['ezmview_num_vertical_steps']):
