@@ -62,6 +62,8 @@ class AutoVerticalStitchFunctions:
         else:
             print("--> Finished Dry Run")
 
+        print("\n**************************** Finished Auto Vertical Stitch ****************************")
+
     def write_yaml_params(self):
         """
         Writes the GUI parameters to a key-value .yaml file in the output directory
