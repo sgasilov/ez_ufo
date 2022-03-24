@@ -380,7 +380,11 @@ class AutoVerticalStitchFunctions:
         else:
             out_img_index = z00_num_imgs + ((z_dir_index - 1) * mid_zdir_num_imgs) + (img_index - stitch_pixel)
         out_img_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(out_img_index))
-        shutil.copy(z_dir_tiff_list[img_index], out_img_path)
+        try:
+            shutil.copy(z_dir_tiff_list[img_index], out_img_path)
+        except OSError as err:
+            print("OS error: {0}".format(err))
+            print("Something went wrong when copying {}".format(z_dir_tiff_list[img_index]))
 
     # Interpolate and Equalize Intensity
     def main_interpolate_multiproc(self):
@@ -528,6 +532,7 @@ class AutoVerticalStitchFunctions:
             os.makedirs(output_path, exist_ok=True, mode=0o777)
         output_path = os.path.join(output_path, '-sti-{:>04}.tif'.format(index))
         tifffile.imsave(output_path, large_image_buffer.astype(input_dir_type))
+
 
     # Concatenation
     def main_concatenate_multiproc(self):
