@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QGroupBox, QPushButton, QCheckBox, QLabel, QLineEdit, QGridLayout, QFileDialog, QMessageBox
 import logging
 import os
+import shutil
 import getpass
 import yaml
 from ez_ufo_qt.Helpers.stitch_funcs import main_360_mp_depth2
@@ -360,11 +361,13 @@ class MultiStitch360Group(QGroupBox):
         print("==== Waiting for Next Task ====")
 
     def delete_button_pressed(self):
-        print("---- Deleting Data From Output Directory ----")
         logging.debug("Delete button pressed")
         if os.path.exists(self.parameters['360multi_output_dir']):
-            os.system('rm -r {}'.format(self.parameters['360multi_output_dir']))
-            print(" - Directory with stitched data was removed")
+            print("---- Deleting Data From Output Directory ----")
+            shutil.rmtree(self.parameters['360multi_output_dir'])
+            print("---- Output Directory was Deleted")
+        else:
+            print("---- Output directory does not exist")
 
     def help_button_pressed(self):
         logging.debug("Help button pressed")

@@ -389,7 +389,7 @@ def main_360_mp_depth2(parameters):
                         curr_ax = parameters['360multi_top_axis'] + j * axis_incr
 
                 if parameters['360multi_crop_projections']:
-                    if parameters['360multi_bottom_axis'] < parameters['360multi_top_axis']:
+                    if parameters['360multi_bottom_axis'] <= parameters['360multi_top_axis']:
                         if axis_incr < 0:
                             crop_amt = abs(parameters['360multi_bottom_axis'] - round(curr_ax))
                         else:
