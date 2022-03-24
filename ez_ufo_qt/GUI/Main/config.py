@@ -15,7 +15,7 @@ class ConfigGroup(QGroupBox):
     """
     Setup and configuration settings
     """
-    # Used to send signal to ezufo_launcher when settings are imported https://stackoverflow.com/questions/2970312/pyqt4-qtcore-pyqtsignal-object-has-no-attribute-connect
+    # Used to send signal to ezufo_launcher when settings are imported
     signal_update_vals_from_params = pyqtSignal(dict)
     # Used to send signal when reconstruction is done
     signal_reco_done = pyqtSignal(dict)
@@ -28,7 +28,7 @@ class ConfigGroup(QGroupBox):
 
         self.yaml_io = Yaml_IO()
 
-        #Select input directory
+        # Select input directory
         self.input_dir_select = QPushButton("Select input directory (or paste abs. path)")
         self.input_dir_select.setStyleSheet("background-color:lightgrey; font: 12pt;")
 
@@ -36,11 +36,11 @@ class ConfigGroup(QGroupBox):
         self.input_dir_entry.textChanged.connect(self.set_input_dir)
         self.input_dir_select.pressed.connect(self.select_input_dir)
 
-        #Save .params checkbox
+        # Save .params checkbox
         self.save_params_checkbox = QCheckBox("Save args in .params file")
         self.save_params_checkbox.stateChanged.connect(self.set_save_args)
 
-        #Select output directory
+        # Select output directory
         self.output_dir_select = QPushButton()
         self.output_dir_select.setText("Select output directory (or paste abs. path)")
         self.output_dir_select.setStyleSheet("background-color:lightgrey; font: 12pt;")
@@ -49,7 +49,7 @@ class ConfigGroup(QGroupBox):
         self.output_dir_entry.textChanged.connect(self.set_output_dir)
         self.output_dir_select.pressed.connect(self.select_output_dir)
 
-        #Save in separate files or in one huge tiff file
+        # Save in separate files or in one huge tiff file
         self.bigtiff_checkbox = QCheckBox()
         self.bigtiff_checkbox.setText("Save slices in multipage tiffs")
         self.bigtiff_checkbox.setToolTip("Will save images in bigtiff containers. \n"
@@ -57,7 +57,7 @@ class ConfigGroup(QGroupBox):
                                          "Use bio-formats importer plugin for imagej or fiji to open the bigtiffs.")
         self.bigtiff_checkbox.stateChanged.connect(self.set_big_tiff)
 
-        #Crop in the reconstruction plane
+        # Crop in the reconstruction plane
         self.preproc_checkbox = QCheckBox()
         self.preproc_checkbox.setText("Preprocess with a generic ufo-launch pipeline, f.i.")
         self.preproc_checkbox.setToolTip("Selected ufo filters will be applied to each "
@@ -69,7 +69,7 @@ class ConfigGroup(QGroupBox):
         self.preproc_entry = QLineEdit()
         self.preproc_entry.textChanged.connect(self.set_preproc_entry)
 
-        #Names of directories with flats/darks/projections frames
+        # Names of directories with flats/darks/projections frames
         self.e_DIRTYP = ["darks", "flats", "tomo", "flats2"]
         self.dir_name_label = QLabel()
         self.dir_name_label.setText("Name of flats/darks/tomo subdirectories in each CT data set")
@@ -82,7 +82,7 @@ class ConfigGroup(QGroupBox):
         self.flats2_entry = QLineEdit()
         self.flats2_entry.textChanged.connect(self.set_flats2)
 
-        #Select flats/darks/flats2 for use in multiple reconstructions
+        # Select flats/darks/flats2 for use in multiple reconstructions
         self.use_common_flats_darks_checkbox = QCheckBox()
         self.use_common_flats_darks_checkbox.setText("Use common flats/darks across multiple experiments")
         self.use_common_flats_darks_checkbox.stateChanged.connect(self.set_flats_darks_checkbox)
@@ -117,7 +117,7 @@ class ConfigGroup(QGroupBox):
         self.flats2_absolute_entry.textChanged.connect(self.set_common_flats2)
         self.flats2_absolute_entry.setText("Absolute path to flats2")
 
-        #Select temporary directory
+        # Select temporary directory
         self.temp_dir_select = QPushButton()
         self.temp_dir_select.setText("Select temporary directory (or paste abs. path)")
         self.temp_dir_select.setToolTip("Temporary data will be saved there.\n"
@@ -127,55 +127,55 @@ class ConfigGroup(QGroupBox):
         self.temp_dir_entry = QLineEdit()
         self.temp_dir_entry.textChanged.connect(self.set_temp_dir)
 
-        #Keep temp data selection
+        # Keep temp data selection
         self.keep_tmp_data_checkbox = QCheckBox()
         self.keep_tmp_data_checkbox.setText("Keep all temp data till the end of reconstruction")
         self.keep_tmp_data_checkbox.setToolTip("Useful option to inspect how images change at each step")
         self.keep_tmp_data_checkbox.stateChanged.connect(self.set_keep_tmp_data)
 
-        #IMPORT SETTINGS FROM FILE
+        # IMPORT SETTINGS FROM FILE
         self.open_settings_file = QPushButton()
         self.open_settings_file.setText("Import parameters from file")
         self.open_settings_file.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.open_settings_file.pressed.connect(self.import_settings_button_pressed)
 
-        #EXPORT SETTINGS TO FILE
+        # EXPORT SETTINGS TO FILE
         self.save_settings_file = QPushButton()
         self.save_settings_file.setText("Export parameters to file")
         self.save_settings_file.setStyleSheet("background-color:lightgrey; font: 12pt;")
         self.save_settings_file.pressed.connect(self.export_settings_button_pressed)
 
-        #QUIT
+        # QUIT
         self.quit_button = QPushButton()
         self.quit_button.setText("Quit")
         self.quit_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold;")
         self.quit_button.clicked.connect(self.quit_button_pressed)
 
-        #HELP
+        # HELP
         self.help_button = QPushButton()
         self.help_button.setText("Help")
         self.help_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold")
         self.help_button.clicked.connect(self.help_button_pressed)
 
-        #DELETE
+        # DELETE
         self.delete_reco_dir_button = QPushButton()
         self.delete_reco_dir_button.setText("Delete reco dir")
         self.delete_reco_dir_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold")
         self.delete_reco_dir_button.clicked.connect(self.delete_button_pressed)
 
-        #DRY RUN
+        # DRY RUN
         self.dry_run_button = QPushButton()
         self.dry_run_button.setText("Dry run")
         self.dry_run_button.setStyleSheet("background-color:lightgrey; font: 13pt; font-weight: bold")
         self.dry_run_button.clicked.connect(self.dryrun_button_pressed)
 
-        #RECONSTRUCT
+        # RECONSTRUCT
         self.reco_button = QPushButton()
         self.reco_button.setText("Reconstruct")
         self.reco_button.setStyleSheet("background-color:lightgrey;color:royalblue; font: 14pt; font-weight: bold;")
         self.reco_button.clicked.connect(self.reco_button_pressed)
 
-        #OPEN IMAGE AFTER RECONSTRUCT
+        # OPEN IMAGE AFTER RECONSTRUCT
         self.open_image_after_reco_checkbox = QCheckBox()
         self.open_image_after_reco_checkbox.setText("Load images and open viewer after reconstruction")
         self.open_image_after_reco_checkbox.clicked.connect(self.set_open_image_after_reco)
@@ -519,7 +519,7 @@ class ConfigGroup(QGroupBox):
         file_extension = os.path.splitext(fileName)
         if file_extension[-1] == "":
             fileName = fileName + '.yaml'
-        #Create and write to YAML file based on given fileName
+        # Create and write to YAML file based on given fileName
         self.yaml_io.write_yaml(fileName, parameters.params)
 
     def import_settings_button_pressed(self):
@@ -549,51 +549,7 @@ class ConfigGroup(QGroupBox):
         try:
             self.validate_input()
 
-            args = tk_args(params['main_config_input_dir'], params['main_config_temp_dir'],
-                           params['main_config_output_dir'], params['main_config_save_multipage_tiff'],
-                           params['main_cor_axis_search_method'], params['main_cor_axis_search_interval'],
-                           params['main_cor_search_row_start'], params['main_cor_recon_patch_size'],
-                           params['main_cor_axis_column'], params['main_cor_axis_increment_step'],
-                           params['main_filters_remove_spots'], params['main_filters_remove_spots_threshold'],
-                           params['main_filters_remove_spots_blur_sigma'], params['main_filters_ring_removal'],
-                           params['main_filters_ring_removal_ufo_lpf'], params['main_filters_ring_removal_ufo_lpf_1d_or_2d'],
-                           params['main_filters_ring_removal_ufo_lpf_sigma_horizontal'],
-                           params['main_filters_ring_removal_ufo_lpf_sigma_vertical'],
-                           params['main_filters_ring_removal_sarepy_window_size'], params['main_filters_ring_removal_sarepy_wide'],
-                           params['main_filters_ring_removal_sarepy_window'],
-                           params['main_filters_ring_removal_sarepy_SNR'],
-                           params['main_pr_phase_retrieval'], params['main_pr_photon_energy'],
-                           params['main_pr_pixel_size'],
-                           params['main_pr_detector_distance'], params['main_pr_delta_beta_ratio'], params['main_region_select_rows'],
-                           params['main_region_first_row'], params['main_region_number_rows'], params['main_region_nth_row'],
-                           params['main_region_clip_histogram'], params['main_region_bit_depth'], params['main_region_histogram_min'],
-                           params['main_region_histogram_max'], params['main_config_preprocess'], params['main_config_preprocess_command'],
-                           params['main_region_rotate_volume_clock'], params['main_region_crop_slices'], params['main_region_crop_x'],
-                           params['main_region_crop_width'], params['main_region_crop_y'], params['main_region_crop_height'],
-                           params['main_region_crop_z_axis'], params['main_region_crop_z_axis_start'], params['main_region_crop_z_axis_end'],
-                           params['main_config_dry_run'], params['main_config_save_params'],
-                           params['main_config_keep_temp'], params['advanced_ffc_sinFFC'],
-                           params['advanced_ffc_method'], params['advanced_ffc_eigen_pco_reps'],
-                           params['advanced_ffc_eigen_pco_downsample'], params['advanced_ffc_downsample'],
-                           params['main_config_common_flats_darks'], params['main_config_darks_path'],
-                           params['main_config_flats_path'], params['main_config_flats2_checkbox'],
-                           params['main_config_flats2_path'],
-                           # NLMDN Parameters
-                           params['advanced_nlmdn_apply_after_reco'],
-                           params['advanced_nlmdn_input_dir'], params['advanced_nlmdn_input_is_file'],
-                           params['advanced_nlmdn_output_dir'], params['advanced_nlmdn_save_bigtiff'],
-                           params['advanced_nlmdn_sim_search_radius'], params['advanced_nlmdn_patch_radius'],
-                           params['advanced_nlmdn_smoothing_control'], params['advanced_nlmdn_noise_std'],
-                           params['advanced_nlmdn_window'], params['advanced_nlmdn_fast'],
-                           params['advanced_nlmdn_estimate_sigma'], params['advanced_nlmdn_dry_run'],
-                           # Advanced Parameters
-                           params['advanced_advtofu_extended_settings'],
-                           params['advanced_advtofu_lamino_angle'], params['advanced_adv_tofu_z_axis_rotation'],
-                           params['advanced_advtofu_center_position_z'], params['advanced_advtofu_y_axis_rotation'],
-                           params['advanced_advtofu_aux_ffc_dark_scale'], params['advanced_advtofu_aux_ffc_flat_scale'],
-                           params['advanced_optimize_verbose_console'], params['advanced_optimize_slice_mem_coeff'],
-                           params['advanced_optimize_num_gpus'], params['advanced_optimize_slices_per_device']
-                           )
+            args = tk_args(params)
 
             execute_reconstruction(args, self.get_fdt_names())
             if batch_run is False:
@@ -603,12 +559,9 @@ class ConfigGroup(QGroupBox):
                     self.signal_reco_done.emit(params)
         except InvalidInputError as err:
             msg = ""
-            err_arg = err.args
             msg += err.args[0]
             QMessageBox.information(self, "Invalid Input Error", msg)
 
-    # NEED TO DETERMINE VALID RANGES
-    # ALSO CHECK TYPES SOMEHOW
     def validate_input(self):
         """
         Determines whether user-input values are valid
@@ -688,11 +641,6 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['main_region_nth_row']) < 0:
             raise InvalidInputError("Value out of range for: Reconstruct every Nth row")
 
-        # Can be negative when 16-bit selected
-        # Min value: main_region_histogram_min
-        #if float(parameters.params['main_region_histogram_min']) < 0:
-        #    raise InvalidInputError("Value out of range for: Min value in 32-bit histogram")
-
         # Max value: main_region_histogram_max
         if float(parameters.params['main_region_histogram_max']) < 0:
             raise InvalidInputError("Value out of range for: Max value in 32-bit histogram")
@@ -728,23 +676,6 @@ class ConfigGroup(QGroupBox):
         if int(parameters.params['advanced_ffc_downsample']) < 0:
             raise InvalidInputError("Value out of range for: Flat Field Correction: Downsample")
 
-        # Can be negative value
-        # Optional: rotate volume: main_region_rotate_volume_clock
-        #if float(parameters.params['main_region_rotate_volume_clock']) < 0:
-        #    raise InvalidInputError("Value out of range for: Optional: rotate volume clock by [deg]")
-        #TODO ADD CHECKING NLMDN SETTINGS
-        #TODO ADD CHECKING FOR ADVANCED SETTINGS
-        '''
-        if int(parameters.params['e_adv_rotation_range']) < 0:
-            raise InvalidInputError("Advanced: Rotation range must be greater than or equal to zero")
-
-        if float(parameters.params['advanced_advtofu_lamino_angle']) < 0 or float(parameters.params['advanced_advtofu_lamino_angle']) > 90:
-            raise InvalidInputError("Advanced: Lamino angle must be a float between 0 and 90")
-
-        if float(parameters.params['advanced_optimize_slice_mem_coeff']) < 0 or float(parameters.params['advanced_optimize_slice_mem_coeff']) > 1:
-            raise InvalidInputError("Advanced: Slice memory coefficient must be between 0 and 1")
-        '''
-
     def get_fdt_names(self):
         DIRTYP = []
         for i in self.e_DIRTYP:
@@ -753,215 +684,114 @@ class ConfigGroup(QGroupBox):
         logging.debug(DIRTYP)
         return DIRTYP
 
-class tk_args():
-    def __init__(self, main_config_input_dir, main_config_temp_dir, main_config_output_dir, main_config_save_multipage_tiff,
-                main_cor_axis_search_method, main_cor_axis_search_interval, main_cor_search_row_start,
-                main_cor_recon_patch_size, main_cor_axis_column, main_cor_axis_increment_step,
-                main_filters_remove_spots, main_filters_remove_spots_threshold, main_filters_remove_spots_blur_sigma,
-                main_filters_ring_removal, main_filters_ring_removal_ufo_lpf, main_filters_ring_removal_ufo_lpf_1d_or_2d,
-                main_filters_ring_removal_ufo_lpf_sigma_horizontal, main_filters_ring_removal_ufo_lpf_sigma_vertical,
-                main_filters_ring_removal_sarepy_window_size, main_filters_ring_removal_sarepy_wide, main_filters_ring_removal_sarepy_window, main_filters_ring_removal_sarepy_SNR,
-                main_pr_phase_retrieval, main_pr_photon_energy, main_pr_pixel_size, main_pr_detector_distance,
-                main_pr_delta_beta_ratio, main_region_select_rows, main_region_first_row, main_region_number_rows, main_region_nth_row, main_region_clip_histogram, main_region_bit_depth, main_region_histogram_min, main_region_histogram_max,
-                main_config_preprocess, main_config_preprocess_command, main_region_rotate_volume_clock, main_region_crop_slices, main_region_crop_x, main_region_crop_width, main_region_crop_y, main_region_crop_height,
-                main_region_crop_z_axis, main_region_crop_z_axis_start, main_region_crop_z_axis_end,
-                main_config_dry_run, main_config_save_params, main_config_keep_temp, advanced_ffc_sinFFC, advanced_ffc_method, advanced_ffc_eigen_pco_reps,
-                advanced_ffc_eigen_pco_downsample, advanced_ffc_downsample, main_config_common_flats_darks,
-                main_config_darks_path, main_config_flats_path, main_config_flats2_checkbox, main_config_flats2_path,
-                advanced_nlmdn_apply_after_reco, advanced_nlmdn_input_dir, advanced_nlmdn_input_is_file, advanced_nlmdn_output_dir, advanced_nlmdn_save_bigtiff,
-                advanced_nlmdn_sim_search_radius, advanced_nlmdn_patch_radius, advanced_nlmdn_smoothing_control, advanced_nlmdn_noise_std,
-                advanced_nlmdn_window, advanced_nlmdn_fast, advanced_nlmdn_estimate_sigma, advanced_nlmdn_dry_run,
-                advanced_advtofu_extended_settings,
-                advanced_advtofu_lamino_angle, advanced_adv_tofu_z_axis_rotation, advanced_advtofu_center_position_z, advanced_advtofu_y_axis_rotation,
-                advanced_advtofu_aux_ffc_dark_scale, advanced_advtofu_aux_ffc_flat_scale,
-                advanced_optimize_verbose_console, advanced_optimize_slice_mem_coeff, advanced_optimize_num_gpus, advanced_optimize_slices_per_device):
 
-        self.args={}
+class tk_args():
+    def __init__(self, params):
+
+        self.args = {}
         # PATHS
-        self.args['main_config_input_dir']=str(main_config_input_dir)
-        setattr(self,'main_config_input_dir',self.args['main_config_input_dir'])
-        self.args['main_config_output_dir']=str(main_config_output_dir)
-        setattr(self,'main_config_output_dir',self.args['main_config_output_dir'])
-        self.args['main_config_temp_dir']=str(main_config_temp_dir)
-        setattr(self,'main_config_temp_dir',self.args['main_config_temp_dir'])
-        self.args['main_config_save_multipage_tiff']=bool(main_config_save_multipage_tiff)
-        setattr(self,'main_config_save_multipage_tiff',self.args['main_config_save_multipage_tiff'])
+        setattr(self, 'main_config_input_dir', str(params['main_config_input_dir']))
+        setattr(self, 'main_config_output_dir', str(params['main_config_output_dir']))
+        setattr(self, 'main_config_temp_dir', str(params['main_config_temp_dir']))
+        setattr(self, 'main_config_save_multipage_tiff', bool(params['main_config_save_multipage_tiff']))
         # center of rotation parameters
-        self.args['main_cor_axis_search_method']=int(main_cor_axis_search_method)
-        setattr(self,'main_cor_axis_search_method',self.args['main_cor_axis_search_method'])
-        self.args['main_cor_axis_search_interval']=str(main_cor_axis_search_interval)
-        setattr(self,'main_cor_axis_search_interval',self.args['main_cor_axis_search_interval'])
-        self.args['main_cor_recon_patch_size']=int(main_cor_recon_patch_size)
-        setattr(self,'main_cor_recon_patch_size',self.args['main_cor_recon_patch_size'])
-        self.args['main_cor_search_row_start']=int(main_cor_search_row_start)
-        setattr(self,'main_cor_search_row_start',self.args['main_cor_search_row_start'])
-        self.args['main_cor_axis_column']=float(main_cor_axis_column)
-        setattr(self,'main_cor_axis_column',self.args['main_cor_axis_column'])
-        self.args['main_cor_axis_increment_step']=float(main_cor_axis_increment_step)
-        setattr(self,'main_cor_axis_increment_step',self.args['main_cor_axis_increment_step'])
-        #ring removal
-        self.args['main_filters_remove_spots']=bool(main_filters_remove_spots)
-        setattr(self,'main_filters_remove_spots',self.args['main_filters_remove_spots'])
-        self.args['main_filters_remove_spots_threshold']=int(main_filters_remove_spots_threshold)
-        setattr(self,'main_filters_remove_spots_threshold', self.args['main_filters_remove_spots_threshold'])
-        self.args['main_filters_remove_spots_blur_sigma']=int(main_filters_remove_spots_blur_sigma)
-        setattr(self,'main_filters_remove_spots_blur_sigma',self.args['main_filters_remove_spots_blur_sigma'])
-        self.args['main_filters_ring_removal']=bool(main_filters_ring_removal)
-        setattr(self,'main_filters_ring_removal',self.args['main_filters_ring_removal'])
-        self.args['main_filters_ring_removal_ufo_lpf'] = bool(main_filters_ring_removal_ufo_lpf)
-        setattr(self, 'main_filters_ring_removal_ufo_lpf', self.args['main_filters_ring_removal_ufo_lpf'])
-        self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'] = bool(main_filters_ring_removal_ufo_lpf_1d_or_2d)
-        setattr(self, 'main_filters_ring_removal_ufo_lpf_1d_or_2d', self.args['main_filters_ring_removal_ufo_lpf_1d_or_2d'])
-        self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'] = int(main_filters_ring_removal_ufo_lpf_sigma_horizontal)
-        setattr(self,'main_filters_ring_removal_ufo_lpf_sigma_horizontal',self.args['main_filters_ring_removal_ufo_lpf_sigma_horizontal'])
-        self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'] = int(main_filters_ring_removal_ufo_lpf_sigma_vertical)
-        setattr(self, 'main_filters_ring_removal_ufo_lpf_sigma_vertical', self.args['main_filters_ring_removal_ufo_lpf_sigma_vertical'])
-        self.args['main_filters_ring_removal_sarepy_window_size'] = int(main_filters_ring_removal_sarepy_window_size)
-        setattr(self, 'main_filters_ring_removal_sarepy_window_size', self.args['main_filters_ring_removal_sarepy_window_size'])
-        self.args['main_filters_ring_removal_sarepy_wide'] = bool(main_filters_ring_removal_sarepy_wide)
-        setattr(self, 'main_filters_ring_removal_sarepy_wide', self.args['main_filters_ring_removal_sarepy_wide'])
-        self.args['main_filters_ring_removal_sarepy_window'] = int(main_filters_ring_removal_sarepy_window)
-        setattr(self, 'main_filters_ring_removal_sarepy_window', self.args['main_filters_ring_removal_sarepy_window'])
-        self.args['main_filters_ring_removal_sarepy_SNR'] = int(main_filters_ring_removal_sarepy_SNR)
-        setattr(self, 'main_filters_ring_removal_sarepy_SNR', self.args['main_filters_ring_removal_sarepy_SNR'])
+        setattr(self, 'main_cor_axis_search_method', int(params['main_cor_axis_search_method']))
+        setattr(self, 'main_cor_axis_search_interval', str(params['main_cor_axis_search_interval']))
+        setattr(self, 'main_cor_recon_patch_size', int(params['main_cor_recon_patch_size']))
+        setattr(self, 'main_cor_search_row_start', int(params['main_cor_search_row_start']))
+        setattr(self, 'main_cor_axis_column', float(params['main_cor_axis_column']))
+        setattr(self, 'main_cor_axis_increment_step', float(params['main_cor_axis_increment_step']))
+        # ring removal
+        setattr(self, 'main_filters_remove_spots', bool(params['main_filters_remove_spots']))
+        setattr(self, 'main_filters_remove_spots_threshold', int(params['main_filters_remove_spots_threshold']))
+        setattr(self, 'main_filters_remove_spots_blur_sigma', int(params['main_filters_remove_spots_blur_sigma']))
+        setattr(self, 'main_filters_ring_removal', bool(params['main_filters_ring_removal']))
+        setattr(self, 'main_filters_ring_removal_ufo_lpf', bool(params['main_filters_ring_removal_ufo_lpf']))
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_1d_or_2d', bool(params['main_filters_ring_removal_ufo_lpf_1d_or_2d']))
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_sigma_horizontal', int(params['main_filters_ring_removal_ufo_lpf_sigma_horizontal']))
+        setattr(self, 'main_filters_ring_removal_ufo_lpf_sigma_vertical', int(params['main_filters_ring_removal_ufo_lpf_sigma_vertical']))
+        setattr(self, 'main_filters_ring_removal_sarepy_window_size', int(params['main_filters_ring_removal_sarepy_window_size']))
+        setattr(self, 'main_filters_ring_removal_sarepy_wide', bool(params['main_filters_ring_removal_sarepy_wide']))
+        setattr(self, 'main_filters_ring_removal_sarepy_window', int(params['main_filters_ring_removal_sarepy_window']))
+        setattr(self, 'main_filters_ring_removal_sarepy_SNR', int(params['main_filters_ring_removal_sarepy_SNR']))
         # phase retrieval
-        self.args['main_pr_phase_retrieval'] = bool(main_pr_phase_retrieval)
-        setattr(self, 'main_pr_phase_retrieval', self.args['main_pr_phase_retrieval'])
-        self.args['main_pr_photon_energy']=float(main_pr_photon_energy)
-        setattr(self,'main_pr_photon_energy',self.args['main_pr_photon_energy'])
-        self.args['main_pr_pixel_size']=float(main_pr_pixel_size)*1e-6
-        setattr(self,'main_pr_pixel_size',self.args['main_pr_pixel_size'])
-        self.args['main_pr_detector_distance']=float(main_pr_detector_distance)
-        setattr(self,'main_pr_detector_distance',self.args['main_pr_detector_distance'])
-        self.args['main_pr_delta_beta_ratio']=np.log10(float(main_pr_delta_beta_ratio))
-        setattr(self,'main_pr_delta_beta_ratio',self.args['main_pr_delta_beta_ratio'])
+        setattr(self, 'main_pr_phase_retrieval', bool(params['main_pr_phase_retrieval']))
+        setattr(self, 'main_pr_photon_energy', float(params['main_pr_photon_energy']))
+        setattr(self, 'main_pr_pixel_size', float(params['main_pr_pixel_size'])*1e-6)
+        setattr(self, 'main_pr_detector_distance', float(params['main_pr_detector_distance']))
+        setattr(self, 'main_pr_delta_beta_ratio', np.log10(float(params['main_pr_delta_beta_ratio'])))
         # Crop vertically
-        self.args['main_region_select_rows']=bool(main_region_select_rows)
-        setattr(self,'main_region_select_rows',self.args['main_region_select_rows'])
-        self.args['main_region_first_row']=int(main_region_first_row)
-        setattr(self,'main_region_first_row',self.args['main_region_first_row'])
-        self.args['main_region_number_rows']=int(main_region_number_rows)
-        setattr(self,'main_region_number_rows',self.args['main_region_number_rows'])
-        self.args['main_region_nth_row']=int(main_region_nth_row)
-        setattr(self,'main_region_nth_row',self.args['main_region_nth_row'])
+        setattr(self, 'main_region_select_rows', bool(params['main_region_select_rows']))
+        setattr(self, 'main_region_first_row', int(params['main_region_first_row']))
+        setattr(self, 'main_region_number_rows', int(params['main_region_number_rows']))
+        setattr(self, 'main_region_nth_row', int(params['main_region_nth_row']))
         # conv to 8 bit
-        self.args['main_region_clip_histogram']=bool(main_region_clip_histogram)
-        setattr(self,'main_region_clip_histogram',self.args['main_region_clip_histogram'])
-        self.args['main_region_bit_depth']=int(main_region_bit_depth)
-        setattr(self,'main_region_bit_depth',self.args['main_region_bit_depth'])
-        self.args['main_region_histogram_min']=float(main_region_histogram_min)
-        setattr(self,'main_region_histogram_min',self.args['main_region_histogram_min'])
-        self.args['main_region_histogram_max']=float(main_region_histogram_max)
-        setattr(self,'main_region_histogram_max',self.args['main_region_histogram_max'])
+        setattr(self, 'main_region_clip_histogram', bool(params['main_region_clip_histogram']))
+        setattr(self, 'main_region_bit_depth', int(params['main_region_bit_depth']))
+        setattr(self, 'main_region_histogram_min', float(params['main_region_histogram_min']))
+        setattr(self, 'main_region_histogram_max', float(params['main_region_histogram_max']))
         # preprocessing attributes
-        self.args['main_config_preprocess']=bool(main_config_preprocess)
-        setattr(self,'main_config_preprocess',self.args['main_config_preprocess'])
-        self.args['main_config_preprocess_command']=main_config_preprocess_command
-        setattr(self,'main_config_preprocess_command',self.args['main_config_preprocess_command'])
+        setattr(self, 'main_config_preprocess', bool(params['main_config_preprocess']))
+        setattr(self, 'main_config_preprocess_command',params['main_config_preprocess_command'])
         # ROI in slice
-        self.args['main_region_crop_slices']=bool(main_region_crop_slices)
-        setattr(self,'main_region_crop_slices',self.args['main_region_crop_slices'])
-        self.args['main_region_crop_x']=int(main_region_crop_x)
-        setattr(self,'main_region_crop_x',self.args['main_region_crop_x'])
-        self.args['main_region_crop_width']=int(main_region_crop_width)
-        setattr(self,'main_region_crop_width',self.args['main_region_crop_width'])
-        self.args['main_region_crop_y']=int(main_region_crop_y)
-        setattr(self,'main_region_crop_y',self.args['main_region_crop_y'])
-        self.args['main_region_crop_height']=int(main_region_crop_height)
-        setattr(self,'main_region_crop_height',self.args['main_region_crop_height'])
+        setattr(self, 'main_region_crop_slices', bool(params['main_region_crop_slices']))
+        setattr(self, 'main_region_crop_x', int(params['main_region_crop_x']))
+        setattr(self, 'main_region_crop_width', int(params['main_region_crop_width']))
+        setattr(self, 'main_region_crop_y', int(params['main_region_crop_y']))
+        setattr(self, 'main_region_crop_height', int(params['main_region_crop_height']))
         # Optional FBP params
-        self.args['main_region_rotate_volume_clock']= float(main_region_rotate_volume_clock)
-        setattr(self,'main_region_rotate_volume_clock',self.args['main_region_rotate_volume_clock'])
+        setattr(self, 'main_region_rotate_volume_clock', float(params['main_region_rotate_volume_clock']))
         # Crop z-axis params
-        self.args['main_region_crop_z_axis'] = bool(main_region_crop_z_axis)
-        setattr(self, 'main_region_crop_z_axis', self.args['main_region_crop_z_axis'])
-        self.args['main_region_crop_z_axis_start'] = int(main_region_crop_z_axis_start)
-        setattr(self, 'main_region_crop_z_axis_start', self.args['main_region_crop_z_axis_start'])
-        self.args['main_region_crop_z_axis_end'] = int(main_region_crop_z_axis_end)
-        setattr(self, 'main_region_crop_z_axis_end', self.args['main_region_crop_z_axis_end'])
+        setattr(self, 'main_region_crop_z_axis', bool(params['main_region_crop_z_axis']))
+        setattr(self, 'main_region_crop_z_axis_start', int(params['main_region_crop_z_axis_start']))
+        setattr(self, 'main_region_crop_z_axis_end', int(params['main_region_crop_z_axis_end']))
         # misc settings
-        self.args['main_config_dry_run']=bool(main_config_dry_run)
-        setattr(self,'main_config_dry_run',self.args['main_config_dry_run'])
-        self.args['main_config_save_params']=bool(main_config_save_params)
-        setattr(self,'main_config_save_params',self.args['main_config_save_params'])
-        self.args['main_config_keep_temp']=bool(main_config_keep_temp)
-        setattr(self,'main_config_keep_temp',self.args['main_config_keep_temp'])
-        #sinFFC settings
-        self.args['advanced_ffc_sinFFC']=bool(advanced_ffc_sinFFC)
-        setattr(self,'advanced_ffc_sinFFC', self.args['advanced_ffc_sinFFC'])
-        self.args['advanced_ffc_method'] = str(advanced_ffc_method)
-        setattr(self, 'advanced_ffc_method', self.args['advanced_ffc_method'])
-        self.args['advanced_ffc_eigen_pco_reps']=int(advanced_ffc_eigen_pco_reps)
-        setattr(self, 'advanced_ffc_eigen_pco_reps', self.args['advanced_ffc_eigen_pco_reps'])
-        self.args['advanced_ffc_eigen_pco_downsample'] = int(advanced_ffc_eigen_pco_downsample)
-        setattr(self, 'advanced_ffc_eigen_pco_downsample', self.args['advanced_ffc_eigen_pco_downsample'])
-        self.args['advanced_ffc_downsample'] = int(advanced_ffc_downsample)
-        setattr(self, 'advanced_ffc_downsample', self.args['advanced_ffc_downsample'])
-        #Settings for using flats/darks across multiple experiments
-        self.args['main_config_common_flats_darks'] = bool(main_config_common_flats_darks)
-        setattr(self, 'main_config_common_flats_darks', self.args['main_config_common_flats_darks'])
-        self.args['main_config_darks_path'] = str(main_config_darks_path)
-        setattr(self, 'main_config_darks_path', self.args['main_config_darks_path'])
-        self.args['main_config_flats_path'] = str(main_config_flats_path)
-        setattr(self, 'main_config_flats_path', self.args['main_config_flats_path'])
-        self.args['main_config_flats2_checkbox'] = bool(main_config_flats2_checkbox)
-        setattr(self, 'main_config_flats2_checkbox', self.args['main_config_flats2_checkbox'])
-        self.args['main_config_flats2_path'] = str(main_config_flats2_path)
-        setattr(self, 'main_config_flats2_path', self.args['main_config_flats2_path'])
-        #NLMDN Settings
-        self.args['advanced_nlmdn_apply_after_reco'] = bool(advanced_nlmdn_apply_after_reco)
-        setattr(self, 'advanced_nlmdn_apply_after_reco', self.args['advanced_nlmdn_apply_after_reco'])
-        self.args['advanced_nlmdn_input_dir'] = str(advanced_nlmdn_input_dir)
-        setattr(self, 'advanced_nlmdn_input_dir', self.args['advanced_nlmdn_input_dir'])
-        self.args['advanced_nlmdn_input_is_file'] = bool(advanced_nlmdn_input_is_file)
-        setattr(self, 'advanced_nlmdn_input_is_file', self.args['advanced_nlmdn_input_is_file'])
-        self.args['advanced_nlmdn_output_dir'] = str(advanced_nlmdn_output_dir)
-        setattr(self, 'advanced_nlmdn_output_dir', self.args['advanced_nlmdn_output_dir'])
-        self.args['advanced_nlmdn_save_bigtiff'] = bool(advanced_nlmdn_save_bigtiff)
-        setattr(self, 'advanced_nlmdn_save_bigtiff', self.args['advanced_nlmdn_save_bigtiff'])
-        self.args['advanced_nlmdn_sim_search_radius'] = str(advanced_nlmdn_sim_search_radius)
-        setattr(self, 'advanced_nlmdn_sim_search_radius', self.args['advanced_nlmdn_sim_search_radius'])
-        self.args['advanced_nlmdn_patch_radius'] = str(advanced_nlmdn_patch_radius)
-        setattr(self, 'advanced_nlmdn_patch_radius', self.args['advanced_nlmdn_patch_radius'])
-        self.args['advanced_nlmdn_smoothing_control'] = str(advanced_nlmdn_smoothing_control)
-        setattr(self, 'advanced_nlmdn_smoothing_control', self.args['advanced_nlmdn_smoothing_control'])
-        self.args['advanced_nlmdn_noise_std'] = str(advanced_nlmdn_noise_std)
-        setattr(self, 'advanced_nlmdn_noise_std', self.args['advanced_nlmdn_noise_std'])
-        self.args['advanced_nlmdn_window'] = str(advanced_nlmdn_window)
-        setattr(self, 'advanced_nlmdn_window', self.args['advanced_nlmdn_window'])
-        self.args['advanced_nlmdn_fast'] = bool(advanced_nlmdn_fast)
-        setattr(self, 'advanced_nlmdn_fast', self.args['advanced_nlmdn_fast'])
-        self.args['advanced_nlmdn_estimate_sigma'] = bool(advanced_nlmdn_estimate_sigma)
-        setattr(self, 'advanced_nlmdn_estimate_sigma', self.args['advanced_nlmdn_estimate_sigma'])
-        self.args['advanced_nlmdn_dry_run'] = bool(advanced_nlmdn_dry_run)
-        setattr(self, 'advanced_nlmdn_dry_run', self.args['advanced_nlmdn_dry_run'])
-        #Advanced Settings
-        self.args['advanced_advtofu_extended_settings'] = bool(advanced_advtofu_extended_settings)
-        setattr(self, 'advanced_advtofu_extended_settings', self.args['advanced_advtofu_extended_settings'])
-        self.args['advanced_advtofu_lamino_angle'] = str(advanced_advtofu_lamino_angle)
-        setattr(self, 'advanced_advtofu_lamino_angle', self.args['advanced_advtofu_lamino_angle'])
-        self.args['advanced_adv_tofu_z_axis_rotation'] = str(advanced_adv_tofu_z_axis_rotation)
-        setattr(self, 'advanced_adv_tofu_z_axis_rotation', self.args['advanced_adv_tofu_z_axis_rotation'])
-        self.args['advanced_advtofu_center_position_z'] = str(advanced_advtofu_center_position_z)
-        setattr(self, 'advanced_advtofu_center_position_z', self.args['advanced_advtofu_center_position_z'])
-        self.args['advanced_advtofu_y_axis_rotation'] = str(advanced_advtofu_y_axis_rotation)
-        setattr(self, 'advanced_advtofu_y_axis_rotation', self.args['advanced_advtofu_y_axis_rotation'])
-        self.args['advanced_advtofu_aux_ffc_dark_scale'] = str(advanced_advtofu_aux_ffc_dark_scale)
-        setattr(self, 'advanced_advtofu_aux_ffc_dark_scale', self.args['advanced_advtofu_aux_ffc_dark_scale'])
-        self.args['advanced_advtofu_aux_ffc_flat_scale'] = str(advanced_advtofu_aux_ffc_flat_scale)
-        setattr(self, 'advanced_advtofu_aux_ffc_flat_scale', self.args['advanced_advtofu_aux_ffc_flat_scale'])
-        #Optimization
-        self.args['advanced_optimize_verbose_console'] = bool(advanced_optimize_verbose_console)
-        setattr(self, 'advanced_optimize_verbose_console', self.args['advanced_optimize_verbose_console'])
-        self.args['advanced_optimize_slice_mem_coeff'] = str(advanced_optimize_slice_mem_coeff)
-        setattr(self, 'advanced_optimize_slice_mem_coeff', self.args['advanced_optimize_slice_mem_coeff'])
-        self.args['advanced_optimize_num_gpus'] = str(advanced_optimize_num_gpus)
-        setattr(self, 'advanced_optimize_num_gpus', self.args['advanced_optimize_num_gpus'])
-        self.args['advanced_optimize_slices_per_device'] = str(advanced_optimize_slices_per_device)
-        setattr(self, 'advanced_optimize_slices_per_device', self.args['advanced_optimize_slices_per_device'])
+        setattr(self, 'main_config_dry_run', bool(params['main_config_dry_run']))
+        setattr(self, 'main_config_save_params', bool(params['main_config_save_params']))
+        setattr(self, 'main_config_keep_temp', bool(params['main_config_keep_temp']))
+        # sinFFC settings
+        setattr(self, 'advanced_ffc_sinFFC', bool(params['advanced_ffc_sinFFC']))
+        setattr(self, 'advanced_ffc_method', str(params['advanced_ffc_method']))
+        setattr(self, 'advanced_ffc_eigen_pco_reps', int(params['advanced_ffc_eigen_pco_reps']))
+        setattr(self, 'advanced_ffc_eigen_pco_downsample', int(params['advanced_ffc_eigen_pco_downsample']))
+        setattr(self, 'advanced_ffc_downsample', int(params['advanced_ffc_downsample']))
+        # Settings for using flats/darks across multiple experiments
+        setattr(self, 'main_config_common_flats_darks', bool(params['main_config_common_flats_darks']))
+        setattr(self, 'main_config_darks_path', str(params['main_config_darks_path']))
+        setattr(self, 'main_config_flats_path', str(params['main_config_flats_path']))
+        setattr(self, 'main_config_flats2_checkbox', bool(params['main_config_flats2_checkbox']))
+        setattr(self, 'main_config_flats2_path', str(params['main_config_flats2_path']))
+        # NLMDN Settings
+        setattr(self, 'advanced_nlmdn_apply_after_reco', bool(params['advanced_nlmdn_apply_after_reco']))
+        setattr(self, 'advanced_nlmdn_input_dir', str(params['advanced_nlmdn_input_dir']))
+        setattr(self, 'advanced_nlmdn_input_is_file', bool(params['advanced_nlmdn_input_is_file']))
+        setattr(self, 'advanced_nlmdn_output_dir', str(params['advanced_nlmdn_output_dir']))
+        setattr(self, 'advanced_nlmdn_save_bigtiff', bool(params['advanced_nlmdn_save_bigtiff']))
+        setattr(self, 'advanced_nlmdn_sim_search_radius', str(params['advanced_nlmdn_sim_search_radius']))
+        setattr(self, 'advanced_nlmdn_patch_radius', str(params['advanced_nlmdn_patch_radius']))
+        setattr(self, 'advanced_nlmdn_smoothing_control', str(params['advanced_nlmdn_smoothing_control']))
+        setattr(self, 'advanced_nlmdn_noise_std', str(params['advanced_nlmdn_noise_std']))
+        setattr(self, 'advanced_nlmdn_window', str(params['advanced_nlmdn_window']))
+        setattr(self, 'advanced_nlmdn_fast', bool(params['advanced_nlmdn_fast']))
+        setattr(self, 'advanced_nlmdn_estimate_sigma', bool(params['advanced_nlmdn_estimate_sigma']))
+        setattr(self, 'advanced_nlmdn_dry_run', bool(params['advanced_nlmdn_dry_run']))
+        # Advanced Settings
+        setattr(self, 'advanced_advtofu_extended_settings', bool(params['advanced_advtofu_extended_settings']))
+        setattr(self, 'advanced_advtofu_lamino_angle', str(params['advanced_advtofu_lamino_angle']))
+        setattr(self, 'advanced_adv_tofu_z_axis_rotation', str(params['advanced_adv_tofu_z_axis_rotation']))
+        setattr(self, 'advanced_advtofu_center_position_z', str(params['advanced_advtofu_center_position_z']))
+        setattr(self, 'advanced_advtofu_y_axis_rotation', str(params['advanced_advtofu_y_axis_rotation']))
+        setattr(self, 'advanced_advtofu_aux_ffc_dark_scale', str(params['advanced_advtofu_aux_ffc_dark_scale']))
+        setattr(self, 'advanced_advtofu_aux_ffc_flat_scale', str(params['advanced_advtofu_aux_ffc_flat_scale']))
+        # Optimization
+        setattr(self, 'advanced_optimize_verbose_console', bool(params['advanced_optimize_verbose_console']))
+        setattr(self, 'advanced_optimize_slice_mem_coeff', str(params['advanced_optimize_slice_mem_coeff']))
+        setattr(self, 'advanced_optimize_num_gpus', str(params['advanced_optimize_num_gpus']))
+        setattr(self, 'advanced_optimize_slices_per_device', str(params['advanced_optimize_slices_per_device']))
 
         logging.debug("Contents of arg dict: ")
         logging.debug(self.args.items())
+
 
 class InvalidInputError(Exception):
     """
