@@ -318,7 +318,6 @@ def main_360_mp_depth1(parameters):
 
     print("========== Done ==========")
 
-
 def main_360_mp_depth2(parameters):
 
     if parameters['360multi_manual_axis']:
