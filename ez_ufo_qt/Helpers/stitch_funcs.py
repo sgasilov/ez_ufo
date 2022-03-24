@@ -496,7 +496,7 @@ def check_last_index(axis_list):
     """
     last_index = 0
     for index, item in enumerate(axis_list):
-        if item == 'None':
+        if item == 'None' or item is None:
             last_index = index - 1
             return last_index
         last_index = index
