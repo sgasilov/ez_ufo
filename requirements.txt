@@ -4,7 +4,7 @@ backcall==0.2.0
 backports.functools-lru-cache==1.6.1
 backports.shutil-get-terminal-size==1.0.0
 #bmit-sin==1.1.1
-certifi==2021.5.30
+certifi==2022.12.7
 chardet==4.0.0
 #concert==0.30.0.dev0
 configparser==5.0.2
